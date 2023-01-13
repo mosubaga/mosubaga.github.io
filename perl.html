@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Perl Cookbook</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <!-- Hightlight -->
+    <link rel="stylesheet" href="css/prism.css">
+    <script src="css/prism.js"></script>
+    <link href="starter-template.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="headercontainer">
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Perl</a></li>
+            <li><a href="python.html">Python</a></li>
+            <li><a href="go.html">Go</a></li>
+            <li><a href="equations.html">Equations</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+        <h3 style="padding-top:50px">Get file list</h3>
+        <pre>
+            <code class="language-perl">
+            use strict;
+            use File::Find;
+            use File::Copy;
+            use Data::Dumper;
+    
+            my @FILE_LIST;
+    
+            # -- main --
+            {
+              my $sDir = "/home/username";
+              my @aFileList = GetFileList($sDir);
+            }
+    
+            # ----------------------------
+            sub GetFileList($)
+            # ----------------------------
+            {
+              my $root = shift;
+    
+              @FILE_LIST = ();
+              find(\&filter, $root);
+              return @FILE_LIST;
+            }
+    
+            # ----------------------------
+            sub filter
+            # ----------------------------
+            {
+              my $root = $File::Find::topdir;
+              my $path = $File::Find::name;
+              my $file_name = $_;
+    
+              if( $file_name =~ /\.(cgi|pl)$/i )
+              {
+                $root =~ s/\\/\\\\/g;
+                $path =~ s/^$root[\/\\]//;
+                push @FILE_LIST, $path;
+              }
+            }
+            </code>
+        </pre>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
