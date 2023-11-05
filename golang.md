@@ -1,4 +1,4 @@
-* A code in golang that asynchronously unzip a set of zip files
+#### A code in golang that asynchronously unzip a set of zip files
 
 ```go
 package main
@@ -77,7 +77,7 @@ func extractFile(file *zip.File) error {
 }
 ```
 
-* A code in Golang accessing to a remote Mysql database and querying a table called "customer_list".
+#### A code in Golang accessing to a remote Mysql database and querying a table called "customer_list".
 
 ```go
 package main
@@ -118,7 +118,7 @@ func main() {
 }
 ```
 
-* A golang code that concurrently reads  a set of  files from a  directory.
+#### A golang code that concurrently reads  a set of  files from a  directory.
 
 ```go
 package main
@@ -180,7 +180,7 @@ func main() {
 }
 ```
 
-* A golang code that parses JSON where you are unsure of the structure.
+#### A golang code that parses JSON where you are unsure of the structure.
 
 ```go
 package main

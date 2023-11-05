@@ -1,4 +1,4 @@
-* A node script where you can connect to a remote mysql database via ssh.
+#### A node script where you can connect to a remote mysql database via ssh.
 
 ```js
 const mysql = require('mysql');
@@ -57,7 +57,7 @@ sshTunnel
   });
 ```
 
-* A script in Node.js to scrape texts from a web page using cheerio and write the content into a text file.
+#### A script in Node.js to scrape texts from a web page using cheerio and write the content into a text file.
 
 ```js
 const request = require('request'); // For making HTTP requests
