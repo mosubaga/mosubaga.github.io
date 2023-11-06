@@ -61,3 +61,35 @@ for file_path, content in results.items():
     print(content)
     print()
 ```
+
+#### A Python script that send a GET requests to a set of URL asynchronously using aiohttp.
+
+```python
+import asyncio
+import aiohttp
+
+async def fetch_url(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+async def fetch_all_urls(urls):
+    tasks = [fetch_url(url) for url in urls]
+    results = await asyncio.gather(*tasks)
+    return results
+
+async def main():
+    urls = [
+        "https://www.example.com",
+        "https://www.example.org",
+        "https://www.example.net"
+    ]
+
+    responses = await fetch_all_urls(urls)
+
+    for idx, response_text in enumerate(responses, start=1):
+        print(f"Response from URL {idx}:\n{response_text}\n")
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
