@@ -231,3 +231,64 @@ func main() {
 	}
 }
 ```
+
+#### A script in golang that runs a sql query on a sqlite3 database.
+
+```go
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+
+	_ "github.com/mattn/go-sqlite3"
+)
+
+func main() {
+	// Open the SQLite database file
+	db, err := sql.Open("sqlite3", "your_database.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	// Check the connection to the database
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Define the SQL query
+	query := "SELECT * FROM your_table"
+
+	// Execute the query
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	// Process the query results
+	for rows.Next() {
+		var (
+			column1Type string
+			column2Type int
+		)
+
+		err := rows.Scan(&column1Type, &column2Type)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Process the retrieved data
+		fmt.Printf("Column1: %s, Column2: %d\n", column1Type, column2Type)
+	}
+
+	// Check for errors from iterating over rows
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+```
