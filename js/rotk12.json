@@ -1,0 +1,3796 @@
+{
+    "characters": [
+        {
+            "cNAME": "阿会喃",
+            "cONAME": "-",
+            "cBAT": 65,
+            "cWAR": 74,
+            "cINT": 26,
+            "cPOL": 33
+        },
+        {
+            "cNAME": "伊籍",
+            "cONAME": "機伯",
+            "cBAT": 29,
+            "cWAR": 24,
+            "cINT": 80,
+            "cPOL": 86
+        },
+        {
+            "cNAME": "尹賞",
+            "cONAME": "-",
+            "cBAT": 51,
+            "cWAR": 44,
+            "cINT": 62,
+            "cPOL": 66
+        },
+        {
+            "cNAME": "尹黙",
+            "cONAME": "思潜",
+            "cBAT": 26,
+            "cWAR": 15,
+            "cINT": 66,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "于禁",
+            "cONAME": "文則",
+            "cBAT": 83,
+            "cWAR": 78,
+            "cINT": 74,
+            "cPOL": 57
+        },
+        {
+            "cNAME": "衛瓘",
+            "cONAME": "伯玉",
+            "cBAT": 69,
+            "cWAR": 46,
+            "cINT": 79,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "袁胤",
+            "cONAME": "-",
+            "cBAT": 32,
+            "cWAR": 14,
+            "cINT": 39,
+            "cPOL": 41
+        },
+        {
+            "cNAME": "袁煕",
+            "cONAME": "顕奕",
+            "cBAT": 66,
+            "cWAR": 51,
+            "cINT": 63,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "閻行",
+            "cONAME": "彦明",
+            "cBAT": 76,
+            "cWAR": 84,
+            "cINT": 66,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "閻柔",
+            "cONAME": "-",
+            "cBAT": 71,
+            "cWAR": 57,
+            "cINT": 71,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "袁術",
+            "cONAME": "公路",
+            "cBAT": 44,
+            "cWAR": 65,
+            "cINT": 65,
+            "cPOL": 16
+        },
+        {
+            "cNAME": "袁尚",
+            "cONAME": "顕甫",
+            "cBAT": 63,
+            "cWAR": 75,
+            "cINT": 42,
+            "cPOL": 38
+        },
+        {
+            "cNAME": "袁紹",
+            "cONAME": "本初",
+            "cBAT": 81,
+            "cWAR": 69,
+            "cINT": 70,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "閻象",
+            "cONAME": "-",
+            "cBAT": 30,
+            "cWAR": 27,
+            "cINT": 71,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "袁譚",
+            "cONAME": "顕思",
+            "cBAT": 60,
+            "cWAR": 69,
+            "cINT": 30,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "閻圃",
+            "cONAME": "-",
+            "cBAT": 29,
+            "cWAR": 25,
+            "cINT": 82,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "王威",
+            "cONAME": "-",
+            "cBAT": 60,
+            "cWAR": 70,
+            "cINT": 62,
+            "cPOL": 52
+        },
+        {
+            "cNAME": "王允",
+            "cONAME": "子師",
+            "cBAT": 26,
+            "cWAR": 6,
+            "cINT": 68,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "王伉",
+            "cONAME": "-",
+            "cBAT": 76,
+            "cWAR": 60,
+            "cINT": 61,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "王粲",
+            "cONAME": "仲宣",
+            "cBAT": 15,
+            "cWAR": 3,
+            "cINT": 79,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "王脩",
+            "cONAME": "叔治",
+            "cBAT": 54,
+            "cWAR": 27,
+            "cINT": 77,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "王粛",
+            "cONAME": "子雍",
+            "cBAT": 36,
+            "cWAR": 22,
+            "cINT": 76,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "王濬",
+            "cONAME": "士治",
+            "cBAT": 81,
+            "cWAR": 73,
+            "cINT": 77,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "王双",
+            "cONAME": "子全",
+            "cBAT": 67,
+            "cWAR": 88,
+            "cINT": 19,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "王昶",
+            "cONAME": "文舒",
+            "cBAT": 74,
+            "cWAR": 64,
+            "cINT": 79,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "王平",
+            "cONAME": "子均",
+            "cBAT": 83,
+            "cWAR": 79,
+            "cINT": 76,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "王甫",
+            "cONAME": "国山",
+            "cBAT": 62,
+            "cWAR": 41,
+            "cINT": 79,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "王門",
+            "cONAME": "-",
+            "cBAT": 65,
+            "cWAR": 64,
+            "cINT": 31,
+            "cPOL": 41
+        },
+        {
+            "cNAME": "王淩",
+            "cONAME": "彦雲",
+            "cBAT": 74,
+            "cWAR": 64,
+            "cINT": 71,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "王累",
+            "cONAME": "-",
+            "cBAT": 28,
+            "cWAR": 30,
+            "cINT": 79,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "王朗",
+            "cONAME": "景興",
+            "cBAT": 47,
+            "cWAR": 35,
+            "cINT": 79,
+            "cPOL": 81
+        },
+        {
+            "cNAME": "温恢",
+            "cONAME": "曼基",
+            "cBAT": 62,
+            "cWAR": 36,
+            "cINT": 74,
+            "cPOL": 86
+        },
+        {
+            "cNAME": "何晏",
+            "cONAME": "平叔",
+            "cBAT": 15,
+            "cWAR": 30,
+            "cINT": 72,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "蒯越",
+            "cONAME": "異度",
+            "cBAT": 47,
+            "cWAR": 27,
+            "cINT": 82,
+            "cPOL": 88
+        },
+        {
+            "cNAME": "蒯良",
+            "cONAME": "子柔",
+            "cBAT": 68,
+            "cWAR": 33,
+            "cINT": 88,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "賈華",
+            "cONAME": "-",
+            "cBAT": 49,
+            "cWAR": 65,
+            "cINT": 41,
+            "cPOL": 29
+        },
+        {
+            "cNAME": "賈逵",
+            "cONAME": "梁道",
+            "cBAT": 78,
+            "cWAR": 61,
+            "cINT": 84,
+            "cPOL": 85
+        },
+        {
+            "cNAME": "何儀",
+            "cONAME": "-",
+            "cBAT": 56,
+            "cWAR": 69,
+            "cINT": 36,
+            "cPOL": 10
+        },
+        {
+            "cNAME": "華歆",
+            "cONAME": "子魚",
+            "cBAT": 33,
+            "cWAR": 33,
+            "cINT": 82,
+            "cPOL": 83
+        },
+        {
+            "cNAME": "賈詡",
+            "cONAME": "文和",
+            "cBAT": 88,
+            "cWAR": 48,
+            "cINT": 97,
+            "cPOL": 85
+        },
+        {
+            "cNAME": "郭嘉",
+            "cONAME": "奉孝",
+            "cBAT": 88,
+            "cWAR": 15,
+            "cINT": 96,
+            "cPOL": 84
+        },
+        {
+            "cNAME": "鄂煥",
+            "cONAME": "-",
+            "cBAT": 65,
+            "cWAR": 82,
+            "cINT": 42,
+            "cPOL": 21
+        },
+        {
+            "cNAME": "郭汜",
+            "cONAME": "-",
+            "cBAT": 64,
+            "cWAR": 76,
+            "cINT": 13,
+            "cPOL": 14
+        },
+        {
+            "cNAME": "楽就",
+            "cONAME": "-",
+            "cBAT": 53,
+            "cWAR": 66,
+            "cINT": 61,
+            "cPOL": 42
+        },
+        {
+            "cNAME": "霍峻",
+            "cONAME": "仲邈",
+            "cBAT": 73,
+            "cWAR": 66,
+            "cINT": 73,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "郝昭",
+            "cONAME": "伯道",
+            "cBAT": 86,
+            "cWAR": 79,
+            "cINT": 78,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "楽進",
+            "cONAME": "文謙",
+            "cBAT": 80,
+            "cWAR": 84,
+            "cINT": 56,
+            "cPOL": 51
+        },
+        {
+            "cNAME": "郭図",
+            "cONAME": "公則",
+            "cBAT": 52,
+            "cWAR": 50,
+            "cINT": 82,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "郝萌",
+            "cONAME": "-",
+            "cBAT": 62,
+            "cWAR": 67,
+            "cINT": 42,
+            "cPOL": 34
+        },
+        {
+            "cNAME": "郭攸之",
+            "cONAME": "演長",
+            "cBAT": 28,
+            "cWAR": 9,
+            "cINT": 69,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "霍弋",
+            "cONAME": "紹先",
+            "cBAT": 73,
+            "cWAR": 69,
+            "cINT": 69,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "郭淮",
+            "cONAME": "伯済",
+            "cBAT": 87,
+            "cWAR": 78,
+            "cINT": 81,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "夏侯威",
+            "cONAME": "季権",
+            "cBAT": 71,
+            "cWAR": 73,
+            "cINT": 49,
+            "cPOL": 57
+        },
+        {
+            "cNAME": "夏侯淵",
+            "cONAME": "妙才",
+            "cBAT": 90,
+            "cWAR": 91,
+            "cINT": 68,
+            "cPOL": 61
+        },
+        {
+            "cNAME": "夏侯恩",
+            "cONAME": "-",
+            "cBAT": 63,
+            "cWAR": 72,
+            "cINT": 53,
+            "cPOL": 45
+        },
+        {
+            "cNAME": "夏侯和",
+            "cONAME": "義権",
+            "cBAT": 48,
+            "cWAR": 51,
+            "cINT": 71,
+            "cPOL": 76
+        },
+        {
+            "cNAME": "夏侯恵",
+            "cONAME": "稚権",
+            "cBAT": 50,
+            "cWAR": 44,
+            "cINT": 76,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "夏侯玄",
+            "cONAME": "太初",
+            "cBAT": 54,
+            "cWAR": 39,
+            "cINT": 76,
+            "cPOL": 92
+        },
+        {
+            "cNAME": "夏侯尚",
+            "cONAME": "伯仁",
+            "cBAT": 79,
+            "cWAR": 72,
+            "cINT": 75,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "夏侯徳",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 73,
+            "cINT": 32,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "夏侯惇",
+            "cONAME": "元譲",
+            "cBAT": 92,
+            "cWAR": 90,
+            "cINT": 63,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "夏侯覇",
+            "cONAME": "仲権",
+            "cBAT": 79,
+            "cWAR": 84,
+            "cINT": 77,
+            "cPOL": 55
+        },
+        {
+            "cNAME": "夏侯楙",
+            "cONAME": "子林",
+            "cBAT": 20,
+            "cWAR": 7,
+            "cINT": 4,
+            "cPOL": 21
+        },
+        {
+            "cNAME": "賈充",
+            "cONAME": "公閭",
+            "cBAT": 54,
+            "cWAR": 31,
+            "cINT": 89,
+            "cPOL": 85
+        },
+        {
+            "cNAME": "何進",
+            "cONAME": "遂高",
+            "cBAT": 39,
+            "cWAR": 40,
+            "cINT": 6,
+            "cPOL": 41
+        },
+        {
+            "cNAME": "華雄",
+            "cONAME": "-",
+            "cBAT": 88,
+            "cWAR": 92,
+            "cINT": 61,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "韓胤",
+            "cONAME": "-",
+            "cBAT": 26,
+            "cWAR": 29,
+            "cINT": 65,
+            "cPOL": 54
+        },
+        {
+            "cNAME": "関羽",
+            "cONAME": "雲長",
+            "cBAT": 97,
+            "cWAR": 97,
+            "cINT": 79,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "桓階",
+            "cONAME": "伯緒",
+            "cBAT": 25,
+            "cWAR": 26,
+            "cINT": 68,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "管亥",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 82,
+            "cINT": 10,
+            "cPOL": 5
+        },
+        {
+            "cNAME": "毌丘倹",
+            "cONAME": "仲恭",
+            "cBAT": 78,
+            "cWAR": 74,
+            "cINT": 55,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "韓玄",
+            "cONAME": "-",
+            "cBAT": 22,
+            "cWAR": 33,
+            "cINT": 7,
+            "cPOL": 4
+        },
+        {
+            "cNAME": "韓浩",
+            "cONAME": "元嗣",
+            "cBAT": 69,
+            "cWAR": 72,
+            "cINT": 68,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "関興",
+            "cONAME": "安国",
+            "cBAT": 76,
+            "cWAR": 86,
+            "cINT": 67,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "関索",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 88,
+            "cINT": 56,
+            "cPOL": 47
+        },
+        {
+            "cNAME": "韓遂",
+            "cONAME": "文約",
+            "cBAT": 81,
+            "cWAR": 75,
+            "cINT": 82,
+            "cPOL": 61
+        },
+        {
+            "cNAME": "韓嵩",
+            "cONAME": "徳高",
+            "cBAT": 25,
+            "cWAR": 15,
+            "cINT": 71,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "関靖",
+            "cONAME": "士起",
+            "cBAT": 36,
+            "cWAR": 52,
+            "cINT": 73,
+            "cPOL": 63
+        },
+        {
+            "cNAME": "韓暹",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 66,
+            "cINT": 36,
+            "cPOL": 18
+        },
+        {
+            "cNAME": "闞沢",
+            "cONAME": "徳潤",
+            "cBAT": 43,
+            "cWAR": 49,
+            "cINT": 83,
+            "cPOL": 86
+        },
+        {
+            "cNAME": "韓忠",
+            "cONAME": "-",
+            "cBAT": 64,
+            "cWAR": 67,
+            "cINT": 18,
+            "cPOL": 12
+        },
+        {
+            "cNAME": "韓当",
+            "cONAME": "義公",
+            "cBAT": 76,
+            "cWAR": 85,
+            "cINT": 61,
+            "cPOL": 51
+        },
+        {
+            "cNAME": "韓徳",
+            "cONAME": "-",
+            "cBAT": 63,
+            "cWAR": 76,
+            "cINT": 25,
+            "cPOL": 16
+        },
+        {
+            "cNAME": "甘寧",
+            "cONAME": "興覇",
+            "cBAT": 93,
+            "cWAR": 94,
+            "cINT": 76,
+            "cPOL": 18
+        },
+        {
+            "cNAME": "韓馥",
+            "cONAME": "文節",
+            "cBAT": 28,
+            "cWAR": 3,
+            "cINT": 27,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "関平",
+            "cONAME": "-",
+            "cBAT": 80,
+            "cWAR": 82,
+            "cINT": 72,
+            "cPOL": 60
+        },
+        {
+            "cNAME": "簡雍",
+            "cONAME": "憲和",
+            "cBAT": 20,
+            "cWAR": 32,
+            "cINT": 75,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "顔良",
+            "cONAME": "-",
+            "cBAT": 88,
+            "cWAR": 94,
+            "cINT": 21,
+            "cPOL": 23
+        },
+        {
+            "cNAME": "魏延",
+            "cONAME": "文長",
+            "cBAT": 85,
+            "cWAR": 92,
+            "cINT": 72,
+            "cPOL": 49
+        },
+        {
+            "cNAME": "麹義",
+            "cONAME": "-",
+            "cBAT": 82,
+            "cWAR": 78,
+            "cINT": 51,
+            "cPOL": 18
+        },
+        {
+            "cNAME": "戯志才",
+            "cONAME": "-",
+            "cBAT": 63,
+            "cWAR": 7,
+            "cINT": 88,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "魏続",
+            "cONAME": "-",
+            "cBAT": 67,
+            "cWAR": 78,
+            "cINT": 31,
+            "cPOL": 32
+        },
+        {
+            "cNAME": "魏攸",
+            "cONAME": "-",
+            "cBAT": 46,
+            "cWAR": 29,
+            "cINT": 74,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "牛金",
+            "cONAME": "-",
+            "cBAT": 72,
+            "cWAR": 79,
+            "cINT": 38,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "牛輔",
+            "cONAME": "-",
+            "cBAT": 38,
+            "cWAR": 60,
+            "cINT": 21,
+            "cPOL": 26
+        },
+        {
+            "cNAME": "姜維",
+            "cONAME": "伯約",
+            "cBAT": 92,
+            "cWAR": 89,
+            "cINT": 90,
+            "cPOL": 67
+        },
+        {
+            "cNAME": "鞏志",
+            "cONAME": "-",
+            "cBAT": 43,
+            "cWAR": 53,
+            "cINT": 62,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "橋蕤",
+            "cONAME": "-",
+            "cBAT": 64,
+            "cWAR": 69,
+            "cINT": 38,
+            "cPOL": 41
+        },
+        {
+            "cNAME": "龔都",
+            "cONAME": "-",
+            "cBAT": 59,
+            "cWAR": 70,
+            "cINT": 23,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "許貢",
+            "cONAME": "-",
+            "cBAT": 44,
+            "cWAR": 66,
+            "cINT": 64,
+            "cPOL": 64
+        },
+        {
+            "cNAME": "許靖",
+            "cONAME": "文休",
+            "cBAT": 23,
+            "cWAR": 5,
+            "cINT": 68,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "許褚",
+            "cONAME": "仲康",
+            "cBAT": 74,
+            "cWAR": 96,
+            "cINT": 36,
+            "cPOL": 20
+        },
+        {
+            "cNAME": "許攸",
+            "cONAME": "子遠",
+            "cBAT": 36,
+            "cWAR": 21,
+            "cINT": 80,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "紀霊",
+            "cONAME": "-",
+            "cBAT": 78,
+            "cWAR": 83,
+            "cINT": 51,
+            "cPOL": 48
+        },
+        {
+            "cNAME": "金禕",
+            "cONAME": "徳禕",
+            "cBAT": 32,
+            "cWAR": 38,
+            "cINT": 65,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "金環三結",
+            "cONAME": "-",
+            "cBAT": 64,
+            "cWAR": 76,
+            "cINT": 19,
+            "cPOL": 19
+        },
+        {
+            "cNAME": "金旋",
+            "cONAME": "元機",
+            "cBAT": 52,
+            "cWAR": 68,
+            "cINT": 13,
+            "cPOL": 29
+        },
+        {
+            "cNAME": "虞翻",
+            "cONAME": "仲翔",
+            "cBAT": 43,
+            "cWAR": 46,
+            "cINT": 86,
+            "cPOL": 81
+        },
+        {
+            "cNAME": "邢道栄",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 80,
+            "cINT": 41,
+            "cPOL": 16
+        },
+        {
+            "cNAME": "厳顔",
+            "cONAME": "-",
+            "cBAT": 82,
+            "cWAR": 83,
+            "cINT": 72,
+            "cPOL": 67
+        },
+        {
+            "cNAME": "厳綱",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 71,
+            "cINT": 40,
+            "cPOL": 51
+        },
+        {
+            "cNAME": "厳畯",
+            "cONAME": "曼才",
+            "cBAT": 28,
+            "cWAR": 2,
+            "cINT": 71,
+            "cPOL": 84
+        },
+        {
+            "cNAME": "厳政",
+            "cONAME": "-",
+            "cBAT": 50,
+            "cWAR": 55,
+            "cINT": 39,
+            "cPOL": 36
+        },
+        {
+            "cNAME": "厳白虎",
+            "cONAME": "-",
+            "cBAT": 67,
+            "cWAR": 70,
+            "cINT": 23,
+            "cPOL": 21
+        },
+        {
+            "cNAME": "厳輿",
+            "cONAME": "-",
+            "cBAT": 61,
+            "cWAR": 78,
+            "cINT": 44,
+            "cPOL": 20
+        },
+        {
+            "cNAME": "呉懿",
+            "cONAME": "子遠",
+            "cBAT": 79,
+            "cWAR": 73,
+            "cINT": 70,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "黄蓋",
+            "cONAME": "公覆",
+            "cBAT": 80,
+            "cWAR": 83,
+            "cINT": 70,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "高幹",
+            "cONAME": "元才",
+            "cBAT": 74,
+            "cWAR": 56,
+            "cINT": 48,
+            "cPOL": 59
+        },
+        {
+            "cNAME": "黄権",
+            "cONAME": "公衡",
+            "cBAT": 75,
+            "cWAR": 59,
+            "cINT": 82,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "高柔",
+            "cONAME": "文恵",
+            "cBAT": 57,
+            "cWAR": 43,
+            "cINT": 72,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "高順",
+            "cONAME": "-",
+            "cBAT": 85,
+            "cWAR": 86,
+            "cINT": 60,
+            "cPOL": 46
+        },
+        {
+            "cNAME": "高翔",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 68,
+            "cINT": 53,
+            "cPOL": 44
+        },
+        {
+            "cNAME": "高昇",
+            "cONAME": "-",
+            "cBAT": 67,
+            "cWAR": 73,
+            "cINT": 41,
+            "cPOL": 21
+        },
+        {
+            "cNAME": "侯成",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 75,
+            "cINT": 68,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "侯選",
+            "cONAME": "-",
+            "cBAT": 63,
+            "cWAR": 66,
+            "cINT": 34,
+            "cPOL": 55
+        },
+        {
+            "cNAME": "黄祖",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 66,
+            "cINT": 55,
+            "cPOL": 38
+        },
+        {
+            "cNAME": "公孫越",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 72,
+            "cINT": 47,
+            "cPOL": 54
+        },
+        {
+            "cNAME": "公孫淵",
+            "cONAME": "文懿",
+            "cBAT": 65,
+            "cWAR": 70,
+            "cINT": 60,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "公孫恭",
+            "cONAME": "-",
+            "cBAT": 39,
+            "cWAR": 17,
+            "cINT": 69,
+            "cPOL": 61
+        },
+        {
+            "cNAME": "公孫康",
+            "cONAME": "-",
+            "cBAT": 72,
+            "cWAR": 66,
+            "cINT": 65,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "公孫瓚",
+            "cONAME": "伯珪",
+            "cBAT": 84,
+            "cWAR": 83,
+            "cINT": 75,
+            "cPOL": 46
+        },
+        {
+            "cNAME": "公孫続",
+            "cONAME": "-",
+            "cBAT": 63,
+            "cWAR": 68,
+            "cINT": 57,
+            "cPOL": 63
+        },
+        {
+            "cNAME": "公孫度",
+            "cONAME": "升済",
+            "cBAT": 67,
+            "cWAR": 71,
+            "cINT": 66,
+            "cPOL": 51
+        },
+        {
+            "cNAME": "公孫範",
+            "cONAME": "-",
+            "cBAT": 73,
+            "cWAR": 69,
+            "cINT": 66,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "黄忠",
+            "cONAME": "漢升",
+            "cBAT": 90,
+            "cWAR": 93,
+            "cINT": 65,
+            "cPOL": 52
+        },
+        {
+            "cNAME": "高定",
+            "cONAME": "-",
+            "cBAT": 55,
+            "cWAR": 63,
+            "cINT": 43,
+            "cPOL": 42
+        },
+        {
+            "cNAME": "高沛",
+            "cONAME": "-",
+            "cBAT": 66,
+            "cWAR": 61,
+            "cINT": 69,
+            "cPOL": 57
+        },
+        {
+            "cNAME": "皇甫嵩",
+            "cONAME": "義真",
+            "cBAT": 92,
+            "cWAR": 61,
+            "cINT": 73,
+            "cPOL": 51
+        },
+        {
+            "cNAME": "孔融",
+            "cONAME": "文挙",
+            "cBAT": 30,
+            "cWAR": 5,
+            "cINT": 73,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "高覧",
+            "cONAME": "-",
+            "cBAT": 76,
+            "cWAR": 82,
+            "cINT": 68,
+            "cPOL": 55
+        },
+        {
+            "cNAME": "呉景",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 66,
+            "cINT": 52,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "胡車児",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 82,
+            "cINT": 41,
+            "cPOL": 2
+        },
+        {
+            "cNAME": "胡軫",
+            "cONAME": "文才",
+            "cBAT": 65,
+            "cWAR": 74,
+            "cINT": 12,
+            "cPOL": 15
+        },
+        {
+            "cNAME": "兀突骨",
+            "cONAME": "-",
+            "cBAT": 79,
+            "cWAR": 86,
+            "cINT": 1,
+            "cPOL": 3
+        },
+        {
+            "cNAME": "胡班",
+            "cONAME": "-",
+            "cBAT": 55,
+            "cWAR": 55,
+            "cINT": 59,
+            "cPOL": 50
+        },
+        {
+            "cNAME": "呉班",
+            "cONAME": "元雄",
+            "cBAT": 74,
+            "cWAR": 71,
+            "cINT": 59,
+            "cPOL": 45
+        },
+        {
+            "cNAME": "顧雍",
+            "cONAME": "元歎",
+            "cBAT": 43,
+            "cWAR": 18,
+            "cINT": 80,
+            "cPOL": 90
+        },
+        {
+            "cNAME": "呉蘭",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 80,
+            "cINT": 35,
+            "cPOL": 36
+        },
+        {
+            "cNAME": "蔡和",
+            "cONAME": "-",
+            "cBAT": 39,
+            "cWAR": 50,
+            "cINT": 1,
+            "cPOL": 26
+        },
+        {
+            "cNAME": "蔡中",
+            "cONAME": "-",
+            "cBAT": 40,
+            "cWAR": 54,
+            "cINT": 2,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "蔡瑁",
+            "cONAME": "徳珪",
+            "cBAT": 70,
+            "cWAR": 70,
+            "cINT": 77,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "笮融",
+            "cONAME": "-",
+            "cBAT": 60,
+            "cWAR": 69,
+            "cINT": 38,
+            "cPOL": 21
+        },
+        {
+            "cNAME": "司馬懿",
+            "cONAME": "仲達",
+            "cBAT": 98,
+            "cWAR": 63,
+            "cINT": 98,
+            "cPOL": 93
+        },
+        {
+            "cNAME": "司馬炎",
+            "cONAME": "安世",
+            "cBAT": 69,
+            "cWAR": 59,
+            "cINT": 77,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "司馬師",
+            "cONAME": "子元",
+            "cBAT": 79,
+            "cWAR": 64,
+            "cINT": 88,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "司馬昭",
+            "cONAME": "子上",
+            "cBAT": 76,
+            "cWAR": 57,
+            "cINT": 87,
+            "cPOL": 88
+        },
+        {
+            "cNAME": "司馬孚",
+            "cONAME": "叔達",
+            "cBAT": 70,
+            "cWAR": 37,
+            "cINT": 77,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "司馬朗",
+            "cONAME": "伯達",
+            "cBAT": 20,
+            "cWAR": 21,
+            "cINT": 72,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "沙摩柯",
+            "cONAME": "-",
+            "cBAT": 66,
+            "cWAR": 84,
+            "cINT": 25,
+            "cPOL": 14
+        },
+        {
+            "cNAME": "周昕",
+            "cONAME": "大明",
+            "cBAT": 65,
+            "cWAR": 62,
+            "cINT": 73,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "周昂",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 65,
+            "cINT": 65,
+            "cPOL": 49
+        },
+        {
+            "cNAME": "周旨",
+            "cONAME": "-",
+            "cBAT": 65,
+            "cWAR": 85,
+            "cINT": 41,
+            "cPOL": 29
+        },
+        {
+            "cNAME": "周倉",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 84,
+            "cINT": 42,
+            "cPOL": 33
+        },
+        {
+            "cNAME": "周泰",
+            "cONAME": "幼平",
+            "cBAT": 84,
+            "cWAR": 91,
+            "cINT": 48,
+            "cPOL": 38
+        },
+        {
+            "cNAME": "周魴",
+            "cONAME": "子魚",
+            "cBAT": 52,
+            "cWAR": 41,
+            "cINT": 80,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "周瑜",
+            "cONAME": "公瑾",
+            "cBAT": 95,
+            "cWAR": 71,
+            "cINT": 96,
+            "cPOL": 86
+        },
+        {
+            "cNAME": "朱桓",
+            "cONAME": "休穆",
+            "cBAT": 84,
+            "cWAR": 82,
+            "cINT": 77,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "朱拠",
+            "cONAME": "子範",
+            "cBAT": 77,
+            "cWAR": 57,
+            "cINT": 72,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "祝融",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 85,
+            "cINT": 29,
+            "cPOL": 24
+        },
+        {
+            "cNAME": "朱儁",
+            "cONAME": "公偉",
+            "cBAT": 89,
+            "cWAR": 65,
+            "cINT": 70,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "朱然",
+            "cONAME": "義封",
+            "cBAT": 79,
+            "cWAR": 69,
+            "cINT": 71,
+            "cPOL": 60
+        },
+        {
+            "cNAME": "朱治",
+            "cONAME": "君理",
+            "cBAT": 71,
+            "cWAR": 56,
+            "cINT": 72,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "朱褒",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 73,
+            "cINT": 34,
+            "cPOL": 32
+        },
+        {
+            "cNAME": "朱霊",
+            "cONAME": "文博",
+            "cBAT": 71,
+            "cWAR": 73,
+            "cINT": 67,
+            "cPOL": 53
+        },
+        {
+            "cNAME": "荀彧",
+            "cONAME": "文若",
+            "cBAT": 62,
+            "cWAR": 14,
+            "cINT": 95,
+            "cPOL": 98
+        },
+        {
+            "cNAME": "淳于瓊",
+            "cONAME": "仲簡",
+            "cBAT": 72,
+            "cWAR": 66,
+            "cINT": 29,
+            "cPOL": 29
+        },
+        {
+            "cNAME": "荀諶",
+            "cONAME": "友若",
+            "cBAT": 34,
+            "cWAR": 25,
+            "cINT": 78,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "荀攸",
+            "cONAME": "公達",
+            "cBAT": 73,
+            "cWAR": 26,
+            "cINT": 94,
+            "cPOL": 88
+        },
+        {
+            "cNAME": "蒋琬",
+            "cONAME": "公琰",
+            "cBAT": 78,
+            "cWAR": 34,
+            "cINT": 84,
+            "cPOL": 93
+        },
+        {
+            "cNAME": "鍾会",
+            "cONAME": "士季",
+            "cBAT": 82,
+            "cWAR": 51,
+            "cINT": 91,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "蒋幹",
+            "cONAME": "子翼",
+            "cBAT": 19,
+            "cWAR": 6,
+            "cINT": 66,
+            "cPOL": 64
+        },
+        {
+            "cNAME": "蒋義渠",
+            "cONAME": "-",
+            "cBAT": 71,
+            "cWAR": 58,
+            "cINT": 59,
+            "cPOL": 51
+        },
+        {
+            "cNAME": "蒋欽",
+            "cONAME": "公奕",
+            "cBAT": 78,
+            "cWAR": 84,
+            "cINT": 54,
+            "cPOL": 42
+        },
+        {
+            "cNAME": "蒋済",
+            "cONAME": "子通",
+            "cBAT": 48,
+            "cWAR": 43,
+            "cINT": 85,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "譙周",
+            "cONAME": "允南",
+            "cBAT": 16,
+            "cWAR": 3,
+            "cINT": 67,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "焦触",
+            "cONAME": "-",
+            "cBAT": 65,
+            "cWAR": 76,
+            "cINT": 33,
+            "cPOL": 32
+        },
+        {
+            "cNAME": "向寵",
+            "cONAME": "-",
+            "cBAT": 76,
+            "cWAR": 61,
+            "cINT": 77,
+            "cPOL": 67
+        },
+        {
+            "cNAME": "鍾繇",
+            "cONAME": "元常",
+            "cBAT": 70,
+            "cWAR": 24,
+            "cINT": 77,
+            "cPOL": 91
+        },
+        {
+            "cNAME": "向朗",
+            "cONAME": "巨達",
+            "cBAT": 28,
+            "cWAR": 18,
+            "cINT": 74,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "徐栄",
+            "cONAME": "-",
+            "cBAT": 80,
+            "cWAR": 76,
+            "cINT": 62,
+            "cPOL": 43
+        },
+        {
+            "cNAME": "諸葛恪",
+            "cONAME": "元遜",
+            "cBAT": 72,
+            "cWAR": 47,
+            "cINT": 90,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "諸葛瑾",
+            "cONAME": "子瑜",
+            "cBAT": 75,
+            "cWAR": 34,
+            "cINT": 81,
+            "cPOL": 89
+        },
+        {
+            "cNAME": "諸葛均",
+            "cONAME": "-",
+            "cBAT": 29,
+            "cWAR": 25,
+            "cINT": 52,
+            "cPOL": 66
+        },
+        {
+            "cNAME": "諸葛誕",
+            "cONAME": "公休",
+            "cBAT": 72,
+            "cWAR": 72,
+            "cINT": 76,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "諸葛亮",
+            "cONAME": "孔明",
+            "cBAT": 98,
+            "cWAR": 38,
+            "cINT": 100,
+            "cPOL": 95
+        },
+        {
+            "cNAME": "徐晃",
+            "cONAME": "公明",
+            "cBAT": 91,
+            "cWAR": 90,
+            "cINT": 78,
+            "cPOL": 48
+        },
+        {
+            "cNAME": "徐庶",
+            "cONAME": "元直",
+            "cBAT": 87,
+            "cWAR": 64,
+            "cINT": 93,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "徐盛",
+            "cONAME": "文嚮",
+            "cBAT": 86,
+            "cWAR": 81,
+            "cINT": 78,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "徐邈",
+            "cONAME": "景山",
+            "cBAT": 55,
+            "cWAR": 32,
+            "cINT": 68,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "申儀",
+            "cONAME": "-",
+            "cBAT": 55,
+            "cWAR": 59,
+            "cINT": 60,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "申耽",
+            "cONAME": "義挙",
+            "cBAT": 56,
+            "cWAR": 62,
+            "cINT": 54,
+            "cPOL": 41
+        },
+        {
+            "cNAME": "審配",
+            "cONAME": "正南",
+            "cBAT": 80,
+            "cWAR": 60,
+            "cINT": 83,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "辛毘",
+            "cONAME": "佐治",
+            "cBAT": 39,
+            "cWAR": 24,
+            "cINT": 79,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "辛評",
+            "cONAME": "仲治",
+            "cBAT": 69,
+            "cWAR": 43,
+            "cINT": 77,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "秦宓",
+            "cONAME": "子勅",
+            "cBAT": 31,
+            "cWAR": 7,
+            "cINT": 73,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "秦朗",
+            "cONAME": "元明",
+            "cBAT": 58,
+            "cWAR": 70,
+            "cINT": 35,
+            "cPOL": 15
+        },
+        {
+            "cNAME": "眭固",
+            "cONAME": "白兎",
+            "cBAT": 63,
+            "cWAR": 71,
+            "cINT": 38,
+            "cPOL": 7
+        },
+        {
+            "cNAME": "鄒丹",
+            "cONAME": "-",
+            "cBAT": 61,
+            "cWAR": 64,
+            "cINT": 34,
+            "cPOL": 37
+        },
+        {
+            "cNAME": "成宜",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 72,
+            "cINT": 41,
+            "cPOL": 48
+        },
+        {
+            "cNAME": "成公英",
+            "cONAME": "-",
+            "cBAT": 73,
+            "cWAR": 71,
+            "cINT": 80,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "薛綜",
+            "cONAME": "敬文",
+            "cBAT": 34,
+            "cWAR": 16,
+            "cINT": 73,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "単経",
+            "cONAME": "-",
+            "cBAT": 71,
+            "cWAR": 68,
+            "cINT": 43,
+            "cPOL": 49
+        },
+        {
+            "cNAME": "全琮",
+            "cONAME": "子璜",
+            "cBAT": 78,
+            "cWAR": 72,
+            "cINT": 75,
+            "cPOL": 61
+        },
+        {
+            "cNAME": "曹叡",
+            "cONAME": "元仲",
+            "cBAT": 72,
+            "cWAR": 52,
+            "cINT": 82,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "曹休",
+            "cONAME": "文烈",
+            "cBAT": 74,
+            "cWAR": 75,
+            "cINT": 62,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "宋憲",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 77,
+            "cINT": 38,
+            "cPOL": 27
+        },
+        {
+            "cNAME": "曹昂",
+            "cONAME": "子脩",
+            "cBAT": 74,
+            "cWAR": 67,
+            "cINT": 69,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "曹洪",
+            "cONAME": "子廉",
+            "cBAT": 79,
+            "cWAR": 81,
+            "cINT": 44,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "曹純",
+            "cONAME": "子和",
+            "cBAT": 75,
+            "cWAR": 71,
+            "cINT": 63,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "曹彰",
+            "cONAME": "子文",
+            "cBAT": 82,
+            "cWAR": 90,
+            "cINT": 40,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "曹植",
+            "cONAME": "子建",
+            "cBAT": 33,
+            "cWAR": 22,
+            "cINT": 81,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "曹真",
+            "cONAME": "子丹",
+            "cBAT": 81,
+            "cWAR": 74,
+            "cINT": 70,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "曹仁",
+            "cONAME": "子孝",
+            "cBAT": 89,
+            "cWAR": 86,
+            "cINT": 62,
+            "cPOL": 46
+        },
+        {
+            "cNAME": "曹性",
+            "cONAME": "-",
+            "cBAT": 54,
+            "cWAR": 74,
+            "cINT": 38,
+            "cPOL": 27
+        },
+        {
+            "cNAME": "曹操",
+            "cONAME": "孟徳",
+            "cBAT": 99,
+            "cWAR": 72,
+            "cINT": 91,
+            "cPOL": 94
+        },
+        {
+            "cNAME": "曹沖",
+            "cONAME": "倉舒",
+            "cBAT": 31,
+            "cWAR": 21,
+            "cINT": 85,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "臧覇",
+            "cONAME": "宣高",
+            "cBAT": 78,
+            "cWAR": 75,
+            "cINT": 53,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "曹丕",
+            "cONAME": "子桓",
+            "cBAT": 70,
+            "cWAR": 71,
+            "cINT": 83,
+            "cPOL": 86
+        },
+        {
+            "cNAME": "曹豹",
+            "cONAME": "-",
+            "cBAT": 54,
+            "cWAR": 69,
+            "cINT": 32,
+            "cPOL": 21
+        },
+        {
+            "cNAME": "沮授",
+            "cONAME": "-",
+            "cBAT": 78,
+            "cWAR": 35,
+            "cINT": 90,
+            "cPOL": 89
+        },
+        {
+            "cNAME": "蘇飛",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 63,
+            "cINT": 66,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "祖茂",
+            "cONAME": "大栄",
+            "cBAT": 70,
+            "cWAR": 71,
+            "cINT": 66,
+            "cPOL": 53
+        },
+        {
+            "cNAME": "孫桓",
+            "cONAME": "叔武",
+            "cBAT": 82,
+            "cWAR": 73,
+            "cINT": 76,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "孫堅",
+            "cONAME": "文台",
+            "cBAT": 94,
+            "cWAR": 90,
+            "cINT": 79,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "孫乾",
+            "cONAME": "公祐",
+            "cBAT": 34,
+            "cWAR": 33,
+            "cINT": 79,
+            "cPOL": 84
+        },
+        {
+            "cNAME": "孫権",
+            "cONAME": "仲謀",
+            "cBAT": 79,
+            "cWAR": 67,
+            "cINT": 80,
+            "cPOL": 89
+        },
+        {
+            "cNAME": "孫皎",
+            "cONAME": "叔朗",
+            "cBAT": 77,
+            "cWAR": 72,
+            "cINT": 67,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "孫策",
+            "cONAME": "伯符",
+            "cBAT": 96,
+            "cWAR": 92,
+            "cINT": 74,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "孫韶",
+            "cONAME": "公礼",
+            "cBAT": 80,
+            "cWAR": 79,
+            "cINT": 76,
+            "cPOL": 69
+        },
+        {
+            "cNAME": "孫静",
+            "cONAME": "幼台",
+            "cBAT": 66,
+            "cWAR": 53,
+            "cINT": 73,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "孫仲",
+            "cONAME": "-",
+            "cBAT": 62,
+            "cWAR": 71,
+            "cINT": 36,
+            "cPOL": 8
+        },
+        {
+            "cNAME": "孫登",
+            "cONAME": "子高",
+            "cBAT": 62,
+            "cWAR": 37,
+            "cINT": 79,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "孫瑜",
+            "cONAME": "仲異",
+            "cBAT": 77,
+            "cWAR": 70,
+            "cINT": 68,
+            "cPOL": 69
+        },
+        {
+            "cNAME": "孫翊",
+            "cONAME": "叔弼",
+            "cBAT": 67,
+            "cWAR": 78,
+            "cINT": 27,
+            "cPOL": 16
+        },
+        {
+            "cNAME": "孫礼",
+            "cONAME": "徳達",
+            "cBAT": 78,
+            "cWAR": 81,
+            "cINT": 67,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "太史慈",
+            "cONAME": "子義",
+            "cBAT": 90,
+            "cWAR": 93,
+            "cINT": 69,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "帯来洞主",
+            "cONAME": "-",
+            "cBAT": 51,
+            "cWAR": 53,
+            "cINT": 54,
+            "cPOL": 43
+        },
+        {
+            "cNAME": "戴陵",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 75,
+            "cINT": 39,
+            "cPOL": 48
+        },
+        {
+            "cNAME": "朶思大王",
+            "cONAME": "-",
+            "cBAT": 62,
+            "cWAR": 59,
+            "cINT": 70,
+            "cPOL": 54
+        },
+        {
+            "cNAME": "譚雄",
+            "cONAME": "-",
+            "cBAT": 58,
+            "cWAR": 73,
+            "cINT": 14,
+            "cPOL": 20
+        },
+        {
+            "cNAME": "張允",
+            "cONAME": "-",
+            "cBAT": 72,
+            "cWAR": 67,
+            "cINT": 42,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "趙雲",
+            "cONAME": "子龍",
+            "cBAT": 96,
+            "cWAR": 96,
+            "cINT": 77,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "張衛",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 66,
+            "cINT": 45,
+            "cPOL": 44
+        },
+        {
+            "cNAME": "張英",
+            "cONAME": "-",
+            "cBAT": 75,
+            "cWAR": 74,
+            "cINT": 41,
+            "cPOL": 34
+        },
+        {
+            "cNAME": "張燕",
+            "cONAME": "-",
+            "cBAT": 76,
+            "cWAR": 81,
+            "cINT": 57,
+            "cPOL": 48
+        },
+        {
+            "cNAME": "張横",
+            "cONAME": "-",
+            "cBAT": 59,
+            "cWAR": 70,
+            "cINT": 23,
+            "cPOL": 24
+        },
+        {
+            "cNAME": "張温",
+            "cONAME": "恵恕",
+            "cBAT": 32,
+            "cWAR": 10,
+            "cINT": 72,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "張闓",
+            "cONAME": "-",
+            "cBAT": 34,
+            "cWAR": 66,
+            "cINT": 8,
+            "cPOL": 1
+        },
+        {
+            "cNAME": "張角",
+            "cONAME": "-",
+            "cBAT": 87,
+            "cWAR": 25,
+            "cINT": 86,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "張既",
+            "cONAME": "徳容",
+            "cBAT": 74,
+            "cWAR": 35,
+            "cINT": 76,
+            "cPOL": 88
+        },
+        {
+            "cNAME": "張嶷",
+            "cONAME": "伯岐",
+            "cBAT": 79,
+            "cWAR": 72,
+            "cINT": 75,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "張勳",
+            "cONAME": "-",
+            "cBAT": 72,
+            "cWAR": 68,
+            "cINT": 41,
+            "cPOL": 39
+        },
+        {
+            "cNAME": "張紘",
+            "cONAME": "子綱",
+            "cBAT": 24,
+            "cWAR": 22,
+            "cINT": 86,
+            "cPOL": 95
+        },
+        {
+            "cNAME": "張郃",
+            "cONAME": "儁乂",
+            "cBAT": 89,
+            "cWAR": 89,
+            "cINT": 73,
+            "cPOL": 57
+        },
+        {
+            "cNAME": "趙弘",
+            "cONAME": "-",
+            "cBAT": 66,
+            "cWAR": 72,
+            "cINT": 28,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "張済",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 66,
+            "cINT": 55,
+            "cPOL": 53
+        },
+        {
+            "cNAME": "張繍",
+            "cONAME": "-",
+            "cBAT": 80,
+            "cWAR": 73,
+            "cINT": 64,
+            "cPOL": 45
+        },
+        {
+            "cNAME": "張昭",
+            "cONAME": "子布",
+            "cBAT": 33,
+            "cWAR": 3,
+            "cINT": 84,
+            "cPOL": 97
+        },
+        {
+            "cNAME": "張松",
+            "cONAME": "永年",
+            "cBAT": 25,
+            "cWAR": 6,
+            "cINT": 88,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "張任",
+            "cONAME": "-",
+            "cBAT": 84,
+            "cWAR": 84,
+            "cINT": 78,
+            "cPOL": 59
+        },
+        {
+            "cNAME": "張悌",
+            "cONAME": "巨先",
+            "cBAT": 67,
+            "cWAR": 43,
+            "cINT": 80,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "張邈",
+            "cONAME": "孟卓",
+            "cBAT": 52,
+            "cWAR": 53,
+            "cINT": 71,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "趙範",
+            "cONAME": "-",
+            "cBAT": 28,
+            "cWAR": 21,
+            "cINT": 32,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "張飛",
+            "cONAME": "翼徳",
+            "cBAT": 94,
+            "cWAR": 98,
+            "cINT": 30,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "張苞",
+            "cONAME": "-",
+            "cBAT": 78,
+            "cWAR": 87,
+            "cINT": 48,
+            "cPOL": 46
+        },
+        {
+            "cNAME": "張宝",
+            "cONAME": "-",
+            "cBAT": 83,
+            "cWAR": 71,
+            "cINT": 81,
+            "cPOL": 76
+        },
+        {
+            "cNAME": "張曼成",
+            "cONAME": "-",
+            "cBAT": 75,
+            "cWAR": 81,
+            "cINT": 45,
+            "cPOL": 47
+        },
+        {
+            "cNAME": "張楊",
+            "cONAME": "雅叔",
+            "cBAT": 72,
+            "cWAR": 70,
+            "cINT": 66,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "張翼",
+            "cONAME": "伯恭",
+            "cBAT": 75,
+            "cWAR": 74,
+            "cINT": 76,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "張遼",
+            "cONAME": "文遠",
+            "cBAT": 95,
+            "cWAR": 92,
+            "cINT": 78,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "張梁",
+            "cONAME": "-",
+            "cBAT": 78,
+            "cWAR": 80,
+            "cINT": 74,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "趙累",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 43,
+            "cINT": 68,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "張魯",
+            "cONAME": "公祺",
+            "cBAT": 51,
+            "cWAR": 26,
+            "cINT": 74,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "陳横",
+            "cONAME": "-",
+            "cBAT": 64,
+            "cWAR": 63,
+            "cINT": 26,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "陳応",
+            "cONAME": "-",
+            "cBAT": 62,
+            "cWAR": 72,
+            "cINT": 45,
+            "cPOL": 27
+        },
+        {
+            "cNAME": "陳紀",
+            "cONAME": "-",
+            "cBAT": 58,
+            "cWAR": 65,
+            "cINT": 43,
+            "cPOL": 48
+        },
+        {
+            "cNAME": "陳宮",
+            "cONAME": "公台",
+            "cBAT": 84,
+            "cWAR": 55,
+            "cINT": 89,
+            "cPOL": 83
+        },
+        {
+            "cNAME": "陳矯",
+            "cONAME": "季弼",
+            "cBAT": 61,
+            "cWAR": 27,
+            "cINT": 77,
+            "cPOL": 83
+        },
+        {
+            "cNAME": "陳羣",
+            "cONAME": "長文",
+            "cBAT": 32,
+            "cWAR": 14,
+            "cINT": 75,
+            "cPOL": 96
+        },
+        {
+            "cNAME": "陳珪",
+            "cONAME": "漢瑜",
+            "cBAT": 30,
+            "cWAR": 4,
+            "cINT": 82,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "陳式",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 71,
+            "cINT": 25,
+            "cPOL": 23
+        },
+        {
+            "cNAME": "陳震",
+            "cONAME": "孝起",
+            "cBAT": 46,
+            "cWAR": 46,
+            "cINT": 69,
+            "cPOL": 76
+        },
+        {
+            "cNAME": "陳泰",
+            "cONAME": "玄伯",
+            "cBAT": 84,
+            "cWAR": 77,
+            "cINT": 86,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "陳登",
+            "cONAME": "元龍",
+            "cBAT": 79,
+            "cWAR": 64,
+            "cINT": 81,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "陳到",
+            "cONAME": "叔至",
+            "cBAT": 76,
+            "cWAR": 71,
+            "cINT": 67,
+            "cPOL": 53
+        },
+        {
+            "cNAME": "陳武",
+            "cONAME": "子烈",
+            "cBAT": 76,
+            "cWAR": 87,
+            "cINT": 43,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "陳蘭",
+            "cONAME": "-",
+            "cBAT": 66,
+            "cWAR": 69,
+            "cINT": 40,
+            "cPOL": 24
+        },
+        {
+            "cNAME": "陳琳",
+            "cONAME": "孔璋",
+            "cBAT": 25,
+            "cWAR": 9,
+            "cINT": 75,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "程昱",
+            "cONAME": "仲徳",
+            "cBAT": 70,
+            "cWAR": 49,
+            "cINT": 90,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "程遠志",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 74,
+            "cINT": 17,
+            "cPOL": 24
+        },
+        {
+            "cNAME": "程銀",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 73,
+            "cINT": 40,
+            "cPOL": 36
+        },
+        {
+            "cNAME": "丁原",
+            "cONAME": "建陽",
+            "cBAT": 70,
+            "cWAR": 76,
+            "cINT": 35,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "程普",
+            "cONAME": "徳謀",
+            "cBAT": 84,
+            "cWAR": 79,
+            "cINT": 79,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "丁奉",
+            "cONAME": "承淵",
+            "cBAT": 81,
+            "cWAR": 80,
+            "cINT": 75,
+            "cPOL": 55
+        },
+        {
+            "cNAME": "典韋",
+            "cONAME": "-",
+            "cBAT": 72,
+            "cWAR": 95,
+            "cINT": 35,
+            "cPOL": 29
+        },
+        {
+            "cNAME": "田楷",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 65,
+            "cINT": 58,
+            "cPOL": 61
+        },
+        {
+            "cNAME": "田疇",
+            "cONAME": "子泰",
+            "cBAT": 66,
+            "cWAR": 66,
+            "cINT": 73,
+            "cPOL": 76
+        },
+        {
+            "cNAME": "田豊",
+            "cONAME": "元皓",
+            "cBAT": 72,
+            "cWAR": 29,
+            "cINT": 93,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "田豫",
+            "cONAME": "国譲",
+            "cBAT": 80,
+            "cWAR": 72,
+            "cINT": 80,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "董允",
+            "cONAME": "休昭",
+            "cBAT": 47,
+            "cWAR": 28,
+            "cINT": 79,
+            "cPOL": 91
+        },
+        {
+            "cNAME": "董和",
+            "cONAME": "幼宰",
+            "cBAT": 57,
+            "cWAR": 34,
+            "cINT": 75,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "鄧艾",
+            "cONAME": "士載",
+            "cBAT": 93,
+            "cWAR": 87,
+            "cINT": 89,
+            "cPOL": 81
+        },
+        {
+            "cNAME": "陶謙",
+            "cONAME": "恭祖",
+            "cBAT": 51,
+            "cWAR": 27,
+            "cINT": 64,
+            "cPOL": 63
+        },
+        {
+            "cNAME": "鄧賢",
+            "cONAME": "-",
+            "cBAT": 61,
+            "cWAR": 73,
+            "cINT": 45,
+            "cPOL": 36
+        },
+        {
+            "cNAME": "鄧芝",
+            "cONAME": "伯苗",
+            "cBAT": 73,
+            "cWAR": 52,
+            "cINT": 81,
+            "cPOL": 85
+        },
+        {
+            "cNAME": "董襲",
+            "cONAME": "元代",
+            "cBAT": 72,
+            "cWAR": 85,
+            "cINT": 50,
+            "cPOL": 48
+        },
+        {
+            "cNAME": "董承",
+            "cONAME": "-",
+            "cBAT": 56,
+            "cWAR": 53,
+            "cINT": 65,
+            "cPOL": 63
+        },
+        {
+            "cNAME": "董昭",
+            "cONAME": "公仁",
+            "cBAT": 34,
+            "cWAR": 25,
+            "cINT": 80,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "董卓",
+            "cONAME": "仲穎",
+            "cBAT": 85,
+            "cWAR": 87,
+            "cINT": 73,
+            "cPOL": 59
+        },
+        {
+            "cNAME": "董荼那",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 73,
+            "cINT": 31,
+            "cPOL": 37
+        },
+        {
+            "cNAME": "董旻",
+            "cONAME": "叔穎",
+            "cBAT": 49,
+            "cWAR": 60,
+            "cINT": 25,
+            "cPOL": 12
+        },
+        {
+            "cNAME": "鄧茂",
+            "cONAME": "-",
+            "cBAT": 61,
+            "cWAR": 75,
+            "cINT": 29,
+            "cPOL": 17
+        },
+        {
+            "cNAME": "杜畿",
+            "cONAME": "伯侯",
+            "cBAT": 66,
+            "cWAR": 32,
+            "cINT": 75,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "杜預",
+            "cONAME": "元凱",
+            "cBAT": 84,
+            "cWAR": 30,
+            "cINT": 85,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "裴元紹",
+            "cONAME": "-",
+            "cBAT": 49,
+            "cWAR": 65,
+            "cINT": 25,
+            "cPOL": 27
+        },
+        {
+            "cNAME": "馬玩",
+            "cONAME": "-",
+            "cBAT": 71,
+            "cWAR": 74,
+            "cINT": 16,
+            "cPOL": 23
+        },
+        {
+            "cNAME": "馬休",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 73,
+            "cINT": 48,
+            "cPOL": 45
+        },
+        {
+            "cNAME": "波才",
+            "cONAME": "-",
+            "cBAT": 74,
+            "cWAR": 74,
+            "cINT": 55,
+            "cPOL": 25
+        },
+        {
+            "cNAME": "馬遵",
+            "cONAME": "-",
+            "cBAT": 38,
+            "cWAR": 52,
+            "cINT": 31,
+            "cPOL": 51
+        },
+        {
+            "cNAME": "馬謖",
+            "cONAME": "幼常",
+            "cBAT": 61,
+            "cWAR": 67,
+            "cINT": 87,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "馬岱",
+            "cONAME": "-",
+            "cBAT": 79,
+            "cWAR": 85,
+            "cINT": 62,
+            "cPOL": 54
+        },
+        {
+            "cNAME": "馬忠",
+            "cONAME": "徳信",
+            "cBAT": 78,
+            "cWAR": 72,
+            "cINT": 68,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "馬超",
+            "cONAME": "孟起",
+            "cBAT": 93,
+            "cWAR": 97,
+            "cINT": 44,
+            "cPOL": 26
+        },
+        {
+            "cNAME": "馬鉄",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 62,
+            "cINT": 58,
+            "cPOL": 52
+        },
+        {
+            "cNAME": "馬騰",
+            "cONAME": "寿成",
+            "cBAT": 82,
+            "cWAR": 80,
+            "cINT": 52,
+            "cPOL": 59
+        },
+        {
+            "cNAME": "馬良",
+            "cONAME": "季常",
+            "cBAT": 53,
+            "cWAR": 23,
+            "cINT": 88,
+            "cPOL": 90
+        },
+        {
+            "cNAME": "潘濬",
+            "cONAME": "承明",
+            "cBAT": 61,
+            "cWAR": 18,
+            "cINT": 68,
+            "cPOL": 82
+        },
+        {
+            "cNAME": "潘璋",
+            "cONAME": "文珪",
+            "cBAT": 76,
+            "cWAR": 80,
+            "cINT": 74,
+            "cPOL": 28
+        },
+        {
+            "cNAME": "樊稠",
+            "cONAME": "-",
+            "cBAT": 66,
+            "cWAR": 73,
+            "cINT": 31,
+            "cPOL": 24
+        },
+        {
+            "cNAME": "樊能",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 61,
+            "cINT": 36,
+            "cPOL": 31
+        },
+        {
+            "cNAME": "潘鳳",
+            "cONAME": "-",
+            "cBAT": 56,
+            "cWAR": 77,
+            "cINT": 4,
+            "cPOL": 14
+        },
+        {
+            "cNAME": "費禕",
+            "cONAME": "文偉",
+            "cBAT": 77,
+            "cWAR": 30,
+            "cINT": 83,
+            "cPOL": 92
+        },
+        {
+            "cNAME": "卑衍",
+            "cONAME": "-",
+            "cBAT": 60,
+            "cWAR": 66,
+            "cINT": 21,
+            "cPOL": 30
+        },
+        {
+            "cNAME": "費詩",
+            "cONAME": "公挙",
+            "cBAT": 18,
+            "cWAR": 28,
+            "cINT": 65,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "糜竺",
+            "cONAME": "子仲",
+            "cBAT": 33,
+            "cWAR": 29,
+            "cINT": 78,
+            "cPOL": 83
+        },
+        {
+            "cNAME": "糜芳",
+            "cONAME": "子方",
+            "cBAT": 54,
+            "cWAR": 61,
+            "cINT": 32,
+            "cPOL": 23
+        },
+        {
+            "cNAME": "費耀",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 66,
+            "cINT": 73,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "武安国",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 83,
+            "cINT": 34,
+            "cPOL": 33
+        },
+        {
+            "cNAME": "馮習",
+            "cONAME": "休元",
+            "cBAT": 72,
+            "cWAR": 71,
+            "cINT": 39,
+            "cPOL": 41
+        },
+        {
+            "cNAME": "傅士仁",
+            "cONAME": "君義",
+            "cBAT": 46,
+            "cWAR": 63,
+            "cINT": 37,
+            "cPOL": 24
+        },
+        {
+            "cNAME": "傅僉",
+            "cONAME": "-",
+            "cBAT": 73,
+            "cWAR": 85,
+            "cINT": 76,
+            "cPOL": 46
+        },
+        {
+            "cNAME": "傅巽",
+            "cONAME": "公悌",
+            "cBAT": 29,
+            "cWAR": 13,
+            "cINT": 70,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "文鴦",
+            "cONAME": "-",
+            "cBAT": 76,
+            "cWAR": 91,
+            "cINT": 65,
+            "cPOL": 32
+        },
+        {
+            "cNAME": "文欽",
+            "cONAME": "仲若",
+            "cBAT": 74,
+            "cWAR": 83,
+            "cINT": 43,
+            "cPOL": 34
+        },
+        {
+            "cNAME": "文醜",
+            "cONAME": "-",
+            "cBAT": 89,
+            "cWAR": 93,
+            "cINT": 47,
+            "cPOL": 34
+        },
+        {
+            "cNAME": "文聘",
+            "cONAME": "仲業",
+            "cBAT": 80,
+            "cWAR": 82,
+            "cINT": 69,
+            "cPOL": 69
+        },
+        {
+            "cNAME": "卞喜",
+            "cONAME": "-",
+            "cBAT": 56,
+            "cWAR": 70,
+            "cINT": 62,
+            "cPOL": 37
+        },
+        {
+            "cNAME": "忙牙長",
+            "cONAME": "-",
+            "cBAT": 45,
+            "cWAR": 79,
+            "cINT": 3,
+            "cPOL": 2
+        },
+        {
+            "cNAME": "逢紀",
+            "cONAME": "元図",
+            "cBAT": 43,
+            "cWAR": 21,
+            "cINT": 84,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "龐羲",
+            "cONAME": "-",
+            "cBAT": 60,
+            "cWAR": 38,
+            "cINT": 69,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "法正",
+            "cONAME": "孝直",
+            "cBAT": 82,
+            "cWAR": 47,
+            "cINT": 94,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "龐統",
+            "cONAME": "士元",
+            "cBAT": 85,
+            "cWAR": 34,
+            "cINT": 97,
+            "cPOL": 85
+        },
+        {
+            "cNAME": "龐徳",
+            "cONAME": "令明",
+            "cBAT": 89,
+            "cWAR": 94,
+            "cINT": 75,
+            "cPOL": 44
+        },
+        {
+            "cNAME": "鮑隆",
+            "cONAME": "-",
+            "cBAT": 58,
+            "cWAR": 76,
+            "cINT": 49,
+            "cPOL": 23
+        },
+        {
+            "cNAME": "穆順",
+            "cONAME": "-",
+            "cBAT": 52,
+            "cWAR": 77,
+            "cINT": 11,
+            "cPOL": 21
+        },
+        {
+            "cNAME": "木鹿大王",
+            "cONAME": "-",
+            "cBAT": 65,
+            "cWAR": 71,
+            "cINT": 39,
+            "cPOL": 6
+        },
+        {
+            "cNAME": "歩騭",
+            "cONAME": "子山",
+            "cBAT": 72,
+            "cWAR": 51,
+            "cINT": 84,
+            "cPOL": 86
+        },
+        {
+            "cNAME": "満寵",
+            "cONAME": "伯寧",
+            "cBAT": 84,
+            "cWAR": 64,
+            "cINT": 82,
+            "cPOL": 84
+        },
+        {
+            "cNAME": "毛玠",
+            "cONAME": "孝先",
+            "cBAT": 63,
+            "cWAR": 39,
+            "cINT": 60,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "孟獲",
+            "cONAME": "-",
+            "cBAT": 87,
+            "cWAR": 87,
+            "cINT": 42,
+            "cPOL": 45
+        },
+        {
+            "cNAME": "孟達",
+            "cONAME": "子度",
+            "cBAT": 75,
+            "cWAR": 73,
+            "cINT": 75,
+            "cPOL": 66
+        },
+        {
+            "cNAME": "孟優",
+            "cONAME": "-",
+            "cBAT": 50,
+            "cWAR": 68,
+            "cINT": 22,
+            "cPOL": 18
+        },
+        {
+            "cNAME": "兪渉",
+            "cONAME": "-",
+            "cBAT": 62,
+            "cWAR": 79,
+            "cINT": 24,
+            "cPOL": 23
+        },
+        {
+            "cNAME": "楊懐",
+            "cONAME": "-",
+            "cBAT": 62,
+            "cWAR": 68,
+            "cINT": 68,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "雍闓",
+            "cONAME": "-",
+            "cBAT": 73,
+            "cWAR": 75,
+            "cINT": 57,
+            "cPOL": 56
+        },
+        {
+            "cNAME": "楊儀",
+            "cONAME": "威公",
+            "cBAT": 68,
+            "cWAR": 40,
+            "cINT": 82,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "羊祜",
+            "cONAME": "叔子",
+            "cBAT": 90,
+            "cWAR": 64,
+            "cINT": 84,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "楊弘",
+            "cONAME": "-",
+            "cBAT": 33,
+            "cWAR": 15,
+            "cINT": 77,
+            "cPOL": 60
+        },
+        {
+            "cNAME": "楊昂",
+            "cONAME": "-",
+            "cBAT": 68,
+            "cWAR": 72,
+            "cINT": 38,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "楊醜",
+            "cONAME": "-",
+            "cBAT": 52,
+            "cWAR": 65,
+            "cINT": 40,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "楊脩",
+            "cONAME": "徳祖",
+            "cBAT": 25,
+            "cWAR": 4,
+            "cINT": 83,
+            "cPOL": 79
+        },
+        {
+            "cNAME": "楊秋",
+            "cONAME": "-",
+            "cBAT": 67,
+            "cWAR": 64,
+            "cINT": 60,
+            "cPOL": 63
+        },
+        {
+            "cNAME": "楊松",
+            "cONAME": "-",
+            "cBAT": 17,
+            "cWAR": 5,
+            "cINT": 28,
+            "cPOL": 34
+        },
+        {
+            "cNAME": "楊任",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 78,
+            "cINT": 56,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "楊祚",
+            "cONAME": "-",
+            "cBAT": 53,
+            "cWAR": 61,
+            "cINT": 36,
+            "cPOL": 32
+        },
+        {
+            "cNAME": "楊柏",
+            "cONAME": "-",
+            "cBAT": 44,
+            "cWAR": 45,
+            "cINT": 19,
+            "cPOL": 26
+        },
+        {
+            "cNAME": "楊阜",
+            "cONAME": "義山",
+            "cBAT": 67,
+            "cWAR": 50,
+            "cINT": 83,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "楊奉",
+            "cONAME": "-",
+            "cBAT": 66,
+            "cWAR": 65,
+            "cINT": 31,
+            "cPOL": 14
+        },
+        {
+            "cNAME": "楊鋒",
+            "cONAME": "-",
+            "cBAT": 54,
+            "cWAR": 62,
+            "cINT": 53,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "雷銅",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 78,
+            "cINT": 51,
+            "cPOL": 37
+        },
+        {
+            "cNAME": "雷薄",
+            "cONAME": "-",
+            "cBAT": 62,
+            "cWAR": 70,
+            "cINT": 36,
+            "cPOL": 11
+        },
+        {
+            "cNAME": "李異",
+            "cONAME": "-",
+            "cBAT": 63,
+            "cWAR": 77,
+            "cINT": 19,
+            "cPOL": 18
+        },
+        {
+            "cNAME": "李恢",
+            "cONAME": "徳昂",
+            "cBAT": 79,
+            "cWAR": 65,
+            "cINT": 79,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "李傕",
+            "cONAME": "稚然",
+            "cBAT": 69,
+            "cWAR": 72,
+            "cINT": 24,
+            "cPOL": 1
+        },
+        {
+            "cNAME": "陸抗",
+            "cONAME": "幼節",
+            "cBAT": 91,
+            "cWAR": 63,
+            "cINT": 87,
+            "cPOL": 85
+        },
+        {
+            "cNAME": "陸績",
+            "cONAME": "公紀",
+            "cBAT": 20,
+            "cWAR": 7,
+            "cINT": 72,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "陸遜",
+            "cONAME": "伯言",
+            "cBAT": 94,
+            "cWAR": 69,
+            "cINT": 95,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "李厳",
+            "cONAME": "正方",
+            "cBAT": 83,
+            "cWAR": 84,
+            "cINT": 76,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "李儒",
+            "cONAME": "-",
+            "cBAT": 61,
+            "cWAR": 26,
+            "cINT": 93,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "李粛",
+            "cONAME": "-",
+            "cBAT": 46,
+            "cWAR": 69,
+            "cINT": 61,
+            "cPOL": 45
+        },
+        {
+            "cNAME": "李通",
+            "cONAME": "文達",
+            "cBAT": 73,
+            "cWAR": 81,
+            "cINT": 62,
+            "cPOL": 63
+        },
+        {
+            "cNAME": "李典",
+            "cONAME": "曼成",
+            "cBAT": 78,
+            "cWAR": 77,
+            "cINT": 79,
+            "cPOL": 74
+        },
+        {
+            "cNAME": "李豊",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 74,
+            "cINT": 50,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "劉焉",
+            "cONAME": "君郎",
+            "cBAT": 53,
+            "cWAR": 38,
+            "cINT": 80,
+            "cPOL": 81
+        },
+        {
+            "cNAME": "劉璝",
+            "cONAME": "-",
+            "cBAT": 71,
+            "cWAR": 73,
+            "cINT": 67,
+            "cPOL": 44
+        },
+        {
+            "cNAME": "劉琦",
+            "cONAME": "-",
+            "cBAT": 52,
+            "cWAR": 12,
+            "cINT": 63,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "劉虞",
+            "cONAME": "伯安",
+            "cBAT": 55,
+            "cWAR": 33,
+            "cINT": 70,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "劉勳",
+            "cONAME": "子台",
+            "cBAT": 47,
+            "cWAR": 63,
+            "cINT": 35,
+            "cPOL": 16
+        },
+        {
+            "cNAME": "劉賢",
+            "cONAME": "-",
+            "cBAT": 54,
+            "cWAR": 66,
+            "cINT": 51,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "劉循",
+            "cONAME": "-",
+            "cBAT": 63,
+            "cWAR": 46,
+            "cINT": 41,
+            "cPOL": 50
+        },
+        {
+            "cNAME": "劉璋",
+            "cONAME": "季玉",
+            "cBAT": 31,
+            "cWAR": 5,
+            "cINT": 34,
+            "cPOL": 38
+        },
+        {
+            "cNAME": "劉諶",
+            "cONAME": "-",
+            "cBAT": 60,
+            "cWAR": 62,
+            "cINT": 70,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "劉禅",
+            "cONAME": "公嗣",
+            "cBAT": 3,
+            "cWAR": 5,
+            "cINT": 9,
+            "cPOL": 4
+        },
+        {
+            "cNAME": "劉琮",
+            "cONAME": "-",
+            "cBAT": 24,
+            "cWAR": 22,
+            "cINT": 65,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "劉度",
+            "cONAME": "-",
+            "cBAT": 25,
+            "cWAR": 23,
+            "cINT": 26,
+            "cPOL": 49
+        },
+        {
+            "cNAME": "劉巴",
+            "cONAME": "子初",
+            "cBAT": 29,
+            "cWAR": 22,
+            "cINT": 75,
+            "cPOL": 81
+        },
+        {
+            "cNAME": "劉磐",
+            "cONAME": "-",
+            "cBAT": 69,
+            "cWAR": 76,
+            "cINT": 47,
+            "cPOL": 43
+        },
+        {
+            "cNAME": "劉備",
+            "cONAME": "玄徳",
+            "cBAT": 81,
+            "cWAR": 77,
+            "cINT": 78,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "劉表",
+            "cONAME": "景升",
+            "cBAT": 48,
+            "cWAR": 31,
+            "cINT": 72,
+            "cPOL": 81
+        },
+        {
+            "cNAME": "劉馥",
+            "cONAME": "元穎",
+            "cBAT": 64,
+            "cWAR": 49,
+            "cINT": 74,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "劉辟",
+            "cONAME": "-",
+            "cBAT": 70,
+            "cWAR": 72,
+            "cINT": 47,
+            "cPOL": 34
+        },
+        {
+            "cNAME": "劉封",
+            "cONAME": "-",
+            "cBAT": 75,
+            "cWAR": 79,
+            "cINT": 44,
+            "cPOL": 50
+        },
+        {
+            "cNAME": "劉曄",
+            "cONAME": "子揚",
+            "cBAT": 56,
+            "cWAR": 32,
+            "cINT": 92,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "劉繇",
+            "cONAME": "正礼",
+            "cBAT": 62,
+            "cWAR": 67,
+            "cINT": 46,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "呂威曠",
+            "cONAME": "-",
+            "cBAT": 58,
+            "cWAR": 63,
+            "cINT": 29,
+            "cPOL": 39
+        },
+        {
+            "cNAME": "廖化",
+            "cONAME": "元倹",
+            "cBAT": 73,
+            "cWAR": 76,
+            "cINT": 69,
+            "cPOL": 49
+        },
+        {
+            "cNAME": "梁興",
+            "cONAME": "-",
+            "cBAT": 61,
+            "cWAR": 65,
+            "cINT": 19,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "梁習",
+            "cONAME": "子虞",
+            "cBAT": 73,
+            "cWAR": 40,
+            "cINT": 74,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "梁緒",
+            "cONAME": "-",
+            "cBAT": 56,
+            "cWAR": 62,
+            "cINT": 66,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "凌操",
+            "cONAME": "-",
+            "cBAT": 75,
+            "cWAR": 81,
+            "cINT": 42,
+            "cPOL": 35
+        },
+        {
+            "cNAME": "凌統",
+            "cONAME": "公績",
+            "cBAT": 77,
+            "cWAR": 89,
+            "cINT": 60,
+            "cPOL": 40
+        },
+        {
+            "cNAME": "呂凱",
+            "cONAME": "季平",
+            "cBAT": 53,
+            "cWAR": 30,
+            "cINT": 67,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "呂虔",
+            "cONAME": "子恪",
+            "cBAT": 57,
+            "cWAR": 70,
+            "cINT": 62,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "呂曠",
+            "cONAME": "-",
+            "cBAT": 56,
+            "cWAR": 70,
+            "cINT": 13,
+            "cPOL": 22
+        },
+        {
+            "cNAME": "呂翔",
+            "cONAME": "-",
+            "cBAT": 54,
+            "cWAR": 71,
+            "cINT": 12,
+            "cPOL": 19
+        },
+        {
+            "cNAME": "呂岱",
+            "cONAME": "定公",
+            "cBAT": 75,
+            "cWAR": 71,
+            "cINT": 70,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "呂範",
+            "cONAME": "子衡",
+            "cBAT": 73,
+            "cWAR": 63,
+            "cINT": 75,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "呂布",
+            "cONAME": "奉先",
+            "cBAT": 97,
+            "cWAR": 100,
+            "cINT": 26,
+            "cPOL": 13
+        },
+        {
+            "cNAME": "呂蒙",
+            "cONAME": "子明",
+            "cBAT": 91,
+            "cWAR": 81,
+            "cINT": 89,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "倫直",
+            "cONAME": "-",
+            "cBAT": 46,
+            "cWAR": 42,
+            "cINT": 73,
+            "cPOL": 64
+        },
+        {
+            "cNAME": "冷苞",
+            "cONAME": "-",
+            "cBAT": 71,
+            "cWAR": 82,
+            "cINT": 61,
+            "cPOL": 37
+        },
+        {
+            "cNAME": "婁圭",
+            "cONAME": "子伯",
+            "cBAT": 52,
+            "cWAR": 13,
+            "cINT": 87,
+            "cPOL": 67
+        },
+        {
+            "cNAME": "魯粛",
+            "cONAME": "子敬",
+            "cBAT": 84,
+            "cWAR": 56,
+            "cINT": 92,
+            "cPOL": 90
+        },
+        {
+            "cNAME": "盧植",
+            "cONAME": "子幹",
+            "cBAT": 86,
+            "cWAR": 63,
+            "cINT": 82,
+            "cPOL": 85
+        },
+        {
+            "cNAME": "王異",
+            "cONAME": "-",
+            "cBAT": 73,
+            "cWAR": 51,
+            "cINT": 82,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "王元姫",
+            "cONAME": "-",
+            "cBAT": 53,
+            "cWAR": 37,
+            "cINT": 73,
+            "cPOL": 75
+        },
+        {
+            "cNAME": "郭氏",
+            "cONAME": "-",
+            "cBAT": 42,
+            "cWAR": 4,
+            "cINT": 69,
+            "cPOL": 64
+        },
+        {
+            "cNAME": "夏侯氏",
+            "cONAME": "-",
+            "cBAT": 34,
+            "cWAR": 13,
+            "cINT": 42,
+            "cPOL": 68
+        },
+        {
+            "cNAME": "夏侯令女",
+            "cONAME": "-",
+            "cBAT": 46,
+            "cWAR": 53,
+            "cINT": 74,
+            "cPOL": 71
+        },
+        {
+            "cNAME": "何氏",
+            "cONAME": "-",
+            "cBAT": 51,
+            "cWAR": 34,
+            "cINT": 67,
+            "cPOL": 73
+        },
+        {
+            "cNAME": "関銀屏",
+            "cONAME": "-",
+            "cBAT": 73,
+            "cWAR": 78,
+            "cINT": 42,
+            "cPOL": 24
+        },
+        {
+            "cNAME": "甘氏",
+            "cONAME": "-",
+            "cBAT": 47,
+            "cWAR": 3,
+            "cINT": 48,
+            "cPOL": 60
+        },
+        {
+            "cNAME": "黄月英",
+            "cONAME": "-",
+            "cBAT": 58,
+            "cWAR": 31,
+            "cINT": 88,
+            "cPOL": 87
+        },
+        {
+            "cNAME": "蔡琰",
+            "cONAME": "文姫",
+            "cBAT": 61,
+            "cWAR": 11,
+            "cINT": 77,
+            "cPOL": 80
+        },
+        {
+            "cNAME": "蔡氏",
+            "cONAME": "-",
+            "cBAT": 38,
+            "cWAR": 7,
+            "cINT": 70,
+            "cPOL": 58
+        },
+        {
+            "cNAME": "小喬",
+            "cONAME": "-",
+            "cBAT": 40,
+            "cWAR": 12,
+            "cINT": 74,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "徐氏",
+            "cONAME": "-",
+            "cBAT": 48,
+            "cWAR": 16,
+            "cINT": 80,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "辛憲英",
+            "cONAME": "-",
+            "cBAT": 42,
+            "cWAR": 28,
+            "cINT": 84,
+            "cPOL": 76
+        },
+        {
+            "cNAME": "甄氏",
+            "cONAME": "-",
+            "cBAT": 35,
+            "cWAR": 4,
+            "cINT": 72,
+            "cPOL": 66
+        },
+        {
+            "cNAME": "鄒氏",
+            "cONAME": "-",
+            "cBAT": 24,
+            "cWAR": 6,
+            "cINT": 77,
+            "cPOL": 62
+        },
+        {
+            "cNAME": "曹節",
+            "cONAME": "-",
+            "cBAT": 36,
+            "cWAR": 2,
+            "cINT": 75,
+            "cPOL": 77
+        },
+        {
+            "cNAME": "孫氏",
+            "cONAME": "-",
+            "cBAT": 23,
+            "cWAR": 22,
+            "cINT": 63,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "孫尚香",
+            "cONAME": "-",
+            "cBAT": 76,
+            "cWAR": 86,
+            "cINT": 70,
+            "cPOL": 63
+        },
+        {
+            "cNAME": "孫魯育",
+            "cONAME": "小虎",
+            "cBAT": 29,
+            "cWAR": 8,
+            "cINT": 58,
+            "cPOL": 54
+        },
+        {
+            "cNAME": "孫魯班",
+            "cONAME": "大虎",
+            "cBAT": 56,
+            "cWAR": 58,
+            "cINT": 73,
+            "cPOL": 64
+        },
+        {
+            "cNAME": "大喬",
+            "cONAME": "-",
+            "cBAT": 57,
+            "cWAR": 11,
+            "cINT": 73,
+            "cPOL": 78
+        },
+        {
+            "cNAME": "張氏",
+            "cONAME": "-",
+            "cBAT": 20,
+            "cWAR": 61,
+            "cINT": 37,
+            "cPOL": 50
+        },
+        {
+            "cNAME": "張春華",
+            "cONAME": "-",
+            "cBAT": 60,
+            "cWAR": 49,
+            "cINT": 79,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "貂蝉",
+            "cONAME": "-",
+            "cBAT": 20,
+            "cWAR": 26,
+            "cINT": 81,
+            "cPOL": 65
+        },
+        {
+            "cNAME": "樊氏",
+            "cONAME": "-",
+            "cBAT": 23,
+            "cWAR": 22,
+            "cINT": 73,
+            "cPOL": 69
+        },
+        {
+            "cNAME": "糜氏",
+            "cONAME": "-",
+            "cBAT": 22,
+            "cWAR": 6,
+            "cINT": 67,
+            "cPOL": 70
+        },
+        {
+            "cNAME": "卞氏",
+            "cONAME": "-",
+            "cBAT": 36,
+            "cWAR": 24,
+            "cINT": 75,
+            "cPOL": 76
+        },
+        {
+            "cNAME": "歩練師",
+            "cONAME": "-",
+            "cBAT": 47,
+            "cWAR": 10,
+            "cINT": 64,
+            "cPOL": 72
+        },
+        {
+            "cNAME": "劉氏",
+            "cONAME": "-",
+            "cBAT": 23,
+            "cWAR": 8,
+            "cINT": 67,
+            "cPOL": 59
+        }
+    ]
+}
