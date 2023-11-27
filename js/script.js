@@ -57,6 +57,24 @@ function getrotkeleven()
         });
 }
 
+function getrotknamco()
+{
+    const rotk = "js/namco.json";
+    let sResult = "<table class='table'><tr><th>Name</th><th>VIT</th><th>STR</th><th>INT</th><th>CHM</th></tr>";
+    fetch(rotk)
+        .then((response) => {
+            return response.json();
+        })
+        .then((myJson) => {
+            // console.log(myJson["characters"]);
+            const myChars = myJson["characters"]
+            myChars.forEach(async (char) => {
+                sResult = sResult + `<tr><td>${char.NAME}</td><td>${char.VIT}</td><td>${char.STR}</td><td>${char.INT}</td><td>${char.CHM}</td></tr>`;
+            });
+            document.getElementById("genlist").innerHTML = sResult + "</table>";
+        });
+}
+
 function dispdata()
 {
     selectElement = document.querySelector('#version');
@@ -67,6 +85,9 @@ function dispdata()
     }
     else if (output === "rotk12"){
         getrotktwelve();
+    }
+    else if (output === "namco"){
+        getrotknamco();
     }
     else {
         alert("No version selected");
