@@ -8,14 +8,15 @@
     <title>ROTK</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="css/style.css">
     <!-- Custom styles for this template -->
     <!-- Hightlight -->
-    <link rel="stylesheet" href="css/prism.css">
+    <link rel="stylesheet" type="text/css" href="css/prism.css">
     <script src="css/prism.js"></script>
     <script src="js/script.js" type="text/javascript"></script>
     <script type="module" src="https://md-block.verou.me/md-block.js"></script>
-    <link href="starter-template.css" rel="stylesheet">
+    <link href="starter-template.css" type="text/css"  rel="stylesheet">
   </head>
 
   <body>
@@ -43,8 +44,18 @@
           <option value="" selected disabled hidden>Choose here</option>
           <option value="rotk11">ROTK11</option>
           <option value="rotk12">ROTK12</option>
+          <option value="rotk14">ROTK14</option>
           <option value="namco">NAMCO</option>
-        </select><br><br>
+        </select>
+            <span id="filter">
+                <select id="applyfilter" onChange="filterresult();">
+                  <option value="" selected disabled hidden>Choose here</option>
+                  <option value="general">Generals</option>
+                  <option value="advisor">Advisors</option>
+                </select>
+            </span>
+            <span><button onclick="dispdata();">Reload Data</button></span>
+        <br><br>
         <div id="genlist">
           <p>Table will load here</p>
         </div>
