@@ -56,6 +56,7 @@ function getrotkeleven()
             });
             document.getElementById("genlist").innerHTML = sResult + "</table>";
             document.getElementById("filter").style.visibility="visible";
+            document.getElementById("reloadbutton").style.visibility="visible";
         });
 }
 
@@ -76,6 +77,7 @@ function getrotkfourteen()
             });
             document.getElementById("genlist").innerHTML = sResult + "</table>";
             document.getElementById("filter").style.visibility="visible";
+            document.getElementById("reloadbutton").style.visibility="visible";
         });
 }
 
@@ -95,6 +97,7 @@ function getrotknamco()
             });
             document.getElementById("genlist").innerHTML = sResult + "</table>";
             document.getElementById("filter").style.visibility="visible";
+            document.getElementById("reloadbutton").style.visibility="visible";
         });
 }
 
