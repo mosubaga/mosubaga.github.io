@@ -125,9 +125,6 @@ function filterresult()
         index = advindex;
     }
 
-
-
-
     for (i = 1; i < generals.length; i++) {
         const gendata = generals[i].children;
         const fnum = parseInt(gendata[index].innerHTML);
@@ -161,4 +158,60 @@ function dispdata()
     else {
         alert("No version selected");
     }
+}
+
+function getbooks(publisher,topic,elementid)
+{
+
+    const react_list = new Set(["React Cookbook", "Learning React, 2nd Edition", "React: Up & Running, 2nd Edition"]);
+    const python_list = new Set(["Python Workout", "Python Concurrency with asyncio", "Deep Learning with Python, Second Edition", "Fluent Python, 2nd Edition", "Python in a Nutshell, 4th Edition", "Introducing Python, 2nd Edition","Robust Python" ]);
+    const javascript_list = new Set(["JavaScript: The Definitive Guide, 7th Edition", "JavaScript Cookbook, 3rd Edition", "JavaScript Everywhere", "Learning JavaScript Design Patterns, 2nd Edition"]);
+    const go_list = new Set(["Go in Action", "Go in Practice", "100 Go Mistakes and How to Avoid Them"]);
+
+    let sResult = "<table class='table'><tr><th>Cover</th><th>Title</th><th>Description</th></tr>";
+
+    fetch(`js/${publisher}.json`)
+    .then((response) => {
+        return response.json();
+    })
+    .then((myjson) => {
+
+        const mybooks = myjson["results"];
+
+        let setlist = new Set();
+        switch(topic) {
+            case "Python":
+                setlist = python_list;
+                break;
+            case "React":
+                setlist = react_list;
+                break;
+            case "Javascript":
+                setlist = javascript_list;
+                break;
+            case "Go":
+                setlist = go_list;
+                break;
+            default:
+                setlist = python_list;
+          }
+
+        const myrecommendations = mybooks.filter(item => setlist.has(item["title"]) && item["topic"] === topic);
+
+        myrecommendations.forEach(book => {
+
+            let description = "No description for this book";
+            console.log(book);
+
+            if ("description" in book)
+            {
+                description = book.description;
+            }
+
+            sResult = sResult + `<tr><td><img src="${book.cover_url}"/></td><td>${book.title}</td><td>${description}</td></tr>`;
+        });
+
+        document.getElementById(elementid).innerHTML = sResult + "</table>";
+
+    });
 }

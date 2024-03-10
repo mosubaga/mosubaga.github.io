@@ -7,3 +7,7 @@
 #filter {
     visibility: hidden;
 }
+
+#reloadbutton {
+    visibility: hidden;
+}
