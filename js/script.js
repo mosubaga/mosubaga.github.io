@@ -163,9 +163,10 @@ function dispdata()
 function getbooks(publisher,topic,elementid)
 {
 
+    const ml_list = new Set(["Fundamentals of Data Engineering", "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow, 3rd Edition","Generative Deep Learning, 2nd Edition"]);
     const react_list = new Set(["React Cookbook", "Learning React, 2nd Edition", "React: Up & Running, 2nd Edition"]);
     const python_list = new Set(["Python Workout", "Python Concurrency with asyncio", "Deep Learning with Python, Second Edition", "Fluent Python, 2nd Edition", "Python in a Nutshell, 4th Edition", "Introducing Python, 2nd Edition","Robust Python" ]);
-    const javascript_list = new Set(["JavaScript: The Definitive Guide, 7th Edition", "JavaScript Cookbook, 3rd Edition", "JavaScript Everywhere", "Learning JavaScript Design Patterns, 2nd Edition"]);
+    const javascript_list = new Set(["JavaScript: The Definitive Guide, 7th Edition", "JavaScript Cookbook, 3rd Edition", "JavaScript Everywhere", "Learning JavaScript Design Patterns, 2nd Edition","Gatsby: The Definitive Guide"]);
     const go_list = new Set(["Go in Action", "Go in Practice", "100 Go Mistakes and How to Avoid Them"]);
 
     let sResult = "<table class='table'><tr><th>Cover</th><th>Title</th><th>Description</th></tr>";
@@ -180,6 +181,9 @@ function getbooks(publisher,topic,elementid)
 
         let setlist = new Set();
         switch(topic) {
+            case "Machine_Learning":
+                setlist = ml_list;
+                break;
             case "Python":
                 setlist = python_list;
                 break;

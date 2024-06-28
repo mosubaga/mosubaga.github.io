@@ -11,3 +11,7 @@
 #reloadbutton {
     visibility: hidden;
 }
+
+.math-article {
+    padding-left:1rem;
+}
