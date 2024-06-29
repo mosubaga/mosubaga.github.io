@@ -212,7 +212,7 @@ function getbooks(publisher,topic,elementid)
                 description = book.description;
             }
 
-            sResult = sResult + `<tr><td><img src="${book.cover_url}"/></td><td>${book.title}</td><td>${description}</td></tr>`;
+            sResult = sResult + `<tr><td><img src="${book.cover_url}"/></td><td class=\"lead\">${book.title}</td><td>${description}</td></tr>`;
         });
 
         document.getElementById(elementid).innerHTML = sResult + "</table>";
