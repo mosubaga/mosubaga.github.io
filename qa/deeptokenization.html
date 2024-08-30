@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      h1 {
+        text-align: center;
+        background-color: #e0e0e0;
+      }
+      h2 {
+        background-color: #e0e0e0;
+        margin-bottom: 2px;
+      }
+      h3 {
+        background-color: #e0e0e0;
+        display: inline-block;
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+      sup {
+        font-size: 8px;
+      }
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Deep Tokenization</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <script
+    referrerpolicy="no-referrer-when-downgrade"
+    type="text/javascript"
+    src="https://api.onelink-preview.com/moxie.min.js"
+    data-oljs="PED04-42B6-C033-3161"
+    ></script>
+  </head>
+
+  <body>
+    <h1 class="OneLinkNoTx">CROSS DOM TOKENIZATION TEST PAGE</h1>
+
+    <ol>
+      <h3 class="OneLinkNoTx">Labels</h3>
+      <li>
+        <span class="label">DOB:</span>
+        show time
+      </li>
+      <li>
+        <span class="label">Name:</span>
+        Langston Muse
+      </li>
+      <li>
+        <span class="label">Weight:</span>
+        500 tons
+      </li>
+
+      <h3 class="OneLinkNoTx">Tokens across tags</h3>
+      <li class="across">
+        <span>I have</span>
+        <span class="label">lots of</span>
+        <span class="label">children</span>
+        .
+      </li>
+      <li class="across">
+        <span>I have</span>
+        <span class="label">a</span>
+        <span class="label">life</span>
+        .
+      </li>
+
+      <h3 class="OneLinkNoTx">Single Char</h3>
+      <li class="single">
+        <span class="label">X</span>
+      </li>
+      <li class="single">
+        <span class="label">X Y Z</span>
+      </li>
+
+      <li class="single">
+        <span class="label">Z Y X</span>
+      </li>
+      <li class="single">
+        <span class="label">Z X Y</span>
+      </li>
+
+      <h3 class="OneLinkNoTx">Ignore Tags</h3>
+      <li>
+        <span class="label">Ignore:</span>
+        Script
+        <script type="text/javascript">
+          console.log('hi')
+        </script>
+      </li>
+      <li>
+        <span class="label">Ignore:</span>
+        Style
+        <style>
+          #forgeme {
+            font-size: 12px;
+          }
+        </style>
+      </li>
+
+      <h3 class="OneLinkNoTx">Regressions</h3>
+      <li>a<a href="/">abc xyz</a></li>
+      <li>abc xyz</li>
+      <li>a matcha</li>
+    </ol>
+  </body>
+</html>

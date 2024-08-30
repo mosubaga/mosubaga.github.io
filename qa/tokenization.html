@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      h1 {
+        text-align: center;
+        background-color: #e0e0e0;
+      }
+      h2 {
+        background-color: #e0e0e0;
+        margin-bottom: 2px;
+      }
+      h3 {
+        background-color: #e0e0e0;
+        display: inline-block;
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+      sup {
+        font-size: 8px;
+      }
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Tokenization</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <!-- Hightlight -->
+    <link rel="stylesheet" href="css/prism.css">
+    <script src="css/prism.js"></script>
+    <link href="starter-template.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script
+    referrerpolicy="no-referrer-when-downgrade"
+    type="text/javascript"
+    src="https://api.onelink-preview.com/moxie.min.js"
+    data-oljs="PED04-42B6-C033-3161"
+    ></script>
+  </head>
+
+  <body>
+
+    <div class="container" style="margin-top: 80px">
+      <h1 class="OneLinkNoTx">TOKEN TEST</h1>
+
+    <h2 class="OneLinkNoTx">NUMBERS</h2>
+
+    <ol>
+      <h3 class="OneLinkNoTx">Tokenized</h3>
+      <li class="notok" data-tx-es="número 45.7">number 45.7</li>
+      <li data-tx-es="número -45.7">number -45.7</li>
+      <li data-tx-es="número +45.7">number +45.7</li>
+      <li data-tx-es="número 123456">number 123456</li>
+      <li data-tx-es="número 123,456">number 123,456</li>
+      <li data-tx-es="número 1,124.15 (Inglés)">number 1,124.15 (English)</li>
+      <li data-tx-es="número 1.124,15 (Alemán, etc.)">
+        number 1.124,15 (German, etc.)
+      </li>
+      <li data-tx-es="número 1 124,15 (Francés, etc.)">
+        number 1 124,15 (French, etc.)
+      </li>
+      <li data-tx-es="número 12,34,56,789.00 (Hindi)">
+        number 12,34,56,789.00 (Hindi)
+      </li>
+      <li data-tx-es="alcance 1 - 1/2">range 1 - 1/2</li>
+      <li data-tx-es="alcance 1-1/2">range 1-1/2</li>
+      <li data-tx-es="alcance 100 - 200">range 100 - 200</li>
+      <li data-tx-es="alcance 100-200">range 100-200</li>
+      <li data-tx-es="teléfono 1 800 555 5555">phone 1 800 555 5555</li>
+      <li data-tx-es="teléfono 1-800-555-5555">phone 1-800-555-5555</li>
+      <li data-tx-es="versión 1.2.3.4.5">version 1.2.3.4.5</li>
+      <li data-tx-es="identificación número 123418/38972/56245">
+        id number 123418/38972/56245
+      </li>
+      <li data-tx-es="identificación número (8742399501)">
+        id number (8742399501)
+      </li>
+      <li data-tx-es="mi favorito número es 3.">my favorite number is 3.</li>
+      <li data-tx-es="mi favorito número es 3!">my favorite number is 3!</li>
+      <li data-tx-es="es mi favorito número 3?">is my favorite number 3?</li>
+      <li data-tx-es="mi favorito número es 3, 4, 5 o 6.">
+        my favorite number is 3, 4, 5 or 6.
+      </li>
+      <li data-tx-es="total 123.10. 5 personas son...">
+        total 123.10. 5 people are...
+      </li>
+      <li data-tx-es="total 123. 5 personas son...">
+        total 123. 5 people are...
+      </li>
+      <li data-tx-es="usted deber $100">you owe $100</li>
+      <li data-tx-es="usted deber €127,54">you owe €127,54</li>
+      <li data-tx-es="usted deber 127,54€">you owe 127,54€</li>
+      <li data-tx-es="50%">50%</li>
+      <li data-tx-es="#777.">#777.</li>
+      <li data-tx-es="!432">!432</li>
+      <li data-tx-es="@100:">@100:</li>
+      <li data-tx-es="%50;">%50;</li>
+      <li data-tx-es="&amp;456">&amp;456</li>
+      <li data-tx-es="*456*">*456*</li>
+      <li data-tx-es="[456]">[456]</li>
+      <li data-tx-es="<456>">&lt;456&gt;</li>
+      <li data-tx-es="parte ID8742399501">part ID8742399501</li>
+      <li data-tx-es="usted vino en 3rd lugar">you came in 3rd place</li>
+      <li data-tx-es="parte 零件号8742399501">part 零件号8742399501</li>
+      <li data-tx-es="parte Numéro8742399501">part Numéro8742399501</li>
+      <li data-tx-es="parte number2">part number2</li>
+      <li data-tx-es="la number123,456">the number123,456</li>
+      <li data-tx-es="la size1-1/2">the size1-1/2</li>
+      <li data-tx-es="la número 45or46 es...">the number 45or46 is...</li>
+      <li data-tx-es="la número is923 842">the number is923 842</li>
+      <li data-tx-es="En edad 50 Coger-Hasta Contribuciones">
+        At age 50 Catch-Up Contributions
+      </li>
+      <li data-tx-es="Top 10 Americano Equilibrado Fondos">
+        Top 10 American Balanced Funds
+      </li>
+      <li data-tx-es="En 10 P.Albañil voluntad ser...">
+        At 10 P.Mason will be...
+      </li>
+      <li data-tx-es="cerca 10 Un.Móvil unidades voluntad ser...">
+        near 10 A.Mobile units will be...
+      </li>
+
+      <h3 class="OneLinkNoTx">Not Tokenized</h3>
+      <li data-tx-es="nosotros're número 1">we're number 1</li>
+
+      <h2 class="OneLinkNoTx">
+        DATES/TIMES 1
+        <sup>
+          * note the Times in here would be picked up by the TIME pattern, but
+          the DATE/TIME checks are first
+        </sup>
+      </h2>
+
+      <h3 class="OneLinkNoTx">Tokenized</h3>
+      <li data-tx-es="en 8/19/1990 hay voluntad ser...">
+        on 8/19/1990 there will be...
+      </li>
+      <li data-tx-es="en 8-19-1990 hay voluntad ser...">
+        on 8-19-1990 there will be...
+      </li>
+      <li data-tx-es="en esta tiempo 8/19/1990 12:00:16 hay voluntad ser...">
+        at this time 8/19/1990 12:00:16 there will be...
+      </li>
+      <li data-tx-es="en 1999/8/19 hay voluntad ser...">
+        on 1999/8/19 there will be...
+      </li>
+      <li data-tx-es="en 1999/8/19 12:00:16 hay voluntad ser...">
+        on 1999/8/19 12:00:16 there will be...
+      </li>
+      <li data-tx-es="en 1999/8/19 12:00:16 a.m. hay voluntad ser...">
+        on 1999/8/19 12:00:16 a.m. there will be...
+      </li>
+      <li data-tx-es="en 3:30 AM 2/3/86 hay voluntad ser...">
+        at 3:30 AM 2/3/86 there will be...
+      </li>
+      <li data-tx-es="en 4:30AM2/3/86 hay voluntad ser...">
+        at 4:30AM2/3/86 there will be...
+      </li>
+      <li data-tx-es="en 2020-8-19 hay voluntad ser...">
+        on 2020-8-19 there will be...
+      </li>
+      <li data-tx-es="en 8 AM 12-15-90 hay voluntad ser...">
+        at 8 AM 12-15-90 there will be...
+      </li>
+      <li data-tx-es="en 2020-06-16T16:07:03 hay voluntad ser...">
+        at 2020-06-16T16:07:03 there will be...
+      </li>
+      <li data-tx-es="en 2020-06-16 16:07:03 hay voluntad ser...">
+        at 2020-06-16 16:07:03 there will be...
+      </li>
+
+      <h2 class="OneLinkNoTx">DATES/TIMES 2</h2>
+
+      <h3 class="OneLinkNoTx">Tokenized</h3>
+      <li data-tx-es="en la 9th of june, 1989">on the 9th of june, 1989</li>
+      <li data-tx-es="en la 1st of august,1989 11:15 PM">
+        on the 1st of august,1989 11:15 PM
+      </li>
+      <li data-tx-es="en la 2nd of Aug, 89">on the 2nd of Aug, 89</li>
+      <li data-tx-es="en la 1st of august , 1989">
+        on the 1st of august , 1989
+      </li>
+      <li data-tx-es="en 12:00:04 AM 3rd of Feb,89">
+        at 12:00:04 AM 3rd of Feb,89
+      </li>
+      <li data-tx-es="en 9 june, 1989">on 9 june, 1989</li>
+      <li data-tx-es="en 19 Sept, 2020">on 19 Sept, 2020</li>
+      <li data-tx-es="en 12 june, 1989 9:15 a.m.">
+        on 12 june, 1989 9:15 a.m.
+      </li>
+      <li data-tx-es="en 7:30 9 june, 1999">at 7:30 9 june, 1999</li>
+      <li data-tx-es="en 10th Aug , 1881 10 personas eran...">
+        on 10th Aug , 1881 10 people were...
+      </li>
+      <li data-tx-es="en 10th Aug , 1881 10 pm 10 personas eran...">
+        on 10th Aug , 1881 10 pm 10 people were...
+      </li>
+      <li data-tx-es="en May 2022 , 1881 10 pm 10 personas eran...">
+        on May 2022 , 1881 10 pm 10 people were...
+      </li>
+
+      <h3 class="OneLinkNoTx">Not Tokenized</h3>
+      <li
+        data-tx-es="9th de bla, 1989 , la números voluntad obtener escogido hasta por NÚMEROS patrón"
+      >
+        9th of blah, 1989 , the numbers will get picked up by NUMBERS pattern
+      </li>
+
+      <h2 class="OneLinkNoTx">DATES/TIMES 3</h2>
+
+      <h3 class="OneLinkNoTx">Tokenized</h3>
+      <li data-tx-es="en august 1st,1989 nosotros voluntad...">
+        on august 1st,1989 we will...
+      </li>
+      <li data-tx-es="en august 1, 1989 nosotros voluntad...">
+        on august 1, 1989 we will...
+      </li>
+      <li data-tx-es="en Aug 2nd, 89 nosotros voluntad...">
+        on Aug 2nd, 89 we will...
+      </li>
+      <li data-tx-es="en Aug 2, 89 nosotros voluntad...">
+        on Aug 2, 89 we will...
+      </li>
+      <li data-tx-es="en Aug 5th , 1989 nosotros voluntad...">
+        on Aug 5th , 1989 we will...
+      </li>
+      <li data-tx-es="en june 10th, 2020 10:14 PM nosotros voluntad...">
+        on june 10th, 2020 10:14 PM we will...
+      </li>
+      <li data-tx-es="en 10:14 A.M. July 12, 1956 nosotros voluntad...">
+        at 10:14 A.M. July 12, 1956 we will...
+      </li>
+      <li data-tx-es="en Aug 10th , 1881 10 personas eran...">
+        on Aug 10th , 1881 10 people were...
+      </li>
+      <li data-tx-es="en Aug 10th , 1881 10 pm 10 personas eran...">
+        on Aug 10th , 1881 10 pm 10 people were...
+      </li>
+
+      <h3 class="OneLinkNoTx">Not Tokenized</h3>
+      <li
+        data-tx-es="bla 9th, 1989 , la números voluntad obtener escogido hasta por NÚMEROS patrón"
+      >
+        blah 9th, 1989 , the numbers will get picked up by NUMBERS pattern
+      </li>
+
+      <h2 class="OneLinkNoTx">
+        TIME ZONES
+        <sup>
+          * note some of these would get picked up by TIME or NUMBERS pattern,
+          but this TIME ZONE check is first
+        </sup>
+      </h2>
+
+      <h3 class="OneLinkNoTx">Tokenized</h3>
+      <li data-tx-es="usted son actualmente en 1300 GMT">
+        you are currently at 1300 GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 13:00 GMT">
+        you are currently at 13:00 GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 13:00GMT">
+        you are currently at 13:00GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 12:22:34EST">
+        you are currently at 12:22:34EST
+      </li>
+      <li data-tx-es="usted son actualmente en 11 am GMT">
+        you are currently at 11 am GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 11 am GMT">
+        you are currently at 11 am GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 11AM GMT">
+        you are currently at 11AM GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 7:00am GMT">
+        you are currently at 7:00am GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 7:00a.m. GMT">
+        you are currently at 7:00a.m. GMT
+      </li>
+      <li data-tx-es="usted son actualmente en 11:00 Atlantic Standard Time">
+        you are currently at 11:00 Atlantic Standard Time
+      </li>
+
+      <h2 class="OneLinkNoTx">
+        TIME
+        <sup>
+          * note some of these would get picked up by NUMBERS pattern, but this
+          TIME check is first
+        </sup>
+      </h2>
+
+      <h3 class="OneLinkNoTx">Tokenized</h3>
+      <li data-tx-es="en 11:45 nosotros voluntad...">at 11:45 we will...</li>
+      <li data-tx-es="en 12:00:19 AM nosotros voluntad...">
+        at 12:00:19 AM we will...
+      </li>
+      <li data-tx-es="en 6:14 a.m. la iniciar de...">
+        at 6:14 a.m. the start of...
+      </li>
+      <li data-tx-es="en 10:45P.M. la iniciar de...">
+        at 10:45P.M. the start of...
+      </li>
+      <li data-tx-es="en 6 pm usted lata...">at 6 pm you can...</li>
+      <li data-tx-es="en 11am usted lata...">at 11am you can...</li>
+      <li data-tx-es="la tiempo es 12:30.">the time is 12:30.</li>
+      <li data-tx-es="la tiempo es 12:30!">the time is 12:30!</li>
+      <li data-tx-es="la tiempo es 12:30?">the time is 12:30?</li>
+      <li data-tx-es="la tiempo es 12:30, o tan...">
+        the time is 12:30, or so...
+      </li>
+
+    </ol>
+
+    <h3 class="OneLinkNoTx">Lookbehind</h2>
+    <div class="giraffe">Welcome Back, giraffe.</div>
+    <div class="lion">Welcome Back, lion.</div>
+    <div class="monkey">Welcome Back, monkey.</div>
+
+
+
+    <!-- <script>
+      setTimeout(() => {
+        const labels = []
+        const list = document.querySelector('ol.OneLinkTx')
+        const list1 = document.querySelector('ol.OneLinkNoTx')
+        for (let i = 0; i < list.childNodes.length; i++) {
+          const child = list.childNodes[i]
+          if (child.tagName !== 'LI') continue
+          const child1 = list1.childNodes[i]
+          child1.setAttribute(
+            'data-tx-es',
+            child.textContent.trim().replace('/n', ''),
+          )
+        }
+      }, 2000)
+    </script> -->
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
