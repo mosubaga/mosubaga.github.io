@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0016)http://acme.com/ -->
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../js/script.js" type="text/javascript"></script>
+    <script
+    referrerpolicy="no-referrer-when-downgrade"
+    type="text/javascript"
+    src="https://api.onelink-preview.com/moxie.min.js"
+    data-oljs="PED04-42B6-C033-3161"
+    ></script>
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="../starter-template.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="headercontainer">
+          <div id="navbar" class="collapse navbar-collapse">
+              <ul class="nav navbar-nav">
+                  <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                  <li><a class="dropdown-item" href="books.html">Books</a></li>
+                  <li class="nav-item"><a class="nav-link" href="discography.html">Discography</a></li>
+                  <li class="nav-item"><a class="nav-link" href="./movies">Movies</a></li>
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Topics</a>
+                      <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="reference.html">Reference</a></li>
+                          <li class="nav-item"><a class="nav-link" href="perl.html">Perl</a></li>
+                          <li class="nav-item"><a class="nav-link" href="python.html">Python</a></li>
+                          <li class="nav-item"><a class="nav-link" href="go.html">Go</a></li>
+                           <li class="nav-item"><a class="nav-link" href="zvsh.html">Zombies vs Humans</a></li>
+                      </ul>
+                  </li>
+              </ul>
+          </div><!--/.nav-collapse -->
+      </div>
+  </nav>
+
+    <div class="container">
+      <div class="starter-template">
+        <h1 class= "center" style="padding-top:50px;" >Current Time at
+          <script>
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = today.getFullYear();
+
+            today = mm + '/' + dd + '/' + yyyy;
+            document.write(today);
+          </script>
+        </h1>
+        <h2 id="time" style="text-align: center; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, monospace; font-size:400%">Time goes here ...</h2>
+      </div><br>
+
+      <br>
+      <div>
+        <section style="border:solid;border-radius:20px;font-size:large;padding-left:10px;padding-bottom:5px">
+          <h4>Useful Links</h4>
+          <div><a href="https://playwright.dev/" target="_blank">Playwright site</a></div>
+          <div><a href="https://nightwatchjs.org/" target="_blank">Nightwatch site</a></div>
+          <div><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document" target="_blank">Web API Document</a></div>
+          <div><a href="https://www.jetbrains.com" target="_blank">Jetbrains site</a></div>
+          <div><a href="https://github.com/mosubaga/sandbox" target="_blank">Github Sandbox</a></div>
+        </section>
+      </div><br>
+
+      <div>
+        <section style="border:solid;border-radius:20px;font-size:large;padding-left:10px;padding-bottom:5px">
+          <h4>Development Links</h4>
+          <div><a href="https://go.dev/" target="_blank">Go</a></div>
+          <div><a href="https://www.python.org/" target="_blank">Python</a></div>
+          <div><a href="https://www.perl.org/" target="_blank">Perl</a></div>
+          <div><a href="https://nodejs.org/en" target="_blank">Node.js</a></div>
+        </section>
+      </div><br>
+
+      <div>
+        <section style="border:solid;border-radius:20px;font-size:large;padding-left:10px;padding-bottom:5px">
+          <h4>Reference links that are helpful</h4>
+          <div><a href="https://www.baseball-reference.com/" target="_blank">Baseball Reference</a></div>
+          <div><a href="https://www.pro-football-reference.com/" target="_blank">Pro football Reference</a></div>
+        </section>
+      </div><br>
+
+    </div><!-- /.container -->
+
+    <script type="module">
+      var createDOMMap = function (element) {
+        var getAttributes = function (attributes) {
+          return Array.prototype.map.call(attributes, function (attribute) {
+            return {
+              att: attribute.name,
+              value: attribute.value,
+            }
+          })
+        }
+        return Array.prototype.map.call(element.childNodes, function (node) {
+          var details = {
+            content:
+              node.childNodes && node.childNodes.length > 0
+                ? null
+                : node.textContent,
+            atts: node.nodeType !== 1 ? [] : getAttributes(node.attributes),
+            type:
+              node.nodeType === 3
+                ? 'text'
+                : node.nodeType === 8
+                ? 'comment'
+                : node.tagName.toLowerCase(),
+            node: node,
+          }
+          details.children = createDOMMap(node, details.isSVG)
+          return details
+        })
+      }
+      const response = await fetch('./domparser.html')
+      const html = await response.text()
+      const parser = new DOMParser()
+      const compareDoc = parser.parseFromString(html, 'text/html')
+      const map = createDOMMap(compareDoc.querySelector('div.container'))
+      const translatedMap = createDOMMap(document.querySelector('div.container'))
+      if (Object.keys(map).length === Object.keys(translatedMap).length)
+        document.body.setAttribute('data-moxie-ok', 'ok')
+      console.log('English nodes', map)
+      console.log('Translated nodes', translatedMap)
+    </script>
+    <script>showTime()</script>
+  </body>
+</html>
