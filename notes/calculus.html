@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sample page</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="./js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
+    <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  </head>
+  <body>
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <div class="nav-mobile">
+            <a href="index.html">Home</a>
+            <a href="linalg.html">Linear Algebra</a>
+            <a href="calculus.html">Calculus</a>
+            <a href="probability.html">Probability</a>
+        </div>
+    </nav>
+    <br>
+    <br>
+    <div class="container">
+        <h3 style="text-align:center">Sine and Cosine</h3>
+        <p>Sine and Cosine functions are a perfect function to model any systems with oscillation.</p>
+        <main>
+            <script src="./js/sincos.js"></script>
+        </main>
+        <p>Code was used from <a href="https://p5js.org">p5.js website</a></p>
+        <p>Due to this nature, combinations of sine and cosine are used in Fourier Transform</p>
+        <span class="math display">\[ \hat{F} (k)=\int_{-\infty}^{\infty}f(x)e^{-2\pi ixk}dx\]</span>
+        <p>Using Euler's identity<span class="math display">\[ e^{i \theta} = cos \theta + isin \theta \]</span></p>
+        <br>
+    </div>
+
+    <footer>
+        &nbsp;
+    </footer>
+
+  </body>
+  </html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sample page</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="./js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
+    <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  </head>
+  <body>
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <div class="nav-mobile">
+            <a href="index.html">Home</a>
+            <a href="linalg.html">Linear Algebra</a>
+            <a href="calculus.html">Calculus</a>
+            <a href="probability.html">Probability</a>
+        </div>
+    </nav>
+    <br>
+    <br>
+    <main>
+        <div class="container">
+            <h3 style="text-align:center">Zombies vs Humans</h3>
+            <br>
+            <p>Given the following info in a town where a virus spreads that turns humans into zombies.</p>
+            <ul>
+                <li>Every hour, humans turns into 20% of humnas to zombies.</li>
+                <li>Luckily, an antidote exists and can fix zombies to humans but at 10% an hour. </li>
+            </ul>
+            <p>What is going to happen eventually?</p>
+            <br>
+            <p>We can write the above in a following equation:</p>
+            <p><span class="math display">\[\left\{ \begin{array}{ll} h_t = 0.8h_{t-1} + 0.1z_{t-1}\\ z_t = 0.2h_{t-1} + 0.9z_{t-1}\\ \end{array}\right.\]</span></p>
+            <p>Can be organized as:</p>
+            <p><span class="math display">\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} h_{t-1}\\ z_{t-1} \end{bmatrix}=  \begin{bmatrix} h_{t}\\ z_{t} \end{bmatrix}\]</span></p>
+            <p>The matrix is a Markov matrix and the eigenvalues are:</p>
+            <p><span class="math display">\[ \lambda = 0.7, 1 \]</span></p>
+            <p>Can calulate the eigenvectors are as eigenvalues are determined.</p>
+            <p><span class="math display">\[ v_1 = \begin{bmatrix} 0.5\\ 1 \end{bmatrix}  \space v_2 = \begin{bmatrix} 1\\ -1 \end{bmatrix} \]<span><p>
+        <p>From the findings above, if there are 1500 people in town and if human = 500 and zombies = 1000:</p>
+            <p><span class="math display"><span>\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} 500\\ 1000 \end{bmatrix}=  \begin{bmatrix} 500\\1000 \end{bmatrix}\]</span></p>
+            <p>No matter how much progresses, the number of humans and zombies will remain the same.</p>
+        </div><!-- /.container -->
+    </main>
+    <br>
+    <footer>
+        &nbsp;
+    </footer>
+
+  </body>
+  </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sample page</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="./js/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
+    <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  </head>
+  <body>
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <div class="nav-mobile">
+            <a href="index.html">Home</a>
+            <a href="linalg.html">Linear Algebra</a>
+            <a href="calculus.html">Calculus</a>
+            <a href="probability.html">Probability</a>
+        </div>
+    </nav>
+    <br>
+    <br>
+    <main>
+        <script src="./js/pendulum.js"></script>
+    </main>
+    
+    <br><br>
+
+    <div class="para">
+        The most basic concept in linear algebra is that of a vector, which you can think of as a data point in some multi-dimensional space. For instance, you’ve probably heard of the 2-dimensional (2D) coordinate plane in high school geometry and algebra. As we’ll cover in chapter 2, vectors in 2D correspond to points in the plane, which can be labeled by ordered pairs of numbers of the form (x, y). In chapter 3, we’ll consider 3-dimensional (3D) space, whose vectors (points) can be labeled by triples of numbers in the form (x, y, z). In both cases, we see we can use collections of vectors to define geometric shapes, which can, in turn, be converted into interesting graphics.
+    </div>
+    <div class="para">
+        Another key concept in linear algebra is that of a linear transformation, which we introduce in chapter 4. A linear transformation is a kind of function that takes a vector as input and returns a vector as output, while preserving the geometry (in a special sense) of the vectors involved. For instance, if a collection of vectors (points) lie on a straight line in 2D, after applying a linear transformation, they will still lie on a straight line. In chapter 5, we introduce matrices, which are rectangular arrays of numbers that can represent linear transformations. Our culminating application of linear transformations is to apply them sequentially over time to graphics in a Python program, resulting in some animated graphics in 3D.
+    </div>
+    <div class="para">
+        The length of a vector is the length of the arrow that represents it, or equivalently, the distance from the origin to the point that represents it. In New York City, this could be the distance between two intersections “as the crow flies.” The length of a vector in the x or y direction can be measured immediately as a number of ticks passed on the corresponding axis: (4, 0) or (0, 4) are both vectors of the same length, 4, albeit in different directions. In general, though, vectors can lie diagonally, and we need to do a calculation to get their lengths.
+    </div>
+    <div class="para">
+        From <i>Math for Programmers 3D graphics, machine learning, and simulations with Python</i> by Paul Orland by Manning Publishing.
+    </div>
+    <br>
+
+    <footer>
+        &nbsp;
+    </footer>
+
+  </body>
+  </html>
