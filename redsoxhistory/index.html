@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./css/style.css" rel="stylesheet">
+    <script src="./js/script.js" type="text/javascript"></script>   
+    <title>Historical Red Sox Players</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Historical Red Sox Players</h1>
+        <p>Here are some of the players in the history of the Boston Red Sox who contributed to a World Series title. Records below start from 2002, when John Henry purchased the team </p>
+
+        <div class="card sprinkles">
+            <button class="btn btn-strawberry" onclick="openInNewTab('playersfa.html')">Players who left via FA</button>
+            <button class="btn btn-strawberry" onclick="openInNewTab('pitcherstraded.html')">Pitchers who were traded</button>
+            <button class="btn btn-strawberry" onclick="openInNewTab('batterstraded.html')">Batters who were traded</button>
+        </div>
+
+        <h3>Players who retired as a Red Sox. Great players with great characters on and off the field.</h3>
+        <div class="card sprinkles">
+            <h2>David Ortiz</h2>
+            <p>The most clutch player in Red Sox history</p>
+            <script>getplayer("batters","David","Ortiz","dortiz");</script>
+            <div id="dortiz"></div>
+        </div>
+
+        <div class="card sprinkles">
+            <h2>Tim Wakefield</h2>
+            <p>Mr. Red Sox. He was a legend.</p>
+            <script>getplayer("pitchers","Tim","Wakefield","twakefield");</script>
+            <div id="twakefield"></div>
+        </div>
+
+        <div class="card sprinkles">
+            <h2>Dustin Pedroia</h2>
+            <p>Loved watching him play second base.</p>
+            <script>getplayer("batters","Dustin","Pedroia","dpedroia");</script>
+            <div id="dpedroia"></div>
+        </div>
+    </div>
+</body>
+</html>

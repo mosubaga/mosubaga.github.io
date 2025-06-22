@@ -1,0 +1,546 @@
+ @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&family=Pacifico&display=swap');
+
+ :root {
+     --strawberry-pink: #FFB3BA;
+     --vanilla-cream: #FFFACD;
+     --mint-green: #BAFFC9;
+     --lavender-purple: #BAE1FF;
+     --peach-sorbet: #FFDFBA;
+     --cotton-candy: #F8BBD9;
+     --bubblegum: #E4C1F9;
+     --sherbet-orange: #FECA94;
+     --candy-red: #FF6B6B;
+     --chocolate-brown: #8B4513;
+     --white-chocolate: #FFF8DC;
+     --caramel: #D2691E;
+     --sweet-gradient-1: linear-gradient(135deg, #FFB3BA, #FFDFBA, #FFFACD, #BAFFC9, #BAE1FF);
+     --sweet-gradient-2: linear-gradient(45deg, #F8BBD9, #E4C1F9, #BAE1FF, #BAFFC9);
+ }
+
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ body {
+     font-family: 'Comfortaa', cursive;
+     background: var(--sweet-gradient-1);
+     background-size: 400% 400%;
+     animation: sweetFlow 15s ease infinite;
+     color: var(--chocolate-brown);
+     line-height: 1.6;
+     min-height: 100vh;
+     position: relative;
+     overflow-x: hidden;
+ }
+
+ @keyframes sweetFlow {
+     0% {
+         background-position: 0% 50%;
+     }
+
+     25% {
+         background-position: 100% 50%;
+     }
+
+     50% {
+         background-position: 100% 100%;
+     }
+
+     75% {
+         background-position: 0% 100%;
+     }
+
+     100% {
+         background-position: 0% 50%;
+     }
+ }
+
+ /* Sweet floating treats */
+ body::before {
+     content: '🍭 🍬 🧁 🍰 🎂 🍪 🍩 🍨 🍦 🍓 🍒 🍑 🥧 🍮 🍯 🍫 🍿 🧈 🥛 ☁️ 💖 ✨ 🌟 💫 🎀 🦄';
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     font-size: 2.5rem;
+     opacity: 0.4;
+     z-index: -1;
+     animation: sweetFloat 30s linear infinite;
+     word-spacing: 3rem;
+     line-height: 5rem;
+     overflow: hidden;
+     pointer-events: none;
+     transform: rotate(-10deg);
+ }
+
+ @keyframes sweetFloat {
+     0% {
+         transform: translateY(100vh) rotate(-10deg);
+     }
+
+     100% {
+         transform: translateY(-100vh) rotate(10deg);
+     }
+ }
+
+ /* Ice cream cone decorations */
+ body::after {
+     content: '';
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-image:
+         radial-gradient(circle at 10% 20%, var(--strawberry-pink) 0%, transparent 40%),
+         radial-gradient(circle at 90% 80%, var(--mint-green) 0%, transparent 40%),
+         radial-gradient(circle at 70% 30%, var(--lavender-purple) 0%, transparent 30%),
+         radial-gradient(circle at 30% 70%, var(--peach-sorbet) 0%, transparent 35%);
+     opacity: 0.3;
+     z-index: -2;
+     animation: scoopFloat 20s ease-in-out infinite;
+ }
+
+ @keyframes scoopFloat {
+
+     0%,
+     100% {
+         transform: scale(1) rotate(0deg);
+     }
+
+     50% {
+         transform: scale(1.1) rotate(5deg);
+     }
+ }
+
+ .container {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 2rem;
+     position: relative;
+     z-index: 1;
+ }
+
+ /* Headers */
+ h1 {
+     font-family: 'Pacifico', cursive;
+     font-size: 4rem;
+     text-align: center;
+     margin-bottom: 2rem;
+     background: linear-gradient(45deg, var(--candy-red), var(--strawberry-pink), var(--cotton-candy), var(--bubblegum), var(--lavender-purple));
+     background-size: 300% 300%;
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+     background-clip: text;
+     animation: candyShimmer 4s ease-in-out infinite;
+     filter: drop-shadow(2px 2px 4px rgba(139, 69, 19, 0.3));
+     position: relative;
+ }
+
+ @keyframes candyShimmer {
+
+     0%,
+     100% {
+         background-position: 0% 50%;
+     }
+
+     50% {
+         background-position: 100% 50%;
+     }
+ }
+
+ h1::before {
+     content: '🍦';
+     position: absolute;
+     left: -5rem;
+     top: 0;
+     animation: scoopWiggle 3s ease-in-out infinite;
+     filter: drop-shadow(0 0 10px rgba(255, 179, 186, 0.7));
+ }
+
+ h1::after {
+     content: '🍭';
+     position: absolute;
+     right: -5rem;
+     top: 0;
+     animation: candySwirl 4s ease-in-out infinite;
+     filter: drop-shadow(0 0 10px rgba(248, 187, 217, 0.7));
+ }
+
+ @keyframes scoopWiggle {
+
+     0%,
+     100% {
+         transform: rotate(-10deg) translateY(0);
+     }
+
+     50% {
+         transform: rotate(10deg) translateY(-10px);
+     }
+ }
+
+ @keyframes candySwirl {
+     0% {
+         transform: rotate(0deg);
+     }
+
+     100% {
+         transform: rotate(360deg);
+     }
+ }
+
+ h2 {
+     font-family: 'Pacifico', cursive;
+     font-size: 2rem;
+     color: var(--candy-red);
+     margin-bottom: 1rem;
+     filter: drop-shadow(1px 1px 2px rgba(139, 69, 19, 0.2));
+ }
+
+ /* Buttons */
+ .btn {
+     display: inline-block;
+     padding: 1rem 2.5rem;
+     border: none;
+     border-radius: 50px;
+     font-family: 'Comfortaa', cursive;
+     font-weight: 600;
+     font-size: 1.1rem;
+     text-decoration: none;
+     cursor: pointer;
+     transition: all 0.4s ease;
+     position: relative;
+     overflow: hidden;
+     text-transform: capitalize;
+     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+ }
+
+ .btn-strawberry {
+     background: linear-gradient(45deg, var(--strawberry-pink), var(--cotton-candy));
+     color: var(--chocolate-brown);
+     border: 3px solid var(--white-chocolate);
+ }
+
+ .btn-mint {
+     background: linear-gradient(45deg, var(--mint-green), var(--lavender-purple));
+     color: var(--chocolate-brown);
+     border: 3px solid var(--white-chocolate);
+ }
+
+ .btn::before {
+     content: '';
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     width: 0;
+     height: 0;
+     background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+     transition: all 0.4s ease;
+     border-radius: 50%;
+     transform: translate(-50%, -50%);
+ }
+
+ .btn:hover::before {
+     width: 300px;
+     height: 300px;
+ }
+
+ .btn:hover {
+     transform: translateY(-5px) scale(1.05);
+     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+     animation: sweetBounce 0.6s ease infinite;
+ }
+
+ @keyframes sweetBounce {
+
+     0%,
+     100% {
+         transform: translateY(-5px) scale(1.05);
+     }
+
+     50% {
+         transform: translateY(-8px) scale(1.08);
+     }
+ }
+
+ /* Cards */
+ .card {
+     background: linear-gradient(135deg,
+             rgba(255, 248, 220, 0.95),
+             rgba(255, 223, 186, 0.9),
+             rgba(186, 255, 201, 0.85));
+     backdrop-filter: blur(15px);
+     border: 3px solid rgba(255, 255, 255, 0.8);
+     border-radius: 35px;
+     padding: 2.5rem;
+     margin: 2rem 0;
+     box-shadow:
+         0 20px 40px rgba(0, 0, 0, 0.1),
+         inset 0 1px 0 rgba(255, 255, 255, 0.9),
+         0 0 0 1px rgba(255, 255, 255, 0.3);
+     transition: all 0.4s ease;
+     position: relative;
+     overflow: hidden;
+ }
+
+ .card::before {
+     content: '';
+     position: absolute;
+     top: -2px;
+     left: -2px;
+     right: -2px;
+     bottom: -2px;
+     background: linear-gradient(45deg,
+             var(--strawberry-pink),
+             var(--peach-sorbet),
+             var(--mint-green),
+             var(--lavender-purple),
+             var(--cotton-candy));
+     background-size: 300% 300%;
+     border-radius: 37px;
+     z-index: -1;
+     animation: candyBorder 6s ease infinite;
+ }
+
+ @keyframes candyBorder {
+
+     0%,
+     100% {
+         background-position: 0% 50%;
+     }
+
+     50% {
+         background-position: 100% 50%;
+     }
+ }
+
+ .card:hover {
+     transform: translateY(-10px) rotate(1deg);
+     box-shadow:
+         0 30px 60px rgba(0, 0, 0, 0.2),
+         0 0 30px rgba(255, 179, 186, 0.4);
+ }
+
+ /* Ice cream scoops decoration for cards */
+ .card::after {
+     content: '';
+     position: absolute;
+     top: -20px;
+     right: -20px;
+     width: 40px;
+     height: 40px;
+     background: radial-gradient(circle, var(--strawberry-pink), var(--cotton-candy));
+     border-radius: 50%;
+     opacity: 0.8;
+     animation: scoopBob 4s ease-in-out infinite;
+ }
+
+ @keyframes scoopBob {
+
+     0%,
+     100% {
+         transform: translateY(0) scale(1);
+     }
+
+     50% {
+         transform: translateY(-5px) scale(1.1);
+     }
+ }
+
+ /* Input fields */
+ .input-group {
+     margin: 1.5rem 0;
+ }
+
+ label {
+     display: block;
+     margin-bottom: 0.8rem;
+     font-weight: 600;
+     color: var(--chocolate-brown);
+     font-size: 1.1rem;
+     font-family: 'Pacifico', cursive;
+ }
+
+ input[type="text"],
+ input[type="email"],
+ textarea {
+     width: 100%;
+     padding: 1.2rem 1.8rem;
+     border: 3px solid var(--cotton-candy);
+     border-radius: 25px;
+     font-family: 'Comfortaa', cursive;
+     font-size: 1rem;
+     font-weight: 400;
+     transition: all 0.3s ease;
+     background: linear-gradient(135deg, var(--vanilla-cream), var(--white-chocolate));
+     color: var(--chocolate-brown);
+     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+ }
+
+ input[type="text"]:focus,
+ input[type="email"]:focus,
+ textarea:focus {
+     outline: none;
+     border-color: var(--strawberry-pink);
+     box-shadow:
+         0 0 20px rgba(255, 179, 186, 0.4),
+         inset 0 2px 4px rgba(0, 0, 0, 0.1);
+     transform: scale(1.02);
+     background: linear-gradient(135deg, var(--white-chocolate), var(--vanilla-cream));
+ }
+
+ /* Sweet elements */
+ .sweet-icon {
+     font-size: 3rem;
+     animation: sweetPulse 3s ease-in-out infinite;
+     display: inline-block;
+     filter: drop-shadow(0 0 10px rgba(255, 179, 186, 0.5));
+ }
+
+ @keyframes sweetPulse {
+
+     0%,
+     100% {
+         transform: scale(1);
+     }
+
+     50% {
+         transform: scale(1.1);
+     }
+ }
+
+ .badge {
+     display: inline-block;
+     padding: 0.6rem 1.2rem;
+     background: var(--sweet-gradient-2);
+     color: var(--chocolate-brown);
+     border: 2px solid var(--white-chocolate);
+     border-radius: 30px;
+     font-size: 0.9rem;
+     font-weight: 600;
+     margin: 0.3rem;
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+     animation: candyFloat 4s ease-in-out infinite;
+     position: relative;
+ }
+
+ @keyframes candyFloat {
+
+     0%,
+     100% {
+         transform: translateY(0px) rotate(0deg);
+     }
+
+     25% {
+         transform: translateY(-3px) rotate(1deg);
+     }
+
+     75% {
+         transform: translateY(3px) rotate(-1deg);
+     }
+ }
+
+ .badge::before {
+     content: '';
+     position: absolute;
+     top: 2px;
+     left: 2px;
+     right: 2px;
+     height: 50%;
+     background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3));
+     border-radius: 28px 28px 50% 50%;
+     pointer-events: none;
+ }
+
+ /* Grid layout */
+ .grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+     gap: 2rem;
+     margin: 2rem 0;
+ }
+
+ /* Sprinkles effect */
+ .sprinkles {
+     position: relative;
+ }
+
+ .sprinkles::before {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background-image:
+         linear-gradient(45deg, var(--candy-red) 2px, transparent 2px),
+         linear-gradient(-45deg, var(--mint-green) 2px, transparent 2px),
+         linear-gradient(90deg, var(--lavender-purple) 2px, transparent 2px);
+     background-size: 20px 20px, 25px 25px, 30px 30px;
+     background-position: 0 0, 10px 10px, 5px 15px;
+     opacity: 0.1;
+     pointer-events: none;
+     border-radius: inherit;
+ }
+
+ /* Responsive design */
+ @media (max-width: 768px) {
+     .container {
+         padding: 1rem;
+     }
+
+     h1 {
+         font-size: 2.5rem;
+     }
+
+     h1::before,
+     h1::after {
+         font-size: 2rem;
+         left: -3rem;
+         right: -3rem;
+     }
+
+     .grid {
+         grid-template-columns: 1fr;
+     }
+
+     body::before {
+         font-size: 2rem;
+         word-spacing: 2rem;
+         line-height: 4rem;
+     }
+ }
+
+ th{
+    padding-left: 5px;
+    padding-right: 5px;
+ }
+
+ td{
+    padding-left: 5px;
+    padding-right: 5px;
+ }
+
+ /* Custom scrollbar */
+ ::-webkit-scrollbar {
+     width: 12px;
+ }
+
+ ::-webkit-scrollbar-track {
+     background: var(--vanilla-cream);
+     border-radius: 10px;
+     border: 2px solid var(--white-chocolate);
+ }
+
+ ::-webkit-scrollbar-thumb {
+     background: var(--sweet-gradient-2);
+     border-radius: 10px;
+     border: 2px solid var(--white-chocolate);
+ }
+
+ ::-webkit-scrollbar-thumb:hover {
+     background: linear-gradient(45deg, var(--strawberry-pink), var(--cotton-candy));
+ }
