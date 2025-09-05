@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Plotter</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Function Plotter</h1>
+        <div class="controls">
+            <div class="control-group">
+                <label for="function-input">Function:</label>
+                <input type="text" id="function-input" placeholder="e.g., sin(x), x^2, log(x)" value="sin(x)">
+                <button onclick="addFunction()">Add Function</button>
+            </div>
+            
+            <div class="control-group">
+                <label for="zoom-slider">Zoom:</label>
+                <input type="range" id="zoom-slider" min="10" max="200" value="50" onchange="updateZoom()">
+            </div>
+            
+            <button onclick="clearFunctions()">Clear All</button>
+            <button onclick="resetView()">Reset View</button>
+        </div>
+        
+        <div class="function-list" id="function-list"></div>
+        
+        <div id="canvas-container"></div>
+        
+        <div class="info">
+            <strong>Instructions:</strong> Enter mathematical functions using JavaScript syntax. 
+            Examples: sin(x), cos(x), x*x, sqrt(x), exp(x), log(x), abs(x), tan(x), x^2 (use pow(x,2)), etc.
+            <br><strong>Controls:</strong> Mouse wheel to zoom, click and drag to pan, click on function tags to toggle visibility.
+        </div>
+        <script src="js/script.js"></script>
+    </div>
+</body>
+</html>
