@@ -4,3 +4,8 @@
     margin-right: auto;
     width: 70%;
 }
+
+pre {
+    font-family:'Times New Roman'; 
+    font-size: 1.5rem;
+}
