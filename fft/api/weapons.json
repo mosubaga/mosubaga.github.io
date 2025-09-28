@@ -1,0 +1,1006 @@
+{
+    "katanas":[
+        {
+            "name":"Asura Knife",
+            "cost":"1600",
+            "location":"Shop",
+            "attk":"7",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Koutesu Knife",
+            "cost":"3000",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Bizen Boat",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Murasame",
+            "cost":"7000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Heaven's Cloud",
+            "cost":"8000",
+            "location":"Shop",
+            "attk":"11",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Kiyomori",
+            "cost":"10000",
+            "location":"Shop",
+            "attk":"12",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Muramasa",
+            "cost":"15000",
+            "location":"Shop",
+            "attk":"14",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Kikuichimoji",
+            "cost":"22000",
+            "location":"Shop",
+            "attk":"15",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Masamune",
+            "cost":"10",
+            "location":"Steal: Elmdor (Battle 45)",
+            "attk":"18",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Chirijiraden",
+            "cost":"10",
+            "location":"Move-Find: END",
+            "attk":"25",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "sticks":[
+        {
+            "name":"Cypress Rod",
+            "cost":"1000",
+            "location":"Shop",
+            "attk":"6",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Battle Bamboo",
+            "cost":"1400",
+            "location":"Shop",
+            "attk":"7",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Musk Rod",
+            "cost":"2400",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Iron Fan",
+            "cost":"4000",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Gokuu Rod",
+            "cost":"7000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"20",
+            "chacteristics":"Add: Innocent."
+        },
+        {
+            "name":"Ivory Rod",
+            "cost":"10000",
+            "location":"Poach: Sacred",
+            "attk":"11",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Octagon Rod",
+            "cost":"20000",
+            "location":"Shop",
+            "attk":"12",
+            "evade":"20",
+            "chacteristics":"Cancel: Darkness, Confusion, Oil, Frog, Poison, Slow, Stop, Don't Move, Don't Act."
+        },
+        {
+            "name":"Whale Whisker",
+            "cost":"37000",
+            "location":"Poach: Tiamat",
+            "attk":"16",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "rods":[
+        {
+            "name":"Rod",
+            "cost":"200",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Thunder Rod",
+            "cost":"400",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"20",
+            "chacteristics":"Lightning elemental ; Strengthen: Lightning ; Magic: Bolt."
+        },
+        {
+            "name":"Flame Rod",
+            "cost":"400",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"20",
+            "chacteristics":"Fire elemental ; Strengthen: Fire ; Magic: Fire."
+        },
+        {
+            "name":"Ice Rod",
+            "cost":"400",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"20",
+            "chacteristics":"Ice elemental ; Strengthen: Ice ; Magic: Ice."
+        },
+        {
+            "name":"Poison Rod",
+            "cost":"500",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"20",
+            "chacteristics":"Add: Poison."
+        },
+        {
+            "name":"Wizard Rod",
+            "cost":"8000",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"20",
+            "chacteristics":"AT Magic +2."
+        },
+        {
+            "name":"Dragon Rod",
+            "cost":"12000",
+            "location":"Poach: Blue Dragon,Steal from: Summoner (Battle 49)",
+            "attk":"5",
+            "evade":"20",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Faith Rod",
+            "cost":"10",
+            "location":"Move-Find: VALKYRIES",
+            "attk":"5",
+            "evade":"20",
+            "chacteristics":"Always: Faith ; Add: Faith."
+        }
+    ],
+    "spears":[
+        {
+            "name":"Javelin",
+            "cost":"1000",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Spear",
+            "cost":"2000",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Mythril Spear",
+            "cost":"4500",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Partisan",
+            "cost":"7000",
+            "location":"Shop",
+            "attk":"11",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Oberisk",
+            "cost":"10000",
+            "location":"Shop",
+            "attk":"12",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Holy Lance",
+            "cost":"36000",
+            "location":"Poach: Sacred",
+            "attk":"14",
+            "evade":"10",
+            "chacteristics":"Holy elemental ; Magic: Holy."
+        },
+        {
+            "name":"Dragon Whisker",
+            "cost":"44000",
+            "location":"Poach: Red Dragon",
+            "attk":"17",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Javelin (2)",
+            "cost":"1000",
+            "location":"Move-Find: Nelveska Temple.",
+            "attk":"30",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "knightswords":[
+        {
+            "name":"Defender",
+            "cost":"40000",
+            "location":"Poach: Taiju,Steal from: Meliadoul (Battle 35)",
+            "attk":"16",
+            "evade":"60",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Save the Queen",
+            "cost":"10",
+            "location":"Move-Find: TERMINATE,Get from: Meliadoul (after Battle 46)",
+            "attk":"18",
+            "evade":"30",
+            "chacteristics":"Always: Protect."
+        },
+        {
+            "name":"Excalibur",
+            "cost":"10",
+            "location":"Get from: Orlandu (after Battle 41),Find: MLAPAN",
+            "attk":"21",
+            "evade":"35",
+            "chacteristics":"Always: Haste ; Absorbs: Holy ; Strengthen: Holy."
+        },
+        {
+            "name":"Ragnarok",
+            "cost":"10",
+            "location":"Move-Find: VOYAGE,Won after: Battle 56",
+            "attk":"24",
+            "evade":"20",
+            "chacteristics":"Always: Shell."
+        },
+        {
+            "name":"Chaos Blade",
+            "cost":"10",
+            "location":"Move-Find: END",
+            "attk":"40",
+            "evade":"20",
+            "chacteristics":"Add: Petrify ; Always: Regen."
+        }
+    ],
+    "dictionaries":[
+        {
+            "name":"Battle Dictionary",
+            "cost":"3000",
+            "location":"Shop",
+            "attk":"7",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Monster Dictionary",
+            "cost":"6000",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Papyrus Plate",
+            "cost":"10000",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Madlemgen",
+            "cost":"30000",
+            "location":"Poach: Great Morbol",
+            "attk":"11",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "bows":[
+        {
+            "name":"Long Bow",
+            "cost":"800",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Silver Bow",
+            "cost":"1500",
+            "location":"Shop",
+            "attk":"5",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Ice Bow",
+            "cost":"2000",
+            "location":"Shop",
+            "attk":"5",
+            "evade":"0",
+            "chacteristics":"Ice Elemental."
+        },
+        {
+            "name":"Lightning Bow",
+            "cost":"3000",
+            "location":"Shop",
+            "attk":"6",
+            "evade":"0",
+            "chacteristics":"Lightning elemental ; Magic: Bolt2."
+        },
+        {
+            "name":"Mythril Bow",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"7",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Windslash Bow",
+            "cost":"8000",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"0",
+            "chacteristics":"Wind Elemental."
+        },
+        {
+            "name":"Ultimus Bow",
+            "cost":"22000",
+            "location":"Poach: King Behemoth,Steal from: Archer (Battle 41)",
+            "attk":"10",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Yoichi Bow",
+            "cost":"10",
+            "location":"Move-Find: DELTA,Steal from: Archer (VOYAGE)",
+            "attk":"12",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Perseus Bow",
+            "cost":"10",
+            "location":"Move-Find: VOYAGE",
+            "attk":"16",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "hammers":[
+        {
+            "name":"Hammer",
+            "cost":"1200",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Flame Whip",
+            "cost":"4000",
+            "location":"Shop",
+            "attk":"11",
+            "evade":"0",
+            "chacteristics":"Fire elemental ; Magic: Fire2."
+        },
+        {
+            "name":"Morning Star",
+            "cost":"9000",
+            "location":"Shop",
+            "attk":"16",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Scorpion Tail",
+            "cost":"40000",
+            "location":"Poach: Hyudra.",
+            "attk":"23",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "axes":[
+        {
+            "name":"Battle Axe",
+            "cost":"1500",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Giant Axe",
+            "cost":"4000",
+            "location":"Shop",
+            "attk":"12",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Slasher",
+            "cost":"12000",
+            "location":"Shop",
+            "attk":"16",
+            "evade":"0",
+            "chacteristics":"Add: Slow."
+        }
+    ],
+    "swords":[
+        {
+            "name":"Nagrarock",
+            "cost":"10",
+            "location":"Poach: Porky,Move-Find: Nelveska Temple",
+            "attk":"1",
+            "evade":"50",
+            "chacteristics":"Add: Toad."
+        },
+        {
+            "name":"Broad Sword",
+            "cost":"200",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Long Sword",
+            "cost":"500",
+            "location":"Shop",
+            "attk":"5",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Iron Sword",
+            "cost":"900",
+            "location":"Shop",
+            "attk":"6",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Mythril Sword",
+            "cost":"1600",
+            "location":"Shop",
+            "attk":"7",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Blood Sword",
+            "cost":"2500",
+            "location":"Poach: Hyudra,Steal from: Gafgarion (Battle 19),Move-Find: TERMINATE",
+            "attk":"8",
+            "evade":"5",
+            "chacteristics":"Absorbs damage as HP, drains the user if target is undead."
+        },
+        {
+            "name":"Coral Sword",
+            "cost":"3300",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"5",
+            "chacteristics":"Lightning Elemental."
+        },
+        {
+            "name":"Ancient Sword",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"5",
+            "chacteristics":"Add: Don't Move."
+        },
+        {
+            "name":"Sleep Sword",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"5",
+            "chacteristics":"Add: Sleep."
+        },
+        {
+            "name":"Diamond Sword",
+            "cost":"8000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Materia Blade",
+            "cost":"10",
+            "location":"Move-Find: Bervenia Volcano",
+            "attk":"10",
+            "evade":"10",
+            "chacteristics":"Allows Cloud to use his Limit command."
+        },
+        {
+            "name":"Platinum Sword",
+            "cost":"11000",
+            "location":"Shop",
+            "attk":"12",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Ice Brand",
+            "cost":"14000",
+            "location":"Shop",
+            "attk":"13",
+            "evade":"10",
+            "chacteristics":"Ice Elemental ; Magic: Ice2."
+        },
+        {
+            "name":"Rune Blade",
+            "cost":"20000",
+            "location":"Shop",
+            "attk":"14",
+            "evade":"15",
+            "chacteristics":"AT Magic +2."
+        }
+    ],
+    "staffs":[
+        {
+            "name":"Oak Staff",
+            "cost":"120",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"White Staff",
+            "cost":"800",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"15",
+            "chacteristics":"Cancel: Death Sentence."
+        },
+        {
+            "name":"Healing Staff",
+            "cost":"4000",
+            "location":"Get from: Alma (after Battle 23),Poach: Woodman",
+            "attk":"4",
+            "evade":"15",
+            "chacteristics":"Heals target ; damages undead."
+        },
+        {
+            "name":"Wizard Staff",
+            "cost":"4000",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"15",
+            "chacteristics":"AT Magic +1."
+        },
+        {
+            "name":"Rainbow Staff",
+            "cost":"2200",
+            "location":"Shop",
+            "attk":"5",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Gold Staff",
+            "cost":"7000",
+            "location":"Shop",
+            "attk":"6",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Mace of Zeus",
+            "cost":"10",
+            "location":"Move-Find: DELTA",
+            "attk":"6",
+            "evade":"15",
+            "chacteristics":"AT Physical +2, Magic +1."
+        },
+        {
+            "name":"Sage Staff",
+            "cost":"10",
+            "location":"Move-Find: BRIDGE",
+            "attk":"7",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "ninjaswords":[
+        {
+            "name":"Hidden Knife",
+            "cost":"3000",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Ninja Knife",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"9",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Short Edge",
+            "cost":"7000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Ninja Edge",
+            "cost":"10000",
+            "location":"Shop",
+            "attk":"12",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Spell Edge",
+            "cost":"16000",
+            "location":"Shop",
+            "attk":"13",
+            "evade":"5",
+            "chacteristics":"Add: Don't Act."
+        },
+        {
+            "name":"Sasuke Knife",
+            "cost":"10",
+            "location":"Move-Find: Nelveska Temple",
+            "attk":"14",
+            "evade":"15",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Iga Knife",
+            "cost":"10",
+            "location":"Move-Find: MLAPAN",
+            "attk":"15",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Koga Knife",
+            "cost":"10",
+            "location":"Move-Find: BRIDGE",
+            "attk":"15",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "bags":[
+        {
+            "name":"C Bag",
+            "cost":"53000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"0",
+            "chacteristics":"AT Magic +1."
+        },
+        {
+            "name":"P Bag",
+            "cost":"52000",
+            "location":"Shop",
+            "attk":"12",
+            "evade":"0",
+            "chacteristics":"Always: Regen."
+        },
+        {
+            "name":"H Bag",
+            "cost":"58000",
+            "location":"Shop",
+            "attk":"14",
+            "evade":"0",
+            "chacteristics":"Speed +1."
+        },
+        {
+            "name":"FS Bag",
+            "cost":"60000",
+            "location":"Poach: Wildbow",
+            "attk":"20",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "knives":[
+        {
+            "name":"Dagger",
+            "cost":"50",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"0",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Mythril Knife",
+            "cost":"500",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Blind Knife",
+            "cost":"800",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"5",
+            "chacteristics":"Add: Darkness."
+        },
+        {
+            "name":"Mage Masher",
+            "cost":"1500",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"5",
+            "chacteristics":"Add: Silence."
+        },
+        {
+            "name":"Platina Dagger",
+            "cost":"1800",
+            "location":"Shop",
+            "attk":"5",
+            "evade":"10",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Main Gauche",
+            "cost":"3000",
+            "location":"Shop",
+            "attk":"6",
+            "evade":"40",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Orichalcum",
+            "cost":"4000",
+            "location":"Shop",
+            "attk":"7",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Assassin Dagger",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"7",
+            "evade":"5",
+            "chacteristics":"Add: Death Sentence."
+        },
+        {
+            "name":"Air Knife",
+            "cost":"8000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"5",
+            "chacteristics":"Wind Elemental."
+        },
+        {
+            "name":"Zorlin Shape",
+            "cost":"12000",
+            "location":"Poach: Plague",
+            "attk":"12",
+            "evade":"10",
+            "chacteristics":"Add: Sleep."
+        }
+    ],
+    "crossbows":[
+        {
+            "name":"Bow Gun",
+            "cost":"400",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Night Killer",
+            "cost":"1500",
+            "location":"Shop",
+            "attk":"3",
+            "evade":"5",
+            "chacteristics":"Add: Darkness."
+        },
+        {
+            "name":"Crossbow",
+            "cost":"2000",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Poison Bow",
+            "cost":"4000",
+            "location":"Shop",
+            "attk":"4",
+            "evade":"5",
+            "chacteristics":"Add: Poison."
+        },
+        {
+            "name":"Hunting Bow",
+            "cost":"8000",
+            "location":"Shop",
+            "attk":"6",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Gastrafitis",
+            "cost":"20000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        }
+    ],
+    "harps":[
+        {
+            "name":"Ramia Harp",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"10",
+            "chacteristics":"Add: Confusion."
+        },
+        {
+            "name":"Bloody Strings",
+            "cost":"10000",
+            "location":"Shop",
+            "attk":"13",
+            "evade":"10",
+            "chacteristics":"Absorbs damage as HP, drains the user if target is undead."
+        },
+        {
+            "name":"Fairy Harp",
+            "cost":"30000",
+            "location":"Move-Find: VALKYRIES,Poach: Trent",
+            "attk":"15",
+            "evade":"10",
+            "chacteristics":"Add: Charm."
+        }
+    ],
+    "guns":[
+        {
+            "name":"Romanda Gun",
+            "cost":"5000",
+            "location":"Shop",
+            "attk":"6",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Mythril Gun",
+            "cost":"15000",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"5",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Stone Gun",
+            "cost":"10",
+            "location":"Poach: Dark Behemoth,Steal from: Chemist or Mediator (Germinas Peak)",
+            "attk":"16",
+            "evade":"5",
+            "chacteristics":"Start with: Petrify."
+        },
+        {
+            "name":"Blaze Gun",
+            "cost":"10",
+            "location":"Move-Find: NOGIAS,Steal from: Balk (Battle 38)",
+            "attk":"20",
+            "evade":"5",
+            "chacteristics":"Ice elemental ; Magic: Ice, Ice2 or Ice3."
+        },
+        {
+            "name":"Glacier Gun",
+            "cost":"10",
+            "location":"Move-Find: NOGIAS",
+            "attk":"21",
+            "evade":"5",
+            "chacteristics":"Fire elemental ; Magic: Fire, Fire2 or Fire3."
+        },
+        {
+            "name":"Blast Gun",
+            "cost":"10",
+            "location":"Move-Find: TIGER",
+            "attk":"22",
+            "evade":"5",
+            "chacteristics":"Lightning elemental ; Magic: Bolt, Bolt2 or Bolt3."
+        }
+    ],
+    "fabrics":[
+        {
+            "name":"Persia",
+            "cost":"7000",
+            "location":"Shop",
+            "attk":"8",
+            "evade":"50",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Cashmere",
+            "cost":"15000",
+            "location":"Shop",
+            "attk":"10",
+            "evade":"50",
+            "chacteristics":"No special characteristics."
+        },
+        {
+            "name":"Ryozan Silk",
+            "cost":"40000",
+            "location":"Poach: Tiamat",
+            "attk":"15",
+            "evade":"50",
+            "chacteristics":"No special characteristics."
+        }
+    ]
+}

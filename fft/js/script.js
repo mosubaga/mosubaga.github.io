@@ -2,7 +2,7 @@
 
 function getjobs()
 {   
-    const sURL = "./js/jobs.json";
+    const sURL = "./api/jobs.json";
     fetch(sURL)
         .then((response) => {
             return response.json();
