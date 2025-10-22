@@ -1,5 +1,23 @@
 {
     "results": [
+                {
+            "cover_url": "https://learning.oreilly.com/library/cover/9781098175696/",
+            "title": "Powerful Python",
+            "description": "<span><div><p>Once you've mastered the basics of Python, how do you skill up to the top 1%? How do you focus your learning time on topics that yield the most benefit for production engineering and data teams—without getting distracted by info of little real-world use? This book answers these questions and more. </p><p>Based on author Aaron Maxwell's software engineering career in Silicon Valley, this unique book focuses on the Python first principles that act to accelerate everything else: the 5% of programming knowledge that makes the remaining 95% fall like dominos. It's also this knowledge that helps you become an exceptional Python programmer, fast.</p><ul><li>Learn how to think like a Pythonista: explore advanced Pythonic thinking</li><li>Create lists, dicts, and other data structures using a high-level, readable, and maintainable syntax</li><li>Explore higher-order function abstractions that form the basis of Python libraries</li><li>Examine Python's metaprogramming tools for priceless patterns of code reuse </li><li>Master Python's error model and learn how to leverage it in your own code</li><li>Learn the more potent and advanced tools of Python's object system</li><li>Take a deep dive into Python's automated testing and TDD</li><li>Learn how Python logging helps you troubleshoot and debug more quickly </li></ul></div></span>",
+            "topic": "Python"
+        },
+        {
+            "cover_url": "https://learning.oreilly.com/library/cover/9781098139575/",
+            "title": "Hypermodern Python Tooling",
+            "description": "<span><div><p>Keeping up with the Python ecosystem can be daunting. Its developer tooling doesn't provide the out-of-the-box experience native to languages like Rust and Go. When it comes to long-term project maintenance or collaborating with others, every Python project faces the same problem: how to build reliable workflows beyond local development while staying in sync with the evolving ecosystem.</p><p>With this hands-on guide, Python developers will learn how to forge the moving parts of a Python project into an easy-to-use toolchain, using state-of-the-art tools including Poetry, Nox, pytest, mypy, pre-commit, Black, Ruff, uv, Rye, Hatch, and more. Author Claudio Jolowicz shows you how to create robust Python project structures complete with unit tests, static analysis, code formatting, and type checking.</p><p>You'll learn how to:</p><ul><li>Create open source projects with state-of-the-art infrastructure</li><li>Build a custom infrastructure for all Python projects in a company or team</li><li>Improve and modernize the infrastructure of an existing Python project</li><li>Evaluate modern Python tooling for adoption in existing projects</li><li>Use tools for packaging and dependency management</li><li>Automate common development tasks such as testing, dependency updates, and publishing releases</li></ul></div></span>",
+            "topic": "Python"
+        },
+        {
+            "cover_url": "https://learning.oreilly.com/library/cover/9781098155421/",
+            "title": "Think Python, 3rd Edition",
+            "description": "<span><div><p>Python is an excellent way to get started in programming, and this clear, concise guide walks you through Python a step at a time—beginning with basic programming concepts before moving on to functions, data structures, and object-oriented design. This revised third edition reflects the growing role of large language models (LLMs) in programming and includes exercises on effective LLM prompts, testing code, and debugging skills.</p><p>With this popular hands-on guide at your side, you'll get:</p><ul><li>A grounding in the syntax and semantics of the Python language</li><li>A clear definition of each programming concept, with emphasis on clear vocabulary</li><li>How to work with variables, statements, functions, and data structures in a logical progression</li><li>Techniques for reading and writing files and databases</li><li>A solid understanding of objects, methods, and object-oriented programming</li><li>Debugging strategies for syntax, runtime, and semantic errors</li><li>An introduction to recursion, interface design, data structures, and basic algorithms</li><li>How to use LLMs—including effective prompts, testing code, and debugging </li><li>And more</li></ul></div></span>",
+            "topic": "Python"
+        },
         {
             "cover_url": "https://learning.oreilly.com/library/cover/9781098171292/",
             "title": "Learning Python, 6th Edition",
