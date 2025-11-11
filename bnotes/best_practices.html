@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash Scripting Guide - Best Practices</title>
+    <link href="styles/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🐚 Bash Scripting Guide</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="basic_syntax.html">Basic Syntax</a></li>
+                <li><a href="control_flow.html">Control Flow</a></li>
+                <li><a href="functions.html">Functions</a></li>
+                <li><a href="sed_awk.html">Sed & Awk</a></li>
+                <li><a href="best_practices.html" class="active">Best Practices</a></li>
+                <li><a href="debugging.html">Debugging</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="hero">
+            <h1>Best Practices</h1>
+            <p>Write clean, maintainable, and robust Bash scripts</p>
+        </div>
+        
+       <div class="card">
+            <h2>Script Structure</h2>
+            
+            <div class="code-example">
+                <pre><code>#!/usr/bin/env bash
+#
+# Script: backup_manager.sh
+# Description: Automated backup system for databases and files
+# Author: Your Name
+# Date: 2024-11-10
+# Version: 1.0
+#
+# Usage: ./backup_manager.sh [options]
+#
+# Dependencies:
+#   - rsync
+#   - tar
+#   - gzip
+
+set -euo pipefail  # Exit on error, undefined variables, pipe failures
+IFS=$'\n\t'        # Safe Internal Field Separator
+
+# Constants
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly BACKUP_DIR="/var/backups"
+readonly LOG_FILE="/var/log/backup.log"
+
+# Functions
+log_info() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] INFO: $*" | tee -a "$LOG_FILE"
+}
+
+# Main logic
+main() {
+    log_info "Backup started"
+    # Script logic here
+}
+
+main "$@"</code></pre>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Key Elements:</strong>
+                <ul>
+                    <li>Clear shebang with <code>/usr/bin/env bash</code></li>
+                    <li>Comprehensive header comments</li>
+                    <li>Error handling with <code>set -euo pipefail</code></li>
+                    <li>Organized structure with functions</li>
+                    <li>Main function for entry point</li>
+                </ul>
+            </div>
+        </div>
+        <br>
+         <div class="card">
+            <h2>Error Handling</h2>
+            
+            <h3>Use set Options</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Exit immediately if a command fails
+set -e
+
+# Exit if undefined variable is used
+set -u
+
+# Pipe failures cause script to exit
+set -o pipefail
+
+# Combined (recommended)
+set -euo pipefail</code></pre>
+            </div>
+
+            <h3>Trap Errors</h3>
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code>#!/bin/bash
+
+set -euo pipefail
+
+# Cleanup function
+cleanup() {
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "Error occurred. Exit code: $exit_code" >&2
+    fi
+    # Cleanup temporary files
+    rm -f /tmp/script.$$.*
+    exit $exit_code
+}
+
+# Set trap
+trap cleanup EXIT ERR
+
+# Script logic here</code></pre>
+            </div>
+
+            <h3>Check Command Success</h3>
+            <div class="comparison">
+                <div class="good-box">
+                    <h4>✓ Good</h4>
+                    <div class="code-example">
+                        <pre><code>if ! command -v docker &> /dev/null; then
+    echo "Docker not found" >&2
+    exit 1
+fi
+
+if ! cp file.txt backup/; then
+    echo "Backup failed" >&2
+    exit 1
+fi</code></pre>
+                    </div>
+                </div>
+                <div class="bad-box">
+                    <h4>✗ Bad</h4>
+                    <div class="code-example">
+                        <pre><code># Ignoring errors
+cp file.txt backup/
+
+# Not checking if command exists
+docker ps</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Variable Naming and Quoting</h2>
+            
+            <h3>Always Quote Variables</h3>
+            <div class="comparison">
+                <div class="good-box">
+                    <h4>✓ Good</h4>
+                    <div class="code-example">
+                        <pre><code>filename="my file.txt"
+if [ -f "$filename" ]; then
+    cat "$filename"
+fi
+
+for file in "$@"; do
+    process "$file"
+done</code></pre>
+                    </div>
+                </div>
+                <div class="bad-box">
+                    <h4>✗ Bad</h4>
+                    <div class="code-example">
+                        <pre><code>filename="my file.txt"
+if [ -f $filename ]; then
+    cat $filename
+fi
+
+for file in $@; do
+    process $file
+done</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Use Meaningful Variable Names</h3>
+            <div class="comparison">
+                <div class="good-box">
+                    <h4>✓ Good</h4>
+                    <div class="code-example">
+                        <pre><code>user_count=0
+max_retries=3
+database_host="localhost"
+is_production=false
+
+readonly CONFIG_FILE="/etc/app.conf"
+readonly MAX_CONNECTIONS=100</code></pre>
+                    </div>
+                </div>
+                <div class="bad-box">
+                    <h4>✗ Bad</h4>
+                    <div class="code-example">
+                        <pre><code>c=0
+n=3
+h="localhost"
+p=false
+
+FILE="/etc/app.conf"
+MAX=100</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Use readonly for Constants</h3>
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code>readonly API_URL="https://api.example.com"
+readonly MAX_RETRIES=3
+readonly BACKUP_DIR="/var/backups"
+
+# These can't be modified later
+# API_URL="other"  # Would cause error</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Function Best Practices</h2>
+            
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code>#!/bin/bash
+
+# Function documentation
+# Validates email address format
+# Args:
+#   $1 - Email address to validate
+# Returns:
+#   0 if valid, 1 if invalid
+validate_email() {
+    local email=$1
+    local regex='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    
+    if [[ ! $email =~ $regex ]]; then
+        echo "Invalid email format: $email" >&2
+        return 1
+    fi
+    
+    return 0
+}
+
+# Process file with validation
+# Args:
+#   $1 - Input file path
+#   $2 - Output directory (optional, defaults to current)
+# Returns:
+#   0 on success, 1 on failure
+process_file() {
+    local input_file=$1
+    local output_dir=${2:-.}
+    
+    # Validate inputs
+    if [ ! -f "$input_file" ]; then
+        echo "Error: File not found: $input_file" >&2
+        return 1
+    fi
+    
+    if [ ! -d "$output_dir" ]; then
+        echo "Error: Directory not found: $output_dir" >&2
+        return 1
+    fi
+    
+    # Process file
+    local output_file="$output_dir/$(basename "$input_file")"
+    cp "$input_file" "$output_file"
+    
+    return 0
+}</code></pre>
+            </div>
+    </div>
+    <br>
+    <div class="card">
+            <h2>Input Validation</h2>
+            
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code>#!/bin/bash
+
+# Validate argument count
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <source> <destination>" >&2
+    exit 1
+fi
+
+source_file=$1
+dest_file=$2
+
+# Validate file exists
+if [ ! -f "$source_file" ]; then
+    echo "Error: Source file not found: $source_file" >&2
+    exit 1
+fi
+
+# Validate not overwriting
+if [ -f "$dest_file" ]; then
+    read -p "Destination exists. Overwrite? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Operation cancelled"
+        exit 0
+    fi
+fi
+
+# Validate numeric input
+read -p "Enter port number: " port
+if ! [[ $port =~ ^[0-9]+$ ]] || [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+    echo "Error: Invalid port number" >&2
+    exit 1
+fi</code></pre>
+            </div>
+        </div>
+<br>
+<div class="card">
+            <h2>Safe File Operations</h2>
+            
+            <div class="comparison">
+                <div class="good-box">
+                    <h4>✓ Good: Use Temporary Files</h4>
+                    <div class="code-example">
+                        <pre><code># Create temp file safely
+temp_file=$(mktemp)
+trap 'rm -f "$temp_file"' EXIT
+
+# Process to temp first
+process_data > "$temp_file"
+
+# Move if successful
+mv "$temp_file" final_file.txt</code></pre>
+                    </div>
+                </div>
+                <div class="bad-box">
+                    <h4>✗ Bad: Direct Overwrite</h4>
+                    <div class="code-example">
+                        <pre><code># Dangerous - loses data if fails
+process_data > final_file.txt</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Safe Directory Operations</h3>
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code># Change directory safely
+cd "$directory" || {
+    echo "Failed to change to $directory" >&2
+    exit 1
+}
+
+# Or use subshell
+(
+    cd "$directory" || exit 1
+    # Operations here don't affect parent shell
+    process_files
+)</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Logging and Output</h2>
+            
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code>#!/bin/bash
+
+readonly LOG_FILE="/var/log/script.log"
+
+# Logging functions
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
+}
+
+log_info() {
+    log "INFO: $*"
+}
+
+log_error() {
+    log "ERROR: $*" >&2
+}
+
+log_debug() {
+    if [ "${DEBUG:-0}" = "1" ]; then
+        log "DEBUG: $*"
+    fi
+}
+
+# Usage
+log_info "Script started"
+log_error "Connection failed"
+log_debug "Variable value: $var"
+
+# Separate stderr and stdout
+{
+    echo "This goes to stdout"
+    echo "This goes to stderr" >&2
+} | grep "stdout"</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Command Substitution</h2>
+            
+            <div class="comparison">
+                <div class="good-box">
+                    <h4>✓ Good: Use $()</h4>
+                    <div class="code-example">
+                        <pre><code>current_date=$(date +%Y-%m-%d)
+file_count=$(ls -1 | wc -l)
+
+# Nested substitution
+backup_name="backup-$(date +%Y%m%d).tar.gz"</code></pre>
+                    </div>
+                </div>
+                <div class="bad-box">
+                    <h4>✗ Bad: Use Backticks</h4>
+                    <div class="code-example">
+                        <pre><code>current_date=`date +%Y-%m-%d`
+file_count=`ls -1 | wc -l`
+
+# Hard to nest
+backup_name="backup-`date +%Y%m%d`.tar.gz"</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Testing and Conditionals</h2>
+            
+            <div class="comparison">
+                <div class="good-box">
+                    <h4>✓ Good: Use [[ ]]</h4>
+                    <div class="code-example">
+                        <pre><code># Pattern matching
+if [[ $file == *.txt ]]; then
+    echo "Text file"
+fi
+
+# Regex
+if [[ $email =~ ^[a-z]+@[a-z]+$ ]]; then
+    echo "Valid"
+fi
+
+# No word splitting issues
+if [[ $var == "hello world" ]]; then
+    echo "Match"
+fi</code></pre>
+                    </div>
+                </div>
+                <div class="bad-box">
+                    <h4>✗ Bad: Use [ ]</h4>
+                    <div class="code-example">
+                        <pre><code># No pattern matching
+if [ $file == *.txt ]; then
+    echo "Text file"
+fi
+
+# No regex support
+
+# Word splitting issues
+if [ $var == "hello world" ]; then
+    echo "Match"  # May fail
+fi</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+ <div class="card">
+            <h2>Performance Tips</h2>
+            
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code># Avoid unnecessary subprocess
+# Good
+count=0
+for file in *.txt; do
+    ((count++))
+done
+
+# Bad - spawns wc process
+count=$(ls *.txt | wc -l)
+
+# Use built-in commands
+# Good
+[[ -f "$file" ]]
+
+# Bad - spawns test
+test -f "$file"
+
+# Minimize pipe usage
+# Good
+while IFS= read -r line; do
+    process "$line"
+done < file.txt
+
+# Bad - creates subshell
+cat file.txt | while read line; do
+    process "$line"
+done</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Security Best Practices</h2>
+            
+            <div class="code-example good-example">
+                <span class="code-label">✓ GOOD</span>
+                <pre><code># Never eval user input
+# Bad: eval "$user_input"
+
+# Use arrays for command building
+command=(rsync -avz)
+command+=("--exclude=*.tmp")
+"${command[@]}" source/ dest/
+
+# Validate and sanitize input
+sanitize_filename() {
+    local filename=$1
+    # Remove dangerous characters
+    filename="${filename//[^a-zA-Z0-9._-]/}"
+    echo "$filename"
+}
+
+# Use full paths for commands in cron
+/usr/bin/find /var/log -name "*.log" -delete
+
+# Set restrictive permissions
+touch sensitive_file
+chmod 600 sensitive_file
+
+# Don't store passwords in scripts
+# Use environment variables or config files
+# with restricted permissions
+DB_PASSWORD="${DB_PASSWORD:-$(cat /etc/db_password)}"</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Script Template</h2>
+            <p>Here's a comprehensive template following all best practices:</p>
+            
+            <div class="code-example good-example">
+                <span class="code-label">TEMPLATE</span>
+                <pre><code>#!/usr/bin/env bash
+#
+# Script: script_name.sh
+# Description: Brief description of what script does
+# Author: Your Name
+# Date: 2024-11-10
+# Version: 1.0
+#
+# Usage: ./script_name.sh [options] arg1 arg2
+#   -h, --help      Show this help message
+#   -v, --verbose   Enable verbose output
+#   -d, --debug     Enable debug mode
+#
+# Examples:
+#   ./script_name.sh input.txt output.txt
+#   ./script_name.sh --verbose data/
+#
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# Constants
+readonly SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly VERSION="1.0"
+
+# Variables
+VERBOSE=0
+DEBUG=0
+
+# Functions
+usage() {
+    cat << EOF
+Usage: $SCRIPT_NAME [options] arg1 arg2
+
+Options:
+    -h, --help      Show this help message
+    -v, --verbose   Enable verbose output
+    -d, --debug     Enable debug mode
+    --version       Show version
+
+Examples:
+    $SCRIPT_NAME input.txt output.txt
+    $SCRIPT_NAME --verbose data/
+EOF
+    exit 0
+}
+
+log_info() {
+    echo "[INFO] $*"
+}
+
+log_error() {
+    echo "[ERROR] $*" >&2
+}
+
+log_debug() {
+    if [ "$DEBUG" = "1" ]; then
+        echo "[DEBUG] $*"
+    fi
+}
+
+cleanup() {
+    local exit_code=$?
+    # Cleanup code here
+    exit $exit_code
+}
+
+trap cleanup EXIT ERR
+
+parse_args() {
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -h|--help)
+                usage
+                ;;
+            -v|--verbose)
+                VERBOSE=1
+                shift
+                ;;
+            -d|--debug)
+                DEBUG=1
+                shift
+                ;;
+            --version)
+                echo "$SCRIPT_NAME version $VERSION"
+                exit 0
+                ;;
+            -*)
+                log_error "Unknown option: $1"
+                usage
+                ;;
+            *)
+                # Positional arguments
+                break
+                ;;
+        esac
+    done
+}
+
+main() {
+    parse_args "$@"
+    
+    log_info "Script started"
+    
+    # Main logic here
+    
+    log_info "Script completed"
+}
+
+main "$@"</code></pre>  
+            </div>
+        </div>
+
+
+
+
+
+        
+
+    
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+    </footer>
+    <script>hljs.highlightAll();</script>
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

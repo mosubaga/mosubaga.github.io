@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash Scripting Guide - Control Flow</title>
+    <link href="styles/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🐚 Bash Scripting Guide</div>
+            <ul class="nav-links">
+                <li><a href="index.html" >Introduction</a></li>
+                <li><a href="basic_syntax.html">Basic Syntax</a></li>
+                <li><a href="control_flow.html" class="active">Control Flow</a></li>
+                <li><a href="functions.html">Functions</a></li>
+                <li><a href="sed_awk.html">Sed & Awk</a></li>
+                <li><a href="best_practices.html">Best Practices</a></li>
+                <li><a href="debugging.html">Debugging</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+         <div class="hero">
+            <h1>Control Flow</h1>
+            <p>Master conditional statements and loops in Bash. This page will also introduce you to Regular Expressions in Bash.</p>
+        </div>
+
+        <div class="card">
+            <h2>If Statements</h2>
+            <p>Conditional execution based on test conditions:</p>
+            
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Basic if statement
+if [ $age -ge 18 ]; then
+    echo "Adult"
+fi
+
+# If-else
+if [ $score -ge 60 ]; then
+    echo "Pass"
+else
+    echo "Fail"
+fi
+
+# If-elif-else
+if [ $grade -ge 90 ]; then
+    echo "A"
+elif [ $grade -ge 80 ]; then
+    echo "B"
+elif [ $grade -ge 70 ]; then
+    echo "C"
+else
+    echo "F"
+fi</code></pre>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Note:</strong> Always use spaces inside square brackets: <code>[ $var -eq 5 ]</code> not <code>[$var -eq 5]</code>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Test Operators</h2>
+            
+            <h3>Integer Comparisons</h3>
+            <div class="code-example">
+                <pre><code>-eq    # Equal to
+-ne    # Not equal to
+-gt    # Greater than
+-lt    # Less than
+-ge    # Greater than or equal to
+-le    # Less than or equal to
+
+# Examples
+[ $a -eq $b ]    # Is a equal to b?
+[ $x -gt 10 ]    # Is x greater than 10?</code></pre>
+            </div>
+
+            <h3>String Comparisons</h3>
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code>=      # Equal to
+!=     # Not equal to
+-z     # String is empty
+-n     # String is not empty
+<      # Less than (alphabetically)
+>      # Greater than (alphabetically)
+
+# Examples
+[ "$str1" = "$str2" ]    # Are strings equal?
+[ -z "$str" ]            # Is string empty?
+[ -n "$str" ]            # Is string not empty?</code></pre>
+            </div>
+
+            <h3>File Tests</h3>
+            <div class="code-example">
+                <pre><code>-e     # File exists
+-f     # Is a regular file
+-d     # Is a directory
+-r     # File is readable
+-w     # File is writable
+-x     # File is executable
+-s     # File is not empty
+
+# Examples
+if [ -f "config.txt" ]; then
+    echo "Config file exists"
+fi
+
+if [ -d "/var/log" ]; then
+    echo "Directory exists"
+fi
+
+if [ ! -e "file.txt" ]; then
+    echo "File does not exist"
+fi</code></pre>
+            </div>
+
+            <h3>Logical Operators</h3>
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code>&&     # AND
+||     # OR
+!      # NOT
+
+# Examples
+if [ $age -ge 18 ] && [ $age -le 65 ]; then
+    echo "Working age"
+fi
+
+if [ $x -lt 0 ] || [ $x -gt 100 ]; then
+    echo "Out of range"
+fi
+
+if [ ! -d "backup" ]; then
+    mkdir backup
+fi</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Modern Test Syntax [[ ]]</h2>
+            <p>The double bracket syntax provides more features and is generally preferred:</p>
+            
+            <div class="code-example">
+                <pre><code># Pattern matching
+if [[ $filename == *.txt ]]; then
+    echo "Text file"
+fi
+
+# Regular expressions
+if [[ $email =~ ^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$ ]]; then
+    echo "Valid email format"
+fi
+
+# No word splitting (safer)
+if [[ $var == "hello world" ]]; then
+    echo "Match"
+fi
+
+# Logical operators (easier to read)
+if [[ $age -ge 18 && $citizen == "yes" ]]; then
+    echo "Can vote"
+fi</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Case Statements</h2>
+            <p>Multi-way branching for cleaner code:</p>
+            
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code>#!/bin/bash
+
+read -p "Enter a letter: " letter
+
+case $letter in
+    [aeiou])
+        echo "Vowel"
+        ;;
+    [0-9])
+        echo "Digit"
+        ;;
+    [A-Z])
+        echo "Uppercase letter"
+        ;;
+    *)
+        echo "Other character"
+        ;;
+esac</code></pre>
+            </div>
+
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+# Menu system
+
+echo "Select an option:"
+echo "1) Start service"
+echo "2) Stop service"
+echo "3) Restart service"
+echo "4) Exit"
+
+read -p "Choice: " choice
+
+case $choice in
+    1|start)
+        echo "Starting service..."
+        ;;
+    2|stop)
+        echo "Stopping service..."
+        ;;
+    3|restart)
+        echo "Restarting service..."
+        ;;
+    4|exit|quit)
+        echo "Goodbye!"
+        exit 0
+        ;;
+    *)
+        echo "Invalid option"
+        exit 1
+        ;;
+esac</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>For Loops</h2>
+            
+            <h3>Basic For Loop</h3>
+            <div class="code-example">
+                <pre><code># Loop over a list
+for item in apple banana cherry; do
+    echo "Fruit: $item"
+done
+
+# Loop over command output
+for file in *.txt; do
+    echo "Processing $file"
+    cat "$file"
+done
+
+# Loop over array
+fruits=("apple" "banana" "cherry")
+for fruit in "${fruits[@]}"; do
+    echo "$fruit"
+done</code></pre>
+            </div>
+
+            <h3>C-Style For Loop</h3>
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code># Traditional for loop
+for ((i=0; i<10; i++)); do
+    echo "Number: $i"
+done
+
+# Countdown
+for ((i=10; i>=1; i--)); do
+    echo "$i"
+    sleep 1
+done
+echo "Liftoff!"</code></pre>
+            </div>
+
+            <h3>Looping Through Files</h3>
+            <div class="code-example">
+                <pre><code># Safe way to loop through files with spaces
+while IFS= read -r -d '' file; do
+    echo "Found: $file"
+done < <(find . -name "*.log" -print0)
+
+# Simple file loop
+for file in /var/log/*.log; do
+    if [ -f "$file" ]; then
+        echo "Log file: $file"
+    fi
+done</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>While Loops</h2>
+            <p>Execute commands while a condition is true:</p>
+            
+            <div class="code-example">
+                <pre><code># Basic while loop
+counter=1
+while [ $counter -le 5 ]; do
+    echo "Count: $counter"
+    ((counter++))
+done
+
+# Read file line by line
+while IFS= read -r line; do
+    echo "Line: $line"
+done < input.txt
+
+# Infinite loop with break
+while true; do
+    read -p "Enter command (quit to exit): " cmd
+    if [ "$cmd" = "quit" ]; then
+        break
+    fi
+    echo "You entered: $cmd"
+done</code></pre>
+            </div>
+
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+# Wait for file to appear
+
+echo "Waiting for file.txt..."
+while [ ! -f "file.txt" ]; do
+    sleep 1
+    echo "Still waiting..."
+done
+echo "File found!"</code>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Until Loops</h2>
+            <p>Execute commands until a condition becomes true:</p>
+            
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code># Basic until loop (opposite of while)
+counter=1
+until [ $counter -gt 5 ]; do
+    echo "Count: $counter"
+    ((counter++))
+done
+
+# Wait until service is ready
+until curl -s http://localhost:8080 > /dev/null; do
+    echo "Waiting for service..."
+    sleep 2
+done
+echo "Service is ready!"</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Loop Control</h2>
+            
+            <div class="code-example">
+                <pre><code># break - exit the loop
+for i in {1..10}; do
+    if [ $i -eq 5 ]; then
+        break  # Exit loop when i is 5
+    fi
+    echo $i
+done
+
+# continue - skip to next iteration
+for i in {1..10}; do
+    if [ $((i % 2)) -eq 0 ]; then
+        continue  # Skip even numbers
+    fi
+    echo $i  # Only prints odd numbers
+done
+
+# Nested loops with break
+for i in {1..3}; do
+    for j in {1..3}; do
+        if [ $j -eq 2 ]; then
+            break  # Only breaks inner loop
+        fi
+        echo "$i,$j"
+    done
+done</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Select Menu</h2>
+            <p>Create interactive menus easily:</p>
+            
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+echo "Choose your favorite fruit:"
+select fruit in "Apple" "Banana" "Cherry" "Quit"; do
+    case $fruit in
+        "Apple")
+            echo "You chose Apple"
+            ;;
+        "Banana")
+            echo "You chose Banana"
+            ;;
+        "Cherry")
+            echo "You chose Cherry"
+            ;;
+        "Quit")
+            echo "Goodbye!"
+            break
+            ;;
+        *)
+            echo "Invalid option $REPLY"
+            ;;
+    esac
+done</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+                <section>
+      <h2>1. What is a Regular Expression (regex)?</h2>
+      <p>
+        A <strong>regular expression</strong> is a sequence of characters that forms a search pattern,
+        commonly used for string matching, extraction, and text validation.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Regex in Bash Scripting</h2>
+      <ul>
+        <li>Bash supports regex in the <code>[[ string =~ regex ]]</code> conditional expression.</li>
+        <li>Regex is also widely used in tools like <code>grep</code>, <code>sed</code>, <code>awk</code>.</li>
+      </ul>
+      <div class="tip">
+        <strong>Note:</strong> Bash uses "extended regular expressions" (ERE) in <code>=~</code>, similar to <code>egrep</code>.
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Basic Syntax Examples</h2>
+      <ul>
+        <li>
+          In Bash conditionals:
+          <div class="code-example"><pre><code>text="hello2024"
+if [[ $text =~ [a-z]+[0-9]+ ]]; then
+  echo "It matches!"
+fi
+</code></pre></div>
+        </li>
+        <li>
+          With <code>grep</code>:
+          <div class="code-example"><pre><code>grep "^[A-Z][a-z]+" names.txt</code></pre></div>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Common Regex Patterns</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:0.96em;">
+        <tr>
+          <th style="text-align:left;padding:0.45em 0.7em;">Pattern</th>
+          <th style="text-align:left;padding:0.45em 0.7em;">Meaning</th>
+        </tr>
+        <tr><td><code>.</code></td><td>Any single character</td></tr>
+        <tr><td><code>[abc]</code></td><td>Any character a, b, or c</td></tr>
+        <tr><td><code>[^abc]</code></td><td>Any character NOT a, b, or c</td></tr>
+        <tr><td><code>[a-z]</code></td><td>Any lowercase letter</td></tr>
+        <tr><td><code>[0-9]</code></td><td>Any digit</td></tr>
+        <tr><td><code>+</code></td><td>One or more (e.g., <code>ab+</code> matches <code>ab, abb, abbb</code>)</td></tr>
+        <tr><td><code>*</code></td><td>Zero or more</td></tr>
+        <tr><td><code>?</code></td><td>Zero or one</td></tr>
+        <tr><td><code>^</code></td><td>Start of line</td></tr>
+        <tr><td><code>$</code></td><td>End of line</td></tr>
+        <tr><td><code>(...)</code></td><td>Capture group</td></tr>
+        <tr><td><code>|</code></td><td>Or (alternation)</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. Practical Bash Regex Matching Example</h2>
+      <div class="code-example">
+        <pre><code>#!/bin/bash
+
+email="test@linux.org"
+pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+if [[ $email =~ $pattern ]]; then
+  echo "Valid email address"
+else
+  echo "Invalid email"
+fi
+</code></pre></div>
+        <ul>
+          <li>Double brackets <code>[[ ... ]]</code> required for regex matching.</li>
+          <li>No need to quote the pattern variable with <code>=~</code>.</li>
+        </ul>
+    </section>
+
+    <section>
+      <h2>6. Regex with <code>grep</code> and <code>sed</code></h2>
+      <ul>
+        <li>
+          <strong>Search lines containing a phone number:</strong>
+          <div class="code-example"><pre><code>grep -E '[0-9]{3}-[0-9]{3}-[0-9]{4}' contacts.txt</code></pre></div>
+        </li>
+        <li>
+          <strong>Replace digits with "X" in a file:</strong>
+          <div class="code-example"><pre><code>sed -E 's/[0-9]/X/g' secret.txt</code></pre></div>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. Extracting regex matches in Bash</h2>
+      <div class="code-example">
+        <pre><code>line="My phone: 555-1212"
+if [[ $line =~ ([0-9]{3})-([0-9]{4}) ]]; then
+  echo "Area: ${BASH_REMATCH[1]}, Number: ${BASH_REMATCH[2]}"
+fi
+</code></pre>
+        <ul>
+          <li><code>BASH_REMATCH</code> contains matched substrings and capture groups.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>8. Resources</h2>
+      <ul>
+        <li><a href="https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html" target="_blank">Bash Manual: Pattern Matching</a></li>
+        <li><a href="https://www.gnu.org/software/grep/manual/grep.html#Regular-Expressions" target="_blank">GNU grep Regular Expressions</a></li>
+        <li><a href="https://tldp.org/LDP/abs/html/x16729.html" target="_blank">The Advanced Bash-Scripting Guide: Regular Expressions</a></li>
+      </ul>
+    </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+    </footer>
+    <script>hljs.highlightAll();</script>
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

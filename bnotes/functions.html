@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash Scripting Guide - Functions</title>
+    <link href="styles/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🐚 Bash Scripting Guide</div>
+            <ul class="nav-links">
+                <li><a href="index.html" >Introduction</a></li>
+                <li><a href="basic_syntax.html">Basic Syntax</a></li>
+                <li><a href="control_flow.html">Control Flow</a></li>
+                <li><a href="functions.html" class="active">Functions</a></li>
+                <li><a href="sed_awk.html">Sed & Awk</a></li>
+                <li><a href="best_practices.html">Best Practices</a></li>
+                <li><a href="debugging.html">Debugging</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="hero">
+            <h1>Functions</h1>
+            <p>Write reusable, modular code with Bash functions</p>
+        </div>
+
+        <div class="card">
+            <h2>Defining Functions</h2>
+            <p>Functions help organize code into reusable blocks. There are two ways to define them:</p>
+            
+            <div class="code-example">
+                <pre><code># Method 1: function keyword
+function greet() {
+    echo "Hello, World!"
+}
+
+# Method 2: without function keyword (POSIX compatible)
+greet() {
+    echo "Hello, World!"
+}
+
+# Call the function
+greet</code></pre>
+
+        </div></div>
+        <br>
+        <div class="card">
+            <h2>Function Parameters</h2>
+            <p>Functions can accept arguments just like scripts:</p>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Function with parameters
+greet_user() {
+    local name=$1
+    local age=$2
+    echo "Hello, $name! You are $age years old."
+}
+
+# Call with arguments
+greet_user "Alice" 25
+greet_user "Bob" 30
+
+# Access all parameters
+print_all() {
+    echo "Number of args: $#"
+    echo "All args: $@"
+    echo "Script name: $0"
+    echo "First arg: $1"
+}
+
+print_all apple banana cherry</code>
+            </div>
+
+            <h3>Parameter Variables</h3>
+            <div class="code-example">
+                <pre><code>$1-$9    # First 9 arguments
+${10}    # 10th argument and beyond
+$#       # Number of arguments
+$@       # All arguments (separate words)
+$*       # All arguments (single word)
+$0       # Script/function name</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Return Values</h2>
+            <p>Functions can return values using the <code>return</code> statement:</p>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Function to calculate sum
+calculate() {
+    local sum=$(($1 + $2))
+    return $sum
+}
+
+calculate 5 10
+result=$?
+echo "Sum: $result"</code></pre>
+            </div>
+        </div>
+        <br>
+                <div class="card">
+            <h2>Local Variables</h2>
+            <p>Use local variables to avoid conflicts with global scope:</p>
+            
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code>#!/bin/bash
+
+# Global variable
+counter=10
+
+increment() {
+    local counter=0  # Local to function
+    ((counter++))
+    echo "Local counter: $counter"
+}
+
+increment
+echo "Global counter: $counter"  # Still 10
+
+# Without local
+increment_global() {
+    ((counter++))  # Modifies global
+}
+
+increment_global
+echo "Global counter: $counter"  # Now 11</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> Always use <code>local</code> for function variables to prevent unexpected side effects!
+            </div>
+        </div>
+        <br>
+                <div class="card">
+            <h2>Default Parameter Values</h2>
+            
+            <div class="code-example">
+                <pre><code># Set default values
+greet() {
+    local name=${1:-"Guest"}
+    local greeting=${2:-"Hello"}
+    echo "$greeting, $name!"
+}
+
+greet                    # Hello, Guest!
+greet "Alice"            # Hello, Alice!
+greet "Bob" "Welcome"    # Welcome, Bob!
+
+# Check if parameter is provided
+process_file() {
+    local file=$1
+    
+    if [ -z "$file" ]; then
+        echo "Error: No file specified"
+        return 1
+    fi
+    
+    echo "Processing $file..."
+}</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Recursive Functions</h2>
+            
+            <div class="code-example">
+                <pre><code># Factorial calculation
+factorial() {
+    local n=$1
+    
+    if [ $n -le 1 ]; then
+        echo 1
+    else
+        local prev=$(factorial $((n - 1)))
+        echo $((n * prev))
+    fi
+}
+
+result=$(factorial 5)
+echo "5! = $result"  # 120
+
+# Fibonacci sequence
+fibonacci() {
+    local n=$1
+    
+    if [ $n -le 1 ]; then
+        echo $n
+    else
+        local a=$(fibonacci $((n - 1)))
+        local b=$(fibonacci $((n - 2)))
+        echo $((a + b))
+    fi
+}
+
+echo "Fibonacci(7) = $(fibonacci 7)"  # 13</code></pre>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h2>Function Best Practices</h2>
+            
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# 1. Use descriptive names
+validate_email() {
+    local email=$1
+    [[ $email =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]
+}
+
+# 2. Document your functions
+# Backs up a file to a specified directory
+# Args:
+#   $1 - Source file path
+#   $2 - Backup directory (optional, defaults to ./backups)
+# Returns:
+#   0 on success, 1 on failure
+backup_file() {
+    local source=$1
+    local dest_dir=${2:-./backups}
+    
+    # Implementation...
+}
+
+# 3. Validate inputs
+process_user() {
+    local username=$1
+    
+    if [ $# -ne 1 ]; then
+        echo "Usage: process_user <username>" >&2
+        return 1
+    fi
+    
+    if [ -z "$username" ]; then
+        echo "Error: Username cannot be empty" >&2
+        return 1
+    fi
+    
+    # Process user...
+}
+
+# 4. Use local variables
+calculate_discount() {
+    local price=$1
+    local discount_percent=$2
+    local discount=$((price * discount_percent / 100))
+    local final_price=$((price - discount))
+    echo $final_price
+}
+
+# 5. Proper error handling
+safe_delete() {
+    local file=$1
+    
+    if [ ! -f "$file" ]; then
+        log_error "File not found: $file"
+        return 1
+    fi
+    
+    if ! rm "$file"; then
+        log_error "Failed to delete: $file"
+        return 1
+    fi
+    
+    log_info "Deleted: $file"
+    return 0
+}</code></pre>  
+            </div>
+        </div>
+        <br>
+     <div class="card">
+            <h2>Advanced Function Examples</h2>
+            
+            <h3>Menu System</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+show_menu() {
+    echo "=== Main Menu ==="
+    echo "1) List files"
+    echo "2) Show disk usage"
+    echo "3) Check memory"
+    echo "4) Exit"
+}
+
+list_files() {
+    echo "Files in current directory:"
+    ls -lh
+}
+
+disk_usage() {
+    echo "Disk usage:"
+    df -h
+}
+
+check_memory() {
+    echo "Memory usage:"
+    free -h
+}
+
+main() {
+    while true; do
+        show_menu
+        read -p "Select option: " choice
+        
+        case $choice in
+            1) list_files ;;
+            2) disk_usage ;;
+            3) check_memory ;;
+            4) echo "Goodbye!"; exit 0 ;;
+            *) echo "Invalid option" ;;
+        esac
+        
+        echo
+        read -p "Press Enter to continue..."
+    done
+}
+
+main</code></pre>
+            </div>
+
+            <h3>Configuration Loader</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+load_config() {
+    local config_file=$1
+    
+    if [ ! -f "$config_file" ]; then
+        echo "Config file not found: $config_file" >&2
+        return 1
+    fi
+    
+    # Source config file safely
+    while IFS='=' read -r key value; do
+        # Skip comments and empty lines
+        [[ $key =~ ^#.*$ ]] && continue
+        [[ -z $key ]] && continue
+        
+        # Export variables
+        export "$key=$value"
+    done < "$config_file"
+}
+
+# config.txt:
+# DB_HOST=localhost
+# DB_PORT=5432
+# DB_NAME=myapp
+
+load_config "config.txt"
+echo "Connecting to $DB_HOST:$DB_PORT/$DB_NAME"</code></pre>
+            </div>
+        </div>
+        
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+    </footer>
+    <script>hljs.highlightAll();</script>
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

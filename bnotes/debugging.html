@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash Scripting Guide - Debugging</title>
+    <link href="styles/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🐚 Bash Scripting Guide</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="basic_syntax.html">Basic Syntax</a></li>
+                <li><a href="control_flow.html">Control Flow</a></li>
+                <li><a href="functions.html">Functions</a></li>
+                <li><a href="sed_awk.html">Sed & Awk</a></li>
+                <li><a href="best_practices.html">Best Practices</a></li>
+                <li><a href="debugging.html" class="active">Debugging</a></li>
+            </ul>
+        </div>
+    </nav>
+
+v>
+
+    <main>
+        <div class="hero">
+            <h1>Debugging</h1>
+            <p>Tools and techniques to debug and troubleshoot Bash scripts</p>
+        </div>
+        <div class="card">
+            <h2>Debug Mode Options</h2>
+            <p>Bash provides several built-in debugging options:</p>
+            
+            <div class="code-example">
+                <pre><code># Enable debug mode
+set -x    # Print commands before executing
+set -v    # Print lines as they are read
+set -n    # Check syntax without executing
+
+# Combine options
+set -xv   # Both trace and verbose
+
+# Disable debug mode
+set +x    # Turn off trace
+set +v    # Turn off verbose
+
+# Run script in debug mode
+bash -x script.sh
+bash -xv script.sh</code></pre>
+            </div>
+
+            <h3>Example with set -x</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+set -x
+
+name="Alice"
+age=30
+echo "Hello, $name"
+echo "Age: $age"
+
+set +x</code></pre>
+            </div>
+
+                <strong>Output:</strong>
+                <div class="code-example"><pre><code>+ name=Alice
++ age=30
++ echo 'Hello, Alice'
+Hello, Alice
++ echo 'Age: 30'
+Age: 30
++ set +x</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>PS4 Variable for Custom Trace Output</h2>
+            <p>Customize the trace output prefix with PS4:</p>
+            
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Default PS4 is '+ '
+# Customize with line number and function name
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
+set -x
+
+greet() {
+    local name=$1
+    echo "Hello, $name"
+}
+
+greet "Bob"
+echo "Done"</code></pre>
+            </div>
+
+                <strong>Output:</strong>
+                <div class="code-example">
+                <pre><code>+(script.sh:10): greet(): local name=Bob
++(script.sh:11): greet(): echo 'Hello, Bob'
+Hello, Bob
++(script.sh:14): echo Done
+Done</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Pro Tip:</strong> Use colored PS4 for better visibility:
+                <div class="code-example">
+                    <pre><code>PS4=$'\e[0;33m+(${BASH_SOURCE}:${LINENO}):\e[0m ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'</code></pre>
+                </div>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Debug Functions</h2>
+            <p>Create utility functions for debugging:</p>
+            
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Debug flag
+DEBUG=${DEBUG:-0}
+
+# Debug print function
+debug() {
+    if [ "$DEBUG" = "1" ]; then
+        echo "[DEBUG] $*" >&2
+    fi
+}
+
+# Variable dump function
+dump_vars() {
+    echo "=== Variable Dump ===" >&2
+    for var in "$@"; do
+        echo "$var = ${!var}" >&2
+    done
+    echo "====================" >&2
+}
+
+# Stack trace function
+stack_trace() {
+    local frame=0
+    echo "=== Stack Trace ===" >&2
+    while caller $frame; do
+        ((frame++))
+    done >&2
+    echo "==================" >&2
+}
+
+# Usage
+name="Alice"
+age=30
+city="Boston"
+
+debug "Starting process"
+dump_vars name age city
+debug "Process complete"</code></pre>
+            </div>
+
+            <div class="code-example">
+                <pre><code># Run with debug enabled
+DEBUG=1 ./script.sh
+
+# Or set in script
+export DEBUG=1
+./script.sh</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>ShellCheck - Static Analysis</h2>
+            <p>ShellCheck is an essential tool for finding bugs in shell scripts:</p>
+            
+            <div class="code-example">
+                <pre><code># Install ShellCheck
+# Ubuntu/Debian:
+sudo apt install shellcheck
+
+# macOS:
+brew install shellcheck
+
+# Check a script
+shellcheck script.sh
+
+# Check with specific shell
+shellcheck -s bash script.sh
+
+# Exclude specific warnings
+shellcheck -e SC2086 script.sh</code></pre>
+            </div>
+
+            <h3>Common Issues ShellCheck Finds</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Issue</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SC2086</td>
+                        <td>Unquoted variable</td>
+                        <td><code>echo $var</code> → <code>echo "$var"</code></td>
+                    </tr>
+                    <tr>
+                        <td>SC2046</td>
+                        <td>Unquoted command substitution</td>
+                        <td><code>for f in $(ls)</code> → <code>for f in *</code></td>
+                    </tr>
+                    <tr>
+                        <td>SC2006</td>
+                        <td>Use $() instead of backticks</td>
+                        <td><code>`cmd`</code> → <code>$(cmd)</code></td>
+                    </tr>
+                    <tr>
+                        <td>SC2164</td>
+                        <td>Use cd || exit</td>
+                        <td><code>cd dir</code> → <code>cd dir || exit</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+<br>
+        <div class="card">
+            <h2>Trap for Error Handling</h2>
+            <p>Use trap to catch errors and perform cleanup:</p>
+            
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+set -e  # Exit on error
+
+# Error handler
+error_handler() {
+    local line_num=$1
+    local exit_code=$2
+    echo "Error on line $line_num (exit code: $exit_code)" >&2
+    # Additional cleanup here
+    exit $exit_code
+}
+
+# Set trap
+trap 'error_handler ${LINENO} $?' ERR
+
+# Cleanup on exit
+cleanup() {
+    echo "Cleaning up..."
+    rm -f /tmp/temp_file_$$
+}
+
+trap cleanup EXIT
+
+# Script logic
+echo "Starting..."
+# Some command that might fail
+false  # This will trigger the error handler</code></pre>
+            </div>
+
+            <h3>Trap Multiple Signals</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Handle interruption gracefully
+interrupted() {
+    echo ""
+    echo "Script interrupted by user" >&2
+    cleanup
+    exit 130
+}
+
+trap interrupted INT TERM
+
+# Handle errors
+trap 'echo "Error on line $LINENO" >&2; exit 1' ERR
+
+# Cleanup on any exit
+trap cleanup EXIT
+
+# Your script logic here</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Debugging Techniques</h2>
+            
+            <h3>1. Echo Debugging</h3>
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code>#!/bin/bash
+
+# Simple echo statements
+echo "Checkpoint 1: Starting" >&2
+process_data
+echo "Checkpoint 2: Data processed" >&2
+
+# Show variable values
+echo "DEBUG: var1=$var1, var2=$var2" >&2
+
+# Show command results
+echo "DEBUG: Files found: $(ls *.txt | wc -l)" >&2</code></pre>
+            </div>
+
+            <h3>2. Conditional Debugging</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Enable trace for specific section only
+{
+    set -x
+    # Complex section to debug
+    process_data
+    transform_output
+    set +x
+} 2>&1 | grep "important_function"
+
+# Debug specific functions
+debug_function() {
+    set -x
+    original_function "$@"
+    set +x
+}</code></pre>
+            </div>
+
+            <h3>3. Breakpoint Simulation</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+# Simple breakpoint function
+breakpoint() {
+    echo "=== Breakpoint at line ${BASH_LINENO[0]} ===" >&2
+    echo "Press Enter to continue..." >&2
+    read -r
+}
+
+# Usage
+process_step1
+breakpoint
+process_step2
+breakpoint
+process_step3</code></pre>
+            </div>
+
+            <h3>4. Logging to File</h3>
+            <div class="code-example">
+                <pre><code>#!/bin/bash
+
+LOG_FILE="/tmp/script_debug.log"
+
+# Log function
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" >> "$LOG_FILE"
+}
+
+# Redirect all output to log
+exec > >(tee -a "$LOG_FILE")
+exec 2>&1
+
+# Enable trace to log file
+{
+    set -x
+    # Script logic
+    process_data
+    set +x
+} 2>> "$LOG_FILE"</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Common Debugging Scenarios</h2>
+            
+            <h3>Scenario 1: Script Works Interactively but Fails in Cron</h3>
+            <div class="code-example">
+                <span class="code-label">SOLUTION</span>
+                <pre><code>#!/bin/bash
+
+# Set full PATH for cron
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Use absolute paths
+/usr/bin/python3 /home/user/script.py
+
+# Source environment if needed
+source /home/user/.bashrc
+
+# Log everything for debugging
+exec > /var/log/cronjob.log 2>&1
+set -x</code></pre>
+            </div>
+
+            <h3>Scenario 2: Variable Not Expanding</h3>
+            <div class="code-example">
+                <span class="code-label">DEBUG</span>
+                <pre><code>#!/bin/bash
+
+# Check if variable is set
+if [ -z "${VAR+x}" ]; then
+    echo "VAR is unset" >&2
+else
+    echo "VAR is set to '$VAR'" >&2
+fi
+
+# Print all variables
+declare -p VAR
+
+# Check variable type
+declare -p | grep VAR</code></pre>
+            </div>
+
+            <h3>Scenario 3: Command Not Found</h3>
+            <div class="code-example">
+                <span class="code-label">DEBUG</span>
+                <pre><code>#!/bin/bash
+
+# Check if command exists
+if ! command -v mycommand &> /dev/null; then
+    echo "mycommand not found" >&2
+    echo "PATH: $PATH" >&2
+    echo "Available in:"
+    which -a mycommand 2>&1 || echo "  Not found anywhere" >&2
+    exit 1
+fi
+
+# Show what will be executed
+type mycommand
+which mycommand</code></pre>
+            </div>
+
+            <h3>Scenario 4: Unexpected Exit</h3>
+            <div class="code-example">
+                <span class="code-label">DEBUG</span>
+                <pre><code>#!/bin/bash
+
+# Add exit code checking
+command_that_might_fail
+exit_code=$?
+if [ $exit_code -ne 0 ]; then
+    echo "Command failed with exit code: $exit_code" >&2
+    exit $exit_code
+fi
+
+# Or use set -e and trap
+set -e
+trap 'echo "Script failed on line $LINENO" >&2' ERR</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Advanced Debugging Tools</h2>
+            
+            <h3>Bashdb - Bash Debugger</h3>
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code># Install bashdb
+sudo apt install bashdb  # Ubuntu/Debian
+
+# Run script with debugger
+bashdb script.sh
+
+# Debugger commands:
+# s - step (into functions)
+# n - next (over functions)
+# c - continue
+# l - list source
+# p $var - print variable
+# b 10 - set breakpoint at line 10
+# d 1 - delete breakpoint 1
+# q - quit</code></pre>
+            </div>
+
+            <h3>Profiling Script Performance</h3>
+            <div class="code-example">
+                <span class="code-label">BASH</span>
+                <pre><code>#!/bin/bash
+
+# Time individual commands
+time command_to_profile
+
+# Profile entire script
+time ./script.sh
+
+# Detailed profiling with PS4
+PS4='+ $(date "+%s.%N ($LINENO) ")  '
+set -x
+# Your script here
+set +x
+
+# Analyze with awk
+./script.sh 2>&1 | awk '{ print $1, $3, $0 }' | sort -n</code></pre>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Debugging Checklist</h2>
+            
+            <div class="info-box">
+                <h3>✓ Before Running:</h3>
+                <ul>
+                    <li>Run ShellCheck on your script</li>
+                    <li>Check syntax: <code>bash -n script.sh</code></li>
+                    <li>Verify file permissions</li>
+                    <li>Ensure shebang is correct</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>✓ When Debugging:</h3>
+                <ul>
+                    <li>Enable trace: <code>set -x</code></li>
+                    <li>Check variable values with <code>echo</code></li>
+                    <li>Verify command exists: <code>command -v cmd</code></li>
+                    <li>Check exit codes: <code>$?</code></li>
+                    <li>Review error messages carefully</li>
+                    <li>Test commands interactively first</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>✓ Common Issues:</h3>
+                <ul>
+                    <li>Unquoted variables</li>
+                    <li>Missing error handling</li>
+                    <li>PATH issues</li>
+                    <li>Permission problems</li>
+                    <li>Wrong shell interpreter</li>
+                    <li>Whitespace in filenames</li>
+                </ul>
+            </div>
+        </div>
+<br>
+        <div class="card">
+            <h2>Quick Reference</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>set -x</code></td>
+                        <td>Enable trace mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>set -v</code></td>
+                        <td>Print input lines as read</td>
+                    </tr>
+                    <tr>
+                        <td><code>set -n</code></td>
+                        <td>Check syntax only</td>
+                    </tr>
+                    <tr>
+                        <td><code>set -e</code></td>
+                        <td>Exit on error</td>
+                    </tr>
+                    <tr>
+                        <td><code>set -u</code></td>
+                        <td>Exit on undefined variable</td>
+                    </tr>
+                    <tr>
+                        <td><code>bash -x script.sh</code></td>
+                        <td>Run with trace</td>
+                    </tr>
+                    <tr>
+                        <td><code>shellcheck script.sh</code></td>
+                        <td>Static analysis</td>
+                    </tr>
+                    <tr>
+                        <td><code>$?</code></td>
+                        <td>Last command exit status</td>
+                    </tr>
+                    <tr>
+                        <td><code>$LINENO</code></td>
+                        <td>Current line number</td>
+                    </tr>
+                    <tr>
+                        <td><code>caller</code></td>
+                        <td>Show call stack</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+    </footer>
+    <script>hljs.highlightAll();</script>
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
