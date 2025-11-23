@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deep Learning with Python</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Overview of Deep Learning in Python, types of neural networks, real-life applications, and Python libraries.">
+
+  <meta property="og:title" content="Deep Learning in Python">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="Deep Learning in Python">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="index.html" class="active">Deep Learning Overview</a></li>
+    <li><a href="timeseries.html">Time Series Forecasting</a></li>
+    <li><a href="nlp.html">Natural Language Processing</a></li>
+    <li><a href="dljs.html">Deep Learning in JS</a></li>
+    <li><a href="mljs.html">ml5.js in the Browser</a></li>
+  </ul>
+</nav>
+<div class="main-content">
+  <header>
+    <h1>Deep Learning in Python</h1>
+    <p>
+      Deep learning is a subfield of machine learning that uses multi-layered neural networks to learn complex patterns
+      from data. Python has become the dominant language for deep learning because of its simple syntax and rich
+      ecosystem of libraries.
+    </p>
+    <!-- Animation Container -->
+    <div id="canvas-container" style="width: 100%; max-width: 800px; margin: 2rem auto 0; border-radius: 18px; overflow: hidden;"></div>
+  </header>
+
+  <main>
+    <!-- 1. Types of Neural Networks -->
+    <section id="types-of-neural-networks">
+      <h2>1. Types of Neural Networks</h2>
+
+      <article>
+        <h3>1.1 Feedforward Neural Networks (FNN / MLP)</h3>
+        <p>
+          Feedforward Neural Networks, also called Multi-Layer Perceptrons (MLPs), are the most basic neural network
+          architecture. Information flows in one direction, from input to output, without loops.
+        </p>
+        <ul>
+          <li>Best for: tabular data, basic classification and regression tasks.</li>
+          <li>Structure: input layer → one or more hidden layers → output layer.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>1.2 Convolutional Neural Networks (CNNs)</h3>
+        <p>
+          Convolutional Neural Networks are specialized for processing data with a grid-like structure, such as images.
+          They use convolutional layers to automatically learn local patterns (edges, textures, shapes).
+        </p>
+        <ul>
+          <li>Best for: image, video, and spatial data.</li>
+          <li>Key components: convolutional layers, pooling layers, fully connected layers.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>1.3 Recurrent Neural Networks (RNNs)</h3>
+        <p>
+          Recurrent Neural Networks are designed for sequential data. They include recurrent connections that allow
+          information to persist over time steps.
+        </p>
+        <ul>
+          <li>Best for: time series, text, and any ordered sequence.</li>
+          <li>Challenge: basic RNNs can suffer from vanishing and exploding gradients.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>1.4 LSTM and GRU Networks</h3>
+        <p>
+          Long Short-Term Memory (LSTM) and Gated Recurrent Unit (GRU) networks are advanced RNN variants that use
+          gating mechanisms to better capture long-term dependencies in sequences.
+        </p>
+        <ul>
+          <li>Best for: long sequences, language modeling, machine translation, and speech recognition.</li>
+          <li>Advantage: handle long-range dependencies better than vanilla RNNs.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>1.5 Transformer Networks</h3>
+        <p>
+          Transformer models rely on attention mechanisms instead of recurrence or convolutions to process sequences.
+          They can model long-range dependencies in parallel, making training highly efficient on modern hardware.
+        </p>
+        <ul>
+          <li>Best for: natural language processing, large language models, and many multi-modal tasks.</li>
+          <li>Key concept: self-attention layers that weigh relationships between all elements in a sequence.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>1.6 Autoencoders</h3>
+        <p>
+          Autoencoders are neural networks that learn to compress data into a lower-dimensional representation (encoding)
+          and then reconstruct it (decoding). They are often used for representation learning and data compression.
+        </p>
+        <ul>
+          <li>Best for: dimensionality reduction, anomaly detection, and denoising.</li>
+          <li>Structure: encoder → latent space → decoder.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>1.7 Generative Adversarial Networks (GANs)</h3>
+        <p>
+          GANs consist of two networks: a generator that creates synthetic data and a discriminator that tries to
+          distinguish synthetic data from real data. They are trained in an adversarial setting.
+        </p>
+        <ul>
+          <li>Best for: image generation, style transfer, data augmentation, and other generative tasks.</li>
+          <li>Components: generator network, discriminator network, adversarial training loop.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>1.8 Graph Neural Networks (GNNs)</h3>
+        <p>
+          Graph Neural Networks operate on graph-structured data, where entities are nodes and relationships are edges.
+          They aggregate information from neighboring nodes to learn powerful representations.
+        </p>
+        <ul>
+          <li>Best for: social networks, molecular structures, recommendation systems, and knowledge graphs.</li>
+          <li>Key operations: message passing, neighborhood aggregation.</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- 2. Real-Life Problems Solved with These Neural Networks -->
+    <section id="real-life-problems">
+      <h2>2. Real-Life Problems Solved by These Neural Networks</h2>
+
+      <article>
+        <h3>2.1 Image Classification and Object Detection</h3>
+        <p>
+          Deep learning models can recognize objects within images and videos. This is essential for applications such as:
+        </p>
+        <ul>
+          <li>Medical imaging (detecting tumors in MRI or CT scans)</li>
+          <li>Autonomous vehicles (recognizing pedestrians, traffic lights, and signs)</li>
+          <li>Security systems (face recognition, anomaly detection in surveillance footage)</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>2.2 Natural Language Processing (NLP)</h3>
+        <p>
+          Neural networks power many language-related applications, including:
+        </p>
+        <ul>
+          <li>Machine translation (converting text from one language to another)</li>
+          <li>Chatbots and conversational agents</li>
+          <li>Sentiment analysis (understanding opinions in reviews and social media)</li>
+          <li>Summarization and text classification</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>2.3 Time Series Forecasting</h3>
+        <p>
+          Sequence models can learn patterns over time and are valuable for:
+        </p>
+        <ul>
+          <li>Stock price prediction and algorithmic trading</li>
+          <li>Demand forecasting in supply chains</li>
+          <li>Weather and climate modeling</li>
+          <li>Predictive maintenance (anticipating equipment failures)</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>2.4 Recommendation Systems</h3>
+        <p>
+          Deep learning models help personalize content and products, for example:
+        </p>
+        <ul>
+          <li>Movie and music recommendations</li>
+          <li>E-commerce product suggestions</li>
+          <li>Personalized news feeds and social media timelines</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>2.5 Anomaly and Fraud Detection</h3>
+        <p>
+          Neural networks can learn what “normal” data looks like and flag unusual patterns:
+        </p>
+        <ul>
+          <li>Credit card fraud detection</li>
+          <li>Network intrusion detection in cybersecurity</li>
+          <li>Anomaly detection in sensor data from industrial machines</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>2.6 Generative Applications</h3>
+        <p>
+          Generative models create new content, such as:
+        </p>
+        <ul>
+          <li>Realistic images, artworks, and deepfakes</li>
+          <li>Data augmentation for training other models</li>
+          <li>Design generation (fashion, logos, product prototypes)</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>2.7 Scientific and Industrial Applications</h3>
+        <p>
+          Neural networks also support high-impact domains like:
+        </p>
+        <ul>
+          <li>Drug discovery and protein structure prediction</li>
+          <li>Energy consumption optimization in smart grids</li>
+          <li>Quality inspection in manufacturing via computer vision</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- 3. Matching Neural Networks to Problems -->
+    <section id="choosing-neural-networks">
+      <h2>3. Which Neural Networks Fit These Problems?</h2>
+      <p>
+        Choosing the right neural network architecture depends on the type and structure of the data and the nature of
+        the task.
+      </p>
+
+      <table>
+        <thead>
+        <tr>
+          <th>Problem Type</th>
+          <th>Example Tasks</th>
+          <th>Recommended Neural Network Types</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Tabular Data (structured rows/columns)</td>
+          <td>Credit scoring, customer churn prediction, basic regression or classification</td>
+          <td>Feedforward Neural Networks (MLPs)</td>
+        </tr>
+        <tr>
+          <td>Image Processing</td>
+          <td>Image classification, object detection, medical image analysis, facial recognition</td>
+          <td>Convolutional Neural Networks (CNNs), sometimes combined with Transformers for vision (Vision Transformers)</td>
+        </tr>
+        <tr>
+          <td>Text and Natural Language</td>
+          <td>Sentiment analysis, translation, question answering, chatbots</td>
+          <td>RNNs, LSTMs, GRUs, and especially Transformer-based models</td>
+        </tr>
+        <tr>
+          <td>Time Series and Sequential Data</td>
+          <td>Stock prices, sensor readings, weather data</td>
+          <td>RNNs, LSTMs, GRUs, or Transformers for long and complex sequences</td>
+        </tr>
+        <tr>
+          <td>User Recommendations</td>
+          <td>Movie and product recommendations, personalized feeds</td>
+          <td>
+            Feedforward networks, Embedding-based models, Graph Neural Networks for user–item graphs, and sometimes
+            sequence models for user history
+          </td>
+        </tr>
+        <tr>
+          <td>Anomaly Detection</td>
+          <td>Fraud detection, system failure prediction</td>
+          <td>Autoencoders, Variational Autoencoders (VAEs), and sometimes LSTMs for temporal anomalies</td>
+        </tr>
+        <tr>
+          <td>Generative Tasks</td>
+          <td>Image generation, style transfer, data augmentation</td>
+          <td>GANs, VAEs, and diffusion or Transformer-based generative models</td>
+        </tr>
+        <tr>
+          <td>Graph-Structured Data</td>
+          <td>Social networks, molecular graphs, knowledge graphs</td>
+          <td>Graph Neural Networks (GNNs) and their variants (GCN, GAT, etc.)</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <p>
+        In practice, many real-world systems combine multiple architectures. For example, a recommendation system may
+        use embeddings learned by neural networks, a GNN for user–item relationships, and sequence models for user
+        interaction history.
+      </p>
+    </section>
+
+    <!-- 4. Python Libraries for Building Neural Networks -->
+    <section id="python-libraries">
+      <h2>4. Python Libraries for Creating Neural Networks</h2>
+      <p>
+        Python offers a rich ecosystem of libraries that make it easier to build, train, and deploy neural networks.
+      </p>
+
+      <article>
+        <h3>4.1 TensorFlow</h3>
+        <p>
+          TensorFlow is a widely used deep learning framework originally developed by Google. It supports both low-level
+          operations for custom research and high-level APIs for rapid prototyping.
+        </p>
+        <ul>
+          <li>Features: automatic differentiation, GPU/TPU support, rich ecosystem for deployment (TensorFlow Serving, TensorFlow Lite).</li>
+          <li>Use cases: research, production systems, mobile and embedded deployment.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>4.2 Keras</h3>
+        <p>
+          Keras is a high-level neural network API that focuses on user-friendliness and modularity. It runs on top of
+          TensorFlow and provides simple abstractions for building and training models.
+        </p>
+        <ul>
+          <li>Features: intuitive layer-based API, rapid experimentation, model serialization.</li>
+          <li>Use cases: educational projects, quick prototypes, and many production applications where development speed matters.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>4.3 PyTorch</h3>
+        <p>
+          PyTorch is a deep learning framework known for its dynamic computation graph and Pythonic feel. It is popular
+          in research and increasingly in industry.
+        </p>
+        <ul>
+          <li>Features: dynamic graph execution (eager mode), strong GPU support, ecosystem for vision and NLP.</li>
+          <li>Use cases: research experimentation, production models (with TorchScript and deployment tools).</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>4.4 JAX</h3>
+        <p>
+          JAX is a Python library designed for high-performance numerical computing and machine learning. It provides
+          automatic differentiation and just-in-time compilation via XLA.
+        </p>
+        <ul>
+          <li>Features: composable transformations (grad, jit, vmap, pmap), strong performance on GPUs/TPUs.</li>
+          <li>Use cases: cutting-edge research, experimental deep learning frameworks built on top of JAX.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>4.5 Supporting Libraries</h3>
+        <p>
+          In addition to the core deep learning frameworks, several supporting libraries are essential in Python:
+        </p>
+        <ul>
+          <li><strong>NumPy</strong>: fundamental library for numerical computations and array operations.</li>
+          <li><strong>Pandas</strong>: data manipulation and analysis, especially for tabular data.</li>
+          <li><strong>Matplotlib / Seaborn</strong>: visualization and plotting for exploratory data analysis.</li>
+          <li><strong>scikit-learn</strong>: traditional machine learning algorithms, preprocessing, and evaluation tools.</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>4.6 Specialized Libraries</h3>
+        <p>
+          For specific domains, there are specialized deep learning libraries:
+        </p>
+        <ul>
+          <li><strong>Computer Vision</strong>: libraries built on top of major frameworks for image and video tasks.</li>
+          <li><strong>NLP</strong>: libraries that provide pre-trained language models and tokenization tools.</li>
+          <li><strong>Graph Learning</strong>: frameworks for Graph Neural Networks and graph data processing.</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- Summary -->
+    <section id="summary">
+      <h2>Summary</h2>
+      <p>
+        Deep learning in Python enables powerful solutions for complex real-life problems. Different neural network
+        architectures—such as CNNs, RNNs, Transformers, autoencoders, GANs, and GNNs—are suited to different data types
+        and tasks. Python libraries like TensorFlow, Keras, PyTorch, and JAX, together with supporting tools such as
+        NumPy and Pandas, provide everything needed to build, train, and deploy these models efficiently.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
+  </footer>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

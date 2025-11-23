@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deep Learning with Python</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Overview of Deep Learning in Python, types of neural networks, real-life applications, and Python libraries.">
+
+  <meta property="og:title" content="Deep Learning in Python">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="Deep Learning in Python">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="index.html" >Deep Learning Overview</a></li>
+    <li><a href="timeseries.html" class="active">Time Series Forecasting</a></li>
+    <li><a href="nlp.html">Natural Language Processing</a></li>
+    <li><a href="dljs.html">Deep Learning in JS</a></li>
+    <li><a href="mljs.html">ml5.js in the Browser</a></li>
+  </ul>
+</nav>
+<div class="main-content">
+  <header>
+      <h1>Neural Networks for Time Series Forecasting</h1>
+      <p>Time series forecasting is the process of using historical data to predict future values. Neural networks have become increasingly popular for time series forecasting due to their ability to learn complex, non-linear relationships in data.</p>
+  </header>
+
+  <main>
+    <section>
+      <article>
+        <h2>1. Why Use Neural Networks for Time Series Forecasting?</h2>
+        <p>
+          Traditional methods, like ARIMA and exponential smoothing, work well for linear and stationary data.
+          However, neural networks (especially Recurrent Neural Networks and Long Short-Term Memory, or LSTM networks) can:
+        </p>
+        <ul>
+          <li>Capture non-linear relationships</li>
+          <li>Handle multiple input and output variables</li>
+          <li>Model complex temporal dependencies</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>2. Neural Network Architectures</h2>
+        <p><strong>Popular architectures for time series forecasting:</strong></p>
+        <ul>
+          <li><b>Feedforward Neural Network (Dense/MLP):</b> Good for tabular and lagged features.</li>
+          <li><b>Recurrent Neural Network (RNN):</b> Remembers previous steps; can model sequential data.</li>
+          <li><b>LSTM/GRU:</b> Advanced RNNs that handle long-term dependencies better.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>3. Sample Problem</h2>
+      <p>We'll show how to forecast the next value in a univariate time series using past observations.</p>
+    </section>
+
+    <section>
+      <h2>4. Data Preparation</h2>
+      <p>For time series, we often convert the series into samples of fixed-size input windows and target outputs.</p>
+      <div class="code-example">
+      <pre><code># Example: Using sliding window to prepare data
+def create_sequences(data, window_size):
+    xs, ys = [], []
+    for i in range(len(data) - window_size):
+        x = data[i:i+window_size]
+        y = data[i+window_size]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+</code></pre>
+        <div>
+    </section>
+
+    <section>
+      <h2>5. TensorFlow (Keras) Example</h2>
+      <div class="code-example">
+      <pre><code>import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+
+# Generate dummy sine data
+timesteps = np.linspace(0, 100, 1000)
+series = np.sin(timesteps)
+
+# Data preparation
+WINDOW_SIZE = 10
+X, y = create_sequences(series, WINDOW_SIZE)
+
+# Split train/test
+split = int(0.8 * len(X))
+X_train, X_test = X[:split], X[split:]
+y_train, y_test = y[:split], y[split:]
+
+# Build LSTM model
+model = keras.Sequential([
+    keras.layers.Input(shape=(WINDOW_SIZE, 1)),
+    keras.layers.LSTM(32),
+    keras.layers.Dense(1)
+])
+model.compile(optimizer='adam', loss='mse')
+
+# Reshape input for LSTM: (samples, timesteps, features)
+X_train_reshaped = X_train[..., np.newaxis]
+X_test_reshaped = X_test[..., np.newaxis]
+# Train
+model.fit(X_train_reshaped, y_train, epochs=10, batch_size=32, validation_split=0.2)
+# Evaluate
+loss = model.evaluate(X_test_reshaped, y_test)
+print("Test loss:", loss)
+      </code></pre></div>
+    </section>
+
+    <section>
+      <h2>6. PyTorch Example</h2>
+      <div class="code-example">
+      <pre><code>import numpy as np
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
+
+# Generate dummy sine data
+timesteps = np.linspace(0, 100, 1000)
+series = np.sin(timesteps)
+
+WINDOW_SIZE = 10
+def create_sequences(data, window_size):
+    xs, ys = [], []
+    for i in range(len(data) - window_size):
+        x = data[i:i+window_size]
+        y = data[i+window_size]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+X, y = create_sequences(series, WINDOW_SIZE)
+
+split = int(0.8 * len(X))
+X_train, X_test = X[:split], X[split:]
+y_train, y_test = y[:split], y[split:]
+
+# Convert to PyTorch tensors
+X_train_tensor = torch.tensor(X_train, dtype=torch.float32).unsqueeze(-1)
+y_train_tensor = torch.tensor(y_train, dtype=torch.float32)
+X_test_tensor = torch.tensor(X_test, dtype=torch.float32).unsqueeze(-1)
+y_test_tensor = torch.tensor(y_test, dtype=torch.float32)
+
+train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+
+# LSTM Model
+class LSTMModel(nn.Module):
+    def __init__(self, input_size=1, hidden_size=32, num_layers=1):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, 1)
+
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        out = out[:, -1, :]
+        out = self.fc(out)
+        return out.squeeze()
+
+model = LSTMModel()
+loss_fn = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+# Train loop
+for epoch in range(10):
+    for xb, yb in train_loader:
+        pred = model(xb)
+        loss = loss_fn(pred, yb)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    print(f"Epoch {epoch+1}: loss={loss.item():.4f}")
+
+# Evaluate
+with torch.no_grad():
+    pred = model(X_test_tensor)
+    test_loss = loss_fn(pred, y_test_tensor)
+    print("Test loss:", test_loss.item())
+      </code></pre></div>
+    </section>
+
+    <section>
+      <article>
+        <h2>7. Further Reading</h2>
+        <ul>
+          <li>
+            <a href="https://www.tensorflow.org/tutorials/structured_data/time_series" target="_blank">TensorFlow Time Series Tutorial</a>
+          </li>
+          <li>
+            <a href="https://pytorch.org/tutorials/beginner/nn_tutorial.html" target="_blank">PyTorch Time Series Example</a>
+          </li>
+        </ul>
+      </article>
+    </section>
+    <section>
+      <div class="note">
+        Neural networks are powerful for time series forecasting, but they require careful architecture selection and data preparation. Experiment with different architectures (MLP, LSTM, CNN), feature engineering, and hyperparameters to get the best results.
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
+  </footer>
+</div>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning with Python</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" data-page="intro" class="nav-link">Introduction</a></li>
+            <li><a href="numpy.html" data-page="numpy" class="nav-link">NumPy</a></li>
+            <li><a href="scipy.html" data-page="scipy" class="nav-link">SciPy</a></li>
+            <li><a href="pandas.html" data-page="pandas" class="nav-link active">Pandas</a></li>
+            <li><a href="scikit.html" data-page="sklearn" class="nav-link">Scikit-Learn</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="pandas" class="page">
+            <h1>Pandas: Data Manipulation for Machine Learning</h1>
+
+            <p>Pandas is a powerful data manipulation and analysis library built on top of NumPy. It provides high-level data structures and tools for working with structured data, making it indispensable for data preprocessing in machine learning projects. Pandas excels at handling tabular data, time series, and performing complex data transformations with ease.</p>
+
+            <h2>Why Pandas is Critical for Machine Learning</h2>
+
+            <div class="highlight-box">
+                <p>Pandas bridges the gap between raw data and machine learning models by providing:</p>
+                <ul>
+                    <li><strong>DataFrame Structure:</strong> Intuitive 2D labeled data structure similar to spreadsheets or SQL tables.</li>
+                    <li><strong>Data Cleaning:</strong> Tools for handling missing data, duplicates, and data type conversions.</li>
+                    <li><strong>Data Transformation:</strong> Easy filtering, grouping, merging, and pivoting operations.</li>
+                    <li><strong>I/O Capabilities:</strong> Read and write data from various formats (CSV, Excel, SQL, JSON, etc.).</li>
+                    <li><strong>Integration:</strong> Seamless integration with NumPy, Scikit-learn, and visualization libraries.</li>
+                </ul>
+            </div>
+
+            <h2>Core Pandas Data Structures</h2>
+
+            <h3>1. Series</h3>
+            <p>A Series is a one-dimensional labeled array that can hold any data type. It's similar to a column in a spreadsheet or a single variable in a dataset. Each element in a Series has an associated label called an index.</p>
+
+            <div class="usage-list">
+                <strong>Series Characteristics:</strong>
+                <ul>
+                    <li>One-dimensional labeled array</li>
+                    <li>Can contain any data type (integers, floats, strings, objects)</li>
+                    <li>Has an index for accessing elements by label</li>
+                    <li>Supports vectorized operations like NumPy arrays</li>
+                </ul>
+            </div>
+
+            <h3>2. DataFrame</h3>
+            <p>A DataFrame is a two-dimensional labeled data structure with columns of potentially different types. It's the most commonly used Pandas object and the primary way to represent datasets in machine learning.</p>
+
+            <div class="usage-list">
+                <strong>DataFrame Features:</strong>
+                <ul>
+                    <li>Two-dimensional structure with rows and columns</li>
+                    <li>Columns can have different data types</li>
+                    <li>Both row and column indices for easy data access</li>
+                    <li>Can be thought of as a dictionary of Series objects</li>
+                    <li>Supports SQL-like operations (joins, group by, etc.)</li>
+                </ul>
+            </div>
+
+            <h2>Essential Pandas Operations for Machine Learning</h2>
+
+            <h3>1. Data Loading and Exploration</h3>
+            <p>The first step in any machine learning project is loading and understanding your data. Pandas provides numerous functions to read data from various sources and explore its characteristics.</p>
+
+            <div class="usage-list">
+                <strong>Loading Data:</strong>
+                <ul>
+                    <li><code>pd.read_csv()</code> - Load data from CSV files</li>
+                    <li><code>pd.read_excel()</code> - Load data from Excel files</li>
+                    <li><code>pd.read_sql()</code> - Load data from SQL databases</li>
+                    <li><code>pd.read_json()</code> - Load data from JSON files</li>
+                </ul>
+
+                <strong>Exploration Functions:</strong>
+                <ul>
+                    <li><code>df.head()</code> and <code>df.tail()</code> - View first/last rows</li>
+                    <li><code>df.info()</code> - Get data types and non-null counts</li>
+                    <li><code>df.describe()</code> - Statistical summary of numerical columns</li>
+                    <li><code>df.shape</code> - Get dimensions (rows, columns)</li>
+                    <li><code>df.columns</code> - List column names</li>
+                    <li><code>df.dtypes</code> - View data types of each column</li>
+                </ul>
+            </div>
+
+            <h3>2. Data Cleaning and Preprocessing</h3>
+            <p>Real-world data is often messy, containing missing values, duplicates, and inconsistencies. Pandas provides robust tools for cleaning and preparing data for machine learning models.</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Handling Missing Data</strong>
+                    <p><code>df.isnull()</code> - Detect missing values<br>
+                    <code>df.dropna()</code> - Remove rows/columns with missing values<br>
+                    <code>df.fillna()</code> - Fill missing values with specified values</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Removing Duplicates</strong>
+                    <p><code>df.duplicated()</code> - Identify duplicate rows<br>
+                    <code>df.drop_duplicates()</code> - Remove duplicate rows</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Data Type Conversion</strong>
+                    <p><code>df.astype()</code> - Convert column data types<br>
+                    <code>pd.to_datetime()</code> - Convert to datetime<br>
+                    <code>pd.to_numeric()</code> - Convert to numeric types</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>String Operations</strong>
+                    <p><code>df['col'].str.lower()</code> - Convert to lowercase<br>
+                    <code>df['col'].str.strip()</code> - Remove whitespace<br>
+                    <code>df['col'].str.replace()</code> - Replace patterns</p>
+                </div>
+            </div>
+
+            <h3>3. Feature Engineering</h3>
+            <p>Feature engineering is the process of creating new features or transforming existing ones to improve model performance. Pandas makes this process intuitive and efficient.</p>
+
+            <div class="usage-list">
+                <strong>Common Feature Engineering Techniques:</strong>
+                <ul>
+                    <li><strong>Creating new columns:</strong> <code>df['new_col'] = df['col1'] + df['col2']</code></li>
+                    <li><strong>Applying functions:</strong> <code>df['col'].apply(lambda x: x**2)</code></li>
+                    <li><strong>Binning:</strong> <code>pd.cut()</code> for discretizing continuous variables</li>
+                    <li><strong>One-hot encoding:</strong> <code>pd.get_dummies()</code> for categorical variables</li>
+                    <li><strong>Date features:</strong> Extract year, month, day from datetime columns</li>
+                    <li><strong>Aggregation:</strong> Create features from grouped statistics</li>
+                </ul>
+            </div>
+
+            <h3>4. Data Selection and Filtering</h3>
+            <p>Selecting specific subsets of data is crucial for analysis and preparing training/test sets. Pandas offers multiple ways to filter and select data.</p>
+
+            <div class="usage-list">
+                <strong>Selection Methods:</strong>
+                <ul>
+                    <li><strong>Column selection:</strong> <code>df['column']</code> or <code>df[['col1', 'col2']]</code></li>
+                    <li><strong>Row selection by index:</strong> <code>df.loc[row_label]</code> or <code>df.iloc[row_position]</code></li>
+                    <li><strong>Boolean filtering:</strong> <code>df[df['age'] > 25]</code></li>
+                    <li><strong>Query method:</strong> <code>df.query('age > 25 and city == "Boston"')</code></li>
+                    <li><strong>Conditional selection:</strong> Multiple conditions with <code>&</code> (and) and <code>|</code> (or)</li>
+                </ul>
+            </div>
+
+            <h3>5. Grouping and Aggregation</h3>
+            <p>The groupby operation allows you to split data into groups, apply functions, and combine results. This is essential for computing statistics across categories and creating aggregate features.</p>
+
+            <div class="usage-list">
+                <strong>GroupBy Operations:</strong>
+                <ul>
+                    <li><code>df.groupby('category').mean()</code> - Compute mean for each group</li>
+                    <li><code>df.groupby('category').agg({'col1': 'sum', 'col2': 'mean'})</code> - Multiple aggregations</li>
+                    <li><code>df.groupby(['cat1', 'cat2']).size()</code> - Count occurrences</li>
+                    <li><code>df.groupby('category').transform()</code> - Apply function and broadcast back</li>
+                </ul>
+            </div>
+
+            <h2>Pandas in Machine Learning Pipelines</h2>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Data Preprocessing</strong>
+                    <p>Clean, transform, and prepare raw data for modeling. Handle missing values, encode categorical variables, and scale features.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Exploratory Data Analysis</strong>
+                    <p>Understand data distributions, correlations, and patterns. Use <code>df.corr()</code> for correlation matrices and <code>df.value_counts()</code> for frequency analysis.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Train-Test Split</strong>
+                    <p>While typically done with Scikit-learn, Pandas can help prepare data before splitting, ensuring proper stratification and handling of time series data.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Feature Selection</strong>
+                    <p>Use correlation analysis, variance thresholds, and domain knowledge to select relevant features. <code>df.drop()</code> removes unwanted columns.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Data Merging</strong>
+                    <p>Combine multiple datasets using <code>pd.merge()</code>, <code>pd.concat()</code>, or <code>df.join()</code> to enrich your feature set with external data.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Time Series Handling</strong>
+                    <p>Pandas excels at time series data with datetime indexing, resampling (<code>df.resample()</code>), and rolling window operations (<code>df.rolling()</code>).</p>
+                </div>
+            </div>
+
+            <h2>Advanced Pandas Techniques</h2>
+
+            <h3>Pivot Tables and Cross-Tabulation</h3>
+            <p>Pivot tables allow you to reshape data for analysis and create summary statistics across multiple dimensions. <code>pd.pivot_table()</code> is powerful for aggregating data by multiple categories.</p>
+
+            <h3>Categorical Data Type</h3>
+            <p>The categorical data type is memory-efficient for columns with repeated values. Use <code>df['col'].astype('category')</code> to save memory and speed up operations on categorical data.</p>
+
+            <h3>Method Chaining</h3>
+            <p>Pandas supports method chaining, allowing you to write cleaner, more readable code by chaining multiple operations together in a single statement.</p>
+
+            <div class="highlight-box">
+                <h3>Pandas Best Practices for ML</h3>
+                <p><strong>1. Always examine your data first:</strong> Use <code>head()</code>, <code>info()</code>, and <code>describe()</code> before processing.</p>
+                <p><strong>2. Handle missing data thoughtfully:</strong> Understand why data is missing before deciding to drop or impute.</p>
+                <p><strong>3. Use vectorized operations:</strong> Avoid iterating over rows with loops; use <code>apply()</code> or vectorized operations instead.</p>
+                <p><strong>4. Be mindful of memory:</strong> Use appropriate data types and consider chunking for large datasets.</p>
+                <p><strong>5. Document transformations:</strong> Keep track of all preprocessing steps for reproducibility.</p>
+                <p><strong>6. Validate your data:</strong> Check for outliers, inconsistencies, and data quality issues regularly.</p>
+            </div>
+
+            <h2>Integration with Scikit-Learn</h2>
+            <p>Pandas DataFrames integrate seamlessly with Scikit-learn. Most Scikit-learn functions accept DataFrames as input, but return NumPy arrays. You can easily convert between formats using <code>df.values</code> to get NumPy arrays or create new DataFrames from predictions.</p>
+        </div>
+    </div>
+</body>
+</html>

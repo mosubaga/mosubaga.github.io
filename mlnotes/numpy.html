@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning with Python</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" data-page="intro" class="nav-link">Introduction</a></li>
+            <li><a href="numpy.html" data-page="numpy" class="nav-link active">NumPy</a></li>
+            <li><a href="scipy.html" data-page="scipy" class="nav-link">SciPy</a></li>
+            <li><a href="pandas.html" data-page="pandas" class="nav-link">Pandas</a></li>
+            <li><a href="scikit.html" data-page="sklearn" class="nav-link">Scikit-Learn</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="numpy">
+            <h1>NumPy: The Foundation of Machine Learning in Python</h1>
+
+            <p>NumPy (Numerical Python) is the fundamental package for scientific computing in Python. It provides support for large, multi-dimensional arrays and matrices, along with a collection of mathematical functions to operate on these arrays efficiently. NumPy is the backbone of nearly all machine learning libraries in Python.</p>
+
+            <h2>Why NumPy is Essential for Machine Learning</h2>
+
+            <div class="highlight-box">
+                <p>NumPy serves as the foundation for machine learning in Python because it provides:</p>
+                <ul>
+                    <li><strong>Efficient Array Operations:</strong> NumPy arrays are stored in contiguous memory blocks, making operations significantly faster than Python lists.</li>
+                    <li><strong>Vectorization:</strong> Perform operations on entire arrays without explicit loops, leading to cleaner and faster code.</li>
+                    <li><strong>Mathematical Functions:</strong> Built-in functions for linear algebra, statistics, and mathematical operations.</li>
+                    <li><strong>Broadcasting:</strong> Automatic expansion of arrays to compatible shapes for arithmetic operations.</li>
+                    <li><strong>Memory Efficiency:</strong> NumPy arrays consume less memory than Python lists for numerical data.</li>
+                </ul>
+            </div>
+            <h2>Core Concepts in NumPy</h2>
+
+            <h3>1. NumPy Arrays (ndarray)</h3>
+            <p>The <code>ndarray</code> is the core data structure in NumPy. It's a grid of values, all of the same type, indexed by a tuple of non-negative integers. Arrays can be created from Python lists or using built-in functions.</p>
+
+            <div class="usage-list">
+                <strong>Creating Arrays:</strong>
+                <ul>
+                    <li><code>np.array([1, 2, 3])</code> - Create array from list</li>
+                    <li><code>np.zeros((3, 4))</code> - Create array filled with zeros</li>
+                    <li><code>np.ones((2, 3))</code> - Create array filled with ones</li>
+                    <li><code>np.arange(0, 10, 2)</code> - Create array with evenly spaced values</li>
+                    <li><code>np.linspace(0, 1, 5)</code> - Create array with specified number of samples</li>
+                    <li><code>np.random.rand(3, 3)</code> - Create array with random values</li>
+                </ul>
+            </div>
+
+            <h3>2. Array Operations and Vectorization</h3>
+            <p>Vectorization allows you to perform operations on entire arrays without writing explicit loops. This is crucial for machine learning where you often need to apply operations to large datasets efficiently.</p>
+
+            <div class="usage-list">
+                <strong>Key Operations:</strong>
+                <ul>
+                    <li><strong>Element-wise operations:</strong> Addition, subtraction, multiplication, division on arrays</li>
+                    <li><strong>Aggregation functions:</strong> <code>np.sum()</code>, <code>np.mean()</code>, <code>np.std()</code>, <code>np.max()</code>, <code>np.min()</code></li>
+                    <li><strong>Mathematical functions:</strong> <code>np.sqrt()</code>, <code>np.exp()</code>, <code>np.log()</code>, <code>np.sin()</code></li>
+                    <li><strong>Matrix operations:</strong> <code>np.dot()</code> for matrix multiplication, <code>np.transpose()</code></li>
+                </ul>
+            </div>
+
+            <h3>3. Array Indexing and Slicing</h3>
+            <p>NumPy provides powerful indexing capabilities that are essential for data manipulation in machine learning workflows.</p>
+
+            <div class="usage-list">
+                <strong>Indexing Techniques:</strong>
+                <ul>
+                    <li><strong>Basic indexing:</strong> Access elements using indices like <code>arr[0]</code> or <code>arr[1, 2]</code></li>
+                    <li><strong>Slicing:</strong> Extract subarrays using <code>arr[start:stop:step]</code></li>
+                    <li><strong>Boolean indexing:</strong> Filter arrays using conditions like <code>arr[arr > 5]</code></li>
+                    <li><strong>Fancy indexing:</strong> Select elements using arrays of indices</li>
+                </ul>
+            </div>
+
+            <h2>NumPy in Machine Learning Workflows</h2>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Data Representation</strong>
+                    <p>Machine learning datasets are stored as NumPy arrays. Features are typically represented as 2D arrays (samples × features), and labels as 1D arrays.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Feature Normalization</strong>
+                    <p>NumPy makes it easy to normalize features using operations like <code>(X - X.mean()) / X.std()</code> for standardization, which is crucial for many ML algorithms.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Matrix Operations</strong>
+                    <p>Linear algebra operations like matrix multiplication are fundamental to algorithms like linear regression, neural networks, and PCA. NumPy's <code>np.dot()</code> and <code>@</code> operator make these efficient.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Random Number Generation</strong>
+                    <p>NumPy's random module is used for initializing weights in neural networks, creating train-test splits, and implementing stochastic algorithms.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Statistical Operations</strong>
+                    <p>Computing means, standard deviations, covariances, and correlations are essential for exploratory data analysis and feature engineering.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Efficient Computation</strong>
+                    <p>NumPy's C-based implementation allows for fast computation on large datasets, making it possible to train models on millions of data points.</p>
+                </div>
+            </div>
+
+            <h2>Advanced NumPy for Machine Learning</h2>
+
+            <h3>Broadcasting</h3>
+            <p>Broadcasting allows NumPy to perform operations on arrays of different shapes. This is particularly useful when applying operations between a dataset and a single vector, such as subtracting the mean from each feature.</p>
+
+            <h3>Linear Algebra Module (numpy.linalg)</h3>
+            <p>The <code>numpy.linalg</code> module provides functions for solving linear systems, computing eigenvalues and eigenvectors, matrix decompositions (SVD, QR), and computing matrix norms. These operations are fundamental to many machine learning algorithms.</p>
+
+            <div class="usage-list">
+                <strong>Key Linear Algebra Functions:</strong>
+                <ul>
+                    <li><code>np.linalg.inv()</code> - Matrix inverse (used in linear regression)</li>
+                    <li><code>np.linalg.eig()</code> - Eigenvalues and eigenvectors (used in PCA)</li>
+                    <li><code>np.linalg.svd()</code> - Singular Value Decomposition</li>
+                    <li><code>np.linalg.solve()</code> - Solve linear systems</li>
+                    <li><code>np.linalg.norm()</code> - Compute vector or matrix norms</li>
+                </ul>
+            </div>
+
+            <h3>Performance Optimization</h3>
+            <p>NumPy operations are optimized for performance, but understanding these principles can further improve your code:</p>
+
+            <div class="usage-list">
+                <ul>
+                    <li><strong>Avoid loops:</strong> Use vectorized operations instead of Python loops</li>
+                    <li><strong>Use in-place operations:</strong> Operations like <code>+=</code> modify arrays in place, saving memory</li>
+                    <li><strong>Choose appropriate data types:</strong> Use <code>float32</code> instead of <code>float64</code> when precision allows</li>
+                    <li><strong>Leverage views:</strong> Use array views instead of copies when possible to save memory</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <h3>NumPy Best Practices for ML</h3>
+                <p><strong>1. Always vectorize:</strong> Replace Python loops with NumPy operations whenever possible.</p>
+                <p><strong>2. Understand shapes:</strong> Keep track of array dimensions to avoid shape mismatch errors.</p>
+                <p><strong>3. Use appropriate data types:</strong> Choose between <code>int32</code>, <code>float32</code>, <code>float64</code> based on your needs.</p>
+                <p><strong>4. Profile your code:</strong> Use timing functions to identify bottlenecks in your computations.</p>
+                <p><strong>5. Leverage broadcasting:</strong> Understand broadcasting rules to write more efficient code.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning with Python</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" data-page="intro" class="nav-link">Introduction</a></li>
+            <li><a href="numpy.html" data-page="numpy" class="nav-link">NumPy</a></li>
+            <li><a href="scipy.html" data-page="scipy" class="nav-link active">SciPy</a></li>
+            <li><a href="pandas.html" data-page="pandas" class="nav-link">Pandas</a></li>
+            <li><a href="scikit.html" data-page="sklearn" class="nav-link">Scikit-Learn</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="scipy">
+            <h1>SciPy: Scientific Computing Toolbox for Machine Learning</h1>
+
+            <p>SciPy is a Python-based ecosystem of open-source software for mathematics, science, and engineering. Built on top of NumPy,
+                SciPy provides efficient implementations of algorithms for optimization, statistics, linear algebra, signal processing,
+                interpolation, integration, sparse matrices, and more. While libraries like scikit-learn provide high-level ML APIs,
+                SciPy supplies many of the computational building blocks those libraries rely on, and it is invaluable when you need
+                low-level control in ML workflows.</p>
+
+            <h2>Why SciPy is Useful for Machine Learning</h2>
+            <div class="highlight-box">
+                <p>SciPy complements NumPy and scikit-learn by offering:</p>
+                <ul>
+                    <li><strong>Optimization Routines:</strong> Powerful solvers for minimizing loss functions and fitting custom models.</li>
+                    <li><strong>Statistical Tools:</strong> Distributions, hypothesis testing, and density estimation for EDA and validation.</li>
+                    <li><strong>Linear Algebra & Sparse:</strong> High-performance dense and sparse matrix operations essential to ML.</li>
+                    <li><strong>Signal & Image Processing:</strong> Filtering, feature extraction, and transforms for audio/image tasks.</li>
+                    <li><strong>Interoperability:</strong> Works seamlessly with NumPy arrays and scikit-learn estimators.</li>
+                </ul>
+            </div>
+
+            <h2>Core SciPy Modules for ML</h2>
+
+            <h3>1. Optimization (scipy.optimize)</h3>
+            <p>Use <code>scipy.optimize</code> to minimize custom loss functions, fit models, or solve constrained problems when out-of-the-box
+               estimators are not suitable.</p>
+            <div class="usage-list">
+                <strong>Common Techniques:</strong>
+                <ul>
+                    <li><code>minimize(fun, x0, method=...)</code> - General-purpose minimization (BFGS, L-BFGS-B, Nelder-Mead, CG, etc.)</li>
+                    <li><code>least_squares(fun, x0, ...)</code> - Nonlinear least squares (robust loss options)</li>
+                    <li><code>curve_fit(f, x, y)</code> - Nonlinear curve fitting (wraps <code>least_squares</code>)</li>
+                    <li><code>linprog</code> / <code>milp</code> - Linear and mixed-integer linear programming</li>
+                </ul>
+            </div>
+
+            <h3>2. Statistics (scipy.stats)</h3>
+            <p><code>scipy.stats</code> provides distributions, random variates, descriptive statistics, hypothesis tests, and kernel density
+               estimation, useful for EDA, feature analysis, and model validation.</p>
+            <div class="usage-list">
+                <strong>Key Features:</strong>
+                <ul>
+                    <li><strong>Distributions:</strong> <code>stats.norm</code>, <code>stats.beta</code>, <code>stats.poisson</code>, etc. with <code>.pdf()</code>, <code>.cdf()</code>, <code>.rvs()</code></li>
+                    <li><strong>Hypothesis testing:</strong> <code>ttest_ind</code>, <code>mannwhitneyu</code>, <code>chi2_contingency</code>, <code>ks_2samp</code></li>
+                    <li><strong>Correlation:</strong> <code>pearsonr</code>, <code>spearmanr</code>, <code>kendalltau</code></li>
+                    <li><strong>Density estimation:</strong> <code>gaussian_kde</code> for non-parametric density estimates</li>
+                </ul>
+            </div>
+
+            <h3>3. Linear Algebra (scipy.linalg)</h3>
+            <p>High-level linear algebra routines similar to NumPy's <code>linalg</code> but with more algorithms and performance options.</p>
+            <div class="usage-list">
+                <strong>Useful Routines:</strong>
+                <ul>
+                    <li><code>svd</code>, <code>eigh</code> / <code>eig</code> - Decompositions used in PCA and spectral methods</li>
+                    <li><code>solve</code>, <code>lu_factor</code> / <code>lu_solve</code> - Solve linear systems efficiently</li>
+                    <li><code>cho_factor</code> / <code>cho_solve</code> - Cholesky solvers for positive-definite systems</li>
+                </ul>
+            </div>
+
+            <h3>4. Sparse Matrices (scipy.sparse)</h3>
+            <p>Efficient storage and operations on sparse matrices, crucial for high-dimensional text, recommenders, and graph data.</p>
+            <div class="usage-list">
+                <strong>Key Concepts:</strong>
+                <ul>
+                    <li>Sparse formats: <code>csr_matrix</code>, <code>csc_matrix</code>, <code>coo_matrix</code></li>
+                    <li>Ops: matrix-vector products, slicing, stacking, conversions</li>
+                    <li>Sparse linear algebra: <code>scipy.sparse.linalg</code> (e.g., <code>svds</code>, <code>cg</code>, <code>lsqr</code>)</li>
+                </ul>
+            </div>
+
+            <h3>5. Spatial Algorithms (scipy.spatial)</h3>
+            <p>Distance metrics, KD-trees, and nearest neighbor searches used in clustering, retrieval, and outlier detection.</p>
+            <div class="usage-list">
+                <strong>Highlights:</strong>
+                <ul>
+                    <li><code>distance.pdist</code>, <code>cdist</code> - Pairwise distances with many metrics</li>
+                    <li><code>KDTree</code> / <code>cKDTree</code> - Fast nearest-neighbor queries</li>
+                    <li><code>ConvexHull</code>, <code>Delaunay</code> - Computational geometry utilities</li>
+                </ul>
+            </div>
+
+            <h3>6. Signal Processing (scipy.signal)</h3>
+            <p>Filtering, spectral analysis, and feature extraction for audio, sensor, and time-series data.</p>
+            <div class="usage-list">
+                <strong>Common Tasks:</strong>
+                <ul>
+                    <li>Design/apply filters: <code>butter</code> + <code>filtfilt</code>, <code>iirfilter</code></li>
+                    <li>STFT/spectrograms: <code>stft</code>, <code>spectrogram</code>, <code>welch</code></li>
+                    <li>Resampling: <code>resample</code>, <code>resample_poly</code></li>
+                </ul>
+            </div>
+
+            <h3>7. Interpolation (scipy.interpolate)</h3>
+            <p>Interpolate or smooth data, fill missing points, or create continuous functions from discrete samples.</p>
+            <div class="usage-list">
+                <strong>Useful APIs:</strong>
+                <ul>
+                    <li><code>interp1d</code>, <code>interp2d</code> (grid), <code>griddata</code> (scattered points)</li>
+                    <li>Smoothing splines: <code>UnivariateSpline</code>, <code>Rbf</code> radial basis interpolation</li>
+                </ul>
+            </div>
+
+            <h3>8. Integration (scipy.integrate)</h3>
+            <p>Numerical integration and ODE solvers, handy for simulation-based ML or probabilistic modeling.</p>
+            <div class="usage-list">
+                <strong>Key Functions:</strong>
+                <ul>
+                    <li><code>quad</code>, <code>dblquad</code>, <code>nquad</code> - Integrals in 1D/ND</li>
+                    <li><code>solve_ivp</code> - Solve initial value ODE problems (Runge-Kutta, BDF, etc.)</li>
+                </ul>
+            </div>
+
+            <h3>9. FFT (scipy.fft)</h3>
+            <p>Fast Fourier Transforms for frequency-domain analysis and feature engineering.</p>
+            <div class="usage-list">
+                <strong>Core:</strong>
+                <ul>
+                    <li><code>fft</code>, <code>ifft</code>, <code>rfft</code>, <code>irfft</code>, <code>fftn</code> for N-D transforms</li>
+                </ul>
+            </div>
+
+            <h3>10. Image Processing (scipy.ndimage)</h3>
+            <p>Basic image processing: filtering, morphology, measurements—useful for classical CV pipelines.</p>
+            <div class="usage-list">
+                <strong>Examples:</strong>
+                <ul>
+                    <li>Smoothing/edges: <code>gaussian_filter</code>, <code>sobel</code></li>
+                    <li>Morphology: <code>binary_erosion</code>, <code>binary_dilation</code>, <code>label</code></li>
+                </ul>
+            </div>
+
+            <h2>Quick Examples</h2>
+            <div>
+                <div class="feature-item">
+                    <strong>Curve Fitting (optimize.curve_fit)</strong>
+                    <p>Fit a non-linear function to data to estimate parameters:</p>
+                    <pre><code>import numpy as np
+from scipy.optimize import curve_fit
+
+def model(x, a, b, c):
+    return a * np.exp(-b * x) + c
+
+x = np.linspace(0, 4, 50)
+y = model(x, 2.5, 1.3, 0.5) + 0.2 * np.random.normal(size=x.size)
+
+popt, pcov = curve_fit(model, x, y)
+print(popt)  # estimated parameters</code></pre>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Hypothesis Test (stats.ttest_ind)</strong>
+                    <p>Compare means of two groups:</p>
+                    <pre><code>from scipy import stats
+
+group_a = stats.norm.rvs(loc=0.0, scale=1.0, size=100, random_state=0)
+group_b = stats.norm.rvs(loc=0.3, scale=1.0, size=100, random_state=1)
+
+t_stat, p_val = stats.ttest_ind(group_a, group_b, equal_var=False)
+print(t_stat, p_val)</code></pre>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Sparse Matrix and SVD</strong>
+                    <p>Work with high-dimensional text features efficiently:</p>
+                    <pre><code>import numpy as np
+from scipy.sparse import csr_matrix
+from scipy.sparse.linalg import svds
+
+X = csr_matrix(np.random.rand(1000, 5000) * (np.random.rand(1000, 5000) &lt; 0.02))
+u, s, vt = svds(X, k=50)
+print(s[-5:])</code></pre>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>SciPy Best Practices for ML</h3>
+                <p><strong>1. Start with NumPy arrays:</strong> Ensure your data is in NumPy/SciPy structures for performance.</p>
+                <p><strong>2. Choose the right solver:</strong> Try different methods in <code>optimize.minimize</code> and provide gradients/Jacobians when possible for speed.</p>
+                <p><strong>3. Exploit sparsity:</strong> Use <code>scipy.sparse</code> for large, sparse feature matrices to save memory and time.</p>
+                <p><strong>4. Validate statistically:</strong> Use <code>scipy.stats</code> to support findings with proper tests and confidence intervals.</p>
+                <p><strong>5. Profile your pipeline:</strong> Identify bottlenecks; sometimes a SciPy routine can replace slow Python loops.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

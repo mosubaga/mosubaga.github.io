@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deep Learning in JavaScript with TensorFlow.js</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Learn how to run deep learning models directly in the browser using TensorFlow.js. Architecture, data handling, and code examples.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="index.html">Deep Learning Overview</a></li>
+    <li><a href="timeseries.html">Time Series Forecasting</a></li>
+    <li><a href="nlp.html">Natural Language Processing</a></li>
+    <li><a href="dljs.html" class="active">Deep Learning in JS</a></li>
+    <li><a href="mljs.html">ml5.js in the Browser</a></li>
+  </ul>
+</nav>
+<div class="main-content">
+  <header>
+    <h1>Deep Learning in JavaScript with TensorFlow.js</h1>
+    <p>Deep learning isn't limited to Python servers. With TensorFlow.js, you can develop and train models directly in the browser or in Node.js, enabling privacy-preserving, low-latency, and interactive AI applications.</p>
+  </header>
+
+  <main>
+    <section>
+      <article>
+        <h2>1. Why Deep Learning in the Browser?</h2>
+        <p>
+          Running models on the client side opens up unique possibilities that server-side Python can't easily match:
+        </p>
+        <ul>
+          <li><b>Privacy:</b> Data never leaves the user's device. Perfect for health or sensitive data.</li>
+          <li><b>Low Latency:</b> No server round-trips. Interactions are instantaneous.</li>
+          <li><b>Device Access:</b> Direct access to sensors like cameras, microphones, and accelerometers.</li>
+          <li><b>Cost:</b> Compute happens on the user's GPU, saving server costs.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>2. Core Concepts in TensorFlow.js</h2>
+        <p><strong>Key differences from Python's TensorFlow/Keras:</strong></p>
+        <ul>
+          <li><b>Tensors:</b> The core data structure. You must manage memory manually using <code>tf.tidy()</code> or <code>tensor.dispose()</code> to prevent WebGL memory leaks.</li>
+          <li><b>Async/Await:</b> Most operations (training, data loading, prediction) are asynchronous to avoid blocking the UI thread.</li>
+          <li><b>Layers API:</b> Modeled after Keras, making it familiar for Python developers.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>3. Setup</h2>
+      <p>You can include TensorFlow.js via a CDN script tag for simple HTML pages, or install it via NPM for build pipelines.</p>
+      <div class="code-example">
+      <pre><code>&lt;!-- CDN --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"&gt;&lt;/script&gt;
+
+&lt;!-- NPM --&gt;
+// npm install @tensorflow/tfjs
+import * as tf from '@tensorflow/tfjs';
+</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Creating and Training a Model</h2>
+      <p>Here is a complete example of defining a simple linear regression model, generating synthetic data, and training it in the browser.</p>
+      <div class="code-example">
+      <pre><code>async function run() {
+  // 1. Define the model (Equivalent to Keras Sequential)
+  const model = tf.sequential();
+  model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+
+  // 2. Compile the model
+  model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+
+  // 3. Generate synthetic data
+  const xs = tf.tensor2d([-1, 0, 1, 2, 3, 4], [6, 1]);
+  const ys = tf.tensor2d([-3, -1, 1, 3, 5, 7], [6, 1]);
+
+  // 4. Train the model (await is crucial here!)
+  console.log('Training...');
+  await model.fit(xs, ys, {epochs: 250});
+
+  // 5. Predict
+  const output = model.predict(tf.tensor2d([10], [1, 1]));
+  output.print(); // Should print a value close to 19
+
+  // Cleanup memory
+  xs.dispose();
+  ys.dispose();
+  output.dispose();
+}
+
+run();
+</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Loading Pre-trained Models</h2>
+      <p>One of the most common use cases is loading a model trained in Python (saved as a JSON file) and using it for inference in the browser.</p>
+      <div class="code-example">
+      <pre><code>// Converting Python Keras model:
+// tensorflowjs_converter --input_format keras model.h5 target_dir
+
+async function loadAndPredict() {
+    const model = await tf.loadLayersModel('path/to/model.json');
+
+    const input = tf.zeros([1, 224, 224, 3]);
+    const prediction = model.predict(input);
+
+    prediction.print();
+}
+      </code></pre></div>
+    </section>
+
+    <section>
+      <article>
+        <h2>6. Further Reading</h2>
+        <ul>
+          <li>
+            <a href="https://www.tensorflow.org/js/tutorials" target="_blank">TensorFlow.js Tutorials</a>
+          </li>
+          <li>
+            <a href="https://github.com/tensorflow/tfjs-models" target="_blank">Pre-trained Models (PoseNet, MobileNet, etc.)</a>
+          </li>
+        </ul>
+      </article>
+    </section>
+    <section>
+      <div class="note">
+        <b>Performance Tip:</b> TensorFlow.js utilizes WebGL to accelerate computations on the GPU. Always ensure your tensors are disposed of when no longer needed to avoid memory leaks that can crash the browser tab.
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
+  </footer>
+</div>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

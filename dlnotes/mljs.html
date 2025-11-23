@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Machine Learning in the Browser with ml5.js</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Learn how to use the ml5.js JavaScript library to run machine learning in the browser with simple, friendly APIs.">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="index.html">Deep Learning Overview</a></li>
+    <li><a href="timeseries.html">Time Series Forecasting</a></li>
+    <li><a href="nlp.html">Natural Language Processing</a></li>
+    <li><a href="dljs.html">Deep Learning in JS</a></li>
+    <li><a href="mljs.html" class="active">ml5.js in the Browser</a></li>
+  </ul>
+</nav>
+<div class="main-content">
+  <header>
+    <h1>Machine Learning in the Browser with ml5.js</h1>
+    <p>
+      ml5.js is a friendly, high-level machine learning library for the web, built on top of TensorFlow.js and often
+      used together with p5.js. It provides simple APIs for common tasks like image classification, pose detection,
+      sound classification, and text generation—making creative ML accessible right in the browser.
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <article>
+        <h2>1. Why ml5.js?</h2>
+        <ul>
+          <li><b>Simplicity:</b> Friendly APIs that hide low-level tensor operations.</li>
+          <li><b>Runs in the browser:</b> No server required; models run client-side using WebGL acceleration.</li>
+          <li><b>Creative coding focus:</b> Works great with p5.js for interactive sketches, art, and education.</li>
+          <li><b>Privacy:</b> Your data stays on device, ideal for demos and workshops.</li>
+        </ul>
+      </article>
+    </section>    
+    
+    <section>
+      <h2>2. Setup</h2>
+      <p>Add ml5.js (and optionally p5.js) via CDN script tags:</p>
+      <div class="code-example">
+        <pre><code>&lt;!-- p5.js for easy sketches (optional but common with ml5) --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- ml5.js (includes TensorFlow.js under the hood) --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/ml5/1.5.0/ml5.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Your script --&gt;
+&lt;script src="js/app.js"&gt;&lt;/script&gt;</code></pre>
+      </div>
+    </section>
+
+      <section>
+      <h2>3. Image Classification (MobileNet)</h2>
+      <p>A minimal example that classifies an image using a pre-trained MobileNet model.</p>
+      <div class="code-example">
+        <pre><code>&lt;img id="img" src="https://www.example.com/img/YellowLabradorLooking_new.jpg" width="200" /&gt;
+&lt;pre id="result"&gt;Loading...&lt;/pre&gt;
+
+&lt;script&gt;
+  // Wait until ml5 is loaded
+  const classifier = ml5.imageClassifier('MobileNet', modelLoaded);
+
+  function modelLoaded() {
+    const img = document.getElementById('img');
+    classifier.classify(img, (err, results) =&gt; {
+      if (err) {
+        console.error(err);
+        document.getElementById('result').textContent = 'Error: ' + err.message;
+        return;
+      }
+      const {label, confidence} = results[0];
+      document.getElementById('result').textContent = `${label} (${(confidence*100).toFixed(1)}%)`;
+    });
+  }
+&lt;/script&gt;</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Pose Detection (PoseNet) with p5.js</h2>
+      <p>Use the webcam to detect human poses. This snippet sets up a p5.js sketch and overlays keypoints.</p>
+      <div class="code-example">
+        <pre><code>let video, poseNet, poses = [];
+
+function setup() {
+  createCanvas(640, 480);
+  video = createCapture(VIDEO);
+  video.size(width, height);
+  video.hide();
+
+  poseNet = ml5.poseNet(video, () =&gt; console.log('PoseNet ready'));
+  poseNet.on('pose', results =&gt; poses = results);
+}
+
+function draw() {
+  image(video, 0, 0, width, height);
+  drawKeypoints();
+}
+
+function drawKeypoints() {
+  for (const pose of poses) {
+    for (const kp of pose.pose.keypoints) {
+      if (kp.score &gt; 0.2) {
+        fill(0, 255, 0);
+        noStroke();
+        circle(kp.position.x, kp.position.y, 8);
+      }
+    }
+  }
+}</code></pre>
+      </div>
+    </section>
+     <section>
+      <h2>5. Sound Classification (SpeechCommands)</h2>
+      <p>Classify simple voice commands with a pre-trained model.</p>
+      <div class="code-example">
+        <pre><code>let classifier;
+let label = 'listening...';
+
+function preload() {
+  classifier = ml5.soundClassifier('SpeechCommands18w', { probabilityThreshold: 0.85 });
+}
+
+function setup() {
+  createCanvas(400, 200);
+  classifier.classify(gotResult);
+}
+
+function gotResult(err, results) {
+  if (err) return console.error(err);
+  label = results[0].label;
+}
+
+function draw() {
+  background(240);
+  textAlign(CENTER, CENTER);
+  textSize(24);
+  text(label, width/2, height/2);
+}</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <article>
+        <h2>6. Tips and Best Practices</h2>
+        <ul>
+          <li><b>HTTPS + Permissions:</b> Webcam and microphone access require HTTPS (or localhost) and user permission.</li>
+          <li><b>Model size:</b> Pre-trained models are downloaded at runtime; ensure a decent network connection for demos.</li>
+          <li><b>Performance:</b> Close other GPU-intensive tabs; reduce video resolution if pose detection is slow.</li>
+          <li><b>Ethics and privacy:</b> Always inform users when capturing audio/video and process data locally when possible.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>7. Further Reading</h2>
+        <ul>
+          <li><a href="https://ml5js.org/" target="_blank">ml5.js Official Site</a></li>
+          <li><a href="https://learn.ml5js.org/" target="_blank">ml5.js Learning Resources</a></li>
+          <li><a href="https://github.com/ml5js/ml5-library" target="_blank">ml5.js GitHub</a></li>
+          <li><a href="https://p5js.org/" target="_blank">p5.js</a></li>
+        </ul>
+      </article>
+    </section>
+
+  </main>
+  <footer>
+    <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
+  </footer>
+</div>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

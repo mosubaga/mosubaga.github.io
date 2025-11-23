@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning with Python</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" data-page="intro" class="nav-link">Introduction</a></li>
+            <li><a href="numpy.html" data-page="numpy" class="nav-link">NumPy</a></li>
+            <li><a href="scipy.html" data-page="scipy" class="nav-link">SciPy</a></li>
+            <li><a href="pandas.html" data-page="pandas" class="nav-link">Pandas</a></li>
+            <li><a href="scikit.html" data-page="sklearn" class="nav-link active">Scikit-Learn</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="sklearn" class="page">
+            <h1>Scikit-Learn: Machine Learning Made Accessible</h1>
+
+            <p>Scikit-Learn (sklearn) is the most popular machine learning library in Python, providing simple and efficient tools for data mining and data analysis. Built on NumPy, SciPy, and Matplotlib, it offers a consistent interface for implementing a wide variety of machine learning algorithms. Scikit-Learn is designed for both beginners and experts, making sophisticated machine learning accessible to everyone.</p>
+
+            <h2>Why Scikit-Learn is the Go-To ML Library</h2>
+
+            <div class="highlight-box">
+                <p>Scikit-Learn has become the standard for machine learning in Python because of:</p>
+                <ul>
+                    <li><strong>Consistent API:</strong> All algorithms follow the same <code>fit()</code>, <code>predict()</code>, and <code>transform()</code> pattern.</li>
+                    <li><strong>Comprehensive Algorithms:</strong> Includes classification, regression, clustering, dimensionality reduction, and more.</li>
+                    <li><strong>Production-Ready:</strong> Well-tested, documented, and optimized for real-world applications.</li>
+                    <li><strong>Preprocessing Tools:</strong> Built-in functions for data scaling, encoding, and transformation.</li>
+                    <li><strong>Model Evaluation:</strong> Extensive metrics and cross-validation tools for assessing model performance.</li>
+                    <li><strong>Pipeline Support:</strong> Chain multiple steps into reproducible workflows.</li>
+                </ul>
+            </div>
+
+            <h2>Core Components of Scikit-Learn</h2>
+
+            <h3>1. Estimators (Models)</h3>
+            <p>Estimators are the core objects in Scikit-Learn that implement machine learning algorithms. All estimators follow a consistent interface with <code>fit()</code> and <code>predict()</code> methods.</p>
+
+            <div class="usage-list">
+                <strong>Common Estimator Methods:</strong>
+                <ul>
+                    <li><code>fit(X, y)</code> - Train the model on training data</li>
+                    <li><code>predict(X)</code> - Make predictions on new data</li>
+                    <li><code>predict_proba(X)</code> - Get probability estimates (classifiers)</li>
+                    <li><code>score(X, y)</code> - Return the model's accuracy or R² score</li>
+                    <li><code>get_params()</code> - Get model parameters</li>
+                    <li><code>set_params()</code> - Set model parameters</li>
+                </ul>
+            </div>
+
+            <h3>2. Transformers (Preprocessing)</h3>
+            <p>Transformers are objects that transform data, typically for preprocessing. They implement <code>fit()</code>, <code>transform()</code>, and often <code>fit_transform()</code> methods.</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>StandardScaler</strong>
+                    <p>Standardizes features by removing the mean and scaling to unit variance. Essential for algorithms sensitive to feature scales like SVM and KNN.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>MinMaxScaler</strong>
+                    <p>Scales features to a specified range (usually 0-1). Useful when you need bounded values and for neural networks.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>LabelEncoder</strong>
+                    <p>Converts categorical labels into numeric format. Used for encoding target variables in classification.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>OneHotEncoder</strong>
+                    <p>Creates binary columns for each category. Essential for categorical features in most ML algorithms.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>PCA</strong>
+                    <p>Principal Component Analysis for dimensionality reduction. Transforms data into fewer dimensions while preserving variance.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>PolynomialFeatures</strong>
+                    <p>Generates polynomial and interaction features. Useful for capturing non-linear relationships.</p>
+                </div>
+            </div>
+
+            <h3>3. Pipeline</h3>
+            <p>Pipelines chain multiple steps into a single object, ensuring that all preprocessing steps are applied consistently to training and test data. This prevents data leakage and makes code more maintainable.</p>
+
+            <div class="usage-list">
+                <strong>Pipeline Benefits:</strong>
+                <ul>
+                    <li>Prevents data leakage by ensuring proper train-test separation</li>
+                    <li>Makes code cleaner and more readable</li>
+                    <li>Enables easy hyperparameter tuning of entire workflows</li>
+                    <li>Simplifies model deployment and reproducibility</li>
+                    <li>Can be saved and loaded as a single object</li>
+                </ul>
+            </div>
+
+            <h2>Machine Learning Workflow with Scikit-Learn</h2>
+
+            <h3>Step 1: Data Preparation</h3>
+            <p>Split your data into training and testing sets using <code>train_test_split()</code>. This ensures you can evaluate your model on unseen data.</p>
+
+            <div class="usage-list">
+                <strong>Key Considerations:</strong>
+                <ul>
+                    <li>Use <code>stratify</code> parameter for classification to maintain class distributions</li>
+                    <li>Set <code>random_state</code> for reproducibility</li>
+                    <li>Typical split ratios: 80-20, 70-30, or use cross-validation</li>
+                    <li>For time series, use temporal split (not random)</li>
+                </ul>
+            </div>
+
+            <h3>Step 2: Preprocessing</h3>
+            <p>Transform your data to make it suitable for machine learning algorithms. Common preprocessing steps include scaling, encoding, and handling missing values.</p>
+
+            <div class="usage-list">
+                <strong>Preprocessing Order:</strong>
+                <ul>
+                    <li>Handle missing values (<code>SimpleImputer</code>)</li>
+                    <li>Encode categorical variables (<code>OneHotEncoder</code>, <code>LabelEncoder</code>)</li>
+                    <li>Scale numerical features (<code>StandardScaler</code>, <code>MinMaxScaler</code>)</li>
+                    <li>Feature engineering (create new features)</li>
+                    <li>Feature selection (remove irrelevant features)</li>
+                </ul>
+            </div>
+
+            <h3>Step 3: Model Selection and Training</h3>
+            <p>Choose an appropriate algorithm based on your problem type and train it on your preprocessed data.</p>
+
+            <div class="algorithm-grid">
+                <div class="algorithm-card">
+                    <h3>Classification Models</h3>
+                    <ul>
+                        <li><code>LogisticRegression</code></li>
+                        <li><code>DecisionTreeClassifier</code></li>
+                        <li><code>RandomForestClassifier</code></li>
+                        <li><code>SVC</code> (Support Vector Classifier)</li>
+                        <li><code>KNeighborsClassifier</code></li>
+                        <li><code>GradientBoostingClassifier</code></li>
+                        <li><code>MultinomialNB</code> (Naive Bayes)</li>
+                    </ul>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Regression Models</h3>
+                    <ul>
+                        <li><code>LinearRegression</code></li>
+                        <li><code>Ridge</code> (L2 regularization)</li>
+                        <li><code>Lasso</code> (L1 regularization)</li>
+                        <li><code>DecisionTreeRegressor</code></li>
+                        <li><code>RandomForestRegressor</code></li>
+                        <li><code>SVR</code> (Support Vector Regressor)</li>
+                        <li><code>GradientBoostingRegressor</code></li>
+                    </ul>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Clustering Models</h3>
+                    <ul>
+                        <li><code>KMeans</code></li>
+                        <li><code>DBSCAN</code></li>
+                        <li><code>AgglomerativeClustering</code></li>
+                        <li><code>GaussianMixture</code></li>
+                        <li><code>MeanShift</code></li>
+                    </ul>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Dimensionality Reduction</h3>
+                    <ul>
+                        <li><code>PCA</code></li>
+                        <li><code>TruncatedSVD</code></li>
+                        <li><code>TSNE</code></li>
+                        <li><code>LDA</code> (Linear Discriminant Analysis)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Step 4: Model Evaluation</h3>
+            <p>Assess your model's performance using appropriate metrics. The choice of metric depends on your problem type and business objectives.</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Classification Metrics</strong>
+                    <p><code>accuracy_score</code> - Overall accuracy<br>
+                    <code>precision_score</code> - Positive predictive value<br>
+                    <code>recall_score</code> - True positive rate<br>
+                    <code>f1_score</code> - Harmonic mean of precision and recall<br>
+                    <code>roc_auc_score</code> - Area under ROC curve<br>
+                    <code>confusion_matrix</code> - Detailed prediction breakdown</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Regression Metrics</strong>
+                    <p><code>mean_squared_error</code> - Average squared error<br>
+                    <code>mean_absolute_error</code> - Average absolute error<br>
+                    <code>r2_score</code> - Coefficient of determination<br>
+                    <code>mean_absolute_percentage_error</code> - Percentage error</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Clustering Metrics</strong>
+                    <p><code>silhouette_score</code> - Cluster cohesion and separation<br>
+                    <code>davies_bouldin_score</code> - Cluster validity<br>
+                    <code>calinski_harabasz_score</code> - Variance ratio</p>
+                </div>
+            </div>
+
+            <h3>Step 5: Hyperparameter Tuning</h3>
+            <p>Optimize your model's performance by finding the best hyperparameters using systematic search methods.</p>
+
+            <div class="usage-list">
+                <strong>Tuning Methods:</strong>
+                <ul>
+                    <li><strong>GridSearchCV:</strong> Exhaustive search over specified parameter grid. Best for small search spaces.</li>
+                    <li><strong>RandomizedSearchCV:</strong> Random sampling from parameter distributions. Faster than grid search for large spaces.</li>
+                    <li><strong>Cross-validation:</strong> Both methods use CV to evaluate each parameter combination, preventing overfitting.</li>
+                    <li><strong>Best practices:</strong> Start with RandomizedSearch for exploration, then refine with GridSearch.</li>
+                </ul>
+            </div>
+
+            <h3>Step 6: Model Persistence</h3>
+            <p>Save trained models for future use or deployment. Scikit-Learn models can be saved using <code>joblib</code> or <code>pickle</code>.</p>
+
+            <h2>Advanced Scikit-Learn Features</h2>
+
+            <h3>Cross-Validation</h3>
+            <p>Cross-validation provides a more robust estimate of model performance by training and evaluating on multiple splits of the data. <code>cross_val_score()</code> automates this process.</p>
+
+            <div class="usage-list">
+                <strong>CV Strategies:</strong>
+                <ul>
+                    <li><strong>KFold:</strong> Standard k-fold cross-validation</li>
+                    <li><strong>StratifiedKFold:</strong> Maintains class distribution in each fold</li>
+                    <li><strong>TimeSeriesSplit:</strong> Respects temporal order for time series data</li>
+                    <li><strong>LeaveOneOut:</strong> Each sample is a test set once</li>
+                </ul>
+            </div>
+
+            <h3>Ensemble Methods</h3>
+            <p>Combine multiple models to improve prediction accuracy and robustness. Scikit-Learn provides several ensemble techniques.</p>
+
+            <div class="usage-list">
+                <strong>Ensemble Approaches:</strong>
+                <ul>
+                    <li><strong>Bagging:</strong> Random Forest trains multiple trees on different data subsets</li>
+                    <li><strong>Boosting:</strong> Gradient Boosting sequentially improves on previous models' errors</li>
+                    <li><strong>Voting:</strong> <code>VotingClassifier</code> combines predictions from multiple models</li>
+                    <li><strong>Stacking:</strong> <code>StackingClassifier</code> uses meta-model to combine base models</li>
+                </ul>
+            </div>
+
+            <h3>Feature Importance and Selection</h3>
+            <p>Understand which features contribute most to predictions and remove irrelevant ones to improve model performance and interpretability.</p>
+
+            <div class="usage-list">
+                <strong>Feature Selection Methods:</strong>
+                <ul>
+                    <li><strong>SelectKBest:</strong> Select top k features based on statistical tests</li>
+                    <li><strong>RFE (Recursive Feature Elimination):</strong> Iteratively remove least important features</li>
+                    <li><strong>SelectFromModel:</strong> Select based on model's feature importance</li>
+                    <li><strong>VarianceThreshold:</strong> Remove low-variance features</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Scikit-Learn Best Practices</h3>
+                <p><strong>1. Always use pipelines:</strong> Prevent data leakage and ensure reproducibility.</p>
+                <p><strong>2. Split before preprocessing:</strong> Fit transformers only on training data, never on test data.</p>
+                <p><strong>3. Use cross-validation:</strong> Get reliable performance estimates before final evaluation.</p>
+                <p><strong>4. Start simple:</strong> Begin with simple models (Logistic Regression, Decision Trees) before trying complex ones.</p>
+                <p><strong>5. Understand your metrics:</strong> Choose evaluation metrics that align with business objectives.</p>
+                <p><strong>6. Document everything:</strong> Track experiments, parameters, and results for reproducibility.</p>
+                <p><strong>7. Monitor for overfitting:</strong> Compare training and validation performance regularly.</p>
+                <p><strong>8. Use random_state:</strong> Set random seeds for reproducible results during development.</p>
+            </div>
+
+            <h2>Real-World Scikit-Learn Workflow Example</h2>
+            <p>A typical machine learning project with Scikit-Learn follows this pattern:</p>
+
+            <div class="usage-list">
+                <ol>
+                    <li>Load data with Pandas</li>
+                    <li>Explore and visualize data</li>
+                    <li>Split into train and test sets</li>
+                    <li>Create preprocessing pipeline (imputation, encoding, scaling)</li>
+                    <li>Create full pipeline combining preprocessing and model</li>
+                    <li>Train multiple models with cross-validation</li>
+                    <li>Compare models and select the best one</li>
+                    <li>Tune hyperparameters of the best model</li>
+                    <li>Evaluate final model on test set</li>
+                    <li>Analyze feature importance and errors</li>
+                    <li>Save model for deployment</li>
+                </ol>
+            </div>
+
+            <h2>Integration with the Ecosystem</h2>
+            <p>Scikit-Learn integrates seamlessly with the broader Python data science ecosystem:</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>NumPy</strong>
+                    <p>All operations work with NumPy arrays. Models accept and return NumPy arrays for maximum flexibility.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Pandas</strong>
+                    <p>Most functions accept Pandas DataFrames. Use DataFrames for preprocessing, then convert to arrays for modeling.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Matplotlib/Seaborn</strong>
+                    <p>Visualize model results, learning curves, and decision boundaries using plotting libraries.</p>
+                </div>
+
+                <div class="feature-item">
+                    <strong>Joblib</strong>
+                    <p>Efficient serialization of models and pipelines for saving and loading trained models.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning with Python</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" data-page="intro" class="nav-link active">Introduction</a></li>
+            <li><a href="numpy.html" data-page="numpy" class="nav-link">NumPy</a></li>
+            <li><a href="scipy.html" data-page="scipy" class="nav-link">SciPy</a></li>
+            <li><a href="pandas.html" data-page="pandas" class="nav-link">Pandas</a></li>
+            <li><a href="scikit.html" data-page="sklearn" class="nav-link">Scikit-Learn</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Introduction Page -->
+        <div id="intro">
+            <h1>Machine Learning with Python: Algorithm Selection Guide</h1>
+
+            <p>Machine Learning is a powerful subset of artificial intelligence that enables computers to learn from data and make predictions or decisions without being explicitly programmed. Choosing the right algorithm for your specific problem is crucial for achieving optimal results. This guide will help you understand which algorithms to use for different scenarios.</p>
+
+            <h2>Understanding Problem Types</h2>
+            <p>Machine learning problems are generally categorized into three main types: supervised learning, unsupervised learning, and reinforcement learning. The choice of algorithm depends on the nature of your data and the problem you're trying to solve.</p>
+
+            <h2>Algorithm Selection Guide</h2>
+
+            <div class="algorithm-grid">
+                <div class="algorithm-card">
+                    <h3>Linear Regression</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Regression</p>
+                    <p><strong>Use When:</strong> You need to predict continuous numerical values and there's a linear relationship between features and target.</p>
+                    <p><strong>Examples:</strong> Predicting house prices, stock prices, temperature forecasting, sales prediction.</p>
+                    <p><strong>Pros:</strong> Simple, fast, interpretable, works well with linearly separable data.</p>
+                    <p><strong>Cons:</strong> Assumes linear relationships, sensitive to outliers.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Logistic Regression</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Classification</p>
+                    <p><strong>Use When:</strong> You need binary classification or multi-class classification with linear decision boundaries.</p>
+                    <p><strong>Examples:</strong> Email spam detection, disease diagnosis (yes/no), customer churn prediction.</p>
+                    <p><strong>Pros:</strong> Probabilistic interpretation, efficient, works well for linearly separable classes.</p>
+                    <p><strong>Cons:</strong> Limited to linear decision boundaries, may underperform with complex patterns.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Decision Trees</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
+                    <p><strong>Use When:</strong> You need interpretable models and can handle non-linear relationships.</p>
+                    <p><strong>Examples:</strong> Credit approval systems, medical diagnosis, customer segmentation.</p>
+                    <p><strong>Pros:</strong> Easy to understand, handles non-linear data, requires little data preprocessing.</p>
+                    <p><strong>Cons:</strong> Prone to overfitting, unstable with small data changes.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Random Forest</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
+                    <p><strong>Use When:</strong> You need high accuracy and can sacrifice some interpretability, especially with complex datasets.</p>
+                    <p><strong>Examples:</strong> Fraud detection, recommendation systems, feature importance analysis.</p>
+                    <p><strong>Pros:</strong> High accuracy, handles missing values, reduces overfitting, provides feature importance.</p>
+                    <p><strong>Cons:</strong> Less interpretable, computationally expensive, slower predictions.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Support Vector Machines (SVM)</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
+                    <p><strong>Use When:</strong> You have high-dimensional data or need clear margin of separation between classes.</p>
+                    <p><strong>Examples:</strong> Image classification, text categorization, handwriting recognition.</p>
+                    <p><strong>Pros:</strong> Effective in high dimensions, memory efficient, versatile with different kernel functions.</p>
+                    <p><strong>Cons:</strong> Slow with large datasets, requires feature scaling, difficult to interpret.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>K-Nearest Neighbors (KNN)</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
+                    <p><strong>Use When:</strong> You have small to medium datasets and need a simple, interpretable algorithm.</p>
+                    <p><strong>Examples:</strong> Recommendation systems, pattern recognition, anomaly detection.</p>
+                    <p><strong>Pros:</strong> Simple to implement, no training phase, naturally handles multi-class problems.</p>
+                    <p><strong>Cons:</strong> Slow prediction time, sensitive to irrelevant features, requires feature scaling.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>K-Means Clustering</h3>
+                    <p><strong>Problem Type:</strong> Unsupervised Learning - Clustering</p>
+                    <p><strong>Use When:</strong> You need to group similar data points without predefined labels.</p>
+                    <p><strong>Examples:</strong> Customer segmentation, image compression, document clustering, anomaly detection.</p>
+                    <p><strong>Pros:</strong> Simple and fast, scales well to large datasets, easy to implement.</p>
+                    <p><strong>Cons:</strong> Requires specifying number of clusters, sensitive to initialization, assumes spherical clusters.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Neural Networks (Deep Learning)</h3>
+                    <p><strong>Problem Type:</strong> Supervised/Unsupervised Learning - Various Tasks</p>
+                    <p><strong>Use When:</strong> You have large amounts of data and complex, non-linear patterns to learn.</p>
+                    <p><strong>Examples:</strong> Image recognition, natural language processing, speech recognition, autonomous vehicles.</p>
+                    <p><strong>Pros:</strong> Handles complex patterns, works with unstructured data, state-of-the-art performance.</p>
+                    <p><strong>Cons:</strong> Requires large datasets, computationally expensive, black box nature.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Naive Bayes</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Classification</p>
+                    <p><strong>Use When:</strong> You're working with text classification or need fast, probabilistic predictions.</p>
+                    <p><strong>Examples:</strong> Spam filtering, sentiment analysis, document categorization.</p>
+                    <p><strong>Pros:</strong> Fast training and prediction, works well with high-dimensional data, handles missing values.</p>
+                    <p><strong>Cons:</strong> Assumes feature independence, can be outperformed by more complex models.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Gradient Boosting (XGBoost, LightGBM)</h3>
+                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
+                    <p><strong>Use When:</strong> You need maximum predictive performance and have structured/tabular data.</p>
+                    <p><strong>Examples:</strong> Kaggle competitions, financial modeling, ranking problems.</p>
+                    <p><strong>Pros:</strong> Excellent performance, handles missing values, provides feature importance, regularization.</p>
+                    <p><strong>Cons:</strong> Can overfit, requires careful tuning, longer training time.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>Principal Component Analysis (PCA)</h3>
+                    <p><strong>Problem Type:</strong> Unsupervised Learning - Dimensionality Reduction</p>
+                    <p><strong>Use When:</strong> You need to reduce the number of features while preserving variance.</p>
+                    <p><strong>Examples:</strong> Data visualization, noise reduction, feature extraction, compression.</p>
+                    <p><strong>Pros:</strong> Reduces computational complexity, removes correlated features, improves visualization.</p>
+                    <p><strong>Cons:</strong> Loss of interpretability, assumes linear relationships, sensitive to scaling.</p>
+                </div>
+
+                <div class="algorithm-card">
+                    <h3>DBSCAN</h3>
+                    <p><strong>Problem Type:</strong> Unsupervised Learning - Clustering</p>
+                    <p><strong>Use When:</strong> You need to find clusters of arbitrary shape and detect outliers.</p>
+                    <p><strong>Examples:</strong> Anomaly detection, spatial data analysis, identifying noise in data.</p>
+                    <p><strong>Pros:</strong> No need to specify number of clusters, finds arbitrary-shaped clusters, identifies outliers.</p>
+                    <p><strong>Cons:</strong> Struggles with varying density clusters, sensitive to parameters, not efficient with high dimensions.</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h2>Decision Framework</h2>
+                <p><strong>Step 1: Define Your Problem</strong> - Is it classification, regression, clustering, or dimensionality reduction?</p>
+                <p><strong>Step 2: Understand Your Data</strong> - How much data do you have? Is it labeled? What's the dimensionality?</p>
+                <p><strong>Step 3: Consider Constraints</strong> - Do you need interpretability? What's your computational budget? How fast do predictions need to be?</p>
+                <p><strong>Step 4: Start Simple</strong> - Begin with simpler algorithms (linear regression, logistic regression) before trying complex ones.</p>
+                <p><strong>Step 5: Iterate and Evaluate</strong> - Try multiple algorithms, compare performance, and refine based on results.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

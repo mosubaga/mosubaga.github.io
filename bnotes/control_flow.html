@@ -522,9 +522,50 @@ fi
         </ul>
       </div>
     </section>
+    <section>
+        <!-- Perl and Python One-Liners for Bash Scripting -->
+
+<h2>8. Perl and Python One-Liners for Bash Scripting</h2>
+
+<p>Perl and Python one-liners are powerful tools for manipulating text, processing data, and performing quick operations directly from the command line, often used as part of Bash scripts. Here are some useful examples to help streamline your workflow:</p>
+
+<h3>Perl One-Liners</h3>
+<ul>
+  <li><b>Print only lines matching a pattern:</b>
+    <pre><code>perl -ne 'print if /pattern/' filename</code></pre>
+  </li>
+  <li><b>Replace text in a file (in-place):</b>
+    <pre><code>perl -pi -e 's/old/new/g' filename</code></pre>
+  </li>
+  <li><b>Print line numbers with lines:</b>
+    <pre><code>perl -ne 'print "$. $_"' filename</code></pre>
+  </li>
+  <li><b>Sum numbers in a column:</b>
+    <pre><code>perl -lane '$sum += $F[0]; END { print $sum }' filename</code></pre>
+  </li>
+</ul>
+
+<h3>Python One-Liners</h3>
+<ul>
+  <li><b>Print lines containing a pattern:</b>
+    <pre><code>python3 -c "import sys; [print(line, end='') for line in sys.stdin if 'pattern' in line]" &lt; filename</code></pre>
+  </li>
+  <li><b>Replace text in a file (output to stdout):</b>
+    <pre><code>python3 -c "import sys; [print(line.replace('old','new'), end='') for line in sys.stdin]" &lt; filename</code></pre>
+  </li>
+  <li><b>Count unique lines:</b>
+    <pre><code>python3 -c "import sys; print(len(set(sys.stdin)))" &lt; filename</code></pre>
+  </li>
+  <li><b>Sum numbers in a column:</b>
+    <pre><code>python3 -c "import sys; print(sum(float(line.split()[0]) for line in sys.stdin))" &lt; filename</code></pre>
+  </li>
+</ul>
+
+<p>These one-liners can be embedded directly within Bash scripts or used in pipelines to process data efficiently. Be sure to adjust patterns and column indices to suit your specific use cases.</p>
+    </section>
 
     <section>
-      <h2>8. Resources</h2>
+      <h2>9. Resources</h2>
       <ul>
         <li><a href="https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html" target="_blank">Bash Manual: Pattern Matching</a></li>
         <li><a href="https://www.gnu.org/software/grep/manual/grep.html#Regular-Expressions" target="_blank">GNU grep Regular Expressions</a></li>
