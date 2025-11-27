@@ -6,7 +6,7 @@
             "location":"Shop",
             "attk":"7",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Koutesu Knife",
@@ -14,7 +14,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Bizen Boat",
@@ -22,7 +22,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Murasame",
@@ -30,7 +30,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Heaven's Cloud",
@@ -38,7 +38,7 @@
             "location":"Shop",
             "attk":"11",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Kiyomori",
@@ -46,7 +46,7 @@
             "location":"Shop",
             "attk":"12",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Muramasa",
@@ -54,7 +54,7 @@
             "location":"Shop",
             "attk":"14",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Kikuichimoji",
@@ -62,7 +62,7 @@
             "location":"Shop",
             "attk":"15",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Masamune",
@@ -70,7 +70,7 @@
             "location":"Steal: Elmdor (Battle 45)",
             "attk":"18",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Chirijiraden",
@@ -78,7 +78,7 @@
             "location":"Move-Find: END",
             "attk":"25",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "sticks":[
@@ -88,7 +88,7 @@
             "location":"Shop",
             "attk":"6",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Battle Bamboo",
@@ -96,7 +96,7 @@
             "location":"Shop",
             "attk":"7",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Musk Rod",
@@ -104,7 +104,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Iron Fan",
@@ -112,7 +112,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Gokuu Rod",
@@ -120,7 +120,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"20",
-            "chacteristics":"Add: Innocent."
+            "characteristics":"Add: Innocent."
         },
         {
             "name":"Ivory Rod",
@@ -128,7 +128,7 @@
             "location":"Poach: Sacred",
             "attk":"11",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Octagon Rod",
@@ -136,7 +136,7 @@
             "location":"Shop",
             "attk":"12",
             "evade":"20",
-            "chacteristics":"Cancel: Darkness, Confusion, Oil, Frog, Poison, Slow, Stop, Don't Move, Don't Act."
+            "characteristics":"Cancel: Darkness, Confusion, Oil, Frog, Poison, Slow, Stop, Don't Move, Don't Act."
         },
         {
             "name":"Whale Whisker",
@@ -144,7 +144,7 @@
             "location":"Poach: Tiamat",
             "attk":"16",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "rods":[
@@ -154,7 +154,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Thunder Rod",
@@ -162,7 +162,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"20",
-            "chacteristics":"Lightning elemental ; Strengthen: Lightning ; Magic: Bolt."
+            "characteristics":"Lightning elemental ; Strengthen: Lightning ; Magic: Bolt."
         },
         {
             "name":"Flame Rod",
@@ -170,7 +170,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"20",
-            "chacteristics":"Fire elemental ; Strengthen: Fire ; Magic: Fire."
+            "characteristics":"Fire elemental ; Strengthen: Fire ; Magic: Fire."
         },
         {
             "name":"Ice Rod",
@@ -178,7 +178,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"20",
-            "chacteristics":"Ice elemental ; Strengthen: Ice ; Magic: Ice."
+            "characteristics":"Ice elemental ; Strengthen: Ice ; Magic: Ice."
         },
         {
             "name":"Poison Rod",
@@ -186,7 +186,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"20",
-            "chacteristics":"Add: Poison."
+            "characteristics":"Add: Poison."
         },
         {
             "name":"Wizard Rod",
@@ -194,7 +194,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"20",
-            "chacteristics":"AT Magic +2."
+            "characteristics":"AT Magic +2."
         },
         {
             "name":"Dragon Rod",
@@ -202,7 +202,7 @@
             "location":"Poach: Blue Dragon,Steal from: Summoner (Battle 49)",
             "attk":"5",
             "evade":"20",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Faith Rod",
@@ -210,7 +210,7 @@
             "location":"Move-Find: VALKYRIES",
             "attk":"5",
             "evade":"20",
-            "chacteristics":"Always: Faith ; Add: Faith."
+            "characteristics":"Always: Faith ; Add: Faith."
         }
     ],
     "spears":[
@@ -220,7 +220,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Spear",
@@ -228,7 +228,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Mythril Spear",
@@ -236,7 +236,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Partisan",
@@ -244,7 +244,7 @@
             "location":"Shop",
             "attk":"11",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Oberisk",
@@ -252,7 +252,7 @@
             "location":"Shop",
             "attk":"12",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Holy Lance",
@@ -260,7 +260,7 @@
             "location":"Poach: Sacred",
             "attk":"14",
             "evade":"10",
-            "chacteristics":"Holy elemental ; Magic: Holy."
+            "characteristics":"Holy elemental ; Magic: Holy."
         },
         {
             "name":"Dragon Whisker",
@@ -268,7 +268,7 @@
             "location":"Poach: Red Dragon",
             "attk":"17",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Javelin (2)",
@@ -276,7 +276,7 @@
             "location":"Move-Find: Nelveska Temple.",
             "attk":"30",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "knightswords":[
@@ -286,7 +286,7 @@
             "location":"Poach: Taiju,Steal from: Meliadoul (Battle 35)",
             "attk":"16",
             "evade":"60",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Save the Queen",
@@ -294,7 +294,7 @@
             "location":"Move-Find: TERMINATE,Get from: Meliadoul (after Battle 46)",
             "attk":"18",
             "evade":"30",
-            "chacteristics":"Always: Protect."
+            "characteristics":"Always: Protect."
         },
         {
             "name":"Excalibur",
@@ -302,7 +302,7 @@
             "location":"Get from: Orlandu (after Battle 41),Find: MLAPAN",
             "attk":"21",
             "evade":"35",
-            "chacteristics":"Always: Haste ; Absorbs: Holy ; Strengthen: Holy."
+            "characteristics":"Always: Haste ; Absorbs: Holy ; Strengthen: Holy."
         },
         {
             "name":"Ragnarok",
@@ -310,7 +310,7 @@
             "location":"Move-Find: VOYAGE,Won after: Battle 56",
             "attk":"24",
             "evade":"20",
-            "chacteristics":"Always: Shell."
+            "characteristics":"Always: Shell."
         },
         {
             "name":"Chaos Blade",
@@ -318,7 +318,7 @@
             "location":"Move-Find: END",
             "attk":"40",
             "evade":"20",
-            "chacteristics":"Add: Petrify ; Always: Regen."
+            "characteristics":"Add: Petrify ; Always: Regen."
         }
     ],
     "dictionaries":[
@@ -328,7 +328,7 @@
             "location":"Shop",
             "attk":"7",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Monster Dictionary",
@@ -336,7 +336,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Papyrus Plate",
@@ -344,7 +344,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Madlemgen",
@@ -352,7 +352,7 @@
             "location":"Poach: Great Morbol",
             "attk":"11",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "bows":[
@@ -362,7 +362,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Silver Bow",
@@ -370,7 +370,7 @@
             "location":"Shop",
             "attk":"5",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Ice Bow",
@@ -378,7 +378,7 @@
             "location":"Shop",
             "attk":"5",
             "evade":"0",
-            "chacteristics":"Ice Elemental."
+            "characteristics":"Ice Elemental."
         },
         {
             "name":"Lightning Bow",
@@ -386,7 +386,7 @@
             "location":"Shop",
             "attk":"6",
             "evade":"0",
-            "chacteristics":"Lightning elemental ; Magic: Bolt2."
+            "characteristics":"Lightning elemental ; Magic: Bolt2."
         },
         {
             "name":"Mythril Bow",
@@ -394,7 +394,7 @@
             "location":"Shop",
             "attk":"7",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Windslash Bow",
@@ -402,7 +402,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"0",
-            "chacteristics":"Wind Elemental."
+            "characteristics":"Wind Elemental."
         },
         {
             "name":"Ultimus Bow",
@@ -410,7 +410,7 @@
             "location":"Poach: King Behemoth,Steal from: Archer (Battle 41)",
             "attk":"10",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Yoichi Bow",
@@ -418,7 +418,7 @@
             "location":"Move-Find: DELTA,Steal from: Archer (VOYAGE)",
             "attk":"12",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Perseus Bow",
@@ -426,7 +426,7 @@
             "location":"Move-Find: VOYAGE",
             "attk":"16",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "hammers":[
@@ -436,7 +436,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Flame Whip",
@@ -444,7 +444,7 @@
             "location":"Shop",
             "attk":"11",
             "evade":"0",
-            "chacteristics":"Fire elemental ; Magic: Fire2."
+            "characteristics":"Fire elemental ; Magic: Fire2."
         },
         {
             "name":"Morning Star",
@@ -452,7 +452,7 @@
             "location":"Shop",
             "attk":"16",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Scorpion Tail",
@@ -460,7 +460,7 @@
             "location":"Poach: Hyudra.",
             "attk":"23",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "axes":[
@@ -470,7 +470,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Giant Axe",
@@ -478,7 +478,7 @@
             "location":"Shop",
             "attk":"12",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Slasher",
@@ -486,7 +486,7 @@
             "location":"Shop",
             "attk":"16",
             "evade":"0",
-            "chacteristics":"Add: Slow."
+            "characteristics":"Add: Slow."
         }
     ],
     "swords":[
@@ -496,7 +496,7 @@
             "location":"Poach: Porky,Move-Find: Nelveska Temple",
             "attk":"1",
             "evade":"50",
-            "chacteristics":"Add: Toad."
+            "characteristics":"Add: Toad."
         },
         {
             "name":"Broad Sword",
@@ -504,7 +504,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Long Sword",
@@ -512,7 +512,7 @@
             "location":"Shop",
             "attk":"5",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Iron Sword",
@@ -520,7 +520,7 @@
             "location":"Shop",
             "attk":"6",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Mythril Sword",
@@ -528,7 +528,7 @@
             "location":"Shop",
             "attk":"7",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Blood Sword",
@@ -536,7 +536,7 @@
             "location":"Poach: Hyudra,Steal from: Gafgarion (Battle 19),Move-Find: TERMINATE",
             "attk":"8",
             "evade":"5",
-            "chacteristics":"Absorbs damage as HP, drains the user if target is undead."
+            "characteristics":"Absorbs damage as HP, drains the user if target is undead."
         },
         {
             "name":"Coral Sword",
@@ -544,7 +544,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"5",
-            "chacteristics":"Lightning Elemental."
+            "characteristics":"Lightning Elemental."
         },
         {
             "name":"Ancient Sword",
@@ -552,7 +552,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"5",
-            "chacteristics":"Add: Don't Move."
+            "characteristics":"Add: Don't Move."
         },
         {
             "name":"Sleep Sword",
@@ -560,7 +560,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"5",
-            "chacteristics":"Add: Sleep."
+            "characteristics":"Add: Sleep."
         },
         {
             "name":"Diamond Sword",
@@ -568,7 +568,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Materia Blade",
@@ -576,7 +576,7 @@
             "location":"Move-Find: Bervenia Volcano",
             "attk":"10",
             "evade":"10",
-            "chacteristics":"Allows Cloud to use his Limit command."
+            "characteristics":"Allows Cloud to use his Limit command."
         },
         {
             "name":"Platinum Sword",
@@ -584,7 +584,7 @@
             "location":"Shop",
             "attk":"12",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Ice Brand",
@@ -592,7 +592,7 @@
             "location":"Shop",
             "attk":"13",
             "evade":"10",
-            "chacteristics":"Ice Elemental ; Magic: Ice2."
+            "characteristics":"Ice Elemental ; Magic: Ice2."
         },
         {
             "name":"Rune Blade",
@@ -600,7 +600,7 @@
             "location":"Shop",
             "attk":"14",
             "evade":"15",
-            "chacteristics":"AT Magic +2."
+            "characteristics":"AT Magic +2."
         }
     ],
     "staffs":[
@@ -610,7 +610,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"White Staff",
@@ -618,7 +618,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"15",
-            "chacteristics":"Cancel: Death Sentence."
+            "characteristics":"Cancel: Death Sentence."
         },
         {
             "name":"Healing Staff",
@@ -626,7 +626,7 @@
             "location":"Get from: Alma (after Battle 23),Poach: Woodman",
             "attk":"4",
             "evade":"15",
-            "chacteristics":"Heals target ; damages undead."
+            "characteristics":"Heals target ; damages undead."
         },
         {
             "name":"Wizard Staff",
@@ -634,7 +634,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"15",
-            "chacteristics":"AT Magic +1."
+            "characteristics":"AT Magic +1."
         },
         {
             "name":"Rainbow Staff",
@@ -642,7 +642,7 @@
             "location":"Shop",
             "attk":"5",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Gold Staff",
@@ -650,7 +650,7 @@
             "location":"Shop",
             "attk":"6",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Mace of Zeus",
@@ -658,7 +658,7 @@
             "location":"Move-Find: DELTA",
             "attk":"6",
             "evade":"15",
-            "chacteristics":"AT Physical +2, Magic +1."
+            "characteristics":"AT Physical +2, Magic +1."
         },
         {
             "name":"Sage Staff",
@@ -666,7 +666,7 @@
             "location":"Move-Find: BRIDGE",
             "attk":"7",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "ninjaswords":[
@@ -676,7 +676,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Ninja Knife",
@@ -684,7 +684,7 @@
             "location":"Shop",
             "attk":"9",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Short Edge",
@@ -692,7 +692,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Ninja Edge",
@@ -700,7 +700,7 @@
             "location":"Shop",
             "attk":"12",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Spell Edge",
@@ -708,7 +708,7 @@
             "location":"Shop",
             "attk":"13",
             "evade":"5",
-            "chacteristics":"Add: Don't Act."
+            "characteristics":"Add: Don't Act."
         },
         {
             "name":"Sasuke Knife",
@@ -716,7 +716,7 @@
             "location":"Move-Find: Nelveska Temple",
             "attk":"14",
             "evade":"15",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Iga Knife",
@@ -724,7 +724,7 @@
             "location":"Move-Find: MLAPAN",
             "attk":"15",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Koga Knife",
@@ -732,7 +732,7 @@
             "location":"Move-Find: BRIDGE",
             "attk":"15",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "bags":[
@@ -742,7 +742,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"0",
-            "chacteristics":"AT Magic +1."
+            "characteristics":"AT Magic +1."
         },
         {
             "name":"P Bag",
@@ -750,7 +750,7 @@
             "location":"Shop",
             "attk":"12",
             "evade":"0",
-            "chacteristics":"Always: Regen."
+            "characteristics":"Always: Regen."
         },
         {
             "name":"H Bag",
@@ -758,7 +758,7 @@
             "location":"Shop",
             "attk":"14",
             "evade":"0",
-            "chacteristics":"Speed +1."
+            "characteristics":"Speed +1."
         },
         {
             "name":"FS Bag",
@@ -766,7 +766,7 @@
             "location":"Poach: Wildbow",
             "attk":"20",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "knives":[
@@ -776,7 +776,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"0",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Mythril Knife",
@@ -784,7 +784,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Blind Knife",
@@ -792,7 +792,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"5",
-            "chacteristics":"Add: Darkness."
+            "characteristics":"Add: Darkness."
         },
         {
             "name":"Mage Masher",
@@ -800,7 +800,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"5",
-            "chacteristics":"Add: Silence."
+            "characteristics":"Add: Silence."
         },
         {
             "name":"Platina Dagger",
@@ -808,7 +808,7 @@
             "location":"Shop",
             "attk":"5",
             "evade":"10",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Main Gauche",
@@ -816,7 +816,7 @@
             "location":"Shop",
             "attk":"6",
             "evade":"40",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Orichalcum",
@@ -824,7 +824,7 @@
             "location":"Shop",
             "attk":"7",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Assassin Dagger",
@@ -832,7 +832,7 @@
             "location":"Shop",
             "attk":"7",
             "evade":"5",
-            "chacteristics":"Add: Death Sentence."
+            "characteristics":"Add: Death Sentence."
         },
         {
             "name":"Air Knife",
@@ -840,7 +840,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"5",
-            "chacteristics":"Wind Elemental."
+            "characteristics":"Wind Elemental."
         },
         {
             "name":"Zorlin Shape",
@@ -848,7 +848,7 @@
             "location":"Poach: Plague",
             "attk":"12",
             "evade":"10",
-            "chacteristics":"Add: Sleep."
+            "characteristics":"Add: Sleep."
         }
     ],
     "crossbows":[
@@ -858,7 +858,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Night Killer",
@@ -866,7 +866,7 @@
             "location":"Shop",
             "attk":"3",
             "evade":"5",
-            "chacteristics":"Add: Darkness."
+            "characteristics":"Add: Darkness."
         },
         {
             "name":"Crossbow",
@@ -874,7 +874,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Poison Bow",
@@ -882,7 +882,7 @@
             "location":"Shop",
             "attk":"4",
             "evade":"5",
-            "chacteristics":"Add: Poison."
+            "characteristics":"Add: Poison."
         },
         {
             "name":"Hunting Bow",
@@ -890,7 +890,7 @@
             "location":"Shop",
             "attk":"6",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Gastrafitis",
@@ -898,7 +898,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ],
     "harps":[
@@ -908,7 +908,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"10",
-            "chacteristics":"Add: Confusion."
+            "characteristics":"Add: Confusion."
         },
         {
             "name":"Bloody Strings",
@@ -916,7 +916,7 @@
             "location":"Shop",
             "attk":"13",
             "evade":"10",
-            "chacteristics":"Absorbs damage as HP, drains the user if target is undead."
+            "characteristics":"Absorbs damage as HP, drains the user if target is undead."
         },
         {
             "name":"Fairy Harp",
@@ -924,7 +924,7 @@
             "location":"Move-Find: VALKYRIES,Poach: Trent",
             "attk":"15",
             "evade":"10",
-            "chacteristics":"Add: Charm."
+            "characteristics":"Add: Charm."
         }
     ],
     "guns":[
@@ -934,7 +934,7 @@
             "location":"Shop",
             "attk":"6",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Mythril Gun",
@@ -942,7 +942,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"5",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Stone Gun",
@@ -950,7 +950,7 @@
             "location":"Poach: Dark Behemoth,Steal from: Chemist or Mediator (Germinas Peak)",
             "attk":"16",
             "evade":"5",
-            "chacteristics":"Start with: Petrify."
+            "characteristics":"Start with: Petrify."
         },
         {
             "name":"Blaze Gun",
@@ -958,7 +958,7 @@
             "location":"Move-Find: NOGIAS,Steal from: Balk (Battle 38)",
             "attk":"20",
             "evade":"5",
-            "chacteristics":"Ice elemental ; Magic: Ice, Ice2 or Ice3."
+            "characteristics":"Ice elemental ; Magic: Ice, Ice2 or Ice3."
         },
         {
             "name":"Glacier Gun",
@@ -966,7 +966,7 @@
             "location":"Move-Find: NOGIAS",
             "attk":"21",
             "evade":"5",
-            "chacteristics":"Fire elemental ; Magic: Fire, Fire2 or Fire3."
+            "characteristics":"Fire elemental ; Magic: Fire, Fire2 or Fire3."
         },
         {
             "name":"Blast Gun",
@@ -974,7 +974,7 @@
             "location":"Move-Find: TIGER",
             "attk":"22",
             "evade":"5",
-            "chacteristics":"Lightning elemental ; Magic: Bolt, Bolt2 or Bolt3."
+            "characteristics":"Lightning elemental ; Magic: Bolt, Bolt2 or Bolt3."
         }
     ],
     "fabrics":[
@@ -984,7 +984,7 @@
             "location":"Shop",
             "attk":"8",
             "evade":"50",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Cashmere",
@@ -992,7 +992,7 @@
             "location":"Shop",
             "attk":"10",
             "evade":"50",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         },
         {
             "name":"Ryozan Silk",
@@ -1000,7 +1000,7 @@
             "location":"Poach: Tiamat",
             "attk":"15",
             "evade":"50",
-            "chacteristics":"No special characteristics."
+            "characteristics":"No special characteristics."
         }
     ]
 }
