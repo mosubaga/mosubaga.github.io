@@ -21,3 +21,9 @@ canvas.p5Canvas {
     margin-left: auto;
     margin-right: auto 
 }
+
+.imgcontainer {
+    display: flex;
+    justify-content: center;
+    flex-direction : row
+}
