@@ -42,7 +42,8 @@
         <div>Perl is a highly capable, feature-rich programming language with over 36 years of development. Perl runs on over 100 platforms from portables to mainframes and is
             suitable for both rapid prototyping and large scale development projects.</div><br>
 
-        <p>Get file list</p>
+        <div class="code-block">
+        <p>Get file list : <button class="copy-btn" type="button" aria-label="Copy code">Copy</button></p>
         <pre>
             <code class="language-perl">
             use strict;
@@ -86,6 +87,7 @@
             }
             </code>
         </pre>
+        </div>
     </div><!-- /.container -->
 
 
@@ -97,5 +99,82 @@
     <script src="../../dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script>
+  (function () {
+    function normalizeText(text) {
+      // Trim leading/trailing blank lines and normalize indentation
+      const lines = text.replace(/\r\n/g, '\n').split('\n');
+
+      // Drop leading/trailing empty lines
+      while (lines.length && lines[0].trim() === '') lines.shift();
+      while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+
+      // Compute minimal common indent (spaces only; tabs are preserved)
+      const indents = lines
+        .filter(l => l.trim().length > 0)
+        .map(l => l.match(/^(\s*)/)[1].length);
+      const minIndent = indents.length ? Math.min.apply(null, indents) : 0;
+
+      return lines.map(l => l.slice(minIndent)).join('\n');
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      // Fallback for older browsers
+      return new Promise(function (resolve, reject) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.top = '-1000px';
+          ta.setAttribute('readonly', '');
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error('execCommand failed'));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    function showCopied(btn) {
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.disabled = true;
+      setTimeout(function () {
+        btn.textContent = original;
+        btn.disabled = false;
+      }, 1200);
+    }
+
+    function attachCopyButtons() {
+      document.querySelectorAll('.code-block').forEach(function (block) {
+        const btn = block.querySelector('.copy-btn');
+        const code = block.querySelector('pre > code, code');
+
+        if (!btn || !code) return;
+
+        btn.addEventListener('click', function () {
+          const raw = code.textContent;
+          const normalized = normalizeText(raw);
+          copyToClipboard(normalized)
+            .then(function () { showCopied(btn); })
+            .catch(function () { btn.textContent = 'Failed'; });
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attachCopyButtons);
+    } else {
+      attachCopyButtons();
+    }
+  })();
+</script>
+  
   </body>
 </html>
