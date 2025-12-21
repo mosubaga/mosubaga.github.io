@@ -1,0 +1,96 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Async JavaScript - Cheat Sheets</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+<nav class="navbar">
+  <a href="index.html">Home</a>
+  <a href="arrays.html">Arrays</a>
+  <a href="objects.html">Objects</a>
+  <a href="everyday.html">Everyday</a>
+  <a href="debug.html">Debug</a>
+  <a href="async.html" class="active">Async</a>
+</nav>
+
+
+
+<div class="card">
+  <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Asynchronous JavaScript</h1>
+
+  <div class="subcard">
+    <p style="text-align: left; font-size: 1.2rem;">
+      In the world of JavaScript, things don't always happen one after another. Imagine an ice cream shop where the server
+      stands perfectly still while the freezer chills the gelato—that's synchronous code! Asynchronous JavaScript is what
+      allows our "server" to take other orders or chat with customers while waiting for time-consuming tasks to finish.
+      Whether you're fetching data from an API or waiting for a timer, mastering async patterns is essential for creating
+      smooth, responsive web experiences that never keep your users waiting.
+    </p>
+  </div>
+
+  <div class="subcard">
+    <p>Handling tasks that take time (like fetching data or waiting for a timer) without freezing the browser.</p>
+
+    <h3>1. Callback Functions</h3>
+    <p>The "old school" way: passing a function as an argument to be executed later.</p>
+    <pre><code class="language-javascript">
+function orderIceCream(flavor, callback) {
+  console.log(`Preparing ${flavor} ice cream...`);
+  setTimeout(() => {
+    callback(flavor);
+  }, 2000);
+}
+
+orderIceCream('Chocolate', (item) => {
+  console.log(`${item} is ready! 🍦`);
+});
+      </code></pre>
+
+    <h3>2. Promises</h3>
+    <p>A Promise represents a value that might be available now, later, or never. It can be <code>pending</code>, <code>fulfilled</code>, or <code>rejected</code>.</p>
+    <pre><code class="language-javascript">
+const getScoops = new Promise((resolve, reject) => {
+  const stockAvailable = true;
+  if (stockAvailable) {
+    resolve("Here are your scoops! 🍧");
+  } else {
+    reject("Sorry, out of stock! ❌");
+  }
+});
+
+getScoops
+  .then(message => console.log(message))
+  .catch(error => console.error(error));
+      </code></pre>
+
+    <h3>3. Async / Await</h3>
+    <p>Syntactic sugar built on top of Promises, making asynchronous code look and behave more like synchronous code.</p>
+    <pre><code class="language-typescript">
+async function serveCustomer() {
+  try {
+    console.log("Taking order...");
+    const result = await getScoops; // Wait for the promise to resolve
+    console.log(result);
+    return "Happy customer!";
+  } catch (err) {
+    console.log("Customer left unhappy: " + err);
+  }
+}
+
+serveCustomer();
+      </code></pre>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Debugging & Errors - Sweet TS & JS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Debugging tips and error handling patterns for JavaScript and TypeScript.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+    <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="arrays.html">Arrays</a>
+    <a href="objects.html">Objects</a>
+    <a href="everyday.html">Everyday</a>
+    <a href="debug.html" class="active">Debug</a>
+    <a href="async.html">Async</a>
+  </nav>
+
+
+  <div class="card">
+    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Debugging & Error Handling</h1>
+
+    <div class="subcard">
+      Debugging is about shrinking the search space: isolate the problem, inspect state, and verify assumptions. These tips
+      focus on the shortest path to truth, plus a few error-handling patterns that keep failures honest and predictable.
+    </div>
+
+    <div class="subcard">
+      <h3>Debugging Tips</h3>
+      <p>Use lightweight tools first, then step through when needed.</p>
+      <pre><code class="language-typescript">
+// Console helpers
+console.log('state', { step, userId });
+console.table(items);
+console.time('fetch');
+await fetch('/api/data');
+console.timeEnd('fetch');
+
+// Pause execution in dev tools
+function calculateTotal(values: number[]) {
+  debugger; // inspect values and call stack
+  return values.reduce((sum, v) => sum + v, 0);
+}
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Try/Catch/Finally</h3>
+      <p>Handle failures where you can recover, and always clean up.</p>
+      <pre><code class="language-typescript">
+async function loadProfile() {
+  try {
+    const res = await fetch('/api/profile');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (error) {
+    console.error('Failed to load profile', error);
+    return null;
+  } finally {
+    console.log('Request finished');
+  }
+}
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Throwing & Custom Errors</h3>
+      <p>Create explicit errors to make failures actionable.</p>
+      <pre><code class="language-typescript">
+class ValidationError extends Error {
+  field: string;
+  constructor(field: string, message: string) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+
+function parseAge(input: string) {
+  const age = Number(input);
+  if (!Number.isFinite(age) || age < 0) {
+    throw new ValidationError('age', 'Age must be a positive number');
+  }
+  return age;
+}
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Promise Error Handling</h3>
+      <p>Always terminate promise chains with <code>.catch</code> or use <code>try/catch</code> with <code>await</code>.</p>
+      <pre><code class="language-typescript">
+fetch('/api/orders')
+  .then((res) => {
+    if (!res.ok) throw new Error('Request failed');
+    return res.json();
+  })
+  .then((data) => console.log(data))
+  .catch((error) => console.error('Orders error', error));
+      </code></pre>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arrays Cheat Sheet - Sweet TS & JS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="A sweet cheat sheet for TypeScript and JavaScript arrays.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+      <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="arrays.html" class="active">Arrays</a>
+    <a href="objects.html">Objects</a>
+    <a href="everyday.html">Everyday</a>
+    <a href="debug.html">Debug</a>
+    <a href="async.html">Async</a>
+  </nav>
+
+
+
+  <div class="card">
+    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Arrays Cheat Sheet</h1>
+
+    <div class="subcard">
+      Arrays are one of the most fundamental and versatile data structures in JavaScript and TypeScript, serving as ordered collections that can store multiple values in a single variable. Unlike arrays in many other programming languages, JavaScript arrays are remarkably flexible—they can hold elements of different types simultaneously, grow and shrink dynamically without pre-declaring a size, and even contain other arrays or complex objects. TypeScript enhances this foundation by allowing you to specify the types of elements an array should contain, providing helpful autocomplete suggestions and catching type-related errors during development. Whether you're managing a list of user names, storing numerical data for calculations, organizing API responses, or building complex data structures, arrays provide powerful built-in methods like map(), filter(), reduce(), and forEach() that make data manipulation elegant and efficient. Mastering arrays is essential for any JavaScript or TypeScript developer, as they appear in virtually every application—from simple todo lists to sophisticated data processing pipelines—and form the building blocks for more advanced programming patterns and algorithms.
+    </div>
+
+    <div class="subcard">
+      <h3>Creation & Basics</h3>
+      <pre><code>// JavaScript
+const fruits = ['Apple', 'Banana'];
+
+// TypeScript
+const berries: string[] = ['Strawberry', 'Blueberry'];
+const numbers: Array&lt;number&gt; = [1, 2, 3];</code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Adding/Removing Elements</h3>
+      <div class="method-section">
+        <p><code>push(...items)</code>: Add to end</p>
+        <pre><code>fruits.push('Orange'); // ['Apple', 'Banana', 'Orange']</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>pop()</code>: Remove from end</p>
+        <pre><code>const last = fruits.pop(); // 'Orange'</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>unshift(...items)</code>: Add to beginning</p>
+        <pre><code>fruits.unshift('Mango'); // ['Mango', 'Apple', 'Banana']</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>shift()</code>: Remove from beginning</p>
+        <pre><code>const first = fruits.shift(); // 'Mango'</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Transformation</h3>
+      <div class="method-section">
+        <p><code>map(callback)</code>: Create new array by transforming each element</p>
+        <pre><code>const lengths = fruits.map(f => f.length);</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>filter(callback)</code>: Create new array with elements that pass a test</p>
+        <pre><code>const longNames = fruits.filter(f => f.length > 5);</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>reduce(callback, initialValue)</code>: Reduce array to a single value</p>
+        <pre><code>const totalLength = fruits.reduce((sum, f) => sum + f.length, 0);</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Searching</h3>
+      <div class="method-section">
+        <p><code>find(callback)</code>: Returns the first element that matches</p>
+        <pre><code>const found = fruits.find(f => f.startsWith('A'));</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>includes(item)</code>: Returns true if item is in array</p>
+        <pre><code>const hasApple = fruits.includes('Apple');</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>

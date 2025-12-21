@@ -1,0 +1,107 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Objects Cheat Sheet - Sweet TS & JS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="A sweet cheat sheet for TypeScript and JavaScript objects.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+      <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="arrays.html">Arrays</a>
+    <a href="objects.html" class="active">Objects</a>
+    <a href="everyday.html">Everyday</a>
+    <a href="debug.html">Debug</a>
+    <a href="async.html">Async</a>
+  </nav>
+
+
+
+  <div class="card">
+    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Objects Cheat Sheet</h1>
+    <div class="subcard">
+      Objects in JavaScript are collections of key-value pairs that allow you to store and organize related data in a structured way.
+      Unlike arrays, which use numeric indices, objects use named properties (keys) to access their values.
+      You create objects using curly braces, and each property consists of a key and its associated value, separated by a colon.
+      Objects are ideal for representing real-world entities with multiple attributes—for example, a user object might have properties like name, email, and age.
+      They're fundamental to JavaScript programming and form the basis of more complex concepts like classes and prototypes, making them essential for organizing data and building applications.
+    </div>
+
+    <div class="subcard">
+      <h3>Creation & Interfaces</h3>
+      <pre><code>// JavaScript
+const candy = { name: 'Gummy Bear', flavor: 'Cherry' };
+
+// TypeScript
+interface Candy {
+  name: string;
+  flavor: string;
+  rating?: number; // Optional property
+}
+
+const treat: Candy = { name: 'Lollipop', flavor: 'Strawberry' };</code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Accessing & Manipulating</h3>
+      <div class="method-section">
+        <p>Accessing properties</p>
+        <pre><code>console.log(candy.name); // Dot notation
+console.log(candy['flavor']); // Bracket notation</code></pre>
+      </div>
+      <div class="method-section">
+        <p>Adding/Updating</p>
+        <pre><code>candy.color = 'Red';
+candy.flavor = 'Sour Cherry';</code></pre>
+      </div>
+      <div class="method-section">
+        <p>Deleting</p>
+        <pre><code>delete candy.color;</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Object Methods</h3>
+      <div class="method-section">
+        <p><code>Object.keys(obj)</code>: Get all property names</p>
+        <pre><code>const keys = Object.keys(candy); // ['name', 'flavor']</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Object.values(obj)</code>: Get all property values</p>
+        <pre><code>const values = Object.values(candy); // ['Gummy Bear', 'Cherry']</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Object.entries(obj)</code>: Get key-value pairs</p>
+        <pre><code>for (const [key, value] of Object.entries(candy)) {
+  console.log(`${key}: ${value}`);
+}</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Object.assign(target, ...sources)</code>: Merge objects</p>
+        <pre><code>const fullTreat = Object.assign({}, candy, { size: 'Large' });</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Spread Operator</h3>
+      <div class="method-section">
+        <p>Shallow copy & merging</p>
+        <pre><code>const copiedCandy = { ...candy };
+const mergedCandy = { ...candy, brand: 'SweetCo' };</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>

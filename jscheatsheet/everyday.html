@@ -1,0 +1,100 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Everyday Patterns - Sweet TS & JS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Everyday JavaScript and TypeScript patterns: optional chaining, nullish coalescing, destructuring, and spread/rest.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+    <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="arrays.html">Arrays</a>
+    <a href="objects.html">Objects</a>
+    <a href="everyday.html" class="active">Everyday</a>
+    <a href="debug.html">Debug</a>
+    <a href="async.html">Async</a>
+  </nav>
+
+
+  <div class="card">
+    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Everyday Patterns</h1>
+
+    <div class="subcard">
+      These are the habits that make TypeScript and JavaScript feel smooth: safer property access, reliable defaults, clean
+      object/array unpacking, and flexible argument handling. Master these four patterns and your code gets shorter, clearer,
+      and more defensive without extra noise.
+    </div>
+
+    <div class="subcard">
+      <h3>Optional Chaining (?.)</h3>
+      <p>Read deeply nested values without exploding on <code>null</code> or <code>undefined</code>.</p>
+      <pre><code class="language-typescript">
+const user = { profile: { name: 'Aiko' } };
+
+const name = user.profile?.name; // 'Aiko'
+const city = user.address?.city; // undefined
+
+// Also works with method calls
+const label = user.profile?.formatName?.() ?? 'Anonymous';
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Nullish Coalescing (??)</h3>
+      <p>Provide a default only when the value is <code>null</code> or <code>undefined</code> (not for <code>0</code>, <code>''</code>, or <code>false</code>).</p>
+      <pre><code class="language-typescript">
+const scoops = 0;
+const shownScoops = scoops ?? 2; // 0 (keeps intentional zero)
+
+const flavor = undefined;
+const chosenFlavor = flavor ?? 'Vanilla'; // 'Vanilla'
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Destructuring</h3>
+      <p>Pull values out of arrays and objects with clear, compact syntax.</p>
+      <pre><code class="language-typescript">
+const colors = ['Strawberry', 'Matcha', 'Mocha'];
+const [first, , third] = colors; // 'Strawberry', 'Mocha'
+
+const order = { flavor: 'Mango', size: 'Large', topping: 'Boba' };
+const { flavor, topping } = order;
+
+const { size: cupSize = 'Medium' } = order; // rename + default
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Spread & Rest (...)</h3>
+      <p>Spread expands values; rest gathers them. Same dots, different intent.</p>
+      <pre><code class="language-typescript">
+// Spread: copy/merge
+const base = { flavor: 'Vanilla', scoops: 2 };
+const deluxe = { ...base, topping: 'Sprinkles' };
+
+const list = [1, 2, 3];
+const extended = [...list, 4, 5];
+
+// Rest: collect remaining values
+function buildSundae(flavor: string, ...toppings: string[]) {
+  return { flavor, toppings };
+}
+
+const [head, ...tail] = extended; // head = 1, tail = [2,3,4,5]
+      </code></pre>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TypeScript & JavaScript Cheat Sheets</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <meta name="description" content="A sweet collection of TypeScript and JavaScript cheat sheets.">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#fafafa">
+  <style>
+    code {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      padding: 0.2rem 0.4rem;
+      border-radius: 5px;
+    }
+    pre code {
+      background: transparent !important;
+      padding: 0 !important;
+    }
+    pre {
+      background: #ffffff !important;
+      padding: 1.5rem;
+      border-radius: 20px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 3px solid #ffdab9; /* Peach Sorbet placeholder */
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    }
+    h3 {
+      font-family: 'Pacifico', cursive;
+      color: #5d4037; /* Chocolate Brown placeholder */
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+
+<body>
+      <nav class="navbar">
+    <a href="index.html" class="active">Home</a>
+    <a href="arrays.html">Arrays</a>
+    <a href="objects.html">Objects</a>
+    <a href="everyday.html">Everyday</a>
+    <a href="debug.html">Debug</a>
+    <a href="async.html">Async</a>
+  </nav>
+
+
+
+  <div class="card">
+    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Sweet Typescript & Javascript Cheat Sheets</h1>
+    <p style="text-align: center; font-size: 1.2rem;">Welcome to the most delicious resource for mastering TypeScript and JavaScript! Explore our sugary cheat sheets below.</p>
+    <div class="subcard">
+      <p style="text-align: left; font-size: 1.2rem;">JavaScript, created by Brendan Eich in just 10 days back in 1995, has evolved from a simple scripting language for adding basic interactivity to web pages into one of the most influential programming languages in the world.
+        Originally designed to run exclusively in web browsers, JavaScript now powers everything from server-side applications (thanks to Node.js) to mobile apps, desktop software, and even IoT devices. As JavaScript projects grew more complex,
+        Microsoft introduced TypeScript in 2012 as a superset of JavaScript that adds optional static typing and modern development tools, helping developers catch errors before runtime and build more maintainable large-scale applications.
+        Today, learning JavaScript and TypeScript opens doors to virtually every area of software development—it's the only language that runs natively in all web browsers, boasts the largest package ecosystem (npm), and is consistently ranked
+        among the most popular and in-demand programming languages worldwide. Whether you're building interactive websites, full-stack web applications, mobile apps with React Native, or cloud functions, JavaScript and TypeScript provide the versatile
+        foundation you need to bring your ideas to life.</p>
+    </div>
+
+    <div class="subcard">
+      <h2>Everyday Patterns</h2>
+      <p>Make your code cleaner and safer with optional chaining, nullish coalescing, destructuring, and spread/rest. Quick examples and practical reminders are waiting in the Everyday section.</p>
+      <p><a href="everyday.html">Go to Everyday Patterns →</a></p>
+    </div>
+
+    <div class="subcard">
+      <h2>Debugging & Errors</h2>
+      <p>Sharpen your debugging instincts with console tricks, breakpoints, and clean error handling patterns.</p>
+      <p><a href="debug.html">Go to Debugging & Errors →</a></p>
+    </div>
+
+    <div class="subcard">
+      <h2>Basic Syntax</h2>
+
+      <br>
+      <h3>Control Flow (If...Else)</h3>
+      <pre><code class="language-typescript">
+const temperature = 25;
+
+if (temperature > 30) {
+  console.log("It's a scorcher! ☀️");
+} else if (temperature > 20) {
+  console.log("Perfect weather for coding. 🍦");
+} else {
+  console.log("Grab a sweater! 🧥");
+}
+        </code></pre>
+      <br>
+      <h3>Loops</h3>
+      <pre><code class="language-typescript">
+// Standard for loop
+for (let i = 0; i < 3; i++) {
+  console.log(`Scoop number ${i + 1}`);
+}
+
+// For...of (Iterating over arrays)
+const toppings = ['Sprinkles', 'Chocolate', 'Cherry'];
+for (const topping of toppings) {
+  console.log(`Adding ${topping}...`);
+}
+        </code></pre>
+
+      <br>
+      <h3>TypeScript Interfaces</h3>
+      <p>Interfaces define the "shape" of an object, ensuring type safety.</p>
+      <pre><code class="language-typescript">
+interface Sundae {
+  flavor: string;
+  scoops: number;
+  hasSyrup: boolean;
+  extraInstructions?: string; // Optional property
+}
+
+const myOrder: Sundae = {
+  flavor: 'Vanilla',
+  scoops: 2,
+  hasSyrup: true
+};
+        </code></pre>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>
