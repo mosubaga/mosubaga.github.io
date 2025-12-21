@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-cmyq3eks> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/rnotes/favicon.svg"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.15.3"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet"><title>Ruby - Basic</title><style>.menu[data-astro-cid-2j44jlrm]{width:100vw;position:fixed;color:#000;top:0;background:linear-gradient(342deg,#fff5f7,#ffb6c1,#ff6b81);padding:.1rem 10px .1rem 1.5rem;z-index:1}.menu[data-astro-cid-2j44jlrm] ul[data-astro-cid-2j44jlrm]{list-style:none;padding:0;display:flex;gap:1rem;justify-content:center}.menu[data-astro-cid-2j44jlrm] a[data-astro-cid-2j44jlrm]{text-decoration:none;color:#e63946;font-weight:700}.menu[data-astro-cid-2j44jlrm] a[data-astro-cid-2j44jlrm]:hover{color:#fff5f7}
+body{background:linear-gradient(125deg,#fff9f9,#ffeaea,#ffe3e3);font-family:Fredoka;margin:0;padding:0}h2[data-astro-cid-cmyq3eks],p[data-astro-cid-cmyq3eks]{padding-left:5rem;padding-right:5rem}div[data-astro-cid-cmyq3eks].container{padding-left:5rem;padding-right:5rem;padding-top:10rem}.code-example[data-astro-cid-cmyq3eks]{background:#24292e;color:#68d391;padding:2rem;border-radius:10px;font-family:Courier New,monospace;margin:2rem 5rem;overflow-x:auto}.content-box[data-astro-cid-cmyq3eks]{margin-bottom:3rem}
+</style></head> <body data-astro-cid-cmyq3eks> <header data-astro-cid-2j44jlrm> <nav class="menu" data-astro-cid-2j44jlrm> <ul data-astro-cid-2j44jlrm> <li data-astro-cid-2j44jlrm> <a style="font-size: 1.5rem;" href="/rnotes/" data-astro-cid-2j44jlrm> Home </a> </li><li data-astro-cid-2j44jlrm> <a style="font-size: 1.5rem;" href="/rnotes/basic" data-astro-cid-2j44jlrm> Basic </a> </li><li data-astro-cid-2j44jlrm> <a style="font-size: 1.5rem;" href="/rnotes/db" data-astro-cid-2j44jlrm> DB </a> </li><li data-astro-cid-2j44jlrm> <a style="font-size: 1.5rem;" href="/rnotes/requests" data-astro-cid-2j44jlrm> Request </a> </li><li data-astro-cid-2j44jlrm> <a style="font-size: 1.5rem;" href="/rnotes/json" data-astro-cid-2j44jlrm> JSON </a> </li> </ul> </nav> </header>  <div class="container" data-astro-cid-cmyq3eks> <main data-astro-cid-cmyq3eks> <section class="section-white" data-astro-cid-cmyq3eks> <h2 data-astro-cid-cmyq3eks>Control Structures</h2> <div class="content-box" data-astro-cid-cmyq3eks> <p style="font-size: 1.1rem; line-height: 1.8; color: #4a5568;" data-astro-cid-cmyq3eks>
+Ruby provides standard control structures like `if`, `else`, `elsif`, and `unless`.
+</p> <div class="code-example" data-astro-cid-cmyq3eks> <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-astro-cid-cmyq3eks data-language="ruby"><code><span class="line"><span style="color:#6A737D"># if-else statement</span></span>
+<span class="line"><span style="color:#FFAB70">age</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 18</span></span>
+<span class="line"><span style="color:#F97583">if</span><span style="color:#E1E4E8"> age </span><span style="color:#F97583">>=</span><span style="color:#79B8FF"> 18</span></span>
+<span class="line"><span style="color:#79B8FF">  puts</span><span style="color:#9ECBFF"> "You are an adult."</span></span>
+<span class="line"><span style="color:#F97583">else</span></span>
+<span class="line"><span style="color:#79B8FF">  puts</span><span style="color:#9ECBFF"> "You are a minor."</span></span>
+<span class="line"><span style="color:#F97583">end</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># unless (opposite of if)</span></span>
+<span class="line"><span style="color:#F97583">unless</span><span style="color:#E1E4E8"> age </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 18</span></span>
+<span class="line"><span style="color:#79B8FF">  puts</span><span style="color:#9ECBFF"> "You can enter."</span></span>
+<span class="line"><span style="color:#F97583">end</span></span></code></pre> </div> </div> </section> <section class="section-white" data-astro-cid-cmyq3eks> <h2 data-astro-cid-cmyq3eks>Loops</h2> <div class="content-box" data-astro-cid-cmyq3eks> <p style="font-size: 1.1rem; line-height: 1.8; color: #4a5568;" data-astro-cid-cmyq3eks>
+Ruby has many ways to iterate. Common loops include `while`, `until`, and various iterators like `each` and `times`.
+</p> <div class="code-example" data-astro-cid-cmyq3eks> <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-astro-cid-cmyq3eks data-language="ruby"><code><span class="line"><span style="color:#6A737D"># while loop</span></span>
+<span class="line"><span style="color:#FFAB70">i</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"><span style="color:#F97583">while</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">&#x3C;</span><span style="color:#79B8FF"> 5</span></span>
+<span class="line"><span style="color:#79B8FF">  puts</span><span style="color:#E1E4E8"> i</span></span>
+<span class="line"><span style="color:#FFAB70">  i</span><span style="color:#F97583"> +=</span><span style="color:#79B8FF"> 1</span></span>
+<span class="line"><span style="color:#F97583">end</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># each iterator (the Ruby way)</span></span>
+<span class="line"><span style="color:#E1E4E8">[</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">].</span><span style="color:#B392F0">each</span><span style="color:#F97583"> do</span><span style="color:#E1E4E8"> |num|</span></span>
+<span class="line"><span style="color:#79B8FF">  puts</span><span style="color:#E1E4E8"> num</span></span>
+<span class="line"><span style="color:#F97583">end</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># times iterator</span></span>
+<span class="line"><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">times</span><span style="color:#F97583"> do</span><span style="color:#E1E4E8"> |i|</span></span>
+<span class="line"><span style="color:#79B8FF">  puts</span><span style="color:#9ECBFF"> "Iteration </span><span style="color:#9ECBFF">#{i}</span><span style="color:#9ECBFF">"</span></span>
+<span class="line"><span style="color:#F97583">end</span></span></code></pre> </div> </div> </section> <section class="section-white" data-astro-cid-cmyq3eks> <h2 data-astro-cid-cmyq3eks>File Read/Write</h2> <div class="content-box" data-astro-cid-cmyq3eks> <p style="font-size: 1.1rem; line-height: 1.8; color: #4a5568;" data-astro-cid-cmyq3eks>
+Ruby makes it easy to read from and write to files using the `File` class.
+</p> <div class="code-example" data-astro-cid-cmyq3eks> <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-astro-cid-cmyq3eks data-language="ruby"><code><span class="line"><span style="color:#6A737D"># Writing to a file</span></span>
+<span class="line"><span style="color:#79B8FF">File</span><span style="color:#E1E4E8">.</span><span style="color:#79B8FF">open</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"example.txt"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"w"</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">do</span><span style="color:#E1E4E8"> |file|</span></span>
+<span class="line"><span style="color:#E1E4E8">  file.</span><span style="color:#79B8FF">puts</span><span style="color:#9ECBFF"> "Hello, Ruby!"</span></span>
+<span class="line"><span style="color:#F97583">end</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Reading from a file</span></span>
+<span class="line"><span style="color:#FFAB70">content</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> File</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">read</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"example.txt"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">puts</span><span style="color:#E1E4E8"> content</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Reading line by line</span></span>
+<span class="line"><span style="color:#79B8FF">File</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">foreach</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"example.txt"</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">do</span><span style="color:#E1E4E8"> |line|</span></span>
+<span class="line"><span style="color:#79B8FF">  puts</span><span style="color:#E1E4E8"> line</span></span>
+<span class="line"><span style="color:#F97583">end</span></span></code></pre> </div> </div> </section> </main> </div> </body></html>
