@@ -39,11 +39,42 @@
 
         <h3 style="text-align:center">Go</h3>
 
-        <div>Often a program can be written as one linear path of code that performs a single task and finishes. When this is possible, always choose this option, because this
-            type of program is usually simple to write and maintain. But there are times when executing multiple tasks concurrently has greater benefit. One example is with a web
-            service that can receive multiple requests for data on individual sockets at the same time. Each socket request is unique and can be independently processed from any other.
-            Having the ability to execute requests concurrently can dramatically improve the performance of this type of system. With this in mind, support for concurrency has been
-            built directly into Go’s language and runtime.</div><br>
+        <div>Go is a fast, modern programming language designed for simplicity, strong tooling, and efficient concurrency.
+            It compiles to static binaries, runs across major platforms, and is widely used for cloud services and systems development.</div><br>
+
+        <h4>History</h4>
+        <div>
+          Go was designed at Google by Robert Griesemer, Rob Pike, and Ken Thompson and released in 2009. The goal
+          was to build a language that compiles quickly, is easy to read, and handles concurrency well while
+          producing efficient binaries.
+        </div><br>
+        <div>
+          Go 1.0 arrived in 2012 with a strong commitment to compatibility, and the language has evolved steadily
+          without breaking existing code. Modules (Go 1.11+) modernized dependency management, and recent releases
+          added generics and tooling improvements.
+        </div><br>
+
+        <h4>Usage and strengths</h4>
+        <div>
+          Go is widely used for backend services, networking tools, cloud infrastructure, and CLI utilities.
+          Its standard library is strong, and the language encourages simple, maintainable code. Goroutines and
+          channels make concurrent programming approachable.
+        </div><br>
+        <div>
+          Typical use cases include microservices, APIs, distributed systems, and developer tooling. Many popular
+          cloud-native projects, such as Kubernetes, Docker, and Terraform, are written in Go.
+        </div><br>
+
+        <h4>Current state and relevance</h4>
+        <div>
+          Go remains a top choice for systems and backend development. It is actively maintained, has fast compile
+          times, and produces static binaries that are easy to deploy. Its tooling and formatting standards also
+          make large teams more consistent.
+        </div><br>
+        <div>
+          Is Go still relevant to learn? Yes. Demand is strong in cloud infrastructure, DevOps, and backend services.
+          If you work on scalable services or tooling, Go skills are widely applicable and valued.
+        </div><br>
 
         <p>Here is one example of getting file list of a given directory recursively.</p>
         <pre>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Perl Cookbook</title>
+    <title>Perl</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -18,7 +18,6 @@
   </head>
 
   <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="headercontainer">
         <div id="navbar" class="collapse navbar-collapse">
@@ -42,8 +41,49 @@
         <div>Perl is a highly capable, feature-rich programming language with over 36 years of development. Perl runs on over 100 platforms from portables to mainframes and is
             suitable for both rapid prototyping and large scale development projects.</div><br>
 
+        <h4>History</h4>
+        <div>
+          Perl was created by Larry Wall in 1987 as a practical tool for text processing and system administration.
+          It quickly became popular because it combined the power of Unix tools with a flexible, expressive syntax.
+          Perl 4 brought widespread adoption in the early 1990s, and Perl 5 (released in 1994) introduced references,
+          objects, and a module system that enabled a vast ecosystem. The Comprehensive Perl Archive Network (CPAN),
+          launched in 1995, became one of the earliest and most influential package repositories in open source.
+        </div><br>
+        <div>
+          In the 2000s, Perl powered a large portion of the web, including CGI scripts and early dynamic sites.
+          The language has continued to evolve with a focus on stability and backward compatibility. Perl 5 remains
+          widely deployed, with ongoing releases that modernize the language and tooling while keeping existing code
+          working.
+        </div><br>
+
+        <h4>Usage and strengths</h4>
+        <div>
+          Perl excels at text processing, log analysis, data munging, and automation. It is also commonly used for
+          bioinformatics, DevOps scripting, and maintenance of legacy systems. Its regex engine and CPAN library
+          ecosystem make it productive for tasks involving parsing and transformation.
+        </div><br>
+        <div>
+          Typical use cases include ETL pipelines, file system utilities, one-off scripts, and glue code between
+          systems. Perl can be embedded in larger applications and runs well on a wide range of operating systems,
+          which keeps it useful in heterogeneous environments.
+        </div><br>
+
+        <h4>Current state and relevance</h4>
+        <div>
+          Perl is still actively maintained, with regular Perl 5 releases and a stable core. Many organizations rely
+          on Perl in production for system tooling, finance, telecom, and scientific computing. While newer languages
+          are more common for greenfield web apps, Perl remains a practical choice where reliability, text handling,
+          and existing infrastructure matter.
+        </div><br>
+        <div>
+          Is Perl still relevant to learn? If you work with Unix-like systems, data pipelines, or legacy services,
+          Perl can be immediately valuable. It is also a good language for learning about regex, scripting, and
+          practical automation. For new web-centric projects, it is less trendy, but the skills transfer well to
+          other languages and toolchains.
+        </div><br>
+
         <div class="code-block">
-        <p>Get file list : <button class="copy-btn" type="button" aria-label="Copy code">Copy</button></p>
+        <p>Here is an example to get a file list : <button class="copy-btn" type="button" aria-label="Copy code">Copy</button></p>
         <pre>
             <code class="language-perl">
             use strict;
