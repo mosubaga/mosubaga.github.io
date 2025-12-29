@@ -1,0 +1,435 @@
+
+<!-- html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HAR Inspector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Comfortaa:wght@300..700&family=Comic+Relief:wght@400;700&family=Fredoka:wght@300..700&family=Momo+Trust+Sans:wght@200..800&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+        background-color: #ffeaff;
+      --bg: #ffeaff;
+      --fg: black;
+      --muted: #667085;
+      --accent: #2563eb;
+      --warn: #b45309;
+      --error: #b00020;
+      --ok: #059669;
+      --card: #ffd6ff;
+      --border: #334155;
+    }
+    body { font-family: Comic Relief, Segoe UI, Roboto, sans-serif; margin: 1.25rem; }
+    h1 { font-size: 1.25rem; margin-bottom: 0.75rem; }
+    .controls { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .dropzone {
+      border: 2px dashed #888; border-radius: 8px; padding: 1rem; text-align: center; color: #666; margin-bottom: 0.75rem;
+    }
+    .meta { color: #555; font-size: 0.9rem; margin-top: 0.25rem; }
+    .error { color: var(--error); margin-top: 0.5rem; }
+    .results { display: grid; gap: 12px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      background: #d1d1ff;
+      color: var(--fg);
+    }
+    .row { display: grid; grid-template-columns: max-content 1fr; gap: 8px; align-items: start; }
+    .label { color: black; }
+    .value { color: var(--fg); word-break: break-word; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.8rem; }
+    .pill-get { background: #e0f2fe; color: #075985; }
+    .pill-post { background: #dcfce7; color: #065f46; }
+    .pill-put { background: #fae8ff; color: #6b21a8; }
+    .pill-patch { background: #fef9c3; color: #854d0e; }
+    .pill-delete { background: #fee2e2; color: #991b1b; }
+    details { margin-top: 8px; }
+    summary { cursor: pointer; color: black; }
+    pre.code {
+      background: whitesmoke; color: black; padding: 10px; border-radius: 6px; overflow: auto;
+      max-height: 50vh; white-space: pre-wrap; word-break: break-word; border: 1px solid var(--border);
+    }
+    .warn { color: var(--warn); }
+    .muted { color: black; }
+    .counts { margin: 8px 0 12px; color: #94a3b8; display: flex; gap: 8px; align-items: center; }
+    button { cursor: pointer; }
+    #fileInput { font-family: Comic Relief, Segoe UI, Roboto, sans-serif; font-size: large;  }
+    .btn {
+      background: #1f2937; font-size: medium; color: #e5e7eb; border: 1px solid #374151; border-radius: 6px; padding: 6px 10px;
+    }
+    .btn:hover { background: #111827; }
+    .btn.small { padding: 2px 8px; font-size: 0.85rem; }
+    .toolbar { display: flex; gap: 6px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+    .note { font-size: 0.85rem; color: black; }
+  </style>
+</head>
+<body>
+  <h1>HAR Inspector</h1>
+
+  <div class="controls">
+    <input id="fileInput" type="file" accept=".har,application/json,.json" />
+    <button id="sampleBtn" type="button" class="btn">Load sample HAR</button>
+    <span class="muted">Filters: method in GET/POST/PUT/PATCH/DELETE</span>
+  </div>
+
+  <div id="dropzone" class="dropzone" tabindex="0">Drop a HAR file here</div>
+  <div id="meta" class="meta"></div>
+  <div id="error" class="error" role="alert" aria-live="polite"></div>
+
+  <div id="counts" class="counts"></div>
+
+  <div id="results" class="results" aria-live="polite"></div>
+
+  <script type="text/javascript">
+    (function () {
+      const fileInput = document.getElementById("fileInput");
+      const dropzone = document.getElementById("dropzone");
+      const errorBox = document.getElementById("error");
+      const meta = document.getElementById("meta");
+      const countsEl = document.getElementById("counts");
+      const results = document.getElementById("results");
+      const sampleBtn = document.getElementById("sampleBtn");
+
+      const METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE"]);
+      const METHOD_PILL_CLASS = {
+        GET: "pill pill-get",
+        POST: "pill pill-post",
+        PUT: "pill pill-put",
+        PATCH: "pill pill-patch",
+        DELETE: "pill pill-delete",
+      };
+
+      // track last matches for "Copy all"
+      let lastMatches = [];
+
+      function clearMessages() {
+        errorBox.textContent = "";
+        meta.textContent = "";
+        countsEl.textContent = "";
+      }
+      function clearResults() {
+        results.innerHTML = "";
+      }
+      function readFileAsText(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error || new Error("Failed to read file."));
+          reader.readAsText(file, "utf-8");
+        });
+      }
+      function isObject(v) { return v && typeof v === "object"; }
+
+      // Pretty-print helper: if value looks like JSON, parse+stringify with 2-space indent
+      function prettyMaybeJSON(text) {
+        if (typeof text !== "string" || !text.trim()) return text;
+        const trimmed = text.trim();
+        try {
+          const parsed = JSON.parse(trimmed);
+          return JSON.stringify(parsed, null, 2);
+        } catch {
+          return text;
+        }
+      }
+
+      async function copyToClipboard(str) {
+        try {
+          await navigator.clipboard.writeText(str);
+          return true;
+        } catch {
+          const ta = document.createElement("textarea");
+          ta.value = str;
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          let ok = false;
+          try { ok = document.execCommand("copy"); } catch {}
+          document.body.removeChild(ta);
+          return ok;
+        }
+      }
+
+      function makeCopyBtn(label, getText) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn small";
+        btn.textContent = label;
+        btn.addEventListener("click", async () => {
+          const str = getText();
+          const ok = await copyToClipboard(str);
+          btn.textContent = ok ? "Copied!" : "Copy failed";
+          setTimeout(() => (btn.textContent = label), 1200);
+        });
+        return btn;
+      }
+
+      function renderToolbar(matches) {
+        countsEl.innerHTML = "";
+        const count = document.createElement("span");
+        count.textContent = `Matched filters: ${matches.length}`;
+
+        const copyAllBtn = makeCopyBtn("Copy all matches (JSON)", () =>
+          JSON.stringify(matches, null, 2)
+        );
+
+        const note = document.createElement("span");
+        note.className = "note";
+        note.textContent = "Copies an array of {index, method, url, status, requestBody, responseBody}";
+
+        countsEl.appendChild(count);
+        countsEl.appendChild(copyAllBtn);
+        countsEl.appendChild(note);
+      }
+
+      function renderCard({ idx, url, method, status, postText, respText, warnings }) {
+        const card = document.createElement("div");
+        card.className = "card";
+        const pillClass = METHOD_PILL_CLASS[method] || "pill";
+        const warnList = warnings.length ? `<div class="warn">Warnings: ${warnings.join("; ")}</div>` : "";
+
+        const prettyPost = postText != null ? prettyMaybeJSON(postText) : null;
+        const prettyResp = respText != null ? prettyMaybeJSON(respText) : null;
+
+        const postSection = (method === "POST" || method === "PUT" || method === "PATCH")
+          ? `<details><summary>Request body</summary>
+               <pre class="code" data-kind="post">${prettyPost ?? "(postData.text not found)"}</pre>
+             </details>` : "";
+
+        const respSection = `<details open><summary>Response body</summary>
+             <pre class="code" data-kind="resp">${prettyResp ?? "(response.content.text not found)"}</pre>
+           </details>`;
+
+        card.innerHTML = `
+          <div class="row">
+            <div class="label">#</div><div class="value">${idx}</div>
+            <div class="label">Method</div><div class="value"><span class="${pillClass}">${method || "(missing)"}</span></div>
+            <div class="label">Status</div><div class="value">${status ?? "(missing response.status)"}</div>
+            <div class="label">URL</div><div class="value">${url || "(missing)"}</div>
+          </div>
+          <div class="toolbar"></div>
+          ${postSection}
+          ${respSection}
+          ${warnList}
+        `;
+
+        const toolbar = card.querySelector(".toolbar");
+        toolbar.appendChild(makeCopyBtn("Copy URL", () => url || ""));
+        toolbar.appendChild(makeCopyBtn("Copy method", () => method || ""));
+        toolbar.appendChild(makeCopyBtn("Copy status", () => String(status ?? "")));
+        if (postText != null) {
+          const prePost = card.querySelector('pre[data-kind="post"]');
+          toolbar.appendChild(makeCopyBtn("Copy request body", () => prePost?.textContent || ""));
+        }
+        if (respText != null) {
+          const preResp = card.querySelector('pre[data-kind="resp"]');
+          toolbar.appendChild(makeCopyBtn("Copy response body", () => preResp?.textContent || ""));
+        }
+
+        results.appendChild(card);
+      }
+
+      function analyzeHAR(har, sourceLabel) {
+        clearMessages();
+        clearResults();
+        lastMatches = [];
+
+        if (!isObject(har)) {
+          errorBox.textContent = "HAR is not a JSON object.";
+          return;
+        }
+        const log = har.log;
+        if (!isObject(log)) {
+          errorBox.textContent = 'Missing "log" object in HAR.';
+          return;
+        }
+        const entries = Array.isArray(log.entries) ? log.entries : [];
+        meta.textContent = `Loaded: ${sourceLabel} | entries: ${entries.length}`;
+
+        if (!entries.length) {
+          countsEl.textContent = "No entries found in HAR.";
+          return;
+        }
+
+        let matched = 0;
+
+        entries.forEach((entry, i) => {
+          const warnings = [];
+
+          const req = entry && entry.request;
+          if (!isObject(req)) {
+            warnings.push("entry.request missing");
+            return;
+          }
+
+          const url = req.url;
+          const method = (req.method || "").toUpperCase();
+          const urlStr = typeof url === "string" ? url : "";
+
+          const includesKeyword = urlStr.includes("api") || urlStr.includes("notify");
+          const methodAllowed = METHODS.has(method);
+
+          if (!includesKeyword || !methodAllowed) {
+            return;
+          }
+          matched++;
+
+          // Request body (for POST/PUT/PATCH)
+          let postText = null;
+          if (method === "POST" || method === "PUT" || method === "PATCH") {
+            if (req.postData && typeof req.postData === "object") {
+              if (typeof req.postData.text === "string") {
+                postText = req.postData.text;
+              } else {
+                warnings.push("request.postData.text not found");
+              }
+            } else {
+              warnings.push("request.postData missing");
+            }
+          }
+
+          // Response status and body
+          let status = null;
+          let respText = null;
+          if (isObject(entry.response)) {
+            if (typeof entry.response.status === "number") {
+              status = entry.response.status;
+            } else {
+              warnings.push("response.status missing");
+            }
+
+            const content = entry.response.content;
+            if (isObject(content)) {
+              if (typeof content.text === "string") {
+                if (content.encoding === "base64") {
+                  try {
+                    respText = atob(content.text);
+                  } catch {
+                    respText = content.text;
+                    warnings.push("response.content.text base64 decode failed");
+                  }
+                } else {
+                  respText = content.text;
+                }
+              } else {
+                warnings.push("response.content.text not found");
+              }
+            } else {
+              warnings.push("response.content missing");
+            }
+          } else {
+            warnings.push("response missing");
+          }
+
+          // Collect match for "Copy all"
+          lastMatches.push({
+            index: i + 1,
+            method,
+            url: urlStr || "(request.url missing)",
+            status: status,
+            requestBody: postText ?? null,
+            responseBody: respText ?? null,
+          });
+
+          // Emit card
+          renderCard({
+            idx: i + 1,
+            url: urlStr || "(request.url missing)",
+            method,
+            status,
+            postText,
+            respText,
+            warnings,
+          });
+        });
+
+        renderToolbar(lastMatches);
+
+        if (matched === 0) {
+          const hint = document.createElement("div");
+          hint.className = "muted";
+          hint.textContent = 'No matching entries. Tip: ensure methods are GET/POST/PUT/PATCH/DELETE.';
+          results.appendChild(hint);
+        }
+      }
+
+      async function handleFile(file) {
+        clearMessages();
+        clearResults();
+        if (!file) return;
+        try {
+          const text = await readFileAsText(file);
+          const data = JSON.parse(text);
+          analyzeHAR(data, `${file.name} (${file.size || 0} bytes)`);
+        } catch (e) {
+          errorBox.textContent = "Invalid HAR/JSON or read error: " + e.message;
+        }
+      }
+
+      // File input
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files && fileInput.files[0];
+        handleFile(file);
+      });
+
+      // Drag & drop
+      ["dragenter", "dragover", "dragleave", "drop"].forEach(evtName => {
+        dropzone.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+      dropzone.addEventListener("dragover", () => dropzone.style.background = "#f3f4f6");
+      dropzone.addEventListener("dragleave", () => dropzone.style.background = "");
+      dropzone.addEventListener("drop", (e) => {
+        dropzone.style.background = "";
+        const dt = e.dataTransfer;
+        const file = dt && dt.files && dt.files[0];
+        if (file) handleFile(file);
+      });
+
+      // Keyboard accessibility for dropzone
+      dropzone.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") fileInput.click();
+      });
+
+      // Sample HAR (minimal) for quick testing (now includes status)
+      sampleBtn.addEventListener("click", () => {
+        const sampleHar = {
+          log: {
+            entries: [
+              {
+                request: { url: "https://api.example.com/v1/apis/resource", method: "POST", postData: { text: '{"hello":"world","arr":[1,2,3]}' } },
+                response: { status: 200, content: { text: '{"status":"ok","meta":{"t":123}}' } }
+              },
+              {
+                request: { url: "https://example.com/notify?id=1", method: "GET" },
+                response: { status: 204, content: { text: "" } }
+              },
+              {
+                request: { url: "https://example.com/other", method: "GET" },
+                response: { status: 200, content: { text: "ignored" } }
+              },
+              {
+                request: { url: "https://api.example.com/apis/update", method: "PATCH", postData: { text: '{"x":1}' } },
+                response: { status: 202, content: { text: '{"updated":true}' } }
+              },
+              {
+                request: { url: "https://api.example.com/apis/delete", method: "DELETE" },
+                response: { status: 404, content: { text: '{"error":"not found"}' } }
+              }
+            ]
+          }
+        };
+        analyzeHAR(sampleHar, "Sample HAR");
+      });
+    })();
+  </script>
+</body>
+</html>
+
