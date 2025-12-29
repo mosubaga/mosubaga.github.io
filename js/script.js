@@ -168,6 +168,7 @@ function getbooks(publisher,topic,elementid)
     const python_list = new Set(["Fast Python", "The Well-Grounded Python Developer", "Think Python, 3rd Edition", "Powerful Python", "The Quick Python Book, Fourth Edition", "Time Series Forecasting in Python", "Python Workout", "Python Concurrency with asyncio", "Deep Learning with Python, Third Edition", "Fluent Python, 2nd Edition", "Python in a Nutshell, 4th Edition", "Introducing Python, 2nd Edition","Robust Python","Learning Python, 6th Edition" ]);
     const javascript_list = new Set(["JavaScript: The Definitive Guide, 7th Edition", "JavaScript Cookbook, 3rd Edition", "JavaScript Everywhere", "Learning JavaScript Design Patterns, 2nd Edition","Gatsby: The Definitive Guide"]);
     const go_list = new Set(["Go by Example", "Go in Action", "Go in Practice", "100 Go Mistakes and How to Avoid Them"]);
+    const typescript_list = new Set(["Effective TypeScript, 2nd Edition", "Learning TypeScript", "TypeScript Cookbook", "Programming TypeScript"]);
 
     let sResult = "<table class='table'><tr><th>Cover</th><th>Title</th><th>Description</th></tr>";
 
@@ -196,6 +197,9 @@ function getbooks(publisher,topic,elementid)
             case "Go":
                 setlist = go_list;
                 break;
+            case "Typescript" :
+                setlist = typescript_list;
+                break
             default:
                 setlist = python_list;
           }
