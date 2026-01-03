@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MA RMV/Toll Scam Detector</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body class="rmvdetector">
+    <div class="container">
+        <h1>MA RMV/Toll Scam Detector</h1>
+        <p class="subtitle">Using TensorFlow.js Neural Network Classification</p>
+        
+        <div id="status" class="status training">
+            Initializing model... Please wait.
+        </div>
+        
+        <textarea id="messageInput" placeholder="Paste your SMS message here to check if it's a scam..."></textarea>
+         
+        <button id="checkBtn" class="btn btn-mint" onclick="analyzeMessage()" disabled>Analyze Message</button>
+  
+        <div id="result" class="result"></div>
+        
+        <div class="examples">
+            <h2>Try These Examples:</h2>
+            <button class="example-btn" onclick="loadExample(0)">Scam Example 1</button>
+            <button class="example-btn" onclick="loadExample(1)">Scam Example 2</button>
+            <button class="example-btn" onclick="loadExample(2)">Legitimate Example 1</button>
+            <button class="example-btn" onclick="loadExample(3)">Legitimate Example 2</button>
+        </div>
+        
+        <div class="tips">
+            <h3>🛡️ Safety Tips:</h3>
+            <ul>
+                <li>MA RMV will <strong>NEVER</strong> text you asking for payment</li>
+                <li>Official RMV website is <strong>mass.gov/rmv</strong> (note the .gov)</li>
+                <li>E-ZPass MA uses only <strong>E-ZPassMA.com</strong> for online services</li>
+                <li>Never click links in unsolicited payment request texts</li>
+                <li>When in doubt, visit the official website directly by typing the URL yourself</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Training data
+        const trainingData = [
+            // Scam messages (label: 1)
+            { text: "MA-RMV: You have an outstanding toll invoice of $12.51. Pay now to avoid penalties: http://ma-rmv-pay.com/settle", label: 1 },
+            { text: "Massachusetts RMV: Your vehicle has unpaid tolls totaling $8.70. Click here to pay: https://mass-rmv.net/pay", label: 1 },
+            { text: "ALERT: E-ZPass MA - Unpaid toll $15.20. Your account will be suspended. Pay immediately: http://ezpass-ma.info", label: 1 },
+            { text: "MassDOT Notice: Outstanding balance $11.45 on your account. Avoid late fees, pay now: https://massdot-payment.com", label: 1 },
+            { text: "RMV Massachusetts: Final notice for unpaid violation $9.80. Click to resolve: http://ma-rmv-online.net/pay", label: 1 },
+            { text: "E-ZPass Alert: You owe $14.30 in tolls. Pay within 48 hours or face penalties: https://ezpass-settle.com", label: 1 },
+            { text: "MA Toll Services: Invoice #MT-8829 unpaid ($13.55). Immediate payment required: http://ma-toll-pay.net", label: 1 },
+            { text: "RMV NOTICE: License suspension pending for $7.90 unpaid fee. Pay now: https://rmv-ma-payment.org", label: 1 },
+            { text: "URGENT: MA RMV unpaid citation $10.15. Click here within 24hrs: https://ma-rmv-fine.net/settle", label: 1 },
+            { text: "EZPass MA: Outstanding toll invoice $12.80 must be paid. Visit: http://ezpass-ma-pay.info", label: 1 },
+            
+            // Legitimate messages (label: 0)
+            { text: "Your appointment at MA RMV Springfield is confirmed for Dec 15 at 10:30 AM. Bring required documents.", label: 0 },
+            { text: "Reminder: Your MA driver's license expires on 01/15/2026. You can renew online at mass.gov/rmv", label: 0 },
+            { text: "Your vehicle registration renewal confirmation #RG-445821. Documents mailed to your address.", label: 0 },
+            { text: "E-ZPass MA: Your account has been successfully recharged with $50.00. Current balance: $62.30", label: 0 },
+            { text: "MassDOT: Route 93 South has delays due to construction. Expect 20-min delays between exits 18-24.", label: 0 },
+            { text: "Your RMV road test is scheduled for Jan 5, 2026 at 2:00 PM at Watertown RMV.", label: 0 },
+            { text: "Hey, are you free this weekend? Want to grab coffee on Saturday?", label: 0 },
+            { text: "Your Amazon order #112-8847321 has shipped and will arrive by Dec 18.", label: 0 },
+            { text: "Reminder: Your dentist appointment is tomorrow at 3 PM. Reply YES to confirm.", label: 0 },
+            { text: "Hi! Are we still on for dinner tonight at 7?", label: 0 }
+        ];
+        
+        const examples = [
+            "MA RMV: Unpaid toll of $11.20. Pay now to avoid suspension: http://ma-rmv-payment.net/pay",
+            "URGENT: E-ZPass account suspended. Pay $15.75 immediately: https://ezpass-ma-online.com",
+            "Your MA driver's license renewal appointment is confirmed for next Tuesday at 2 PM.",
+            "MassDOT: I-95 Northbound has heavy traffic due to weather. Drive safely."
+        ];
+        
+        let model;
+        let vocabulary = {};
+        let maxLength = 0;
+        
+        // Build vocabulary and vectorize text
+        function buildVocabulary(texts) {
+            const words = new Set();
+            texts.forEach(text => {
+                const tokens = text.toLowerCase().match(/\b\w+\b/g) || [];
+                tokens.forEach(word => words.add(word));
+                maxLength = Math.max(maxLength, tokens.length);
+            });
+            
+            Array.from(words).forEach((word, idx) => {
+                vocabulary[word] = idx + 1; // Start from 1, 0 is padding
+            });
+        }
+        
+        function textToSequence(text) {
+            const tokens = text.toLowerCase().match(/\b\w+\b/g) || [];
+            const sequence = tokens.map(word => vocabulary[word] || 0);
+            
+            // Pad or truncate to maxLength
+            while (sequence.length < maxLength) sequence.push(0);
+            return sequence.slice(0, maxLength);
+        }
+        
+        function extractFeatures(text) {
+            const features = [
+                /https?:\/\//.test(text) ? 1 : 0,
+                /\$\d+\.\d{2}/.test(text) ? 1 : 0,
+                /\b(urgent|immediately|final|alert|suspended?|penalty)\b/i.test(text) ? 1 : 0,
+                /\b(pay|payment|unpaid|outstanding|owe|due)\b/i.test(text) ? 1 : 0,
+                /\b(rmv|toll|ezpass|massdot)\b/i.test(text) ? 1 : 0,
+                /\b(\d+\s*hours?|within|today|now)\b/i.test(text) ? 1 : 0,
+                /(ma-rmv|rmv-ma|ezpass-ma|mass-rmv|ma-toll).*\.(com|net|org|info)/i.test(text) ? 1 : 0,
+                /(mass\.gov|massdot\.gov)/i.test(text) ? 1 : 0
+            ];
+            return features;
+        }
+        
+        function getRedFlags(text) {
+            const flags = [];
+            if (/https?:\/\//.test(text) && /(ma-rmv|rmv-ma|ezpass-ma).*\.(com|net|org|info)/i.test(text)) {
+                flags.push("⚠️ Suspicious non-government domain");
+            }
+            if (/\$\d+\.\d{2}/.test(text) && /\b(pay|payment|unpaid|outstanding)\b/i.test(text)) {
+                flags.push("⚠️ Payment request with specific amount");
+            }
+            if (/\b(urgent|immediately|final|alert)\b/i.test(text) && /\b(\d+\s*hours?|within|today|now)\b/i.test(text)) {
+                flags.push("⚠️ Urgency and time pressure tactics");
+            }
+            if (/\b(rmv|toll|ezpass)\b/i.test(text) && /https?:\/\//.test(text) && !/(mass\.gov|ezpassma\.com)/i.test(text)) {
+                flags.push("⚠️ RMV/toll reference with non-official link");
+            }
+            return flags;
+        }
+        
+        async function trainModel() {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Building vocabulary and preparing data...';
+            
+            // Build vocabulary
+            buildVocabulary(trainingData.map(d => d.text));
+            
+            // Prepare training data
+            const sequences = trainingData.map(d => textToSequence(d.text));
+            const features = trainingData.map(d => extractFeatures(d.text));
+            const labels = trainingData.map(d => d.label);
+            
+            // Combine sequences and features
+            const inputs = sequences.map((seq, i) => [...seq, ...features[i]]);
+            
+            const xs = tf.tensor2d(inputs);
+            const ys = tf.tensor2d(labels.map(l => [l]));
+            
+            // Create model
+            statusEl.textContent = 'Creating neural network model...';
+            model = tf.sequential({
+                layers: [
+                    tf.layers.dense({ inputShape: [maxLength + 8], units: 32, activation: 'relu' }),
+                    tf.layers.dropout({ rate: 0.3 }),
+                    tf.layers.dense({ units: 16, activation: 'relu' }),
+                    tf.layers.dense({ units: 1, activation: 'sigmoid' })
+                ]
+            });
+            
+            model.compile({
+                optimizer: tf.train.adam(0.001),
+                loss: 'binaryCrossentropy',
+                metrics: ['accuracy']
+            });
+            
+            // Train model
+            statusEl.textContent = 'Training model... This may take a moment.';
+            await model.fit(xs, ys, {
+                epochs: 50,
+                batchSize: 4,
+                verbose: 0,
+                shuffle: true
+            });
+            
+            statusEl.className = 'status ready';
+            statusEl.textContent = '✅ Model trained and ready! Enter a message to analyze.';
+            document.getElementById('checkBtn').disabled = false;
+            
+            // Cleanup
+            xs.dispose();
+            ys.dispose();
+        }
+        
+        async function analyzeMessage() {
+            const text = document.getElementById('messageInput').value.trim();
+            if (!text) {
+                alert('Please enter a message to analyze.');
+                return;
+            }
+            
+            const sequence = textToSequence(text);
+            const features = extractFeatures(text);
+            const input = [...sequence, ...features];
+            
+            const xs = tf.tensor2d([input]);
+            const prediction = await model.predict(xs).data();
+            xs.dispose();
+            
+            const confidence = prediction[0];
+            const isScam = confidence > 0.5;
+            const redFlags = getRedFlags(text);
+            
+            const resultEl = document.getElementById('result');
+            resultEl.className = `result ${isScam ? 'scam' : 'legitimate'}`;
+            resultEl.style.display = 'block';
+            
+            const emoji = isScam ? '🚨' : '✅';
+            const label = isScam ? 'SCAM DETECTED' : 'APPEARS LEGITIMATE';
+            const confidencePercent = (isScam ? confidence : (1 - confidence)) * 100;
+            
+            let html = `
+                <div class="result-header">
+                    <span>${emoji}</span>
+                    <span>${label}</span>
+                </div>
+                <div class="result-confidence">
+                    Confidence: ${confidencePercent.toFixed(1)}%
+                </div>
+            `;
+            
+            if (isScam && redFlags.length > 0) {
+                html += `
+                    <div class="red-flags">
+                        <h3>🚩 Red Flags Detected:</h3>
+                        <ul>
+                            ${redFlags.map(flag => `<li>${flag}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            resultEl.innerHTML = html;
+        }
+        
+        function loadExample(index) {
+            document.getElementById('messageInput').value = examples[index];
+            document.getElementById('result').style.display = 'none';
+        }
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            trainModel();
+        });
+    </script>
+</body>
+</html>

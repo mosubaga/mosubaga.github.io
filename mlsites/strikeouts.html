@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ml5.js Linear Regression - Strikeouts Prediction</title>
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body class="strikeouts">
+    <div class="container">
+        <h1>⚾ Baseball Strikeouts Prediction</h1>
+        <p class="subtitle">Linear Regression using ml5.js Neural Network</p>
+        
+        <div id="status" class="status loading">
+            Loading data from JSON file...
+        </div>
+        
+        <div class="data-section">
+            <h2>📊 Training Data (TOTAL Strikeouts)</h2>
+            <div id="dataDisplay" class="data-grid"></div>
+            <div id="stats" class="stats"></div>
+        </div>
+        
+        <button id="trainBtn" onclick="trainModel()" disabled>Train Model & Predict</button>
+        
+        <div id="predictions" class="predictions-section" style="display: none;">
+            <h2>🔮 Next 5 Predicted Values</h2>
+            <div id="predictionsGrid" class="predictions-grid"></div>
+        </div>
+        
+        <div class="chart-container" style="display: none;" id="chartContainer">
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let strikeoutsData = [];
+        let model;
+        
+        // Load data from JSON
+        async function loadData() {
+            const statusEl = document.getElementById('status');
+            try {
+                statusEl.textContent = 'Fetching data from JSON file...';
+                const response = await fetch('https://mosubaga.github.io/js/strikeouts.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                // Filter out outlier years: 1981, 1994, 2020
+                const outlierYears = [1981, 1994, 2020];
+                strikeoutsData = data
+                    .filter(item => !outlierYears.includes(item.YEAR))
+                    .map(item => item.TOTAL);
+                
+                displayData();
+                displayStats();
+                
+                statusEl.className = 'status ready';
+                statusEl.textContent = `✅ Loaded ${strikeoutsData.length} data points. Click "Train Model & Predict" to start.`;
+                document.getElementById('trainBtn').disabled = false;
+                
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ Error loading data: ${error.message}`;
+                console.error('Error:', error);
+            }
+        }
+        
+        function displayData() {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = strikeoutsData
+                .map(value => `<div class="data-item">${value}</div>`)
+                .join('');
+        }
+        
+        function displayStats() {
+            const sum = strikeoutsData.reduce((a, b) => a + b, 0);
+            const avg = sum / strikeoutsData.length;
+            const min = Math.min(...strikeoutsData);
+            const max = Math.max(...strikeoutsData);
+            
+            const statsHTML = `
+                <div class="stat-box">
+                    <div class="stat-label">Count</div>
+                    <div class="stat-value">${strikeoutsData.length}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Average</div>
+                    <div class="stat-value">${avg.toFixed(1)}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Min</div>
+                    <div class="stat-value">${min}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Max</div>
+                    <div class="stat-value">${max}</div>
+                </div>
+            `;
+            
+            document.getElementById('stats').innerHTML = statsHTML;
+        }
+        
+        function trainModel() {
+            const statusEl = document.getElementById('status');
+            const trainBtn = document.getElementById('trainBtn');
+            
+            trainBtn.disabled = true;
+            statusEl.className = 'status training';
+            statusEl.textContent = 'Creating neural network model...';
+            
+            // Create ml5 neural network for regression
+            const options = {
+                inputs: 1,
+                outputs: 1,
+                task: 'regression',
+                debug: false
+            };
+            
+            model = ml5.neuralNetwork(options);
+            
+            // Add training data (index as input, strikeout value as output)
+            statusEl.textContent = 'Adding training data...';
+            for (let i = 0; i < strikeoutsData.length; i++) {
+                model.addData([i], [strikeoutsData[i]]);
+            }
+            
+            // Normalize data
+            statusEl.textContent = 'Normalizing data...';
+            model.normalizeData();
+            
+            // Train the model
+            statusEl.textContent = 'Training model... This may take a moment.';
+            
+            const trainingOptions = {
+                epochs: 100,
+                batchSize: 8
+            };
+            
+            model.train(trainingOptions, finishedTraining);
+        }
+        
+        function finishedTraining() {
+            const statusEl = document.getElementById('status');
+            statusEl.className = 'status ready';
+            statusEl.textContent = '✅ Model trained successfully! Generating predictions...';
+            
+            // Make predictions for next 5 values
+            makePredictions();
+        }
+        
+        function makePredictions() {
+            const predictions = [];
+            const startIndex = strikeoutsData.length;
+            
+            for (let i = 0; i < 5; i++) {
+                model.predict([startIndex + i], (error, results) => {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    predictions.push(Math.round(results[0].value));
+                    
+                    if (predictions.length === 5) {
+                        displayPredictions(predictions);
+                        drawChart(predictions);
+                        
+                        document.getElementById('status').textContent = 
+                            '✅ Complete! Model has predicted the next 5 strikeout values.';
+                    }
+                });
+            }
+        }
+        
+        function displayPredictions(predictions) {
+            const predictionsGrid = document.getElementById('predictionsGrid');
+            const startIndex = strikeoutsData.length + 1;
+            
+            predictionsGrid.innerHTML = predictions
+                .map((value, i) => `
+                    <div class="prediction-item">
+                        <div class="prediction-label">Position ${startIndex + i}</div>
+                        <div class="prediction-value">${value}</div>
+                    </div>
+                `)
+                .join('');
+            
+            document.getElementById('predictions').style.display = 'block';
+        }
+        
+        function drawChart(predictions) {
+            const canvas = document.getElementById('chart');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = 800;
+            canvas.height = 300;
+            
+            const padding = 40;
+            const width = canvas.width - 2 * padding;
+            const height = canvas.height - 2 * padding;
+            
+            // Combine actual data and predictions
+            const allData = [...strikeoutsData, ...predictions];
+            const maxValue = Math.max(...allData);
+            const minValue = Math.min(...allData);
+            const range = maxValue - minValue;
+            
+            // Clear canvas
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Draw actual data line
+            ctx.strokeStyle = '#1e3c72';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            strikeoutsData.forEach((value, i) => {
+                const x = padding + (i / (allData.length - 1)) * width;
+                const y = canvas.height - padding - ((value - minValue) / range) * height;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+            
+            // Draw actual data points
+            ctx.fillStyle = '#1e3c72';
+            strikeoutsData.forEach((value, i) => {
+                const x = padding + (i / (allData.length - 1)) * width;
+                const y = canvas.height - padding - ((value - minValue) / range) * height;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            // Draw predictions line
+            ctx.strokeStyle = '#764ba2';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            
+            const lastActualIndex = strikeoutsData.length - 1;
+            const lastActualX = padding + (lastActualIndex / (allData.length - 1)) * width;
+            const lastActualY = canvas.height - padding - 
+                ((strikeoutsData[lastActualIndex] - minValue) / range) * height;
+            
+            ctx.moveTo(lastActualX, lastActualY);
+            
+            predictions.forEach((value, i) => {
+                const dataIndex = strikeoutsData.length + i;
+                const x = padding + (dataIndex / (allData.length - 1)) * width;
+                const y = canvas.height - padding - ((value - minValue) / range) * height;
+                ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw prediction points
+            ctx.fillStyle = '#764ba2';
+            predictions.forEach((value, i) => {
+                const dataIndex = strikeoutsData.length + i;
+                const x = padding + (dataIndex / (allData.length - 1)) * width;
+                const y = canvas.height - padding - ((value - minValue) / range) * height;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            // Add legend
+            ctx.font = '14px Segoe UI';
+            ctx.fillStyle = '#1e3c72';
+            ctx.fillText('● Actual Data', padding, 20);
+            ctx.fillStyle = '#764ba2';
+            ctx.fillText('● Predictions', padding + 120, 20);
+            
+            document.getElementById('chartContainer').style.display = 'block';
+        }
+        
+        // Load data when page loads
+        window.addEventListener('load', loadData);
+    </script>
+</body>
+</html>
