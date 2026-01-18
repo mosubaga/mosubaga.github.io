@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mary Poppins — Overview</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap');
+        body{font-family:'Mulish', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; font-size:18px; line-height:1.65; margin:0; padding:0; color:#000; background:linear-gradient(135deg,#E8FAFE 0%,#ECE8FE 100%); -webkit-font-smoothing:antialiased}
+        header{background:transparent;color:#000;padding:2.5rem 1rem;text-align:center}
+        main{max-width:1100px;margin:2rem auto;padding:1.25rem}
+        h1{margin:.25rem 0;color:#000;font-size:2.8rem;line-height:1.05}
+        h2{margin:.25rem 0;color:#000;font-size:1.6rem}
+        .lead{font-size:1.3rem;color:#000;margin-top:.25rem}
+        .card{background:#fff;border:1px solid #e6e9ee;padding:1.25rem;border-radius:10px;margin:1rem auto;box-shadow:0 8px 20px rgba(16,24,40,0.06);max-width:1000px}
+        ul{margin:.5rem 0 1rem 1.2rem;color:#000}
+        footer{font-size:.95rem;color:#000;text-align:center;padding:1rem 0}
+        .meta{font-size:1rem;color:#333}
+        a{color:inherit}
+
+        /* p5 artwork container styling */
+        .mp-visual {
+            max-width: 1000px;
+            margin: 1rem auto 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(16,24,40,0.06);
+            border: 1px solid #e6e9ee;
+            background: linear-gradient(180deg, rgba(232,250,254,0.9) 0%, rgba(236,232,254,0.9) 100%);
+        }
+        .mp-visual .hint {
+            font-size: 0.9rem;
+            color: #333;
+            padding: .5rem .75rem;
+            text-align: right;
+        }
+        .mp-visual canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+    </style>
+    <!-- p5.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Mary Poppins</h1>
+        <p class="lead">A concise guide to the story, main characters, and useful background knowledge.</p>
+        <br>
+        <!-- Mary Poppins p5 visual (inserted right below .lead) -->
+        <div class="mp-visual">
+            <div id="mp-p5-container"></div>
+            <div class="hint">A breezy London evening — look up!</div>
+        </div>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Story (Short)</h2>
+            <p class="meta">Classic children's tale blending whimsy, discipline, and gentle magic.</p>
+            <p>
+                Mary Poppins is the practically-perfect, no-nonsense nanny who arrives at the Banks household in London to care for the
+                two children, Jane and Michael. Part governess, part magical guide, Mary brings order and wonder back into the family by
+                leading the children through a series of adventures that mix everyday lessons with fantastical experiences. Over time she
+                helps the children (and their parents) reconnect, teaching kindness, imagination, and responsibility.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>Main Characters</h2>
+            <ul>
+                <li><strong>Mary Poppins</strong>: The central figure — stern yet kindly, magical, and wise. She arrives and leaves as she chooses.</li>
+                <li><strong>Jane Banks</strong>: The elder Banks child; curious, brave, and often the more reflective sibling.</li>
+                <li><strong>Michael Banks</strong>: The younger child; playful and energetic, learns from Mary Poppins' lessons.</li>
+                <li><strong>Mr. Banks</strong>: The children's father — a busy man focused on work and social duty; his arc involves reconnecting with family.</li>
+                <li><strong>Mrs. Banks</strong>: The children's mother — kinder and more sentimental, often involved in social causes.</li>
+                <li><strong>Supporting figures</strong>: Bert (a cheerful jack-of-all-trades and friend in some versions), and a cast of imaginative figures encountered in adventures.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Extra Knowledge & Context</h2>
+            <ul>
+                <li><strong>Author:</strong> Mary Poppins was created by P. L. Travers (Pamela Lyndon Travers). The first book appeared in 1934.</li>
+                <li><strong>Adaptations:</strong> The most famous adaptation is Walt Disney's 1964 film starring Julie Andrews as Mary Poppins and Dick Van Dyke as Bert. The story also inspired stage musicals and later films.</li>
+                <li><strong>Themes:</strong> Imagination vs. practicality, family reconciliation, the value of small acts of care, and a gentle critique of rigid adult priorities.</li>
+                <li><strong>Tone:</strong> The original books mix whimsy with a slightly darker, more enigmatic Mary than the Disney film; Travers' Mary can be more austere and mysterious.</li>
+                <li><strong>Notable elements:</strong> Mary Poppins' magical items (an umbrella, a carpet bag that holds impossibly large items), talking animals, and adventures that begin in ordinary places.</li>
+                <li><strong>Quotes:</strong> "Well-behaved women seldom make history" is often associated with the era; a memorable Mary Poppins line (from media adaptations) is "A spoonful of sugar helps the medicine go down," summarizing her blend of discipline and delight.</li>
+                <li><strong>For viewers:</strong> If you like gentle fantasy with moral warmth, watch the 1964 film for music and spectacle; read Travers for a deeper, more ambiguous Mary.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Quick Viewing & Reading Tips</h2>
+            <ul>
+                <li>Start with the Disney film for an accessible, musical introduction.</li>
+                <li>Read the original books by P. L. Travers to appreciate darker, subtler themes and the source material's tone.</li>
+                <li>Look for stage adaptations and modern retellings that explore the character from different angles.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <div>Page created for quick reference — would you like images, links, or a printable version?</div>
+        </footer>
+    </main>
+
+    <!-- Mary Poppins p5 sketch -->
+    <script type="text/javascript">
+    (function() {
+        const sketch = (p) => {
+            let w, h;
+            let clouds = [];
+            let stars = [];
+            let t = 0;
+
+            // Stable city data
+            let roofProfile = []; // stable rooftop vertices
+            let chimneys = [];    // stable chimney positions/heights
+
+            function resizeToContainer() {
+                const parent = document.getElementById('mp-p5-container');
+                const parentWidth = parent.clientWidth || 900;
+                w = parentWidth;
+                h = Math.max(260, Math.round(parentWidth * 0.38));
+                if (p.canvas) p.resizeCanvas(w, h);
+            }
+
+            function rebuildCity() {
+                const baseY = Math.floor(h * 0.82);
+                // Build stable roofline
+                roofProfile = [];
+                for (let x = 0; x <= w; x += 80) {
+                    const roofY = baseY - p.random(18, 55);
+                    roofProfile.push({ x, y: roofY });
+                }
+                roofProfile.push({ x: w, y: baseY });
+
+                // Fixed chimney positions/heights
+                chimneys = [];
+                for (let i = 0; i < 10; i++) {
+                    chimneys.push({ x: p.random(w), h: p.random(20, 50) });
+                }
+            }
+
+            p.setup = () => {
+                const parent = document.getElementById('mp-p5-container');
+                w = parent.clientWidth || 900;
+                h = Math.max(260, Math.round(w * 0.38));
+                p.createCanvas(w, h).parent(parent);
+                p.noStroke();
+
+                // Slower clouds
+                for (let i = 0; i < 8; i++) {
+                    clouds.push({
+                        x: p.random(-w, w),
+                        y: p.random(h * 0.05, h * 0.45),
+                        s: p.random(60, 160),
+                        speed: p.random(0.05, 0.175), // slowed
+                        shade: p.random(220, 245)
+                    });
+                }
+
+                // Stars
+                for (let i = 0; i < 80; i++) {
+                    stars.push({
+                        x: p.random(w),
+                        y: p.random(h * 0.55),
+                        r: p.random(0.5, 1.8),
+                        tw: p.random(1000)
+                    });
+                }
+
+                rebuildCity();
+
+                p.windowResized = () => {
+                    resizeToContainer();
+                    rebuildCity();
+                };
+            };
+
+            function drawSky() {
+                // Dusk gradient
+                for (let y = 0; y < h; y++) {
+                    const lerp = y / h;
+                    const r = p.lerp(236, 40, lerp);
+                    const g = p.lerp(232, 50, lerp);
+                    const b = p.lerp(254, 110, lerp);
+                    p.stroke(r, g, b, 255);
+                    p.line(0, y, w, y);
+                }
+                p.noStroke();
+
+                // Stars
+                stars.forEach((s) => {
+                    const alpha = 180 + 75 * p.sin((p.frameCount + s.tw) * 0.02);
+                    p.fill(255, 255, 255, alpha);
+                    p.circle(s.x, s.y, s.r);
+                });
+
+                // Clouds
+                clouds.forEach(c => {
+                    c.x += c.speed;
+                    if (c.x - c.s > w) c.x = -c.s * 2;
+
+                    p.fill(c.shade, c.shade, c.shade, 190);
+                    const puff = c.s / 3;
+                    p.ellipse(c.x, c.y, c.s, c.s * 0.55);
+                    p.ellipse(c.x - puff, c.y + 5, c.s * 0.7, c.s * 0.45);
+                    p.ellipse(c.x + puff, c.y + 6, c.s * 0.75, c.s * 0.48);
+                });
+            }
+
+            function drawRooftops() {
+                const baseY = Math.floor(h * 0.82);
+
+                // Base block
+                p.fill(20, 25, 40, 240);
+                p.rect(0, baseY, w, h - baseY);
+
+                // Roof silhouette (stable)
+                p.fill(25, 30, 55, 255);
+                p.beginShape();
+                p.vertex(0, baseY);
+                for (const pt of roofProfile) {
+                    p.vertex(pt.x, pt.y);
+                }
+                p.vertex(w, baseY);
+                p.endShape(p.CLOSE);
+
+                // Chimneys (stable) with slower smoke
+                p.fill(30, 35, 65);
+                for (let i = 0; i < chimneys.length; i++) {
+                    const cx = chimneys[i].x;
+                    const ch = chimneys[i].h;
+                    const cy = baseY - ch;
+                    p.rect(cx, cy, 10, ch);
+
+                    const s = 6 + 4 * p.sin((p.frameCount + i * 10) * 0.02); // slower wobble
+                    p.fill(220, 220, 230, 140);
+                    p.circle(cx + 5, cy - 8 - (p.frameCount % 80) * 0.1, s); // slower ascent
+                    p.fill(30, 35, 65);
+                }
+            }
+
+            function drawMary() {
+                p.push();
+                // Mary motion previously halved; keep calm
+                const centerX = w * 0.62 + 18 * p.sin(t * 0.4);
+                const centerY = h * 0.42 + 10 * p.sin(t * 0.55);
+                p.translate(centerX, centerY);
+                p.scale(Math.max(0.6, Math.min(1.1, w / 900)));
+
+                p.fill(15, 18, 30, 240);
+                p.noStroke();
+
+                // Umbrella
+                p.push();
+                p.rotate(-0.05 + 0.01 * p.sin(t));
+                const umbR = 42;
+                p.arc(0, -58, umbR * 2, umbR * 2, p.PI, 0, p.CHORD);
+                p.stroke(220, 220, 230, 70);
+                p.strokeWeight(1);
+                for (let a = p.PI; a <= 0.001; a += p.PI / 6) {
+                    p.line(0, -58, umbR * p.cos(a), -58 + umbR * p.sin(a));
+                }
+                p.noStroke();
+                p.rect(-2, -58, 4, 50, 2);
+                p.arc(-2, -8, 14, 14, p.HALF_PI, p.PI);
+                p.pop();
+
+                // Head
+                p.circle(-6, -8, 16);
+
+                // Torso/skirt silhouette
+                p.beginShape();
+                p.vertex(-16, -2);
+                p.vertex(12, -2);
+                p.vertex(28, 30);
+                p.vertex(-38, 30);
+                p.endShape(p.CLOSE);
+
+                // Arm to umbrella
+                p.rect(-10, -2, 8, 22, 3);
+
+                // Carpet bag sway (slower)
+                p.push();
+                const sway = 6 * p.sin(t * 0.6);
+                p.translate(24, 18 + sway);
+                p.rect(-8, 0, 20, 12, 3);
+                p.rect(-2, -5, 8, 5, 2);
+                p.pop();
+
+                p.pop();
+            }
+
+            p.draw = () => {
+                t += 0.01; // calm global pacing
+                drawSky();
+                drawMary();
+                drawRooftops();
+            };
+        };
+
+        new p5(sketch);
+    })();
+    </script>
+</body>
+</html>
