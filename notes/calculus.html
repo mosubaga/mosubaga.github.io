@@ -5,59 +5,128 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Sine and Cosine</title>
+    <title>Calculus</title>
 
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+          integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp"
+          crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
-    <script referrerpolicy="no-referrer-when-downgrade" type="text/javascript" src="https://api.onelink-preview.com/moxie.min.js" data-oljs="P123E-BDEF-2FE3-FD20"></script>
+    <script referrerpolicy="no-referrer-when-downgrade" type="text/javascript"
+            src="https://api.onelink-preview.com/moxie.min.js"
+            data-oljs="P123E-BDEF-2FE3-FD20"></script>
   </head>
   <body>
     <nav>
-        <input type="checkbox" id="check">
-        <label for="check" class="checkbtn">
-            <i class="fas fa-bars"></i>
-        </label>
-        <div class="nav-mobile">
-            <a href="index.html">Home</a>
-            <a href="linalg.html">Linear Algebra</a>
-            <a href="calculus.html">Calculus</a>
-            <a href="probability.html">Probability</a>
-            <a href="gravitation.html">EFE</a>
-        </div>
+      <input type="checkbox" id="check">
+      <label for="check" class="checkbtn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <div class="nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="linalg.html">Linear Algebra</a>
+        <a href="calculus.html">Calculus</a>
+        <a href="probability.html">Probability</a>
+        <a href="gravitation.html">EFE</a>
+      </div>
     </nav>
     <br>
     <br>
     <div onclick="closemenu()" class="container">
-        <h3 style="text-align:center">Sine and Cosine</h3>
-        <p>Sine and Cosine functions are a perfect function to model any systems with oscillation.</p>
-        <main>
-            <script src="./js/sincos.js"></script>
-        </main>
-        <p>Used p5 libray for page in Calculus. Code was used from <a href="https://p5js.org">p5.js website</a></p>
-        <p>Due to this nature, combinations of sine and cosine are used in Fourier Transform</p>
-        <span class="math display">\[ \hat{F} (k)=\int_{-\infty}^{\infty}f(x)e^{-2\pi ixk}dx\]</span>
-        <p>Using Euler's identity</p>
-        <span class="math display">\[ e^{i \theta} = cos \theta + isin \theta \]</span>
-        <br>
-        <p><a href="./plotter">Plot Graph</a></p>
+      <p class="intro">
+        Calculus grew out of the 17th-century work of Newton and Leibniz on motion and change,
+        building on earlier ideas from Archimedes and others. Its methods now drive real-world
+        modeling in physics, engineering, biology, economics, and data science, from orbital
+        dynamics to optimization and signal processing. In real analysis, calculus provides the
+        motivating questions and core techniques behind limits, continuity, differentiation, and
+        integration, making it a central thread in the rigorous development of the subject. Below
+        is an example on Sine and Cosine's mixed with Calculus.
+      </p>
+      <p>Sine and Cosine functions are a perfect function to model any systems with oscillation.</p>
+      <main>
+        <script src="./js/sincos.js"></script>
+      </main>
+      <p>Used p5 library for page in Calculus. Code was used from <a href="https://p5js.org">p5.js website</a></p>
+      <p>Due to this nature, combinations of sine and cosine are used in Fourier Transform using Euler's Identity.</p>
+      <span class="math display">\[ \hat{F} (k)=\int_{-\infty}^{\infty}f(x)e^{-2\pi ixk}dx\]</span>
+      <!-- Euler's Identity: explanation, history, and uses -->
+      <div class="euler-section">
+        <h2>Euler's Identity</h2>
+        <p class="intro">
+          Euler’s identity is the elegant special case of Euler’s formula:
+        </p>
+        <span class="math display">\[ e^{i\pi} + 1 = 0 \]</span>
+        <p>
+          It links five fundamental constants—e, i, π, 1, and 0—in a single, compact equation.
+          More generally, Euler’s formula states
+        </p>
+        <span class="math display">\[ e^{i\theta} = \cos \theta + i \sin \theta. \]</span>
+
+        <h3>Quick proof sketch (via power series)</h3>
+        <p>
+          Start with the Taylor series (valid for all real or complex x):
+        </p>
+        <span class="math display">\[
+          e^x = \sum_{n=0}^{\infty}\frac{x^n}{n!},\quad
+          \cos x = \sum_{n=0}^{\infty}(-1)^n\frac{x^{2n}}{(2n)!},\quad
+          \sin x = \sum_{n=0}^{\infty}(-1)^n\frac{x^{2n+1}}{(2n+1)!}.
+        \]</span>
+        <p>
+          Substitute x = iθ into e^x:
+        </p>
+        <span class="math display">\[
+          e^{i\theta} = \sum_{n=0}^{\infty}\frac{(i\theta)^n}{n!}
+          = \left(\sum_{n=0}^{\infty}(-1)^n\frac{\theta^{2n}}{(2n)!}\right)
+            + i\left(\sum_{n=0}^{\infty}(-1)^n\frac{\theta^{2n+1}}{(2n+1)!}\right)
+          = \cos\theta + i\sin\theta.
+        \]</span>
+        <p>
+          Setting \(\theta=\pi\) gives \(e^{i\pi}=\cos\pi+i\sin\pi=-1\), hence \(e^{i\pi}+1=0\).
+        </p>
+
+        <h3>A bit of history</h3>
+        <p>
+          Leonhard Euler (1707–1783) developed the complex exponential and its link to trigonometry
+          in the 1740s–1748, showing that exponential growth and rotation on the complex plane are
+          two views of the same object. The special case \(e^{i\pi}+1=0\) later became celebrated as
+          "Euler’s identity" for its surprising simplicity and depth.
+        </p>
+
+        <h3>Where it’s used</h3>
+        <ul>
+          <li><b>Fourier analysis:</b> Express sinusoids as complex exponentials to simplify transforms,
+              filtering, and signal synthesis: \(\cos\theta=\tfrac{e^{i\theta}+e^{-i\theta}}{2}\),
+              \(\sin\theta=\tfrac{e^{i\theta}-e^{-i\theta}}{2i}\).</li>
+          <li><b>Differential equations:</b> Solve linear ODEs with oscillatory solutions via \(e^{i\omega t}\),
+              then take real parts.</li>
+          <li><b>Phasors in circuits:</b> Represent AC signals and impedances as complex numbers;
+              rotation by phase is multiplication by \(e^{i\phi}\).</li>
+          <li><b>Rotations in the plane:</b> Multiplying by \(e^{i\theta}\) rotates a complex number by \(\theta\),
+              useful in geometry and graphics.</li>
+          <li><b>Quantum mechanics:</b> Wavefunctions and time evolution use complex exponentials,
+              e.g., \(e^{-iEt/\hbar}\).</li>
+        </ul>
+      </div>
+      <br>
+      <p><a href="./plotter">Plot Graph</a></p>
     </div>
+    <br>
     <!-- dynamically load mathjax for compatibility with self-contained -->
     <script>
-    (function () {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML";
-      
-      document.getElementsByTagName("head")[0].appendChild(script);
-    })();
-  </script>
+      (function () {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML";
+
+        document.getElementsByTagName("head")[0].appendChild(script);
+      })();
+    </script>
 
     <footer>
-        &nbsp;
+      &nbsp;
     </footer>
 
   </body>
-  </html>
+</html>

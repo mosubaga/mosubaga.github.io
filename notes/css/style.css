@@ -1,8 +1,27 @@
-body, h1, h2, h3, h4, h5 {
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: large;
-    margin: 0;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap');
+
+:root {
+  --bg: #f7f4ff;
+  --text: #2b2b3a;
+  --accent: #ff7fb0;
+  --accent-2: #6fd3ff;
+  --accent-3: #8be8c3;
+  --panel: #ffffff;
+  --panel-soft: #fff3fb;
+  --stroke: #ffd6e8;
+}
+
+body {
+  background: linear-gradient(180deg, #f4f8ff 0%, #fff6fb 40%, #f7fffb 100%);
+  font-family: "Comic Relief", sans-serif;
+  font-size: large;
+  margin: 0;
+  color: var(--text);
+}
+
+h1, h2, h3, h4, h5 {
+  color: #3a2e5c;
+}
   
   p {
     margin: 1rem 0;
@@ -10,21 +29,35 @@ body, h1, h2, h3, h4, h5 {
   
   a {
     text-decoration: none;
+    color: #2e6bff;
+    transition: color 150ms ease;
+  }
+
+  a:hover {
+    color: var(--accent);
   }
 
   div.para {
     margin-bottom: 1rem;
     margin-left: 10rem;
     margin-right: 10rem;
+    background-color: var(--panel);
+    border: 2px solid var(--stroke);
+    border-radius: 18px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 10px 30px rgba(255, 127, 176, 0.12);
   }
 
   div.container{
     margin-left: 10rem;
     margin-right: 10rem;
+    background-color: var(--panel-soft);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
   }
 
   footer {
-    background-color: lightpink;
+    background: linear-gradient(90deg, #ffd1e6, #c9ecff);
     padding: 10px;
     text-align: center;
     height: 4rem;
@@ -41,28 +74,34 @@ body, h1, h2, h3, h4, h5 {
   margin-left: 10rem;
   margin-right: 10rem;
   flex:1;
-  background-color: white;
+  background-color: var(--panel);
+  border: 2px solid var(--stroke);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(111, 211, 255, 0.14);
 }
 
 .flex-container > div {
   width: 50%;
   margin: 10px;
   padding: 20px;
+  background-color: #ffffff;
+  border-radius: 14px;
 }
   
   /* Pseudo-Classes */
   
   ::selection {
-    background-color: #e8ffff;
-    color: #373a40;
+    background-color: #ffe1f2;
+    color: #2b2b3a;
   }
   
   /* Navigation Bar*/
   
   nav {
     padding: 1.5rem 2rem;
-    background-color: lightpink;
+    background: linear-gradient(90deg, #ffb8d4, #aee6ff);
     color: #fff;
+    box-shadow: 0 6px 18px rgba(255, 184, 212, 0.4);
   }
   
   .checkbtn{
@@ -83,9 +122,10 @@ body, h1, h2, h3, h4, h5 {
     top: 4.5rem;
     left: 0;
     overflow: hidden;
-    background: lightpink;
+    background: linear-gradient(180deg, #ffb8d4, #c9ecff);
     z-index: 1;
     width: 200px;
+    border-bottom-right-radius: 18px;
   }
   
   .nav-mobile a {
@@ -95,7 +135,7 @@ body, h1, h2, h3, h4, h5 {
   }
   
   hr {
-    background-color: lightpink;
+    background-color: #ffd1e6;
     padding: 1px;
     border: none;
   }

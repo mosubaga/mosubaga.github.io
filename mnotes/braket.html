@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dirac Braket Notation - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Dirac Notation in Pastel Space</span>
+      <h1>Vectors, Inner Products, and Outer Products</h1>
+      <p>
+        Dirac notation packages linear algebra into a compact language: kets for vectors,
+        bras for dual vectors, and brackets for inner products and projections.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Vectors and Projections</h2>
+      <p>
+        Two kets meet, and their overlap becomes a projection.
+      </p>
+      <div id="sketch-braket" class="sketch-frame"></div>
+    </section>
+
+    <section id="basics">
+      <h2>1) Kets, Bras, and Brackets</h2>
+      <p>
+        A state vector is written as a ket $|\psi\rangle$. Its conjugate transpose is a bra
+        $\langle\psi|$. Together they form a bra-ket, or inner product.
+      </p>
+      <div class="formula">
+        $$\langle\phi|\psi\rangle = \sum_i \phi_i^* \psi_i$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>Ket $|\psi\rangle$</strong>
+          A column vector representing a state in a vector space.
+        </div>
+        <div class="card">
+          <strong>Bra $\langle\psi|$</strong>
+          The conjugate transpose of the ket, acting as a linear functional.
+        </div>
+        <div class="card">
+          <strong>Inner product</strong>
+          $\langle\phi|\psi\rangle$ measures overlap, length, and angle between states.
+        </div>
+        <div class="card">
+          <strong>Orthonormal basis</strong>
+          $\langle i|j\rangle = \delta_{ij}$ keeps coordinates clean and projections simple.
+        </div>
+      </div>
+    </section>
+
+    <section id="outer">
+      <h2>2) Outer Product and Projectors</h2>
+      <p>
+        The outer product $|\psi\rangle\langle\phi|$ builds a matrix (operator) from two vectors.
+        It acts on a ket by projecting onto $\langle\phi|$ and re-scaling by $|\psi\rangle$.
+      </p>
+      <div class="formula">
+        $$|\psi\rangle\langle\phi| \, |\chi\rangle = |\psi\rangle \langle\phi|\chi\rangle$$
+      </div>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Projector</h3>
+          <p>
+            For a normalized state $|\psi\rangle$, the operator $|\psi\rangle\langle\psi|$
+            projects any vector onto the line spanned by $|\psi\rangle$.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Completeness</h3>
+          <p>
+            In an orthonormal basis, the identity is a sum of projectors:
+            $$\sum_i |i\rangle\langle i| = I.$$
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Matrix view</h3>
+          <p>
+            With vectors in $\mathbb{C}^n$, $|\psi\rangle\langle\phi|$ is the rank-one matrix
+            formed by $\psi \phi^\ast$.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="quantum">
+      <h2>3) Quantum Mechanics Applications</h2>
+      <p>
+        Dirac notation is the native language of quantum mechanics. States are kets,
+        measurements are operators, and probabilities come from inner products.
+      </p>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Measurement probabilities</h3>
+          <p>
+            The probability of measuring outcome $|i\rangle$ in state $|\psi\rangle$ is
+            $|\langle i|\psi\rangle|^2$.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Born rule</span>
+            <span class="pill">Probabilities</span>
+            <span class="pill">Normalization</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Observables</h3>
+          <p>
+            Observables are Hermitian operators. Expectation values are
+            $\langle\psi|A|\psi\rangle$.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Hermitian</span>
+            <span class="pill">Eigenstates</span>
+            <span class="pill">Spectra</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Superposition</h3>
+          <p>
+            Any state is a linear combination of basis kets:
+            $|\psi\rangle = \sum_i c_i |i\rangle$ with $\sum_i |c_i|^2=1$.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/braket-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

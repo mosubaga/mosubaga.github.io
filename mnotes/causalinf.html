@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Causal Inference - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Causal Inference in Pastel Logic</span>
+      <h1>Move From Correlation to Cause</h1>
+      <p>
+        Causal inference asks a sharper question than prediction: what happens if we intervene?
+        It formalizes cause-and-effect using counterfactuals, randomized experiments, and graphical models.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Simple Causal Graph</h2>
+      <p>
+        A tiny graph showing cause, mediator, and effect.
+      </p>
+      <div id="sketch-causal" class="sketch-frame"></div>
+    </section>
+
+    <section id="core-idea">
+      <h2>1) The Core Idea: Interventions vs. Observations</h2>
+      <p>
+        Observational data can show association, but causality requires reasoning about
+        what would happen if we <em>changed</em> the system. This is expressed with the
+        do-operator, which represents an intervention.
+      </p>
+      <div class="formula">
+        $$P(Y\mid do(X=x)) \neq P(Y\mid X=x)$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>Association</strong>
+          What we see: $P(Y\mid X=x)$ from passively observed data.
+        </div>
+        <div class="card">
+          <strong>Intervention</strong>
+          What we change: $P(Y\mid do(X=x))$ after forcing $X$.
+        </div>
+        <div class="card">
+          <strong>Confounding</strong>
+          Hidden factors can affect both $X$ and $Y$, creating spurious correlation.
+        </div>
+        <div class="card">
+          <strong>Causal effect</strong>
+          The change in outcome when we manipulate $X$ while holding everything else fixed.
+        </div>
+      </div>
+    </section>
+
+    <section id="potential-outcomes">
+      <h2>2) Potential Outcomes and Average Treatment Effect</h2>
+      <p>
+        The potential outcomes framework imagines two parallel worlds for each unit:
+        one where it receives treatment ($T=1$) and one where it does not ($T=0$).
+        The causal effect is the difference between these outcomes.
+      </p>
+      <div class="formula">
+        $$\tau_i = Y_i(1) - Y_i(0)$$
+      </div>
+      <div class="formula">
+        $$\text{ATE} = \mathbb{E}[Y(1) - Y(0)]$$
+      </div>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Individual effect</h3>
+          <p>
+            $\tau_i$ is unobservable because we only see one outcome per unit. This is the
+            fundamental problem of causal inference.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Average treatment effect</h3>
+          <p>
+            ATE summarizes the expected impact of treatment across the population.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Randomization</h3>
+          <p>
+            Randomized experiments break confounding so $\mathbb{E}[Y(1)]$ and $\mathbb{E}[Y(0)]$
+            can be estimated directly.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="graphs">
+      <h2>3) Graphs, Backdoor Paths, and Identification</h2>
+      <p>
+        Directed acyclic graphs (DAGs) encode causal structure. The backdoor criterion tells us
+        which variables to adjust for in order to estimate causal effects from observational data.
+      </p>
+      <div class="formula">
+        $$P(Y\mid do(X)) = \sum_z P(Y\mid X, Z=z) P(Z=z)$$
+      </div>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Backdoor adjustment</h3>
+          <p>
+            If $Z$ blocks all backdoor paths from $X$ to $Y$, adjusting for $Z$ identifies the effect.
+          </p>
+          <div class="pill-row">
+            <span class="pill">DAGs</span>
+            <span class="pill">d-separation</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Frontdoor adjustment</h3>
+          <p>
+            When confounders are hidden, a mediator $M$ can sometimes identify the effect via
+            the frontdoor criterion.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Mediators</span>
+            <span class="pill">Identification</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Instrumental variables</h3>
+          <p>
+            An instrument affects $X$ but not $Y$ directly. It helps recover causal effects when
+            confounding is severe.
+          </p>
+          <div class="pill-row">
+            <span class="pill">IV</span>
+            <span class="pill">Exogeneity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/causalinf-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

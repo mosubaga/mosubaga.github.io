@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gradient Descent - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Gradient Descent in Soft Colors</span>
+      <h1>Find the Best Fit by Walking Down the Hill</h1>
+      <p>
+        Gradient descent is an optimization method that steadily nudges model parameters toward
+        values that minimize error. Think of it as a careful hike downhill on a loss landscape.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Rolling Down the Loss Landscape</h2>
+      <p>
+        A point moves along curved contours toward a minimum.
+      </p>
+      <div id="sketch-grad" class="sketch-frame"></div>
+    </section>
+
+    <section id="overview">
+      <h2>1) What Gradient Descent Is</h2>
+      <p>
+        When a model makes predictions, it produces a <strong>loss</strong> value that measures how far
+        the predictions are from the truth. Gradient descent reduces that loss by taking small steps
+        in the direction of steepest decrease. Each step updates the parameters so the model learns.
+      </p>
+
+      <div class="formula">
+        $$\theta_{t+1} = \theta_t - \alpha \nabla_\theta L(\theta_t)$$
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <strong>Parameters ($\theta$)</strong>
+          The knobs your model can turn, like weights in a linear regression or a neural network.
+        </div>
+        <div class="card">
+          <strong>Loss function $L(\theta)$</strong>
+          A score of how wrong the model is. Lower is better, zero is perfect.
+        </div>
+        <div class="card">
+          <strong>Gradient $\nabla_\theta L$</strong>
+          The slope of the loss surface. It points in the direction of fastest increase.
+        </div>
+        <div class="card">
+          <strong>Learning rate ($\alpha$)</strong>
+          The step size. Too big and you overshoot; too small and learning drags.
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <h2>2) The Step-by-Step Loop</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Step 1: Initialize</h3>
+          <p>Start with a guess for the parameters. Even a rough guess works.</p>
+        </div>
+        <div class="example-card">
+          <h3>Step 2: Measure loss</h3>
+          <p>Compute how wrong the model is on the current data.</p>
+        </div>
+        <div class="example-card">
+          <h3>Step 3: Compute gradient</h3>
+          <p>Find the slope of the loss with respect to each parameter.</p>
+        </div>
+        <div class="example-card">
+          <h3>Step 4: Update</h3>
+          <p>Move parameters downhill by a learning-rate-scaled step.</p>
+        </div>
+      </div>
+      <p class="note">
+        Repeat the loop until the loss stops improving or hits a desired threshold.
+      </p>
+    </section>
+
+    <section id="variants">
+      <h2>3) Variants and Practical Tips</h2>
+      <p>
+        Gradient descent comes in flavors depending on how much data you use per step. The trade-off
+        is between stability and speed.
+      </p>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Batch gradient descent</h3>
+          <p>Uses all data for each update. Smooth but can be slow on large datasets.</p>
+          <div class="pill-row">
+            <span class="pill">Stable</span>
+            <span class="pill">Full dataset</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Stochastic gradient descent</h3>
+          <p>Updates after each example. Fast and noisy, good for escaping shallow minima.</p>
+          <div class="pill-row">
+            <span class="pill">Fast</span>
+            <span class="pill">Noisy</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Mini-batch gradient descent</h3>
+          <p>Uses small batches for a balance of speed and stability. Most common in practice.</p>
+          <div class="pill-row">
+            <span class="pill">Balanced</span>
+            <span class="pill">GPU-friendly</span>
+          </div>
+        </div>
+      </div>
+      <div class="formula">
+        $$\text{Tip: Try} \; \alpha \in \{10^{-4}, 10^{-3}, 10^{-2}\} \; \text{and monitor loss curves.}$$
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/graddescent-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

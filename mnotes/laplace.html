@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Laplace Transform - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Laplace Transform in Pastel Light</span>
+      <h1>Turn Differential Equations into Algebra</h1>
+      <p>
+        The Laplace transform moves a function from the time domain into the complex-frequency domain.
+        That switch turns derivatives into multiplication, making many hard problems feel effortless.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Exponentials in the s-Plane</h2>
+      <p>
+        Decay and oscillation blend into a Laplace-style signal.
+      </p>
+      <div id="sketch-laplace" class="sketch-frame"></div>
+    </section>
+
+    <section id="basics">
+      <h2>1) Basics: What the Laplace Transform Does</h2>
+      <p>
+        For a time-domain signal $f(t)$, the Laplace transform builds a new function $F(s)$ that captures
+        how much of each exponential $e^{-st}$ is present. The complex variable $s = \sigma + i\omega$
+        controls growth or decay plus oscillation.
+      </p>
+      <div class="formula">
+        $$\mathcal{L}\{f(t)\} = F(s) = \int_{0}^{\infty} f(t) e^{-st} \, dt$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>Linearity</strong>
+          $\mathcal{L}\{af(t)+bg(t)\} = aF(s) + bG(s)$ lets you transform complicated mixtures term by term.
+        </div>
+        <div class="card">
+          <strong>Derivatives become algebra</strong>
+          $\mathcal{L}\{f'(t)\} = sF(s) - f(0)$ turns differential equations into algebraic ones.
+        </div>
+        <div class="card">
+          <strong>Shifts and delays</strong>
+          $\mathcal{L}\{f(t-a)u(t-a)\} = e^{-as}F(s)$ captures delayed inputs with a simple exponential factor.
+        </div>
+        <div class="card">
+          <strong>Region of convergence</strong>
+          The transform only exists when $f(t)e^{-\sigma t}$ is integrable, giving a band of valid $s$ values.
+        </div>
+      </div>
+    </section>
+
+    <section id="inverse">
+      <h2>2) Inverse Transform: Coming Back Home</h2>
+      <p>
+        The inverse Laplace transform takes $F(s)$ and returns the original $f(t)$.
+        In practice, engineers use tables, partial fractions, and convolution to invert transforms quickly.
+      </p>
+      <div class="formula">
+        $$f(t) = \mathcal{L}^{-1}\{F(s)\}$$
+      </div>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Common pairs</h3>
+          <p>
+            $\mathcal{L}\{1\}=\frac{1}{s}$, $\mathcal{L}\{e^{at}\}=\frac{1}{s-a}$, and
+            $\mathcal{L}\{\sin bt\}=\frac{b}{s^2+b^2}$ are the workhorses of most solutions.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Partial fractions</h3>
+          <p>
+            When $F(s)$ is rational, split it into simpler pieces. Each term matches a table entry,
+            so you can read off $f(t)$.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Convolution</h3>
+          <p>
+            Multiplication in the $s$-domain becomes convolution in time, which helps with systems and filters.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>3) Applications: Why It Matters</h2>
+      <p>
+        Laplace transforms are the go-to tool for modeling physical systems with inputs, outputs,
+        and initial conditions. They translate differential equations into transfer functions.
+      </p>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Control systems</h3>
+          <p>
+            Transfer functions like $G(s)=\frac{1}{s^2+2s+1}$ reveal stability and response speed.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Feedback loops</span>
+            <span class="pill">Stability</span>
+            <span class="pill">Step response</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Electrical circuits</h3>
+          <p>
+            Inductors and capacitors become algebraic impedances, so circuit equations simplify drastically.
+          </p>
+          <div class="pill-row">
+            <span class="pill">RLC circuits</span>
+            <span class="pill">Filters</span>
+            <span class="pill">Signal shaping</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Mechanical systems</h3>
+          <p>
+            Springs, dampers, and masses map to polynomials in $s$, making vibration analysis manageable.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Vibration</span>
+            <span class="pill">Damping</span>
+            <span class="pill">Resonance</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/laplace-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

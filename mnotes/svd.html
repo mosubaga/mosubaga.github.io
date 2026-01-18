@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Singular Value Decomposition - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">SVD in Pastel Geometry</span>
+      <h1>Break a Matrix into Rotations and Stretching</h1>
+      <p>
+        Singular Value Decomposition (SVD) rewrites any matrix as a rotation, a scaling, and another rotation.
+        It reveals the most important directions in your data and how much each one matters.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Circle to Ellipse</h2>
+      <p>
+        SVD rotates, scales, and rotates a circle into an ellipse.
+      </p>
+      <div id="sketch-svd" class="sketch-frame"></div>
+    </section>
+
+    <section id="definition">
+      <h2>1) The Definition</h2>
+      <p>
+        For any matrix $A \in \mathbb{R}^{m \times n}$, SVD factorizes it into three pieces:
+        an orthogonal matrix $U$, a diagonal matrix $\Sigma$, and another orthogonal matrix $V^T$.
+      </p>
+      <div class="formula">
+        $$A = U \Sigma V^T$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>$U$ (left singular vectors)</strong>
+          Orthonormal directions in the output space.
+        </div>
+        <div class="card">
+          <strong>$\Sigma$ (singular values)</strong>
+          Nonnegative scales that say how much each direction stretches.
+        </div>
+        <div class="card">
+          <strong>$V$ (right singular vectors)</strong>
+          Orthonormal directions in the input space.
+        </div>
+        <div class="card">
+          <strong>Rank insight</strong>
+          The number of nonzero singular values equals the rank of $A$.
+        </div>
+      </div>
+    </section>
+
+    <section id="geometry">
+      <h2>2) Geometry and Intuition</h2>
+      <p>
+        Think of $A$ as a transformation of a unit sphere. The SVD tells you that $A$ turns the sphere into an
+        ellipsoid by rotating, stretching by the singular values, and rotating again.
+      </p>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Rotation 1</h3>
+          <p>$V^T$ lines up the input with the principal axes.</p>
+        </div>
+        <div class="example-card">
+          <h3>Scaling</h3>
+          <p>$\Sigma$ stretches or compresses along each axis.</p>
+        </div>
+        <div class="example-card">
+          <h3>Rotation 2</h3>
+          <p>$U$ rotates into the final output orientation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ml">
+      <h2>3) Why SVD Matters in Machine Learning</h2>
+      <p>
+        SVD powers dimensionality reduction, noise filtering, and fast approximations.
+        Keeping the top $k$ singular values produces the best low-rank approximation to $A$.
+      </p>
+      <div class="formula">
+        $$A_k = U_k \Sigma_k V_k^T$$
+      </div>
+      <div class="columns">
+        <div class="example-card">
+          <h3>PCA</h3>
+          <p>Principal Component Analysis uses SVD to find the most informative directions.</p>
+          <div class="pill-row">
+            <span class="pill">Dimensionality</span>
+            <span class="pill">Variance</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Recommender systems</h3>
+          <p>Low-rank factors capture user and item structure for predictions.</p>
+          <div class="pill-row">
+            <span class="pill">Matrix factorization</span>
+            <span class="pill">Latent features</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Denoising</h3>
+          <p>Small singular values often represent noise and can be discarded.</p>
+          <div class="pill-row">
+            <span class="pill">Compression</span>
+            <span class="pill">Robustness</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/svd-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

@@ -5,60 +5,172 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Sample page</title>
+    <title>Linear Algebra</title>
 
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+          integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp"
+          crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
-    <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script referrerpolicy="no-referrer-when-downgrade" type="text/javascript" src="https://api.onelink-preview.com/moxie.min.js" data-oljs="P123E-BDEF-2FE3-FD20"></script>
+    <script type="text/javascript" async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script referrerpolicy="no-referrer-when-downgrade" type="text/javascript"
+            src="https://api.onelink-preview.com/moxie.min.js"
+            data-oljs="P123E-BDEF-2FE3-FD20"></script>
   </head>
   <body>
     <nav>
-        <input type="checkbox" id="check">
-        <label for="check" class="checkbtn">
-            <i class="fas fa-bars"></i>
-        </label>
-        <div class="nav-mobile">
-            <a href="index.html">Home</a>
-            <a href="linalg.html">Linear Algebra</a>
-            <a href="calculus.html">Calculus</a>
-            <a href="probability.html">Probability</a>
-            <a href="gravitation.html">EFE</a>
-        </div>
+      <input type="checkbox" id="check">
+      <label for="check" class="checkbtn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <div class="nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="linalg.html">Linear Algebra</a>
+        <a href="calculus.html">Calculus</a>
+        <a href="probability.html">Probability</a>
+        <a href="gravitation.html">EFE</a>
+      </div>
     </nav>
     <br>
     <br>
     <main onclick="closemenu()">
-        <div class="container">
-            <h3 style="text-align:center">Zombies vs Humans</h3>
-            <br>
-            <p>Given the following info in a town where a virus spreads that turns humans into zombies.</p>
-            <ul>
-                <li>Every hour, humans turns into 20% of humnas to zombies.</li>
-                <li>Luckily, an antidote exists and can fix zombies to humans but at 10% an hour. </li>
-            </ul>
-            <p>What is going to happen eventually?</p>
-            <br>
-            <p>We can write the above in a following equation:</p>
-            <p><span class="math display">\[\left\{ \begin{array}{ll} h_t = 0.8h_{t-1} + 0.1z_{t-1}\\ z_t = 0.2h_{t-1} + 0.9z_{t-1}\\ \end{array}\right.\]</span></p>
-            <p>Can be organized as:</p>
-            <p><span class="math display">\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} h_{t-1}\\ z_{t-1} \end{bmatrix}=  \begin{bmatrix} h_{t}\\ z_{t} \end{bmatrix}\]</span></p>
-            <p>The matrix is a Markov matrix and the eigenvalues are:</p>
-            <p><span class="math display">\[ \lambda = 0.7, 1 \]</span></p>
-            <p>Can calulate the eigenvectors are as eigenvalues are determined.</p>
-            <p><span class="math display">\[ v_1 = \begin{bmatrix} 0.5\\ 1 \end{bmatrix}  \space v_2 = \begin{bmatrix} 1\\ -1 \end{bmatrix} \]<span><p>
+      <div class="container">
+        <h3 style="text-align:center">Zombies vs Humans</h3>
+        <br>
+        <p>Given the following info in a town where a virus spreads that turns humans into zombies.</p>
+        <ul>
+          <li>Every hour, humans turns into 20% of humans to zombies.</li>
+          <li>Luckily, an antidote exists and can fix zombies to humans but at 10% an hour.</li>
+        </ul>
+        <p>What is going to happen eventually?</p>
+        <br>
+        <p>We can write the above in a following equation:</p>
+        <p><span class="math display">\[\left\{ \begin{array}{ll} h_t = 0.8h_{t-1} + 0.1z_{t-1}\\ z_t = 0.2h_{t-1} + 0.9z_{t-1}\\ \end{array}\right.\]</span></p>
+        <p>Can be organized as:</p>
+        <p><span class="math display">\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} h_{t-1}\\ z_{t-1} \end{bmatrix}=  \begin{bmatrix} h_{t}\\ z_{t} \end{bmatrix}\]</span></p>
+        <p>The matrix is a Markov matrix and the eigenvalues are:</p>
+        <p><span class="math display">\[ \lambda = 0.7, 1 \]</span></p>
+        <p>Can calculate the eigenvectors as eigenvalues are determined.</p>
+        <p><span class="math display">\[ v_1 = \begin{bmatrix} 0.5\\ 1 \end{bmatrix}  \space v_2 = \begin{bmatrix} 1\\ -1 \end{bmatrix} \]</span></p>
         <p>From the findings above, if there are 1500 people in town and if human = 500 and zombies = 1000:</p>
-            <p><span class="math display"><span>\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} 500\\ 1000 \end{bmatrix}=  \begin{bmatrix} 500\\1000 \end{bmatrix}\]</span></p>
-            <p>No matter how much progresses, the number of humans and zombies will remain the same.</p>
-        </div><!-- /.container -->
+        <p><span class="math display">\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} 500\\ 1000 \end{bmatrix}=  \begin{bmatrix} 500\\1000 \end{bmatrix}\]</span></p>
+        <p>No matter how much progresses, the number of humans and zombies will remain the same.</p>
+      </div>
+
+      <!-- Eigenvalues, Eigenvectors, and Markov Matrices -->
+      <div class="container">
+        <h3 style="text-align:center">Eigenvalues and Eigenvectors</h3>
+        <p>
+          For a square matrix \(A\), a nonzero vector \(v\) is an eigenvector and \(\lambda\) is its eigenvalue if
+        </p>
+        <span class="math display">\[
+          A v = \lambda v.
+        \]</span>
+        <p>
+          Geometrically, \(A\) acts on \(v\) by stretching (and possibly flipping) without changing its direction.
+          To find eigenvalues, solve the characteristic equation:
+        </p>
+        <span class="math display">\[
+          \det(A - \lambda I) = 0.
+        \]</span>
+        <p>
+          For each root \(\lambda\), solve \((A - \lambda I)v = 0\) to get the corresponding eigenvectors
+          (any nonzero vector in the null space).
+        </p>
+
+        <h4>Why they matter</h4>
+        <ul>
+          <li>They reveal invariant directions of a linear transformation.</li>
+          <li>They diagonalize matrices (when possible), simplifying powers \(A^k\) and exponentials \(e^{tA}\).</li>
+          <li>They encode long-term behavior in dynamical systems, Markov chains, ODEs, and PCA.</li>
+        </ul>
+
+        <h4>Quick example (2×2)</h4>
+        <p>
+          Let
+        </p>
+        <span class="math display">\[
+          A=\begin{bmatrix} a & b\\ c & d \end{bmatrix}.
+        \]</span>
+        <p>
+          Then
+        </p>
+        <span class="math display">\[
+          \det(A-\lambda I)=
+          \begin{vmatrix}
+            a-\lambda & b\\
+            c & d-\lambda
+          \end{vmatrix}
+          = (a-\lambda)(d-\lambda)-bc
+          = \lambda^2-(a+d)\lambda+(ad-bc).
+        \]</span>
+        <p>
+          Solve the quadratic for \(\lambda\); for each \(\lambda\), solve \((A-\lambda I)v=0\) to get an eigenvector.
+        </p>
+
+        <h3 style="text-align:center">Markov Matrices (Stochastic Matrices)</h3>
+        <p>
+          A Markov transition matrix encodes probabilities of moving between states. In the column-stochastic
+          convention (used in the example below):
+        </p>
+        <ul>
+          <li>All entries are nonnegative.</li>
+          <li>Each column sums to 1 (total probability is preserved).</li>
+        </ul>
+        <p>
+          If \(x_t\) is a probability vector (entries nonnegative, summing to 1), the evolution is
+        </p>
+        <span class="math display">\[
+          x_{t} = A\,x_{t-1}.
+        \]</span>
+        <p>
+          Key facts:
+        </p>
+        <ul>
+          <li>\(\lambda=1\) is always an eigenvalue of a stochastic matrix.</li>
+          <li>An eigenvector for \(\lambda=1\) (normalized to sum to 1) is a stationary distribution \(x_*\)
+              with \(A x_* = x_*\).</li>
+          <li>If all other eigenvalues satisfy \(|\lambda|<1\) and the chain is irreducible and aperiodic,
+              then \(x_t \to x_*\) as \(t\to\infty\).</li>
+        </ul>
+
+        <h4>Connecting to the Zombies vs Humans example</h4>
+        <p>
+          With
+        </p>
+        <span class="math display">\[
+          A=\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix},
+        \]</span>
+        <p>
+          the eigenvalues are \(\lambda_1=1\) and \(\lambda_2=0.7\). A stationary vector (eigenvector for \(\lambda=1\))
+          is proportional to
+        </p>
+        <span class="math display">\[
+          v_1=\begin{bmatrix} 0.5\\ 1 \end{bmatrix},
+        \]</span>
+        <p>
+          which normalizes to the stationary distribution
+        </p>
+        <span class="math display">\[
+          x_*=\frac{1}{1.5}\begin{bmatrix} 0.5\\ 1 \end{bmatrix}
+          =
+          \begin{bmatrix} \tfrac{1}{3}\\ \tfrac{2}{3}\end{bmatrix}.
+        \]</span>
+        <p>
+          Since the second eigenvalue has magnitude \(0.7&lt;1\), any initial state converges to \(x_*\).
+          For a population of 1500, that's about 500 humans and 1000 zombies in the long run.
+        </p>
+      </div>
+
+      <!-- /.container -->
     </main>
     <br>
     <footer>
-        &nbsp;
+      &nbsp;
     </footer>
 
   </body>
-  </html>
+</html>

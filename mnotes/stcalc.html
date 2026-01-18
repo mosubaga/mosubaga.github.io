@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stochastic Calculus - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .columns.stacked {
+      grid-template-columns: 1fr;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Stochastic Calculus in Soft Motion</span>
+      <h1>From Brownian Motion to the Ito Integral</h1>
+      <p>
+        Stochastic calculus extends classical calculus to random motion, giving a toolkit to model
+        noisy systems in finance, physics, and biology.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Brownian Path</h2>
+      <p>
+        A random walk traces a Brownian-like trajectory.
+      </p>
+      <div id="sketch-stochastic" class="sketch-frame"></div>
+    </section>
+
+    <section id="brownian">
+      <h2>1) Brownian Motion: The Core Random Process</h2>
+      <p>
+        A standard Brownian motion $W_t$ starts at zero, has independent increments, and each increment
+        is normally distributed with variance equal to the time step. It is continuous but nowhere
+        differentiable, which is why classical derivatives fail.
+      </p>
+      <div class="formula">
+        $$W_0 = 0, \quad W_t - W_s \sim \mathcal{N}(0, t-s)$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>Independent increments</strong>
+          Disjoint time intervals produce independent random changes, making Brownian motion memoryless.
+        </div>
+        <div class="card">
+          <strong>Gaussian steps</strong>
+          Each increment is normal with mean 0 and variance proportional to elapsed time.
+        </div>
+        <div class="card">
+          <strong>Continuous paths</strong>
+          Paths are continuous, but the wiggles are so rough that the usual derivative does not exist.
+        </div>
+        <div class="card">
+          <strong>Scaling rule</strong>
+          $W_{ct}$ has the same distribution as $\sqrt{c} W_t$ for any $c &gt; 0$.
+        </div>
+      </div>
+    </section>
+
+    <section id="ito">
+      <h2>2) The Ito Integral: Integrating Against Noise</h2>
+      <p>
+        The Ito integral integrates a process $X_t$ with respect to Brownian motion. The key idea is
+        that you sample $X_t$ at the left endpoint of each interval, which makes the integral a martingale.
+      </p>
+      <div class="formula">
+        $$\int_{0}^{T} X_t \, dW_t = \lim_{n\to\infty} \sum_{k=0}^{n-1} X_{t_k} (W_{t_{k+1}} - W_{t_k})$$
+      </div>
+      <div class="columns stacked">
+        <div class="example-card">
+          <h3>Mean and variance</h3>
+          <p>
+            The Ito integral has mean 0, and its variance is the expected integral of $X_t^2$.
+          </p>
+          <div class="formula">
+            $$\mathbb{E}\left[\int_{0}^{T} X_t \, dW_t\right] = 0$$
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Ito isometry</h3>
+          <p>
+            The Ito isometry gives a clean way to compute the second moment of the integral.
+          </p>
+          <div class="formula">
+            $$\mathbb{E}\left[\left(\int_{0}^{T} X_t \, dW_t\right)^2\right] = \mathbb{E}\left[\int_{0}^{T} X_t^2 \, dt\right]$$
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Why left endpoints</h3>
+          <p>
+            Left-endpoint sampling prevents future information from leaking into the integral, keeping it adapted.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ito-lemma">
+      <h2>3) Ito's Lemma and Stochastic Differential Equations</h2>
+      <p>
+        Ito's lemma is the stochastic version of the chain rule. It powers models like the
+        geometric Brownian motion used in finance.
+      </p>
+      <div class="formula">
+        $$dX_t = \mu(X_t, t) \, dt + \sigma(X_t, t) \, dW_t$$
+      </div>
+      <div class="columns stacked">
+        <div class="example-card">
+          <h3>Ito's lemma</h3>
+          <p>
+            For $Y_t = f(t, X_t)$, the differential includes an extra second-derivative term:
+          </p>
+          <div class="formula">
+            $$dY_t = \left(f_t + \mu f_x + \tfrac{1}{2}\sigma^2 f_{xx}\right)dt + \sigma f_x \, dW_t$$
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Geometric Brownian motion</h3>
+          <p>
+            $$dS_t = \mu S_t \, dt + \sigma S_t \, dW_t$$ models random growth with drift and volatility.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Finance</span>
+            <span class="pill">Physics</span>
+            <span class="pill">Biology</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Intuition</h3>
+          <p>
+            The extra $\tfrac{1}{2}\sigma^2 f_{xx}$ term accounts for random fluctuations that accumulate
+            even when the mean change is zero.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/stcalc-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

@@ -5,47 +5,105 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Sample page</title>
+    <title>Gravitation</title>
 
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+          integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp"
+          crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
-    <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script referrerpolicy="no-referrer-when-downgrade" type="text/javascript" src="https://api.onelink-preview.com/moxie.min.js" data-oljs="P123E-BDEF-2FE3-FD20"></script>
+    <script type="text/javascript" async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script referrerpolicy="no-referrer-when-downgrade" type="text/javascript"
+            src="https://api.onelink-preview.com/moxie.min.js"
+            data-oljs="P123E-BDEF-2FE3-FD20"></script>
   </head>
   <body>
     <nav>
-        <input type="checkbox" id="check">
-        <label for="check" class="checkbtn">
-            <i class="fas fa-bars"></i>
-        </label>
-        <div class="nav-mobile">
-            <a href="index.html">Home</a>
-            <a href="linalg.html">Linear Algebra</a>
-            <a href="calculus.html">Calculus</a>
-            <a href="probability.html">Probability</a>
-            <a href="gravitation.html">EFE</a>
-        </div>
+      <input type="checkbox" id="check">
+      <label for="check" class="checkbtn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <div class="nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="linalg.html">Linear Algebra</a>
+        <a href="calculus.html">Calculus</a>
+        <a href="probability.html">Probability</a>
+        <a href="gravitation.html">EFE</a>
+      </div>
     </nav>
     <br>
     <br>
     <div onclick="closemenu()" class="container">
-        <h3 style="text-align:center">Einstein's Field Equation</h3>
-        <p>In the general theory of relativity, the Einstein field equations relate the geometry of spacetime to the distribution of matter within it.</p>
-        <main>
-            <script src="./js/orbit.js"></script>
-        </main>
-        <p>Rotating and revolving object. Code was used from <a href="https://p5js.org">p5.js website</a></p>
-        <p>The Einstein Field Equation can be written as</p>
-        <span class="math display">\[ R_{\mu\nu} - \frac{1}{2} R g_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}\]</span>
-        <br>
+      <h3 style="text-align:center">Einstein's Field Equation</h3>
+      <p>
+        In the general theory of relativity, the Einstein field equations relate the geometry of spacetime
+        to the distribution of matter within it. Published in 1915, they describe how mass and energy
+        curve spacetime, and how that curvature manifests as gravity.
+      </p>
+      <main>
+        <script src="./js/orbit.js"></script>
+      </main>
+      <p>Rotating and revolving object. Code was used from <a href="https://p5js.org">p5.js website</a></p>
+      <p>The Einstein Field Equation can be written as</p>
+      <span class="math display">\[ R_{\mu\nu} - \frac{1}{2} R g_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}\]</span>
+      <br>
+
+      <h4>Components of the Equation</h4>
+      <ul>
+        <li><strong>\(R_{\mu\nu}\)</strong>: The Ricci tensor, describing the curvature of spacetime.</li>
+        <li><strong>\(R\)</strong>: The Ricci scalar, the trace of the Ricci tensor.</li>
+        <li><strong>\(g_{\mu\nu}\)</strong>: The metric tensor, defining the geometry of spacetime.</li>
+        <li><strong>\(\Lambda\)</strong>: The cosmological constant, representing dark energy or vacuum energy.</li>
+        <li><strong>\(T_{\mu\nu}\)</strong>: The stress-energy tensor, describing the density and flux of energy and momentum.</li>
+        <li><strong>\(G\)</strong>: Newton's gravitational constant.</li>
+        <li><strong>\(c\)</strong>: The speed of light.</li>
+      </ul>
+
+      <h4>Simplified Form (Vacuum Solution)</h4>
+      <p>
+        In regions of spacetime with no matter (vacuum), the equation simplifies to:
+      </p>
+      <span class="math display">\[ R_{\mu\nu} - \frac{1}{2} R g_{\mu\nu} + \Lambda g_{\mu\nu} = 0 \]</span>
+      <p>
+        This is the Einstein equation for empty space, which describes gravitational waves and the expansion of the universe.
+      </p>
+
+      <h4>Historical Context</h4>
+      <p>
+        Einstein developed these equations between 1911 and 1915, building on his equivalence principle and
+        the mathematics of Riemannian geometry. They generalize Newton's law of universal gravitation,
+        reducing to it in the weak-field, slow-motion limit. The equations were first tested by observations
+        of the bending of light during a solar eclipse in 1919, confirming general relativity over Newtonian gravity.
+      </p>
+
+      <h4>Implications and Applications</h4>
+      <ul>
+        <li><strong>Black Holes</strong>: Solutions like the Schwarzschild metric describe event horizons and singularities.</li>
+        <li><strong>Cosmology</strong>: The Friedmann equations, derived from EFE, model the universe's expansion.</li>
+        <li><strong>Gravitational Waves</strong>: Ripples in spacetime predicted by EFE and detected in 2015.</li>
+        <li><strong>Time Dilation and Length Contraction</strong>: Effects near massive objects.</li>
+        <li><strong>Frame Dragging</strong>: Rotating masses drag spacetime around them.</li>
+      </ul>
+
+      <h4>Example: Schwarzschild Metric</h4>
+      <p>
+        For a spherically symmetric, non-rotating mass, the metric is:
+      </p>
+      <span class="math display">\[
+        ds^2 = -\left(1 - \frac{2GM}{c^2 r}\right) c^2 dt^2 + \left(1 - \frac{2GM}{c^2 r}\right)^{-1} dr^2 + r^2 d\Omega^2
+      \]</span>
+      <p>
+        This metric gives the gravitational time dilation and predicts black holes when \(r = \frac{2GM}{c^2}\) (the Schwarzschild radius).
+      </p>
     </div>
+    <br>
 
     <footer>
-        &nbsp;
+      &nbsp;
     </footer>
 
   </body>
-  </html>
+</html>

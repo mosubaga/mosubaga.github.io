@@ -1,0 +1,265 @@
+:root {
+  --bg-1: #fdf6ff;
+  --bg-2: #f6fff9;
+  --bg-3: #fff8f1;
+  --card: #ffffff;
+  --ink: #22233b;
+  --muted: #4c4f6e;
+  --accent-1: #ffb8e0;
+  --accent-2: #b9f3d5;
+  --accent-3: #b8d8ff;
+  --accent-4: #ffe2a8;
+  --line: rgba(34, 35, 59, 0.08);
+  --shadow: 0 20px 50px rgba(34, 35, 59, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Fredoka", "Trebuchet MS", sans-serif;
+  color: var(--ink);
+  background: linear-gradient(120deg, var(--bg-1), var(--bg-2), var(--bg-3));
+  min-height: 100vh;
+}
+
+header {
+  padding: 48px 24px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+header::before,
+header::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  opacity: 0.35;
+  filter: blur(8px);
+  z-index: 0;
+}
+
+header::before {
+  background: var(--accent-1);
+  top: -120px;
+  left: -80px;
+}
+
+header::after {
+  background: var(--accent-3);
+  top: -80px;
+  right: -100px;
+}
+
+.hero {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  animation: float-in 0.9s ease-out;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  margin: 0 0 12px;
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  margin: 0 auto 18px;
+  max-width: 720px;
+}
+
+main {
+  padding: 16px 20px 64px;
+  display: grid;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+section {
+  background: var(--card);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 28px;
+  border: 1px solid var(--line);
+  animation: rise-in 0.8s ease both;
+}
+
+section:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+section:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+}
+
+h3 {
+  margin: 12px 0 8px;
+}
+
+.tagline {
+  font-family: "Space Mono", "Courier New", monospace;
+  font-size: 0.95rem;
+  background: var(--accent-4);
+  padding: 6px 12px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  background: #fffdf8;
+  font-family: "Space Mono", "Courier New", monospace;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(34, 35, 59, 0.12);
+}
+
+.grid {
+  display: grid;
+  gap: 18px;
+}
+
+.card {
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent-2), #fff);
+  border: 1px solid var(--line);
+}
+
+.card strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.1rem;
+}
+
+.formula {
+  font-family: "Space Mono", "Courier New", monospace;
+  background: #f5f6ff;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 18px 0;
+  border: 1px dashed rgba(76, 79, 110, 0.2);
+  overflow-x: auto;
+}
+
+.columns {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.example-card {
+  border-radius: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+}
+
+.note {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill {
+  background: linear-gradient(120deg, var(--accent-1), var(--accent-2));
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+}
+
+.sketch-frame {
+  margin-top: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.sketch-frame canvas {
+  display: block;
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  header {
+    padding: 40px 20px 12px;
+  }
+
+  main {
+    padding: 12px 18px 56px;
+  }
+
+  section {
+    padding: 24px;
+  }
+
+  .hero {
+    max-width: 760px;
+  }
+
+  .columns {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  header {
+    padding-top: 36px;
+  }
+
+  section {
+    padding: 22px;
+  }
+}

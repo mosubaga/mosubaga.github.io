@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lagrange Multipliers - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Lagrange Multipliers in Soft Focus</span>
+      <h1>Optimize with Constraints, Not Guesswork</h1>
+      <p>
+        Lagrange multipliers let you maximize or minimize a function while staying on a constraint.
+        They turn a hard constrained problem into a clean system of equations.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Constraint Meets Objective</h2>
+      <p>
+        A constraint curve intersects the objective surface.
+      </p>
+      <div id="sketch-lagrange" class="sketch-frame"></div>
+    </section>
+
+    <section id="basics">
+      <h2>1) The Basic Idea</h2>
+      <p>
+        Suppose you want to optimize $f(x, y)$ subject to a constraint $g(x, y) = c$.
+        At the optimum, the gradient of $f$ points in the same direction as the gradient of $g$,
+        because the constraint curve is tangent to the level set of $f$.
+      </p>
+      <div class="formula">
+        $$\nabla f(x, y) = \lambda \nabla g(x, y)$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>Constraint surface</strong>
+          The set of all points that satisfy $g(x, y) = c$.
+        </div>
+        <div class="card">
+          <strong>Multiplier $\lambda$</strong>
+          A scaling factor that balances the two gradients.
+        </div>
+        <div class="card">
+          <strong>Geometric meaning</strong>
+          The best point occurs when the contour of $f$ just touches the constraint.
+        </div>
+        <div class="card">
+          <strong>System to solve</strong>
+          Solve $\nabla f = \lambda \nabla g$ plus the constraint equation.
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <h2>2) Step-by-Step Workflow</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Step 1: Write the constraint</h3>
+          <p>Express it as $g(x, y) = c$ (or $g(x, y, z) = c$ in 3D).</p>
+        </div>
+        <div class="example-card">
+          <h3>Step 2: Set up the Lagrangian</h3>
+          <p>$\mathcal{L}(x, y, \lambda) = f(x, y) - \lambda(g(x, y) - c)$.</p>
+        </div>
+        <div class="example-card">
+          <h3>Step 3: Differentiate</h3>
+          <p>Set $\nabla_x \mathcal{L} = 0$ and include the constraint.</p>
+        </div>
+        <div class="example-card">
+          <h3>Step 4: Solve and compare</h3>
+          <p>Evaluate $f$ at each candidate to find max/min.</p>
+        </div>
+      </div>
+      <div class="formula">
+        $$\mathcal{L}(x, y, \lambda) = f(x, y) - \lambda(g(x, y) - c)$$
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>3) Applications</h2>
+      <p>
+        Lagrange multipliers show up wherever a system has limited resources.
+        In engineering, you maximize performance subject to safety or budget constraints.
+        In economics, you maximize utility subject to a spending limit.
+      </p>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Economics</h3>
+          <p>Maximize utility $U(x, y)$ given a budget $p_x x + p_y y = B$.</p>
+          <div class="pill-row">
+            <span class="pill">Budgeting</span>
+            <span class="pill">Utility</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Engineering design</h3>
+          <p>Minimize weight while holding stress or cost below a threshold.</p>
+          <div class="pill-row">
+            <span class="pill">Optimization</span>
+            <span class="pill">Constraints</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Machine learning</h3>
+          <p>Constrained optimization for regularization or fairness limits.</p>
+          <div class="pill-row">
+            <span class="pill">Regularization</span>
+            <span class="pill">Fairness</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/lagrange-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

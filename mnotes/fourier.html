@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fourier Analysis - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Fourier Analysis in Pastel Waves</span>
+      <h1>See the Hidden Frequencies Inside Any Signal</h1>
+      <p>
+        Fourier analysis lets you break a complex signal into simple waves.
+        It powers music tech, medical imaging, and modern machine learning by revealing
+        which frequencies make a pattern tick.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Waves Combine</h2>
+      <p>
+        Two simple waves stack into a richer signal.
+      </p>
+      <div id="sketch-fourier" class="sketch-frame"></div>
+    </section>
+
+    <section id="fundamentals">
+      <h2>1) Fundamentals: Fourier Series &amp; Transform</h2>
+      <p>
+        Any repeating signal can be rebuilt by stacking sine and cosine waves.
+        A <strong>Fourier series</strong> does this for periodic signals, while a
+        <strong>Fourier transform</strong> extends the idea to non-repeating signals by
+        turning time into frequency.
+      </p>
+
+      <div class="formula">
+        $$f(t) = a_0 + \sum_{n=1}^{\infty} \left(a_n\cos(2\pi n t) + b_n\sin(2\pi n t)\right)$$
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <strong>Fourier series</strong>
+          Describes periodic signals as a sum of harmonics. Each harmonic has an amplitude
+          and phase, letting you reconstruct the original loop perfectly if you include enough terms.
+        </div>
+        <div class="card">
+          <strong>Fourier transform</strong>
+          Converts any signal into a continuous spectrum of frequencies. The result tells you
+          how much of each frequency is present and with what phase.
+        </div>
+        <div class="card">
+          <strong>Fundamental frequency</strong>
+          The lowest frequency in the series. It sets the overall pitch or rhythm, while higher
+          frequencies add detail and texture.
+        </div>
+        <div class="card">
+          <strong>Spectrum</strong>
+          The frequency "fingerprint" of a signal. Peaks show dominant tones, while a wide spread
+          indicates noise or sharp changes.
+        </div>
+      </div>
+
+      <div class="formula">
+        $$\mathcal{F}\{f(t)\}=F(\omega)=\int_{-\infty}^{\infty} f(t)e^{-i\omega t}\,dt$$
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>2) Real-World Applications</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Music &amp; Audio</h3>
+          <p>
+            Equalizers boost or cut frequencies. When you slide a bass knob, you are literally
+            changing the amplitude of low-frequency Fourier components.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Mixing</span>
+            <span class="pill">Noise removal</span>
+            <span class="pill">Auto-tune</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Medical Imaging</h3>
+          <p>
+            MRI scanners collect frequency data. A Fourier transform turns it into a spatial image
+            doctors can interpret.
+          </p>
+          <div class="pill-row">
+            <span class="pill">MRI</span>
+            <span class="pill">CT reconstruction</span>
+            <span class="pill">Ultrasound</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Signals &amp; Networks</h3>
+          <p>
+            Wi-Fi and 5G split data into frequency bands so many devices can talk at once without chaos.
+          </p>
+          <div class="pill-row">
+            <span class="pill">OFDM</span>
+            <span class="pill">Compression</span>
+            <span class="pill">Filtering</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="machine-learning">
+      <h2>3) Fourier in Machine Learning</h2>
+      <p>
+        Fourier ideas show up inside ML models whenever we want to understand patterns across scales.
+        We can transform inputs into frequency space to spot repeating structures, or use Fourier features
+        to help neural networks learn high-frequency details.
+      </p>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Fourier features</h3>
+          <p>
+            By encoding inputs with sinusoidal features, models learn sharp edges and fine details faster,
+            which is useful in vision, graphics, and implicit neural representations.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Spectral filtering</h3>
+          <p>
+            Transforming data into the frequency domain lets models remove noise or emphasize patterns
+            at specific scales, improving robustness.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Convolutions</h3>
+          <p>
+            Convolution in time becomes multiplication in frequency. This makes large convolutions faster
+            and easier to analyze.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/fourier-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
