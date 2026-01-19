@@ -160,3 +160,45 @@ img.center {
     padding: 16px;
   }
 }
+
+@media (max-width: 1024px) {
+  body {
+    flex-direction: column;
+  }
+
+  nav {
+    width: 100%;
+    min-height: auto;
+    padding: 12px 0;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    justify-content: center;
+  }
+
+  nav li {
+    margin: 6px 0;
+    padding: 0 8px;
+  }
+
+  nav a {
+    font-size: 17px;
+    padding: 8px 10px;
+  }
+
+  .main-content {
+    padding: 24px;
+  }
+
+  section {
+    margin: 1rem 0.5rem;
+    padding: 1.4rem 1.2rem 1.6rem;
+  }
+
+  article {
+    padding: 1rem 0.9rem 1.05rem;
+  }
+}

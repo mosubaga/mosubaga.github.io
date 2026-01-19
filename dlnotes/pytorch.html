@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PyTorch for Neural Networks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="PyTorch essentials for neural networks, covering tensors, autograd, nn.Module, training loops, optimization, and deployment workflows.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="index.html">Deep Learning Overview</a></li>
+    <li><a href="timeseries.html">Time Series Forecasting</a></li>
+    <li><a href="nlp.html">Natural Language Processing</a></li>
+    <li><a href="dljs.html">Deep Learning in JS</a></li>
+    <li><a href="mljs.html">ml5.js in the Browser</a></li>
+    <li><a href="tensorflow.html">TensorFlow</a></li>
+    <li><a href="pytorch.html" class="active">PyTorch</a></li>
+  </ul>
+</nav>
+<div class="main-content">
+  <header>
+    <h1>PyTorch for Neural Networks</h1>
+    <p>PyTorch is an open-source machine learning framework from Meta AI with dynamic computation graphs, a Pythonic API, and strong GPU acceleration, making it popular for research and production alike.</p>
+  </header>
+
+  <main>
+    <section>
+      <article>
+        <h2>1. What Is PyTorch?</h2>
+        <p>PyTorch provides a flexible and intuitive platform for building and training deep learning models with define-by-run execution.</p>
+        <h3>Key Features</h3>
+        <ul>
+          <li><b>Dynamic Computation Graphs:</b> Define-by-run for flexible model architectures.</li>
+          <li><b>Pythonic API:</b> Natural Python code with minimal abstraction.</li>
+          <li><b>Eager Execution:</b> Operations run immediately for easier debugging.</li>
+          <li><b>Strong GPU Acceleration:</b> First-class CUDA support.</li>
+          <li><b>Research-Friendly:</b> Popular in academia and rapid experimentation.</li>
+          <li><b>TorchScript:</b> Compile models for production deployment.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>2. How PyTorch Is Used</h2>
+        <ul>
+          <li>Computer vision: detection, segmentation, style transfer</li>
+          <li>Natural language processing: transformers and translation</li>
+          <li>Reinforcement learning: policy networks and actor-critic methods</li>
+          <li>Generative models: GANs, VAEs, diffusion models</li>
+          <li>Research prototyping and rapid iteration</li>
+          <li>Production deployment with TorchServe and TorchScript</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>3. Main Components for Neural Networks</h2>
+        <h3>3.1 Tensors</h3>
+        <p>Tensors are the core data structure, similar to NumPy arrays but with GPU support and automatic differentiation.</p>
+        <div class="code-example"><pre><code>import torch
+import numpy as np
+
+# Creating tensors
+scalar = torch.tensor(3.0)
+vector = torch.tensor([1.0, 2.0, 3.0])
+matrix = torch.tensor([[1, 2], [3, 4]])
+tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+
+print(f"Scalar shape: {scalar.shape}")
+print(f"Vector shape: {vector.shape}")
+print(f"Matrix shape: {matrix.shape}")
+
+# Create tensors with specific properties
+zeros = torch.zeros(3, 4)
+ones = torch.ones(2, 3)
+rand = torch.rand(2, 2)  # Uniform [0, 1)
+randn = torch.randn(2, 2)  # Normal distribution
+
+# Move tensors to GPU
+if torch.cuda.is_available():
+  device = torch.device('cuda')
+  tensor_gpu = vector.to(device)
+  print(f"Tensor on GPU: {tensor_gpu.device}")
+</code></pre></div>
+
+        <h3>3.2 Autograd (Automatic Differentiation)</h3>
+        <div class="code-example"><pre><code># Enable gradient tracking
+x = torch.tensor(2.0, requires_grad=True)
+y = torch.tensor(3.0, requires_grad=True)
+
+# Forward pass
+z = x ** 2 + y ** 3
+
+# Backward pass (compute gradients)
+z.backward()
+print(f"dz/dx: {x.grad}")  # 2*x = 4.0
+print(f"dz/dy: {y.grad}")  # 3*y^2 = 27.0
+</code></pre></div>
+
+        <h3>3.3 nn.Module</h3>
+        <p><code>nn.Module</code> is the base class for neural network modules.</p>
+        <div class="code-example"><pre><code>import torch.nn as nn
+
+class SimpleNet(nn.Module):
+  def __init__(self):
+    super(SimpleNet, self).__init__()
+    self.fc1 = nn.Linear(784, 128)
+    self.relu = nn.ReLU()
+    self.fc2 = nn.Linear(128, 10)
+
+  def forward(self, x):
+    x = self.fc1(x)
+    x = self.relu(x)
+    x = self.fc2(x)
+    return x
+
+model = SimpleNet()
+print(model)
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>4. Essential Methods for Building Neural Networks</h2>
+        <h3>Sequential Container</h3>
+        <p>Use <code>nn.Sequential</code> to define a simple chain of layers.</p>
+        <div class="code-example"><pre><code>import torch.nn as nn
+
+# Using Sequential
+model = nn.Sequential(
+  nn.Linear(784, 128),
+  nn.ReLU(),
+  nn.Dropout(0.2),
+  nn.Linear(128, 64),
+  nn.ReLU(),
+  nn.Dropout(0.2),
+  nn.Linear(64, 10),
+  nn.Softmax(dim=1)
+)
+
+# Named layers for better debugging
+model = nn.Sequential(
+  nn.OrderedDict([
+    ('fc1', nn.Linear(784, 128)),
+    ('relu1', nn.ReLU()),
+    ('dropout1', nn.Dropout(0.2)),
+    ('fc2', nn.Linear(128, 10))
+  ])
+)
+</code></pre></div>
+
+        <h3>Custom nn.Module (Recommended)</h3>
+        <div class="code-example"><pre><code>class CustomNet(nn.Module):
+  def __init__(self, input_size, hidden_size, num_classes):
+    super(CustomNet, self).__init__()
+    self.fc1 = nn.Linear(input_size, hidden_size)
+    self.bn1 = nn.BatchNorm1d(hidden_size)
+    self.relu = nn.ReLU()
+    self.dropout = nn.Dropout(0.3)
+    self.fc2 = nn.Linear(hidden_size, num_classes)
+
+  def forward(self, x):
+    x = self.fc1(x)
+    x = self.bn1(x)
+    x = self.relu(x)
+    x = self.dropout(x)
+    x = self.fc2(x)
+    return x
+
+model = CustomNet(input_size=784, hidden_size=128, num_classes=10)
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>5. Common Layer Types</h2>
+        <h3>Linear Layers (Fully Connected)</h3>
+        <div class="code-example"><pre><code># Linear layer: y = xW^T + b
+layer = nn.Linear(
+  in_features=128,
+  out_features=64,
+  bias=True
+)
+</code></pre></div>
+
+        <h3>Convolutional Layers (for Image Data)</h3>
+        <div class="code-example"><pre><code>class ConvNet(nn.Module):
+  def __init__(self):
+    super(ConvNet, self).__init__()
+    self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
+    self.pool = nn.MaxPool2d(2, 2)
+    self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+    self.fc1 = nn.Linear(64 * 7 * 7, 128)
+    self.fc2 = nn.Linear(128, 10)
+
+  def forward(self, x):
+    x = self.pool(torch.relu(self.conv1(x)))
+    x = self.pool(torch.relu(self.conv2(x)))
+    x = x.view(-1, 64 * 7 * 7)  # Flatten
+    x = torch.relu(self.fc1(x))
+    x = self.fc2(x)
+    return x
+</code></pre></div>
+
+        <h3>Recurrent Layers (for Sequential Data)</h3>
+        <div class="code-example"><pre><code>class RNNNet(nn.Module):
+  def __init__(self, input_size, hidden_size, num_layers, num_classes):
+    super(RNNNet, self).__init__()
+    self.lstm = nn.LSTM(
+      input_size=input_size,
+      hidden_size=hidden_size,
+      num_layers=num_layers,
+      batch_first=True,
+      dropout=0.2
+    )
+    self.fc = nn.Linear(hidden_size, num_classes)
+
+  def forward(self, x):
+    out, (hn, cn) = self.lstm(x)
+    out = self.fc(out[:, -1, :])
+    return out
+
+# GRU alternative
+class GRUNet(nn.Module):
+  def __init__(self, input_size, hidden_size, num_classes):
+    super(GRUNet, self).__init__()
+    self.gru = nn.GRU(input_size, hidden_size, batch_first=True)
+    self.fc = nn.Linear(hidden_size, num_classes)
+
+  def forward(self, x):
+    out, hn = self.gru(x)
+    out = self.fc(out[:, -1, :])
+    return out
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>6. Complete Neural Network Example</h2>
+        <p>End-to-end training workflow using MNIST.</p>
+        <div class="code-example"><pre><code>import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+
+# Set device
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using device: {device}")
+
+# Define transforms
+transform = transforms.Compose([
+  transforms.ToTensor(),
+  transforms.Normalize((0.1307,), (0.3081,))  # MNIST mean and std
+])
+
+# Load MNIST dataset
+train_dataset = datasets.MNIST(
+  root='./data',
+  train=True,
+  download=True,
+  transform=transform
+)
+
+test_dataset = datasets.MNIST(
+  root='./data',
+  train=False,
+  download=True,
+  transform=transform
+)
+
+# Create data loaders
+train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
+
+# Define the model
+class NeuralNet(nn.Module):
+  def __init__(self):
+    super(NeuralNet, self).__init__()
+    self.flatten = nn.Flatten()
+    self.fc1 = nn.Linear(28 * 28, 128)
+    self.bn1 = nn.BatchNorm1d(128)
+    self.relu1 = nn.ReLU()
+    self.dropout1 = nn.Dropout(0.3)
+    self.fc2 = nn.Linear(128, 64)
+    self.bn2 = nn.BatchNorm1d(64)
+    self.relu2 = nn.ReLU()
+    self.dropout2 = nn.Dropout(0.3)
+    self.fc3 = nn.Linear(64, 10)
+
+  def forward(self, x):
+    x = self.flatten(x)
+    x = self.fc1(x)
+    x = self.bn1(x)
+    x = self.relu1(x)
+    x = self.dropout1(x)
+    x = self.fc2(x)
+    x = self.bn2(x)
+    x = self.relu2(x)
+    x = self.dropout2(x)
+    x = self.fc3(x)
+    return x
+
+# Initialize model, loss, and optimizer
+model = NeuralNet().to(device)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Training function
+def train(model, device, train_loader, optimizer, criterion, epoch):
+  model.train()
+  train_loss = 0
+  correct = 0
+  for batch_idx, (data, target) in enumerate(train_loader):
+    data, target = data.to(device), target.to(device)
+    optimizer.zero_grad()
+    output = model(data)
+    loss = criterion(output, target)
+    loss.backward()
+    optimizer.step()
+
+    train_loss += loss.item()
+    pred = output.argmax(dim=1, keepdim=True)
+    correct += pred.eq(target.view_as(pred)).sum().item()
+
+    if batch_idx % 100 == 0:
+      print(
+        f"Epoch: {epoch} [{batch_idx * len(data)}/{len(train_loader.dataset)}] "
+        f"Loss: {loss.item():.4f}"
+      )
+
+  train_loss /= len(train_loader)
+  accuracy = 100. * correct / len(train_loader.dataset)
+  print(
+    f"Train set: Average loss: {train_loss:.4f}, "
+    f"Accuracy: {correct}/{len(train_loader.dataset)} ({accuracy:.2f}%)"
+  )
+
+# Testing function
+def test(model, device, test_loader, criterion):
+  model.eval()
+  test_loss = 0
+  correct = 0
+  with torch.no_grad():
+    for data, target in test_loader:
+      data, target = data.to(device), target.to(device)
+      output = model(data)
+      test_loss += criterion(output, target).item()
+      pred = output.argmax(dim=1, keepdim=True)
+      correct += pred.eq(target.view_as(pred)).sum().item()
+
+  test_loss /= len(test_loader)
+  accuracy = 100. * correct / len(test_loader.dataset)
+  print(
+    f"Test set: Average loss: {test_loss:.4f}, "
+    f"Accuracy: {correct}/{len(test_loader.dataset)} ({accuracy:.2f}%)\n"
+  )
+  return accuracy
+
+# Train the model
+num_epochs = 10
+for epoch in range(1, num_epochs + 1):
+  train(model, device, train_loader, optimizer, criterion, epoch)
+  test(model, device, test_loader, criterion)
+
+# Save the model
+torch.save(model.state_dict(), 'mnist_model.pth')
+print("Model saved to mnist_model.pth")
+
+# Load the model
+loaded_model = NeuralNet().to(device)
+loaded_model.load_state_dict(torch.load('mnist_model.pth'))
+loaded_model.eval()
+print("Model loaded successfully")
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>7. Key Methods Reference</h2>
+        <h3>Model Definition</h3>
+        <table>
+          <thead>
+            <tr><th>Method/Class</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>nn.Module</td><td>Base class for neural network modules.</td></tr>
+            <tr><td>nn.Sequential()</td><td>Container for sequential layer stack.</td></tr>
+            <tr><td>super().__init__()</td><td>Initialize parent class in custom modules.</td></tr>
+            <tr><td>forward()</td><td>Define the forward pass computation.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Common Layers</h3>
+        <table>
+          <thead>
+            <tr><th>Layer</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>nn.Linear(in, out)</td><td>Fully connected layer.</td></tr>
+            <tr><td>nn.Conv2d(in, out, kernel)</td><td>2D convolutional layer.</td></tr>
+            <tr><td>nn.LSTM(in, hidden)</td><td>LSTM recurrent layer.</td></tr>
+            <tr><td>nn.GRU(in, hidden)</td><td>GRU recurrent layer.</td></tr>
+            <tr><td>nn.BatchNorm1d(features)</td><td>Batch normalization for 1D data.</td></tr>
+            <tr><td>nn.Dropout(p)</td><td>Dropout regularization.</td></tr>
+            <tr><td>nn.MaxPool2d(kernel)</td><td>Max pooling layer.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Activation Functions</h3>
+        <table>
+          <thead>
+            <tr><th>Activation</th><th>Usage</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>nn.ReLU()</td><td>Rectified Linear Unit.</td></tr>
+            <tr><td>nn.LeakyReLU()</td><td>Leaky ReLU.</td></tr>
+            <tr><td>nn.Sigmoid()</td><td>Sigmoid activation.</td></tr>
+            <tr><td>nn.Tanh()</td><td>Hyperbolic tangent.</td></tr>
+            <tr><td>nn.Softmax(dim)</td><td>Softmax for multi-class.</td></tr>
+            <tr><td>torch.relu(x)</td><td>Functional ReLU.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Loss Functions</h3>
+        <table>
+          <thead>
+            <tr><th>Loss Function</th><th>Use Case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>nn.CrossEntropyLoss()</td><td>Multi-class classification.</td></tr>
+            <tr><td>nn.BCELoss()</td><td>Binary classification.</td></tr>
+            <tr><td>nn.BCEWithLogitsLoss()</td><td>Binary classification with logits.</td></tr>
+            <tr><td>nn.MSELoss()</td><td>Mean squared error (regression).</td></tr>
+            <tr><td>nn.L1Loss()</td><td>Mean absolute error (regression).</td></tr>
+            <tr><td>nn.NLLLoss()</td><td>Negative log likelihood.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Optimizers</h3>
+        <table>
+          <thead>
+            <tr><th>Optimizer</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>optim.Adam(params, lr)</td><td>Adaptive Moment Estimation.</td></tr>
+            <tr><td>optim.SGD(params, lr)</td><td>Stochastic Gradient Descent.</td></tr>
+            <tr><td>optim.AdamW(params, lr)</td><td>Adam with weight decay.</td></tr>
+            <tr><td>optim.RMSprop(params, lr)</td><td>Root Mean Square Propagation.</td></tr>
+            <tr><td>optim.Adagrad(params, lr)</td><td>Adaptive Gradient Algorithm.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Training Operations</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>optimizer.zero_grad()</td><td>Clear gradients from previous step.</td></tr>
+            <tr><td>loss.backward()</td><td>Compute gradients via backpropagation.</td></tr>
+            <tr><td>optimizer.step()</td><td>Update model parameters.</td></tr>
+            <tr><td>model.train()</td><td>Set model to training mode.</td></tr>
+            <tr><td>model.eval()</td><td>Set model to evaluation mode.</td></tr>
+            <tr><td>torch.no_grad()</td><td>Disable gradient computation.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Model Persistence</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>torch.save(model.state_dict(), path)</td><td>Save model parameters.</td></tr>
+            <tr><td>model.load_state_dict(torch.load(path))</td><td>Load model parameters.</td></tr>
+            <tr><td>torch.save(model, path)</td><td>Save entire model.</td></tr>
+            <tr><td>torch.load(path)</td><td>Load entire model.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Tensor Operations</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>tensor.to(device)</td><td>Move tensor to device (CPU/GPU).</td></tr>
+            <tr><td>tensor.view(shape)</td><td>Reshape tensor.</td></tr>
+            <tr><td>tensor.reshape(shape)</td><td>Reshape tensor (more flexible).</td></tr>
+            <tr><td>tensor.flatten()</td><td>Flatten to 1D.</td></tr>
+            <tr><td>tensor.unsqueeze(dim)</td><td>Add dimension.</td></tr>
+            <tr><td>tensor.squeeze(dim)</td><td>Remove dimension.</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>8. Advanced Features</h2>
+        <h3>Learning Rate Scheduling</h3>
+        <div class="code-example"><pre><code>from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau, CosineAnnealingLR
+
+# Step decay
+scheduler = StepLR(optimizer, step_size=5, gamma=0.1)
+
+# Reduce on plateau
+scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=3, factor=0.5)
+
+# Cosine annealing
+scheduler = CosineAnnealingLR(optimizer, T_max=10)
+
+# In training loop
+for epoch in range(num_epochs):
+  train(...)
+  val_loss = validate(...)
+  scheduler.step()  # or scheduler.step(val_loss) for ReduceLROnPlateau
+</code></pre></div>
+
+        <h3>Data Augmentation</h3>
+        <div class="code-example"><pre><code>from torchvision import transforms
+
+transform = transforms.Compose([
+  transforms.RandomHorizontalFlip(p=0.5),
+  transforms.RandomRotation(10),
+  transforms.ColorJitter(brightness=0.2, contrast=0.2),
+  transforms.RandomCrop(32, padding=4),
+  transforms.ToTensor(),
+  transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
+</code></pre></div>
+
+        <h3>Mixed Precision Training</h3>
+        <div class="code-example"><pre><code>from torch.cuda.amp import autocast, GradScaler
+
+scaler = GradScaler()
+for data, target in train_loader:
+  optimizer.zero_grad()
+  with autocast():
+    output = model(data)
+    loss = criterion(output, target)
+  scaler.scale(loss).backward()
+  scaler.step(optimizer)
+  scaler.update()
+</code></pre></div>
+
+        <h3>Model Checkpointing</h3>
+        <div class="code-example"><pre><code># Save checkpoint
+checkpoint = {
+  'epoch': epoch,
+  'model_state_dict': model.state_dict(),
+  'optimizer_state_dict': optimizer.state_dict(),
+  'loss': loss
+}
+
+torch.save(checkpoint, 'checkpoint.pth')
+
+# Load checkpoint
+checkpoint = torch.load('checkpoint.pth')
+model.load_state_dict(checkpoint['model_state_dict'])
+optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+epoch = checkpoint['epoch']
+loss = checkpoint['loss']
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>9. PyTorch vs TensorFlow</h2>
+        <table>
+          <thead>
+            <tr><th>Feature</th><th>PyTorch</th><th>TensorFlow</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Graph Type</td><td>Dynamic (define-by-run)</td><td>Static (define-and-run) in TF 1.x, dynamic in TF 2.x</td></tr>
+            <tr><td>API Style</td><td>Pythonic, intuitive</td><td>More verbose, abstracted</td></tr>
+            <tr><td>Debugging</td><td>Easy with standard Python debugger</td><td>More challenging</td></tr>
+            <tr><td>Deployment</td><td>TorchScript, TorchServe</td><td>TensorFlow Serving, TensorFlow Lite</td></tr>
+            <tr><td>Community</td><td>Strong in research</td><td>Strong in production</td></tr>
+            <tr><td>Learning Curve</td><td>Gentler</td><td>Steeper</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>10. Best Practices</h2>
+        <ul>
+          <li>Use GPU when available and move models and data to the same device.</li>
+          <li>Use <code>model.train()</code> for training and <code>model.eval()</code> for evaluation.</li>
+          <li>Call <code>optimizer.zero_grad()</code> before backpropagation.</li>
+          <li>Disable gradients for inference with <code>torch.no_grad()</code>.</li>
+          <li>Normalize input data for faster convergence.</li>
+          <li>Use <code>DataLoader</code> for efficient batch processing.</li>
+          <li>Monitor GPU memory and clear cache when needed.</li>
+          <li>Prefer <code>state_dict()</code> for saving models.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>11. Common Pitfalls</h2>
+        <ul>
+          <li>Forgetting <code>optimizer.zero_grad()</code> leads to gradient accumulation.</li>
+          <li>Not setting model mode makes Dropout and BatchNorm behave incorrectly.</li>
+          <li>Shape mismatches in CNNs and RNNs cause runtime errors.</li>
+          <li>CPU and GPU tensors must be on the same device.</li>
+          <li>In-place tensor operations can break autograd.</li>
+          <li>Memory leaks from storing tensors without detaching.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>12. Resources</h2>
+        <ul>
+          <li>Official Documentation: https://pytorch.org/docs/</li>
+          <li>PyTorch Tutorials: https://pytorch.org/tutorials/</li>
+          <li>PyTorch Examples: https://github.com/pytorch/examples</li>
+          <li>PyTorch Forums: https://discuss.pytorch.org/</li>
+          <li>TorchVision (Computer Vision): https://pytorch.org/vision/</li>
+          <li>TorchText (NLP): https://pytorch.org/text/</li>
+          <li>PyTorch Lightning: https://lightning.ai/</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
+  </footer>
+</div>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

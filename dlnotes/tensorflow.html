@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TensorFlow for Neural Networks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="TensorFlow fundamentals for neural networks, including tensors, Keras APIs, model building, training workflows, and best practices.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="index.html">Deep Learning Overview</a></li>
+    <li><a href="timeseries.html">Time Series Forecasting</a></li>
+    <li><a href="nlp.html">Natural Language Processing</a></li>
+    <li><a href="dljs.html">Deep Learning in JS</a></li>
+    <li><a href="mljs.html">ml5.js in the Browser</a></li>
+    <li><a href="tensorflow.html" class="active">TensorFlow</a></li>
+    <li><a href="pytorch.html">PyTorch</a></li>
+  </ul>
+</nav>
+<div class="main-content">
+  <header>
+    <h1>TensorFlow for Neural Networks</h1>
+    <p>TensorFlow is an open-source machine learning framework from Google Brain with a comprehensive ecosystem for building, training, and deploying deep learning models across CPUs, GPUs, and TPUs.</p>
+  </header>
+
+  <main>
+    <section>
+      <article>
+        <h2>1. What Is TensorFlow?</h2>
+        <p>TensorFlow provides tools, libraries, and resources for creating neural networks and deploying them in production.</p>
+        <h3>Key Features</h3>
+        <ul>
+          <li><b>Flexible Architecture:</b> Build with high-level Keras APIs or low-level operations.</li>
+          <li><b>Cross-Platform:</b> Deploy on servers, mobile devices, browsers, and edge devices.</li>
+          <li><b>Automatic Differentiation:</b> Compute gradients automatically for training.</li>
+          <li><b>Production-Ready:</b> Serving, monitoring, and deployment tools.</li>
+          <li><b>Large Ecosystem:</b> Community support, pre-trained models, and extensions.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>2. How TensorFlow Is Used</h2>
+        <ul>
+          <li>Image classification for objects and patterns</li>
+          <li>Natural language processing such as translation and sentiment analysis</li>
+          <li>Time series forecasting for stocks, weather, and demand</li>
+          <li>Recommendation systems for products and content</li>
+          <li>Reinforcement learning for games and robotics</li>
+          <li>Generative models like GANs and VAEs</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>3. Main Components for Neural Networks</h2>
+        <h3>3.1 Tensors</h3>
+        <p>Tensors are multi-dimensional arrays and the core data structure in TensorFlow.</p>
+        <div class="code-example"><pre><code>import tensorflow as tf
+import numpy as np
+
+# Creating tensors
+scalar = tf.constant(3.0)
+vector = tf.constant([1.0, 2.0, 3.0])
+matrix = tf.constant([[1, 2], [3, 4]])
+tensor_3d = tf.constant([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+
+print(f"Scalar shape: {scalar.shape}")
+print(f"Vector shape: {vector.shape}")
+print(f"Matrix shape: {matrix.shape}")
+</code></pre></div>
+
+        <h3>3.2 Keras API (tf.keras)</h3>
+        <p>Keras is the high-level API for building neural networks. In TensorFlow 2.x, Keras is integrated as <code>tf.keras</code> and is the recommended approach.</p>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>4. Essential Methods for Building Neural Networks</h2>
+        <h3>Sequential API</h3>
+        <p>The Sequential API builds models as a linear stack of layers.</p>
+        <div class="code-example"><pre><code>from tensorflow import keras
+from tensorflow.keras import layers
+
+# Create a Sequential model
+model = keras.Sequential([
+  layers.Dense(64, activation='relu', input_shape=(784,)),
+  layers.Dropout(0.2),
+  layers.Dense(64, activation='relu'),
+  layers.Dropout(0.2),
+  layers.Dense(10, activation='softmax')
+])
+
+# Alternative: Add layers one by one
+model = keras.Sequential()
+model.add(layers.Dense(64, activation='relu', input_shape=(784,)))
+model.add(layers.Dropout(0.2))
+model.add(layers.Dense(10, activation='softmax'))
+</code></pre></div>
+
+        <h3>Functional API</h3>
+        <p>Use the Functional API for multiple inputs/outputs and shared layers.</p>
+        <div class="code-example"><pre><code>inputs = keras.Input(shape=(784,))
+x = layers.Dense(64, activation='relu')(inputs)
+x = layers.Dropout(0.2)(x)
+x = layers.Dense(64, activation='relu')(x)
+outputs = layers.Dense(10, activation='softmax')(x)
+model = keras.Model(inputs=inputs, outputs=outputs)
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>5. Common Layer Types</h2>
+        <h3>Dense Layers (Fully Connected)</h3>
+        <div class="code-example"><pre><code># Dense layer: y = activation(W*x + b)
+layer = layers.Dense(
+  units=128,
+  activation='relu',
+  use_bias=True,
+  kernel_initializer='glorot_uniform',
+  bias_initializer='zeros'
+)
+</code></pre></div>
+
+        <h3>Convolutional Layers (for Image Data)</h3>
+        <div class="code-example"><pre><code>model = keras.Sequential([
+  layers.Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)),
+  layers.MaxPooling2D(pool_size=(2, 2)),
+  layers.Conv2D(64, kernel_size=(3, 3), activation='relu'),
+  layers.MaxPooling2D(pool_size=(2, 2)),
+  layers.Flatten(),
+  layers.Dense(128, activation='relu'),
+  layers.Dense(10, activation='softmax')
+])
+</code></pre></div>
+
+        <h3>Recurrent Layers (for Sequential Data)</h3>
+        <div class="code-example"><pre><code>model = keras.Sequential([
+  layers.LSTM(64, return_sequences=True, input_shape=(None, 10)),
+  layers.LSTM(32),
+  layers.Dense(10, activation='softmax')
+])
+
+# GRU as an alternative to LSTM
+model = keras.Sequential([
+  layers.GRU(64, return_sequences=True, input_shape=(None, 10)),
+  layers.GRU(32),
+  layers.Dense(10)
+])
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>6. Complete Neural Network Example</h2>
+        <p>Full workflow: load data, build model, train, evaluate, and save.</p>
+        <div class="code-example"><pre><code>import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+
+# Load and preprocess data (MNIST dataset)
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# Normalize pixel values to [0, 1]
+x_train = x_train.astype('float32') / 255.0
+x_test = x_test.astype('float32') / 255.0
+
+# Flatten images from 28x28 to 784
+x_train = x_train.reshape(-1, 784)
+x_test = x_test.reshape(-1, 784)
+
+# Build the model
+model = keras.Sequential([
+  layers.Dense(128, activation='relu', input_shape=(784,)),
+  layers.BatchNormalization(),
+  layers.Dropout(0.3),
+  layers.Dense(64, activation='relu'),
+  layers.BatchNormalization(),
+  layers.Dropout(0.3),
+  layers.Dense(10, activation='softmax')
+])
+
+# Display model architecture
+model.summary()
+
+# Compile the model
+model.compile(
+  optimizer='adam',
+  loss='sparse_categorical_crossentropy',
+  metrics=['accuracy']
+)
+
+# Train the model
+history = model.fit(
+  x_train, y_train,
+  batch_size=128,
+  epochs=10,
+  validation_split=0.2,
+  verbose=1
+)
+
+# Evaluate the model
+test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+print(f"Test accuracy: {test_accuracy:.4f}")
+
+# Make predictions
+predictions = model.predict(x_test[:5])
+print(f"Predicted classes: {np.argmax(predictions, axis=1)}")
+print(f"Actual classes: {y_test[:5]}")
+
+# Save the model
+model.save('mnist_model.h5')
+
+# Load the model
+loaded_model = keras.models.load_model('mnist_model.h5')
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>7. Key Methods Reference</h2>
+        <h3>Model Creation</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>keras.Sequential()</td><td>Creates a linear stack of layers.</td></tr>
+            <tr><td>keras.Model()</td><td>Creates a model from inputs and outputs (Functional API).</td></tr>
+            <tr><td>model.add()</td><td>Adds a layer to a Sequential model.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Model Compilation</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>model.compile()</td><td>Configures the model for training.</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Common optimizers:</strong> adam, sgd, rmsprop, adagrad</p>
+        <p><strong>Common loss functions:</strong> binary_crossentropy, categorical_crossentropy, sparse_categorical_crossentropy, mse, mae</p>
+
+        <h3>Model Training</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>model.fit()</td><td>Trains the model on data.</td></tr>
+            <tr><td>model.fit_generator()</td><td>Trains using a data generator (deprecated).</td></tr>
+            <tr><td>model.train_on_batch()</td><td>Single gradient update on one batch.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Model Evaluation</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>model.evaluate()</td><td>Evaluates model on test data.</td></tr>
+            <tr><td>model.predict()</td><td>Generates predictions for input samples.</td></tr>
+            <tr><td>model.test_on_batch()</td><td>Tests model on a single batch.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Model Inspection</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>model.summary()</td><td>Prints model architecture.</td></tr>
+            <tr><td>model.get_weights()</td><td>Returns the weights of the model.</td></tr>
+            <tr><td>model.set_weights()</td><td>Sets the weights of the model.</td></tr>
+            <tr><td>model.count_params()</td><td>Counts total parameters.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Model Persistence</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>model.save()</td><td>Saves the entire model to a file.</td></tr>
+            <tr><td>keras.models.load_model()</td><td>Loads a saved model.</td></tr>
+            <tr><td>model.save_weights()</td><td>Saves only the weights.</td></tr>
+            <tr><td>model.load_weights()</td><td>Loads weights from a file.</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>8. Advanced Features</h2>
+        <h3>Custom Training Loops</h3>
+        <div class="code-example"><pre><code># Custom training loop with GradientTape
+optimizer = keras.optimizers.Adam()
+loss_fn = keras.losses.SparseCategoricalCrossentropy()
+
+@tf.function
+def train_step(x, y):
+  with tf.GradientTape() as tape:
+    predictions = model(x, training=True)
+    loss = loss_fn(y, predictions)
+  gradients = tape.gradient(loss, model.trainable_variables)
+  optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+  return loss
+
+# Training loop
+for epoch in range(10):
+  for batch, (x_batch, y_batch) in enumerate(train_dataset):
+    loss = train_step(x_batch, y_batch)
+    if batch % 100 == 0:
+      print(f"Epoch {epoch}, Batch {batch}, Loss: {loss:.4f}")
+</code></pre></div>
+
+        <h3>Callbacks</h3>
+        <div class="code-example"><pre><code>from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+
+callbacks = [
+  # Stop training when validation loss stops improving
+  EarlyStopping(
+    monitor='val_loss',
+    patience=5,
+    restore_best_weights=True
+  ),
+  # Save the best model during training
+  ModelCheckpoint(
+    filepath='best_model.h5',
+    monitor='val_accuracy',
+    save_best_only=True
+  ),
+  # Reduce learning rate when metric plateaus
+  ReduceLROnPlateau(
+    monitor='val_loss',
+    factor=0.5,
+    patience=3
+  )
+]
+
+model.fit(x_train, y_train, epochs=50, validation_split=0.2, callbacks=callbacks)
+</code></pre></div>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>9. Activation Functions</h2>
+        <table>
+          <thead>
+            <tr><th>Activation</th><th>Use Case</th><th>Method</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ReLU</td><td>Hidden layers (most common)</td><td>activation='relu'</td></tr>
+            <tr><td>Leaky ReLU</td><td>Hidden layers (prevents dying ReLU)</td><td>layers.LeakyReLU()</td></tr>
+            <tr><td>Sigmoid</td><td>Binary classification output</td><td>activation='sigmoid'</td></tr>
+            <tr><td>Softmax</td><td>Multi-class classification output</td><td>activation='softmax'</td></tr>
+            <tr><td>Tanh</td><td>Hidden layers (centered at 0)</td><td>activation='tanh'</td></tr>
+            <tr><td>Linear</td><td>Regression output</td><td>activation='linear'</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>10. Best Practices</h2>
+        <ul>
+          <li>Start simple and gradually increase complexity.</li>
+          <li>Normalize input data to consistent ranges.</li>
+          <li>Use ReLU for hidden layers and softmax for multi-class outputs.</li>
+          <li>Add Dropout and L2 regularization to prevent overfitting.</li>
+          <li>Use batch normalization for stability and faster training.</li>
+          <li>Monitor validation loss with callbacks.</li>
+          <li>Experiment with learning rates (default 0.001 for Adam).</li>
+          <li>Use GPU acceleration with tensorflow-gpu.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>11. Common Pitfalls</h2>
+        <ul>
+          <li>Vanishing gradients: use ReLU instead of sigmoid or tanh in deep networks.</li>
+          <li>Exploding gradients: apply gradient clipping or batch normalization.</li>
+          <li>Overfitting: add dropout, reduce model complexity, or use more data.</li>
+          <li>Underfitting: increase model capacity or train longer.</li>
+          <li>Class imbalance: use class weights or resampling.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article>
+        <h2>12. Resources</h2>
+        <ul>
+          <li>Official Documentation: https://www.tensorflow.org/</li>
+          <li>TensorFlow Tutorials: https://www.tensorflow.org/tutorials</li>
+          <li>Keras Guide: https://keras.io/guides/</li>
+          <li>TensorFlow Hub: https://tfhub.dev/</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
+  </footer>
+</div>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
