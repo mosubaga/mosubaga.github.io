@@ -29,10 +29,10 @@ button {
 body {
     margin: 0;
     font-family: Fredoka;
-    font-size: 1.8rem;
-	color: mediumslateblue;
-	background: #0b0f1f;
-    background: linear-gradient(45deg, rgba(255, 235, 245, 1) 0%, rgba(255, 214, 255, 1) 50%, rgba(252, 233, 241, 1) 100%);
+    font-size: 1.7rem;
+    color: #3b2f66;
+    background: #0b0f1f;
+    background: linear-gradient(135deg, #fff1f6 0%, #ffe6fb 45%, #e9f3ff 100%);
     padding: 0; /* Optional: also remove default padding */
 }
 
@@ -42,7 +42,7 @@ h1,h2,p,ul,footer {
 }
 
 h4 {
-	color: midnightblue;
+	color: #2e2b6b;
 }
 
 footer {
@@ -68,12 +68,12 @@ main {
 }
 
 .card {
-    background: linear-gradient(135deg,  rgba(255, 248, 220, 0.95),  rgba(255, 223, 186, 0.9),  rgba(186, 255, 201, 0.85));
+    background: linear-gradient(135deg, rgba(255, 244, 215, 0.96), rgba(255, 206, 228, 0.92), rgba(199, 255, 229, 0.9));
     backdrop-filter: blur(10px);
     border-radius: 15px;
     padding: 2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(114, 130, 255, 0.18);
+    border: 1px solid rgba(112, 127, 255, 0.22);
     transition: all 0.3s;
     animation: fadeIn 0.8s ease-out;
     }
@@ -96,10 +96,80 @@ main {
 
 a {
     text-decoration: none;
-    color: maroon;
+    color: #b12d6f;
 }
 
 a:hover {
     text-decoration: none;
-    color: mediumslateblue;
+    color: #3f5ad8;
+}
+
+@media (max-width: 1024px) {
+  .hero-image {
+    height: 420px;
+  }
+
+  .hero-text h1 {
+    font-size: 2.8rem;
+  }
+
+  body {
+    font-size: 1.45rem;
+  }
+
+  h1,
+  h2,
+  p,
+  ul,
+  footer {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  div.container {
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
+  }
+
+  main {
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+  }
+
+  .card {
+    padding: 1.6rem;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-image {
+    height: 320px;
+  }
+
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+
+  body {
+    font-size: 1.25rem;
+  }
+
+  h1,
+  h2,
+  p,
+  ul,
+  footer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  div.container {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+
+  main {
+    padding: 1.2rem;
+  }
 }
