@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TensorFlow for Classical Machine Learning</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" data-page="intro" class="nav-link">Introduction</a></li>
+            <li><a href="numpy.html" data-page="numpy" class="nav-link">NumPy</a></li>
+            <li><a href="scipy.html" data-page="scipy" class="nav-link">SciPy</a></li>
+            <li><a href="pandas.html" data-page="pandas" class="nav-link">Pandas</a></li>
+            <li><a href="scikit.html" data-page="sklearn" class="nav-link">Scikit-Learn</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="tensorflow" class="page">
+            <h1>TensorFlow + Keras for Classical Machine Learning</h1>
+
+            <p>TensorFlow is often associated with deep learning, but it is also a solid toolkit for traditional machine learning workflows. With the Keras API you can build linear models, logistic regression classifiers, and even clustering objectives using the same training loop, optimizers, and data pipelines. This page focuses on using TensorFlow for classic ML tasks and keeps neural networks to a minimum.</p>
+
+            <div class="highlight-box">
+                <p><strong>Quick link:</strong> If you want a scikit-learn perspective or side-by-side comparisons, visit <a href="scikit.html">scikit.html</a>.</p>
+            </div>
+
+            <h2>Why Use TensorFlow for Non-Deep Learning?</h2>
+            <div class="usage-list">
+                <ul>
+                    <li><strong>Consistent training loop:</strong> Use <code>compile()</code>, <code>fit()</code>, and callbacks across models.</li>
+                    <li><strong>Fast on large data:</strong> TensorFlow scales well and supports GPU/TPU acceleration if needed.</li>
+                    <li><strong>Deployable:</strong> Export models as SavedModel, integrate with TF Serving, or use TF Lite.</li>
+                    <li><strong>Unified data pipeline:</strong> <code>tf.data</code> handles batching, shuffling, and preprocessing.</li>
+                </ul>
+            </div>
+
+            <h2>Workflow Overview</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Step 1: Prepare data</strong>
+                    <p>Convert arrays to <code>tf.data.Dataset</code> objects, then batch and shuffle for efficient training.</p>
+                </div>
+                <div class="feature-item">
+                    <strong>Step 2: Define model</strong>
+                    <p>For classical ML, a single <code>Dense</code> layer often represents the entire model.</p>
+                </div>
+                <div class="feature-item">
+                    <strong>Step 3: Compile</strong>
+                    <p>Choose the loss and metrics that match the ML task (MSE, log loss, accuracy).</p>
+                </div>
+                <div class="feature-item">
+                    <strong>Step 4: Train and evaluate</strong>
+                    <p>Fit the model and evaluate on a test set, just like with scikit-learn.</p>
+                </div>
+            </div>
+
+            <h2>Linear Regression with Keras</h2>
+            <p>Linear regression can be implemented as a single linear layer with a mean squared error loss.</p>
+
+            <div class="algorithm-card">
+                <h3>Example: House Price Regression</h3>
+                <pre><code># X_train, y_train are NumPy arrays
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1, input_shape=(num_features,))
+])
+
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.05),
+    loss="mse",
+    metrics=["mae"]
+)
+
+model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
+loss, mae = model.evaluate(X_test, y_test)</code></pre>
+            </div>
+
+            <h3>Notes for Linear Regression</h3>
+            <div class="usage-list">
+                <ul>
+                    <li>Standardize features to speed convergence.</li>
+                    <li>Use <code>mean_absolute_error</code> for interpretable evaluation.</li>
+                    <li>Keep the model small to avoid overfitting (a single Dense layer is enough).</li>
+                </ul>
+            </div>
+
+            <h2>Logistic Regression with Keras</h2>
+            <p>Logistic regression is a linear model with a sigmoid activation (binary) or softmax (multiclass). You can represent it with one Dense layer.</p>
+
+            <div class="algorithm-card">
+                <h3>Binary Classification Example</h3>
+                <pre><code>model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1, activation="sigmoid", input_shape=(num_features,))
+])
+
+model.compile(
+    optimizer="adam",
+    loss="binary_crossentropy",
+    metrics=["accuracy", tf.keras.metrics.AUC()]
+)
+
+model.fit(X_train, y_train, epochs=50, batch_size=64, validation_split=0.2)
+probs = model.predict(X_test)</code></pre>
+            </div>
+
+            <div class="usage-list">
+                <strong>Multiclass Variant:</strong>
+                <ul>
+                    <li>Use <code>Dense(num_classes, activation="softmax")</code></li>
+                    <li>Use <code>categorical_crossentropy</code> or <code>sparse_categorical_crossentropy</code></li>
+                </ul>
+            </div>
+
+            <h2>K-Means Clustering with TensorFlow</h2>
+            <p>TensorFlow can run classic K-Means by optimizing cluster centers with vectorized operations. Below is a minimal example using TensorFlow ops for the update loop.</p>
+
+            <div class="algorithm-card">
+                <h3>Simple K-Means Loop</h3>
+                <pre><code>k = 3
+centers = tf.Variable(tf.random.normal([k, num_features]))
+
+for step in range(20):
+    distances = tf.norm(X[:, None, :] - centers[None, :, :], axis=2)
+    assignments = tf.argmin(distances, axis=1)
+
+    new_centers = []
+    for i in range(k):
+        mask = tf.equal(assignments, i)
+        cluster_points = tf.boolean_mask(X, mask)
+        new_centers.append(tf.reduce_mean(cluster_points, axis=0))
+    centers.assign(tf.stack(new_centers))</code></pre>
+            </div>
+
+            <div class="usage-list">
+                <strong>Clustering tips:</strong>
+                <ul>
+                    <li>Normalize your features so one dimension does not dominate distance.</li>
+                    <li>Initialize centers multiple times and pick the best inertia.</li>
+                    <li>Consider <code>tf.random.shuffle</code> to sample initial centers from data.</li>
+                </ul>
+            </div>
+
+            <h2>TensorFlow ML Toolkit</h2>
+            <div class="algorithm-grid stacked-grid">
+                <div class="algorithm-card">
+                    <h3>Data Pipelines</h3>
+                    <ul>
+                        <li><code>tf.data.Dataset.from_tensor_slices</code></li>
+                        <li><code>batch()</code>, <code>shuffle()</code>, <code>prefetch()</code></li>
+                        <li>Feature engineering in map functions</li>
+                    </ul>
+                </div>
+                <div class="algorithm-card">
+                    <h3>Metrics</h3>
+                    <ul>
+                        <li><code>MeanAbsoluteError</code>, <code>MeanSquaredError</code></li>
+                        <li><code>Accuracy</code>, <code>AUC</code></li>
+                        <li><code>Precision</code>, <code>Recall</code></li>
+                    </ul>
+                </div>
+                <div class="algorithm-card">
+                    <h3>Model Management</h3>
+                    <ul>
+                        <li><code>model.save()</code> to export SavedModel</li>
+                        <li><code>tf.keras.callbacks.EarlyStopping</code></li>
+                        <li><code>tf.keras.callbacks.ModelCheckpoint</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>Best Practices for Classical ML in TensorFlow</h2>
+            <div class="highlight-box">
+                <p><strong>Keep models linear:</strong> One Dense layer gives you classic regression or logistic regression.</p>
+                <p><strong>Monitor metrics:</strong> Use MAE for regression and AUC/F1 for classification.</p>
+                <p><strong>Use validation splits:</strong> Avoid overfitting even with simple models.</p>
+                <p><strong>Track experiments:</strong> Log hyperparameters and random seeds for reproducibility.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
