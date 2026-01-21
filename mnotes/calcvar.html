@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculus of Variations - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Calculus of Variations in a Pastel Universe</span>
+      <h1>Find the Best Path by Optimizing Functionals</h1>
+      <p>
+        The calculus of variations asks which function makes a quantity extremal.
+        Instead of finding where a function peaks, you find which entire curve minimizes action, time, or energy.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Euler-Lagrange in Motion</h2>
+      <p>
+        Multiple trial curves surround the smooth extremal that satisfies the Euler-Lagrange equation.
+      </p>
+      <div id="sketch-calcvar" class="sketch-frame"></div>
+    </section>
+
+    <section id="explanation">
+      <h2>1) What is the Calculus of Variations?</h2>
+      <p>
+        Ordinary calculus optimizes functions: you find where $f'(x)=0$ to locate maxima or minima.
+        The calculus of variations optimizes functionals, which are mappings from functions to numbers.
+        A classic example is arc length: given a curve $y(x)$, the length is
+        $$L[y] = \int_{a}^{b} \sqrt{1 + y'(x)^2} \, dx.$$
+        The calculus of variations finds the function $y(x)$ that makes $L[y]$ as small (or large) as possible.
+      </p>
+
+      <div class="bayes-grid">
+        <div class="bayes-card">
+          <strong>Functional</strong>
+          A functional $J[y]$ takes a function $y(x)$ and returns a single number, like total energy or travel time.
+        </div>
+        <div class="bayes-card">
+          <strong>Admissible functions</strong>
+          You search over a space of functions that satisfy boundary conditions, such as $y(a)=y_a$ and $y(b)=y_b$.
+        </div>
+        <div class="bayes-card">
+          <strong>Extremal</strong>
+          An extremal is a function that makes the functional stationary. It might be a minimum, maximum, or saddle point.
+        </div>
+        <div class="bayes-card">
+          <strong>Variation</strong>
+          A variation $\delta y$ is a small perturbation of the function. The first variation $\delta J$ measures how $J$ changes.
+        </div>
+      </div>
+    </section>
+
+    <section id="euler-lagrange">
+      <h2>2) Deriving the Euler-Lagrange Equation</h2>
+      <p>
+        Suppose you want to extremize the functional
+        $$J[y] = \int_{a}^{b} F(x, y(x), y'(x)) \, dx$$
+        subject to fixed endpoints $y(a)=y_a$ and $y(b)=y_b$. Consider a small variation $y(x) \to y(x) + \epsilon \eta(x)$,
+        where $\eta(a)=\eta(b)=0$ so the endpoints stay fixed. The functional becomes $J(\epsilon)$. For $y$ to be extremal,
+        $$\frac{dJ}{d\epsilon}\Bigg|_{\epsilon=0} = 0.$$
+      </p>
+
+      <div class="formula">
+        $$\frac{dJ}{d\epsilon}\Bigg|_{\epsilon=0} = \int_{a}^{b} \left(\frac{\partial F}{\partial y}\eta + \frac{\partial F}{\partial y'}\eta'\right) dx = 0$$
+      </div>
+
+      <p>
+        Using integration by parts on the second term,
+        $$\int_{a}^{b} \frac{\partial F}{\partial y'}\eta' \, dx = \left[\frac{\partial F}{\partial y'}\eta\right]_{a}^{b} - \int_{a}^{b} \frac{d}{dx}\left(\frac{\partial F}{\partial y'}\right)\eta \, dx.$$
+        The boundary term vanishes because $\eta(a)=\eta(b)=0$, leaving
+        $$\int_{a}^{b} \left(\frac{\partial F}{\partial y} - \frac{d}{dx}\frac{\partial F}{\partial y'}\right)\eta(x) \, dx = 0.$$
+        Since this must hold for all $\eta(x)$, the integrand itself must be zero:
+      </p>
+
+      <div class="formula">
+        $$\frac{\partial F}{\partial y} - \frac{d}{dx}\frac{\partial F}{\partial y'} = 0$$
+      </div>
+
+      <p>
+        This is the <strong>Euler-Lagrange equation</strong>. It is a necessary condition for $y(x)$ to be an extremal.
+      </p>
+
+      <div class="note">
+        The Euler-Lagrange equation is a differential equation. Solving it with the boundary conditions gives the function
+        that extremizes the functional.
+      </div>
+    </section>
+
+    <section id="examples">
+      <h2>3) Examples in Classical Mechanics</h2>
+      <div class="examples">
+        <div class="example-card">
+          <h3>Shortest path (geodesic)</h3>
+          <p>
+            The arc length functional is
+            $$J[y] = \int_{a}^{b} \sqrt{1 + y'(x)^2} \, dx.$$
+            Here $F = \sqrt{1+y'^2}$. The Euler-Lagrange equation simplifies to $y''=0$, so $y(x)=mx+c$ is a straight line.
+            This confirms that the shortest path between two points in the plane is a straight line.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Brachistochrone problem</h3>
+          <p>
+            Find the curve along which a bead slides from point A to point B in the shortest time under gravity.
+            The time functional is
+            $$T[y] = \int_{x_1}^{x_2} \frac{\sqrt{1+y'^2}}{\sqrt{2gy}} \, dx.$$
+            Solving the Euler-Lagrange equation shows the curve is a cycloid, not a straight line.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Lagrangian mechanics</h3>
+          <p>
+            In classical mechanics, the action is
+            $$S[q] = \int_{t_1}^{t_2} L(q, \dot{q}, t) \, dt,$$
+            where $L = T - V$ is the Lagrangian (kinetic minus potential energy). The principle of least action says
+            the true trajectory extremizes $S$. Applying the Euler-Lagrange equation gives
+            $$\frac{\partial L}{\partial q} - \frac{d}{dt}\frac{\partial L}{\partial \dot{q}} = 0,$$
+            which are the equations of motion. For a free particle, $L=\tfrac{1}{2}m\dot{q}^2$, so you recover $m\ddot{q}=0$.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="classical-mechanics">
+      <h2>4) The Euler-Lagrange Equation in Classical Mechanics</h2>
+      <p>
+        In classical mechanics, the Euler-Lagrange equation is the foundation of Lagrangian mechanics.
+        Given a system with generalized coordinates $q_i(t)$, the Lagrangian $L(q, \dot{q}, t)$ encodes
+        the dynamics. The action principle states that the physical path is the one that makes
+        $$S = \int_{t_1}^{t_2} L(q, \dot{q}, t) \, dt$$
+        stationary. This yields one Euler-Lagrange equation per coordinate:
+      </p>
+
+      <div class="formula">
+        $$\frac{d}{dt}\frac{\partial L}{\partial \dot{q}_i} - \frac{\partial L}{\partial q_i} = 0$$
+      </div>
+
+      <div class="columns">
+        <div class="example-card">
+          <h3>Simple harmonic oscillator</h3>
+          <p>
+            For a mass on a spring, $L = \tfrac{1}{2}m\dot{x}^2 - \tfrac{1}{2}kx^2$. The Euler-Lagrange equation gives
+            $$m\ddot{x} + kx = 0,$$
+            which is the familiar equation of simple harmonic motion.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Pendulum</h3>
+          <p>
+            For a pendulum, $L = \tfrac{1}{2}ml^2\dot{\theta}^2 - mgl(1-\cos\theta)$. The Euler-Lagrange equation yields
+            $$ml^2\ddot{\theta} + mgl\sin\theta = 0.$$
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Conservation laws</h3>
+          <p>
+            When $L$ does not depend on a coordinate $q_i$, the conjugate momentum $p_i = \frac{\partial L}{\partial \dot{q}_i}$
+            is conserved. This connects symmetries (via Noether's theorem) to conserved quantities like energy and momentum.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/calcvar-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
