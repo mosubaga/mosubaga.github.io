@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compound Interest - InvestTeen</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="stocks.html">Stocks</a></li>
+      <li><a href="bonds.html">Bonds</a></li>
+      <li><a href="etf.html">ETFs</a></li>
+      <li><a href="mutualfunds.html">Mutual Funds</a></li>
+      <li><a href="compound.html">Compounding</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <header>
+      <h1>The Magic of Compounding ❄️</h1>
+      <p>Albert Einstein reportedly called it the "Eighth Wonder of the World"!</p>
+    </header>
+
+    <div id="canvas-container"></div>
+    <script src="js/sketch_compound.js"></script>
+
+    <section>
+      <h2>What is Compound Interest?</h2>
+      <p>Compound interest is when you earn interest on your original money, AND on the interest you've already earned. It's like a snowball rolling down a hill, getting bigger and bigger as it goes!</p>
+    </section>
+
+    <section>
+      <h2>Why it's Crucial for YOU</h2>
+      <p>Because you're young, you have the most valuable asset in the world: <strong>TIME</strong>. The longer you let your money compound, the more explosive the growth becomes in the later years.</p>
+      <p>Starting at 15 instead of 25 can make a difference of hundreds of thousands of dollars by the time you retire!</p>
+    </section>
+
+    <section>
+      <h2>The Snowball Effect</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Balance (Starting with $1,000 at 10% interest)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>$1,100</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>$2,593</td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td>$6,727</td>
+          </tr>
+          <tr>
+            <td>40</td>
+            <td>$45,259</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><small>Notice how it grows much faster the longer you wait!</small></p>
+    </section>
+
+    <section>
+      <h2>Real-Life Examples</h2>
+      <p><strong>Example 1:</strong> A 22-year-old invests $150 per month for 30 years at a 7% annual return. Total after 30 years: about <strong>$182,996</strong>.</p>
+      <p>If they stop contributing and let it grow for 10 more years at 7%, it becomes about <strong>$359,980</strong>.</p>
+      <p>If they keep contributing $150 per month for those extra 10 years, the total is about <strong>$393,722</strong>.</p>
+      <p><strong>Example 2:</strong> A 30-year-old invests $200 per month for 25 years at a 9% annual return. Total after 25 years: about <strong>$224,224</strong>.</p>
+      <p>If they stop contributing and let it grow for 10 more years at 9%, it becomes about <strong>$530,821</strong>.</p>
+      <p>If they keep contributing $200 per month for those extra 10 years, the total is about <strong>$588,357</strong>.</p>
+    </section>
+
+    <section>
+      <h2>Build Your Own Scenario</h2>
+      <p>Try different ages, rates, and monthly contributions to see the impact over time.</p>
+      <form id="compound-form">
+        <label for="start-age">Start age</label>
+        <input id="start-age" name="start-age" type="number" min="10" max="80" value="22" required>
+
+        <label for="end-age">End age</label>
+        <input id="end-age" name="end-age" type="number" min="11" max="90" value="52" required>
+
+        <label for="return-rate">Return rate (%)</label>
+        <input id="return-rate" name="return-rate" type="number" min="0" max="20" step="0.1" value="7" required>
+
+        <label for="monthly-contribution">Monthly contribution ($)</label>
+        <input id="monthly-contribution" name="monthly-contribution" type="number" min="0" step="10" value="150" required>
+
+        <button type="submit">Calculate Growth</button>
+      </form>
+      <p id="calc-result"></p>
+      <canvas id="growth-chart" width="900" height="320" aria-label="Investment growth chart" role="img"></canvas>
+      <p><small>Assumes contributions at the end of each month and a steady annual return.</small></p>
+    </section>
+
+    <section>
+      <h2>Make It Real</h2>
+      <p>Small, steady contributions are powerful. Even a few dollars a week can turn into serious money over decades.</p>
+      <p>Focus on consistency first, then increase the amount as your income grows.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 InvestTeen. All rights reserved. ✨</p>
+  </footer>
+  <script src="js/compound_calculator.js"></script>
+</body>
+</html>

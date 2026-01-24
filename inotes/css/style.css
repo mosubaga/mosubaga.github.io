@@ -1,0 +1,279 @@
+/* Import Fredoka font */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap');
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Fredoka', sans-serif;
+  background: linear-gradient(135deg, #FFE7F5 0%, #F6E5FC 50%, #DCEAF5 100%);
+  min-height: 100vh;
+  color: #6B4E71;
+  text-align: center;
+}
+
+/* Navigation bar */
+nav {
+  background: linear-gradient(90deg, #FFD2EC 0%, #E9CEF2 100%);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 15px rgba(233, 206, 242, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+nav li {
+  display: inline-block;
+}
+
+nav a {
+  text-decoration: none;
+  color: #6B4E71;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 8px rgba(255, 210, 236, 0.4);
+}
+
+nav a:hover {
+  background: #FFD2EC;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 210, 236, 0.6);
+}
+
+/* Main content container */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #8B5A9F;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(255, 210, 236, 0.5);
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+/* Paragraphs */
+p {
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+/* Fancy checklist styling for .list */
+ul.list {
+  list-style: none;
+  max-width: 900px;
+  margin: 1.5rem auto 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+ul.list li {
+  position: relative;
+  padding: 1rem 1rem 1rem 4.25rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F9F2FF 100%);
+  border: 1px solid #F1DDF7;
+  box-shadow: 0 10px 24px rgba(233, 206, 242, 0.35);
+}
+
+ul.list li::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #FFE7F5;
+  border: 2px solid #E9CEF2;
+  box-shadow: 0 6px 14px rgba(233, 206, 242, 0.45);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%238B5A9F' d='M12 1.7l2.6 5.4 6 .9-4.3 4.2 1 6-5.3-2.8-5.3 2.8 1-6-4.3-4.2 6-.9L12 1.7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1.2rem;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(233, 206, 242, 0.4);
+}
+
+thead {
+  background: linear-gradient(90deg, #FFD2EC 0%, #E9CEF2 100%);
+}
+
+th {
+  padding: 1.2rem;
+  font-weight: 700;
+  color: #6B4E71;
+  text-align: center;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #FFE7F5;
+  color: #6B4E71;
+}
+
+tbody tr {
+  transition: all 0.3s ease;
+}
+
+tbody tr:nth-child(even) {
+  background: #F6E5FC;
+}
+
+tbody tr:nth-child(odd) {
+  background: #FFE7F5;
+}
+
+tbody tr:hover {
+  background: #DCEAF5;
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(220, 234, 245, 0.5);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Buttons */
+button, .button {
+  background: linear-gradient(135deg, #FFD2EC 0%, #E9CEF2 100%);
+  color: #6B4E71;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 25px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(233, 206, 242, 0.4);
+  margin: 0.5rem;
+}
+
+button:hover, .button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(233, 206, 242, 0.6);
+  background: linear-gradient(135deg, #E9CEF2 0%, #FFD2EC 100%);
+}
+
+/* Input fields */
+input, textarea, select {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.8rem 1.2rem;
+  margin: 0.5rem auto;
+  border: 2px solid #FFD2EC;
+  border-radius: 15px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1rem;
+  background: white;
+  color: #6B4E71;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #E9CEF2;
+  box-shadow: 0 0 15px rgba(233, 206, 242, 0.5);
+}
+
+/* Canvas charts */
+canvas {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  margin: 1.5rem auto 0;
+}
+
+/* Cards/Sections */
+.card, section {
+  background: white;
+  padding: 2rem;
+  margin: 2rem auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(233, 206, 242, 0.3);
+  max-width: 900px;
+}
+
+/* Links */
+a {
+  color: #8B5A9F;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #A97BB8;
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(90deg, #E9CEF2 0%, #FFD2EC 100%);
+  padding: 2rem;
+  margin-top: 4rem;
+  color: #6B4E71;
+  text-align: center;
+  box-shadow: 0 -4px 15px rgba(233, 206, 242, 0.3);
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
