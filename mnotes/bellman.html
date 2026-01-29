@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bellman Equation - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Bellman Equation in a Pastel Loop</span>
+      <h1>Value Today = Reward Now + Value Tomorrow</h1>
+      <p>
+        The Bellman equation is the engine of dynamic programming and reinforcement learning.
+        It says that the value of a state equals the immediate reward plus the discounted value
+        of the next state, averaged over possible transitions.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Value Flow Through States</h2>
+      <p>
+        Each node passes its value forward, like ripples of future reward.
+      </p>
+      <div id="sketch-bellman" class="sketch-frame"></div>
+    </section>
+
+    <section id="math">
+      <h2>1) Mathematical Background</h2>
+      <p>
+        In a Markov Decision Process (MDP), the Bellman equation links a value function to itself.
+        The optimality form says the best value at a state is the best over all actions.
+      </p>
+
+      <div class="formula">
+        $$V^*(s)=\max_a \sum_{s'} P(s'\mid s,a)\bigl(R(s,a,s')+\gamma V^*(s')\bigr)$$
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <strong>State $s$</strong>
+          A snapshot of the world: position, inventory, budget, or any information needed to decide.
+        </div>
+        <div class="card">
+          <strong>Action $a$</strong>
+          A decision you can make at the state, such as move, invest, or accept/reject a task.
+        </div>
+        <div class="card">
+          <strong>Transition $P(s'\mid s,a)$</strong>
+          The probability of moving to the next state given the action.
+        </div>
+        <div class="card">
+          <strong>Reward $R(s,a,s')$</strong>
+          The immediate payoff for taking action $a$ in state $s$ and landing in $s'$.
+        </div>
+      </div>
+
+      <p>
+        For a fixed policy $\pi$, the expectation form replaces the max with a weighted sum:
+      </p>
+
+      <div class="formula">
+        $$V^{\pi}(s)=\sum_a \pi(a\mid s)\sum_{s'} P(s'\mid s,a)\bigl(R(s,a,s')+\gamma V^{\pi}(s')\bigr)$$
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>2) Applications Across Fields</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Robotics &amp; Control</h3>
+          <p>
+            Robots plan sequences of moves where each step depends on the next one. Bellman equations
+            drive value iteration for navigation and manipulation.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Path planning</span>
+            <span class="pill">Control</span>
+            <span class="pill">Autonomy</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Economics</h3>
+          <p>
+            Dynamic programming models households or firms who optimize long-term utility.
+            The Bellman equation encodes the trade-off between consumption now and savings later.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Dynamic choice</span>
+            <span class="pill">Growth models</span>
+            <span class="pill">Pricing</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Operations &amp; Logistics</h3>
+          <p>
+            Delivery routing, inventory restocking, and staffing schedules are all solved by breaking
+            a large problem into smaller Bellman updates.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Inventory</span>
+            <span class="pill">Routing</span>
+            <span class="pill">Scheduling</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="examples">
+      <h2>3) Numeric Example</h2>
+      <p>
+        Consider a two-state MDP with discount $\gamma=0.9$. State $B$ is terminal and gives a reward of 3,
+        so $V(B)=3$. In state $A$, you can either <em>stay</em> (reward 1, return to $A$) or <em>go</em>
+        (reward 0, move to $B$).
+      </p>
+      <div class="formula">
+        $$\text{Stay: } V(A)=1+0.9V(A) \Rightarrow V(A)=10$$
+      </div>
+      <div class="formula">
+        $$\text{Go: } V(A)=0+0.9\cdot 3=2.7$$
+      </div>
+      <p>
+        The optimal value chooses the larger option, so $V^*(A)=10$ and the optimal action is to stay.
+        This tiny example mirrors how Bellman updates pick the best long-term return.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/bellman-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

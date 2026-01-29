@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maximum Likelihood Estimation - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">MLE in a Pastel Probability Lab</span>
+      <h1>Pick the Parameter That Makes the Data Most Likely</h1>
+      <p>
+        Maximum likelihood estimation (MLE) chooses model parameters that make the observed data
+        as probable as possible. It is the foundation of statistical inference and modern machine learning.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Likelihood Peaks</h2>
+      <p>
+        The best parameters sit at the top of the likelihood landscape.
+      </p>
+      <div id="sketch-mle" class="sketch-frame"></div>
+    </section>
+
+    <section id="math">
+      <h2>1) Mathematical Background</h2>
+      <p>
+        Given data $x_1,\dots,x_n$ and a parameter $\theta$, the likelihood is
+        $L(\theta)=\prod_{i=1}^n p(x_i\mid\theta)$. MLE finds the parameter that maximizes $L$,
+        or more commonly the log-likelihood $\ell(\theta)$.
+      </p>
+
+      <div class="formula">
+        $$\hat{\theta}=\arg\max_{\theta} \; L(\theta)=\arg\max_{\theta} \sum_{i=1}^n \log p(x_i\mid\theta)$$
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <strong>Likelihood vs. probability</strong>
+          Probability treats data as random given a parameter. Likelihood treats the data as fixed
+          and compares how different parameters explain it.
+        </div>
+        <div class="card">
+          <strong>Log-likelihood</strong>
+          Taking logs turns products into sums, making optimization easier and numerically stable.
+        </div>
+        <div class="card">
+          <strong>Score function</strong>
+          The gradient $\nabla_\theta \ell(\theta)$ tells you which direction increases likelihood.
+        </div>
+        <div class="card">
+          <strong>MLE for a normal mean</strong>
+          For $x_i \sim \mathcal{N}(\mu,\sigma^2)$ with known $\sigma$, the MLE is
+          $\hat{\mu}=\frac{1}{n}\sum_i x_i$.
+        </div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>2) Applications Across Fields</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Machine Learning</h3>
+          <p>
+            Logistic regression, Gaussian mixture models, and deep nets trained with cross-entropy
+            are all doing MLE under the hood.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Classification</span>
+            <span class="pill">Density models</span>
+            <span class="pill">Deep learning</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Econometrics</h3>
+          <p>
+            MLE estimates demand curves, risk models, and latent variables in survey data.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Choice models</span>
+            <span class="pill">Risk</span>
+            <span class="pill">Forecasting</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Physics &amp; Biology</h3>
+          <p>
+            From fitting particle lifetimes to estimating disease spread rates, MLE extracts
+            parameter values from noisy measurements.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Experiments</span>
+            <span class="pill">Epidemiology</span>
+            <span class="pill">Signal fitting</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="examples">
+      <h2>3) Numeric Examples</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Coin flips (Bernoulli)</h3>
+          <p>
+            Suppose 10 flips yield 7 heads. The likelihood for heads probability $p$ is
+            $L(p)=p^7(1-p)^3$. The MLE is the sample mean:
+          </p>
+          <div class="formula">
+            $$\hat{p}=7/10=0.7$$
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Gaussian mean and variance</h3>
+          <p>
+            Data: $[2,3,4,6]$. The MLE mean is
+            $$\hat{\mu}=\frac{2+3+4+6}{4}=3.75.$$
+            The MLE variance is
+            $$\hat{\sigma}^2=\frac{1}{4}\sum (x_i-\hat{\mu})^2=2.1875.$$
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/mle-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

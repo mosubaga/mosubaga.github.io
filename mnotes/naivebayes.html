@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Naive Bayes - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Naive Bayes in a Pastel Inbox</span>
+      <h1>Simple Probabilities, Surprisingly Strong Classifier</h1>
+      <p>
+        Naive Bayes combines Bayes' rule with an independence assumption between features.
+        It is fast, interpretable, and a classic baseline for text and spam classification.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Evidence Votes for Classes</h2>
+      <p>
+        Each feature contributes a probability "vote" toward a class.
+      </p>
+      <div id="sketch-naivebayes" class="sketch-frame"></div>
+    </section>
+
+    <section id="math">
+      <h2>1) Mathematical Background</h2>
+      <p>
+        For a class label $y$ and features $x_1,\dots,x_d$, Naive Bayes assumes conditional
+        independence given the class. The posterior is proportional to the prior times
+        the product of feature likelihoods.
+      </p>
+
+      <div class="formula">
+        $$P(y\mid x_1,\dots,x_d) \propto P(y)\prod_{i=1}^d P(x_i\mid y)$$
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <strong>Independence assumption</strong>
+          Features are treated as independent once you know the class, which simplifies the math.
+        </div>
+        <div class="card">
+          <strong>Decision rule</strong>
+          Pick the class with the largest posterior: $\hat{y}=\arg\max_y P(y)\prod_i P(x_i\mid y)$.
+        </div>
+        <div class="card">
+          <strong>Common variants</strong>
+          Bernoulli (binary features), Multinomial (word counts), and Gaussian (continuous values).
+        </div>
+        <div class="card">
+          <strong>Log space</strong>
+          Use logs to avoid underflow: $\log P(y)+\sum_i \log P(x_i\mid y)$.
+        </div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>2) Applications Across Fields</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Text &amp; Spam Filtering</h3>
+          <p>
+            Word frequencies estimate how likely a message is spam vs. legit.
+            Naive Bayes is fast enough for large inboxes.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Spam</span>
+            <span class="pill">Topic tagging</span>
+            <span class="pill">Sentiment</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Medical Diagnostics</h3>
+          <p>
+            Symptoms are treated as features and diseases as classes.
+            The model gives quick, interpretable probability rankings.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Screening</span>
+            <span class="pill">Triage</span>
+            <span class="pill">Decision support</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>IoT &amp; Sensors</h3>
+          <p>
+            Simple classifiers label sensor patterns like "normal" or "fault" with little compute.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Anomaly detection</span>
+            <span class="pill">Wearables</span>
+            <span class="pill">Edge ML</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="examples">
+      <h2>3) Numeric Example</h2>
+      <p>
+        Suppose you classify emails as spam ($S$) or not ($N$). Priors: $P(S)=0.4$, $P(N)=0.6$.
+        Two words appear: "free" and "meeting". Likelihoods:
+      </p>
+      <div class="formula">
+        $$P(\text{free}\mid S)=0.7,\; P(\text{meeting}\mid S)=0.1$$
+      </div>
+      <div class="formula">
+        $$P(\text{free}\mid N)=0.05,\; P(\text{meeting}\mid N)=0.6$$
+      </div>
+      <p>
+        Naive Bayes scores are
+        $$\text{Score}(S)=0.4\cdot 0.7\cdot 0.1=0.028$$
+        $$\text{Score}(N)=0.6\cdot 0.05\cdot 0.6=0.018$$
+        so the email is classified as spam (the higher score). Normalize if you need exact probabilities.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/naivebayes-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

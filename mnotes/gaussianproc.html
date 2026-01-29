@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gaussian Process - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Gaussian Processes in Pastel Curves</span>
+      <h1>Distributions Over Functions, Not Just Numbers</h1>
+      <p>
+        A Gaussian Process (GP) is a probability distribution over functions. It gives a mean curve
+        and an uncertainty band, making it a powerful tool for Bayesian regression and prediction.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Mean + Uncertainty Band</h2>
+      <p>
+        The curve is the GP mean, and the band shows uncertainty that shrinks near data points.
+      </p>
+      <div id="sketch-gp" class="sketch-frame"></div>
+    </section>
+
+    <section id="math">
+      <h2>1) Mathematical Background</h2>
+      <p>
+        A GP is defined by a mean function $m(x)$ and a kernel (covariance) $k(x,x')$. Any finite
+        collection of function values follows a multivariate normal distribution.
+      </p>
+
+      <div class="formula">
+        $$f(x)\sim \mathcal{GP}(m(x),k(x,x'))$$
+      </div>
+
+      <p>
+        Given training data $X$ with outputs $y$ and noise variance $\sigma^2$, the posterior GP
+        at new points $X_*$ has mean and covariance:
+      </p>
+
+      <div class="formula">
+        $$m_*=K(X_*,X)\bigl(K(X,X)+\sigma^2 I\bigr)^{-1}y$$
+      </div>
+      <div class="formula">
+        $$\Sigma_*=K(X_*,X_*)-K(X_*,X)\bigl(K(X,X)+\sigma^2 I\bigr)^{-1}K(X,X_*)$$
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <strong>Kernel</strong>
+          Encodes similarity. Nearby inputs have high covariance, making the function smooth.
+        </div>
+        <div class="card">
+          <strong>Mean function</strong>
+          Often set to zero, then shaped by data. It represents the prior trend.
+        </div>
+        <div class="card">
+          <strong>Posterior uncertainty</strong>
+          Shrinks near observed points and grows in regions without data.
+        </div>
+        <div class="card">
+          <strong>Bayesian update</strong>
+          GP regression is a closed-form Bayesian update on functions.
+        </div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>2) Applications Across Fields</h2>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Geostatistics</h3>
+          <p>
+            Kriging uses GPs to interpolate spatial data like rainfall, pollution, or mineral density.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Spatial maps</span>
+            <span class="pill">Kriging</span>
+            <span class="pill">Earth science</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Robotics &amp; Control</h3>
+          <p>
+            GPs model unknown dynamics and sensor noise, giving safe uncertainty-aware control.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Dynamics</span>
+            <span class="pill">System ID</span>
+            <span class="pill">Safe planning</span>
+          </div>
+        </div>
+        <div class="example-card">
+          <h3>Bayesian Optimization</h3>
+          <p>
+            A GP surrogate models expensive functions, guiding experiments toward the best settings.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Hyperparams</span>
+            <span class="pill">Design</span>
+            <span class="pill">Lab tuning</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="examples">
+      <h2>3) Numeric Example</h2>
+      <p>
+        Use an RBF kernel $k(x,x')=\exp\bigl(-(x-x')^2/2\bigr)$ with noise variance $\sigma^2=0.01$.
+        Data: $(0,1)$ and $(1,2)$. Predict at $x_*=0.5$.
+      </p>
+      <p>
+        The kernel values are $k(0,1)=0.6065$ and $k(0.5,0)=k(0.5,1)=0.8825$. Solving the GP posterior
+        yields a mean of about $m_*\approx1.64$ and variance $\Sigma_*\approx0.035$ (standard deviation $\approx0.19$).
+        The prediction lands between the two points with relatively low uncertainty.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/gaussianproc-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
