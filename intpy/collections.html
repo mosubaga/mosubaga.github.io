@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intermediate Python - Collections</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="advfunctions.html">Functions</a></li>
+      <li><a href="generators.html">Generators</a></li>
+      <li><a href="concurrency.html">Concurrency</a></li>
+      <li><a href="async.html">Async</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Advanced Data Structures (collections)</h1>
+      <p>
+        The <code>collections</code> module provides specialized containers that are faster
+        and more expressive than basic lists and dicts. They help you model real-world data
+        and common workflows more cleanly.
+      </p>
+    </section>
+
+    <section>
+      <h2>Core Structures</h2>
+      <div class="card">
+        <h3>deque</h3>
+        <p>
+          A double-ended queue optimized for fast appends and pops on both ends.
+          Great for BFS, sliding windows, and streaming pipelines.
+        </p>
+        <pre><code class="language-python">from collections import deque
+
+dq = deque(["a", "b", "c"])
+
+dq.append("d")
+dq.appendleft("z")
+
+print(dq)  # deque(['z', 'a', 'b', 'c', 'd'])
+print(dq.pop())       # d
+print(dq.popleft())   # z</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Counter</h3>
+        <p>
+          A dictionary subclass for counting hashable items. It has helpers like
+          <code>most_common</code> and supports arithmetic operations.
+        </p>
+        <pre><code class="language-python">from collections import Counter
+
+counts = Counter(["red", "blue", "red", "green", "blue", "blue"])
+print(counts["blue"])           # 3
+print(counts.most_common(2))   # [('blue', 3), ('red', 2)]
+
+more = Counter(["blue", "yellow"])
+print(counts + more)           # Counter({'blue': 4, 'red': 2, 'green': 1, 'yellow': 1})</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>defaultdict</h3>
+        <p>
+          Automatically creates default values, so you don't need to check keys.
+          Ideal for grouping or aggregations.
+        </p>
+        <pre><code class="language-python">from collections import defaultdict
+
+scores = defaultdict(list)
+
+scores["Maya"].append(10)
+scores["Maya"].append(7)
+scores["Jin"].append(9)
+
+print(scores)
+# defaultdict(&lt;class 'list'&gt;, {'Maya': [10, 7], 'Jin': [9]})</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>namedtuple</h3>
+        <p>
+          Lightweight, immutable tuples with named fields. They are great for small records
+          without needing a full class.
+        </p>
+        <pre><code class="language-python">from collections import namedtuple
+
+Point = namedtuple("Point", "x y")
+p = Point(3, 7)
+
+print(p.x, p.y)  # 3 7
+print(p)         # Point(x=3, y=7)</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>OrderedDict</h3>
+        <p>
+          Dicts preserve insertion order in modern Python, but <code>OrderedDict</code>
+          still provides extra features like <code>move_to_end</code>.
+        </p>
+        <pre><code class="language-python">from collections import OrderedDict
+
+cache = OrderedDict()
+cache["a"] = 1
+cache["b"] = 2
+cache.move_to_end("a")
+
+print(cache)  # OrderedDict([('b', 2), ('a', 1)])</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>ChainMap</h3>
+        <p>
+          Treats multiple dicts as a single view. Useful for layered configurations.
+        </p>
+        <pre><code class="language-python">from collections import ChainMap
+
+defaults = {"theme": "light", "timeout": 30}
+user = {"theme": "dark"}
+
+config = ChainMap(user, defaults)
+print(config["theme"])   # dark
+print(config["timeout"]) # 30</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Common Usage Patterns</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Structure</th>
+            <th>When to use</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>deque</td>
+            <td>Queues, stacks, windows</td>
+            <td><code>dq.appendleft(x)</code></td>
+          </tr>
+          <tr>
+            <td>Counter</td>
+            <td>Frequency tables</td>
+            <td><code>Counter(words)</code></td>
+          </tr>
+          <tr>
+            <td>defaultdict</td>
+            <td>Grouping data</td>
+            <td><code>defaultdict(list)</code></td>
+          </tr>
+          <tr>
+            <td>namedtuple</td>
+            <td>Small records</td>
+            <td><code>Point = namedtuple('Point','x y')</code></td>
+          </tr>
+          <tr>
+            <td>ChainMap</td>
+            <td>Layered configs</td>
+            <td><code>ChainMap(user, defaults)</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Mini Example: Frequency Report</h2>
+      <pre><code class="language-python">from collections import Counter
+
+text = "the quick brown fox jumps over the lazy dog"
+counts = Counter(text.split())
+
+for word, freq in counts.most_common():
+    print(f"{word:>5}: {freq}")</code></pre>
+    </section>
+
+    <section>
+      <h2>Sample Code: Log Aggregator</h2>
+      <pre><code class="language-python">from collections import defaultdict, Counter
+
+logs = [
+    ("INFO", "auth"),
+    ("ERROR", "db"),
+    ("INFO", "db"),
+    ("ERROR", "auth"),
+    ("INFO", "api"),
+]
+
+by_service = defaultdict(list)
+levels = Counter()
+
+for level, service in logs:
+    by_service[service].append(level)
+    levels[level] += 1
+
+print("levels:", levels)
+for service, entries in by_service.items():
+    print(service, Counter(entries))</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Specialized collections make Python code faster, cleaner, and easier to reason about.</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

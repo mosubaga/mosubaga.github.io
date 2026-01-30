@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intermediate Python - Concurrency</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="advfunctions.html">Functions</a></li>
+      <li><a href="generators.html">Generators</a></li>
+      <li><a href="concurrency.html">Concurrency</a></li>
+      <li><a href="async.html">Async</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Concurrency in Python (Threads &amp; Processes)</h1>
+      <p>
+        Concurrency lets your program make progress on multiple tasks within the same time window.
+        In Python, you typically use threads for I/O-bound work and processes for CPU-bound work.
+        The <code>concurrent.futures</code> module offers a clean, high-level API to manage both.
+      </p>
+    </section>
+
+    <section>
+      <h2>Key Ideas</h2>
+      <div class="card">
+        <h3>Concurrency vs Parallelism</h3>
+        <p>
+          Concurrency is about <em>managing</em> multiple tasks at once (interleaving progress),
+          while parallelism is about <em>executing</em> tasks at the same time on multiple CPU cores.
+          Threads help concurrency, processes enable true parallelism for CPU-bound code.
+        </p>
+        <pre><code class="language-python"># Concurrency: multiple tasks overlap in time
+# Parallelism: multiple tasks run at the same time on CPU cores</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>The GIL (Global Interpreter Lock)</h3>
+        <p>
+          CPython uses a GIL to protect internal memory structures. This means only one thread
+          can execute Python bytecode at a time, so CPU-heavy work won't speed up with threads.
+          Processes avoid this by using separate memory spaces and separate interpreters.
+        </p>
+        <pre><code class="language-python"># Threads: great for I/O-bound workloads
+# Processes: best for CPU-bound workloads due to the GIL</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Executors</h2>
+      <div class="card">
+        <h3>ThreadPoolExecutor</h3>
+        <p>
+          Ideal for I/O-bound tasks like network calls, file reads, or database queries.
+          Threads share memory, so communication is easy.
+        </p>
+        <pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+import time
+
+def download(url):
+    time.sleep(0.2)  # Simulate I/O wait
+    return f"done: {url}"
+
+urls = ["/a", "/b", "/c", "/d"]
+
+with ThreadPoolExecutor(max_workers=4) as pool:
+    results = list(pool.map(download, urls))
+
+print(results)
+# ['done: /a', 'done: /b', 'done: /c', 'done: /d']</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>ProcessPoolExecutor</h3>
+        <p>
+          Best for CPU-heavy work like image processing or large computations.
+          Each process has its own Python interpreter, avoiding the GIL.
+        </p>
+        <pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
+
+def heavy_math(n):
+    total = 0
+    for i in range(1, n):
+        total += i * i
+    return total
+
+with ProcessPoolExecutor() as pool:
+    results = list(pool.map(heavy_math, [50_000, 60_000, 70_000]))
+
+print(results)</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Futures and Result Handling</h2>
+      <div class="card">
+        <h3>submit() and Future Objects</h3>
+        <p>
+          Calling <code>submit()</code> returns a <code>Future</code> that represents the pending
+          result. You can check if it finished, get the value, or handle exceptions.
+        </p>
+        <pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+
+def work(x):
+    return x * x
+
+with ThreadPoolExecutor(max_workers=2) as pool:
+    future = pool.submit(work, 12)
+    print(future.done())  # False (usually)
+    result = future.result()  # Blocks until done
+    print(result)  # 144</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>as_completed() for Early Results</h3>
+        <p>
+          Use <code>as_completed()</code> to handle tasks as soon as they finish, which is useful
+          when tasks complete at different speeds.
+        </p>
+        <pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+
+jobs = [0.3, 0.1, 0.2]
+
+def wait_and_return(delay):
+    time.sleep(delay)
+    return delay
+
+with ThreadPoolExecutor(max_workers=3) as pool:
+    futures = [pool.submit(wait_and_return, d) for d in jobs]
+    for fut in as_completed(futures):
+        print("finished:", fut.result())
+# finished: 0.1
+# finished: 0.2
+# finished: 0.3</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Timeouts, Cancellation, and Errors</h2>
+      <div class="card">
+        <h3>Timeouts</h3>
+        <p>
+          You can prevent long-running tasks from blocking forever using a timeout.
+          If a timeout is exceeded, a <code>TimeoutError</code> is raised.
+        </p>
+        <pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, TimeoutError
+import time
+
+def slow():
+    time.sleep(1)
+    return "done"
+
+with ThreadPoolExecutor() as pool:
+    fut = pool.submit(slow)
+    try:
+        print(fut.result(timeout=0.2))
+    except TimeoutError:
+        print("Timed out!")</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Cancellation and Exceptions</h3>
+        <p>
+          A future can be cancelled if it hasn't started. Exceptions raised inside a task
+          bubble out when you call <code>result()</code>.
+        </p>
+        <pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+
+def explode():
+    raise ValueError("boom")
+
+with ThreadPoolExecutor(max_workers=1) as pool:
+    fut = pool.submit(explode)
+    try:
+        fut.result()
+    except ValueError as exc:
+        print("caught:", exc)</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Shared State and Synchronization</h2>
+      <div class="card">
+        <h3>Race Conditions</h3>
+        <p>
+          Threads share memory, so multiple threads updating the same data can cause race conditions.
+          Use locks to protect critical sections.
+        </p>
+        <pre><code class="language-python">import threading
+from concurrent.futures import ThreadPoolExecutor
+
+counter = 0
+lock = threading.Lock()
+
+def increment():
+    global counter
+    for _ in range(1000):
+        with lock:
+            counter += 1
+
+with ThreadPoolExecutor(max_workers=4) as pool:
+    pool.map(lambda _: increment(), range(4))
+
+print(counter)  # 4000 (consistent with lock)</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Thread-Safe Communication with Queues</h3>
+        <p>
+          Queues provide a safe way to pass data between threads using a producer/consumer pattern.
+        </p>
+        <pre><code class="language-python">from queue import Queue
+from concurrent.futures import ThreadPoolExecutor
+
+queue = Queue()
+
+def producer():
+    for item in range(3):
+        queue.put(item)
+    queue.put(None)  # Sentinel
+
+def consumer():
+    while True:
+        item = queue.get()
+        if item is None:
+            break
+        print("processed", item)
+
+with ThreadPoolExecutor(max_workers=2) as pool:
+    pool.submit(producer)
+    pool.submit(consumer)</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Process Pools: Practical Tips</h2>
+      <div class="card">
+        <h3>Picklable Functions and Data</h3>
+        <p>
+          Process pools serialize (pickle) functions and arguments, so targets must be
+          top-level functions (not lambdas or nested functions) and data must be picklable.
+        </p>
+        <pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
+
+# Top-level function is picklable
+
+def square(n):
+    return n * n
+
+with ProcessPoolExecutor() as pool:
+    print(list(pool.map(square, [1, 2, 3])))</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Start-Up Cost</h3>
+        <p>
+          Processes are heavier than threads to start and communicate with. Use them for
+          larger CPU tasks where the cost is justified.
+        </p>
+        <pre><code class="language-python"># Use processes for big compute tasks
+# Use threads for I/O-bound work or lighter concurrency</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mini Example</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Best Tool</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>API requests</td>
+            <td>ThreadPoolExecutor</td>
+            <td>Threads can overlap network waits</td>
+          </tr>
+          <tr>
+            <td>Image processing</td>
+            <td>ProcessPoolExecutor</td>
+            <td>Bypasses GIL for parallel compute</td>
+          </tr>
+          <tr>
+            <td>Mixed workloads</td>
+            <td>Hybrid</td>
+            <td>Threads for I/O, processes for heavy CPU</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Sample Code: Batch Image Resize (Simulated)</h2>
+      <pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
+import time
+
+# Simulated CPU-heavy task
+
+def resize_image(name):
+    start = time.time()
+    total = 0
+    for i in range(1, 80_000):
+        total += i * i
+    elapsed = time.time() - start
+    return f"{name} resized in {elapsed:.2f}s"
+
+images = ["hero.jpg", "thumb.png", "banner.webp", "logo.svg"]
+
+with ProcessPoolExecutor() as pool:
+    for message in pool.map(resize_image, images):
+        print(message)</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Use threads to hide I/O latency and processes to unlock multi-core performance.</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

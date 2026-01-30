@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intermediate Python - Functions</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="advfunctions.html">Functions</a></li>
+      <li><a href="generators.html">Generators</a></li>
+      <li><a href="concurrency.html">Concurrency</a></li>
+      <li><a href="async.html">Async</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Functions and Decorators</h1>
+      <p>
+        Advanced function concepts let you build flexible APIs, reusable logic, and clean abstractions.
+        This includes *args/**kwargs, scope rules, inner functions, and decorators.
+      </p>
+    </section>
+
+    <section>
+      <h2>Core Ideas</h2>
+      <div class="card">
+        <h3>*args and **kwargs</h3>
+        <p>
+          Use <code>*args</code> for extra positional arguments and <code>**kwargs</code>
+          for extra keyword arguments to write flexible functions. The <code>*args</code> parameter
+          collects all extra positional arguments into a tuple, while <code>**kwargs</code> collects
+          all extra keyword arguments into a dictionary.
+        </p>
+        <pre><code class="language-python">def join(*parts, sep="-"):
+    """Join multiple strings with a separator."""
+    return sep.join(parts)
+
+# Usage examples
+print(join("a", "b", "c"))           # a-b-c
+print(join("x", "y", sep="/"))       # x/y
+
+def process_data(*args, **kwargs):
+    """Demonstrates both *args and **kwargs."""
+    print(f"Positional args: {args}")
+    print(f"Keyword args: {kwargs}")
+    
+process_data(1, 2, 3, name="test", debug=True)
+# Output:
+# Positional args: (1, 2, 3)
+# Keyword args: {'name': 'test', 'debug': True}</code></pre>
+      </div>
+      
+      <div class="card">
+        <h3>Unpacking Arguments</h3>
+        <p>
+          You can use <code>*</code> and <code>**</code> operators to unpack sequences
+          and dictionaries when calling functions. This is particularly useful when you have
+          data in collections that you want to pass as individual arguments.
+        </p>
+        <pre><code class="language-python">def calculate(a, b, c):
+    return a + b * c
+
+# Unpack a list/tuple
+values = [2, 3, 4]
+result = calculate(*values)  # Same as calculate(2, 3, 4)
+print(result)  # 14
+
+# Unpack a dictionary
+params = {'a': 5, 'b': 10, 'c': 2}
+result = calculate(**params)  # Same as calculate(a=5, b=10, c=2)
+print(result)  # 25</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Scope (LEGB)</h3>
+        <p>
+          Python resolves names in Local, Enclosing, Global, then Built-in scope. This matters
+          when nesting functions or reusing variables. Understanding scope helps prevent bugs
+          and write cleaner code. Use <code>nonlocal</code> to modify variables in enclosing
+          scope and <code>global</code> to modify global variables.
+        </p>
+        <pre><code class="language-python">x = "global"
+
+def outer():
+    x = "enclosing"
+    
+    def inner():
+        x = "local"
+        print(f"Local: {x}")
+    
+    inner()
+    print(f"Enclosing: {x}")
+
+outer()
+print(f"Global: {x}")
+
+# Using nonlocal to modify enclosing scope
+def counter():
+    count = 0
+    
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+    
+    return increment
+
+my_counter = counter()
+print(my_counter())  # 1
+print(my_counter())  # 2
+print(my_counter())  # 3</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>First-Class Functions</h3>
+        <p>
+          In Python, functions are first-class objects, meaning they can be assigned to variables,
+          passed as arguments, returned from other functions, and stored in data structures.
+          This enables powerful functional programming patterns.
+        </p>
+        <pre><code class="language-python">def square(x):
+    return x ** 2
+
+def cube(x):
+    return x ** 3
+
+# Assign function to variable
+operation = square
+print(operation(5))  # 25
+
+# Store functions in a list
+operations = [square, cube, lambda x: x * 2]
+for op in operations:
+    print(op(3))  # 9, 27, 6
+
+# Return function from function
+def get_multiplier(n):
+    def multiply(x):
+        return x * n
+    return multiply
+
+times_five = get_multiplier(5)
+print(times_five(10))  # 50</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Decorators</h3>
+        <p>
+          Decorators wrap functions to add behavior like logging, timing, caching, or access control
+          without changing the original code. They're essentially functions that take a function
+          and return a modified version of it. The <code>@decorator</code> syntax is syntactic sugar
+          for wrapping functions.
+        </p>
+        <pre><code class="language-python">def upper(fn):
+    return lambda s: fn(s).upper()
+
+@upper
+def greet(name):
+    return f"hello, {name}"
+
+print(greet("alice"))  # HELLO, ALICE</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Closures</h3>
+        <p>
+          A closure is a function that captures and remembers variables from its enclosing scope,
+          even after the outer function has finished executing. Closures are the foundation of
+          decorators and provide a way to create function factories and maintain state.
+        </p>
+        <pre><code class="language-python">def make_multiplier(factor):
+    """Returns a function that multiplies by factor."""
+    def multiplier(number):
+        return number * factor
+    return multiplier
+
+# Create specific multipliers
+double = make_multiplier(2)
+triple = make_multiplier(3)
+
+print(double(5))   # 10
+print(triple(5))   # 15
+
+# Closure maintains its own state
+def make_accumulator(start=0):
+    total = start
+    
+    def add(value):
+        nonlocal total
+        total += value
+        return total
+    
+    return add
+
+acc1 = make_accumulator(0)
+acc2 = make_accumulator(100)
+
+print(acc1(5))    # 5
+print(acc1(10))   # 15
+print(acc2(5))    # 105</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Example Patterns</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>Description</th>
+            <th>Sketch</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Flexible args</td>
+            <td>Collects extra inputs</td>
+            <td><code>def f(*args, **kwargs): ...</code></td>
+          </tr>
+          <tr>
+            <td>Closure</td>
+            <td>Inner function captures variables</td>
+            <td><code>def outer(x): def inner(): return x</code></td>
+          </tr>
+          <tr>
+            <td>Decorator</td>
+            <td>Wraps behavior</td>
+            <td><code>@timer\ndef run(): ...</code></td>
+          </tr>
+          <tr>
+            <td>Function factory</td>
+            <td>Returns configured functions</td>
+            <td><code>def maker(n): return lambda x: x * n</code></td>
+          </tr>
+          <tr>
+            <td>Decorator with args</td>
+            <td>Parameterized decorator</td>
+            <td><code>@retry(times=3)\ndef fetch(): ...</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Practical Decorator Examples</h2>
+      
+      <div class="card">
+        <h3>Timing Decorator</h3>
+        <p>Measure how long a function takes to execute.</p>
+        <pre><code class="language-python">import time
+from functools import wraps
+
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.4f} seconds")
+        return result
+    return wrapper
+
+@timer
+def slow_function():
+    time.sleep(1)
+    return "Done!"
+
+result = slow_function()
+# Output: slow_function took 1.0001 seconds</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Memoization Decorator</h3>
+        <p>Cache results of expensive function calls.</p>
+        <pre><code class="language-python">def memoize(func):
+    cache = {}
+    
+    @wraps(func)
+    def wrapper(*args):
+        if args not in cache:
+            cache[args] = func(*args)
+        return cache[args]
+    
+    return wrapper
+
+@memoize
+def fibonacci(n):
+    if n < 2:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+print(fibonacci(10))   # Fast! Results are cached
+print(fibonacci(35))   # Would be slow without memoization</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Retry Decorator</h3>
+        <p>Automatically retry a function if it fails.</p>
+        <pre><code class="language-python">def retry(times=3, delay=1):
+    """Decorator that retries a function multiple times."""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(times):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt == times - 1:
+                        raise
+                    print(f"Attempt {attempt + 1} failed: {e}")
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+
+@retry(times=3, delay=0.5)
+def unreliable_network_call():
+    import random
+    if random.random() < 0.7:
+        raise ConnectionError("Network error")
+    return "Success!"</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Validation Decorator</h3>
+        <p>Validate function arguments before execution.</p>
+        <pre><code class="language-python">def validate_positive(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        for arg in args:
+            if isinstance(arg, (int, float)) and arg <= 0:
+                raise ValueError("All arguments must be positive")
+        return func(*args, **kwargs)
+    return wrapper
+
+@validate_positive
+def calculate_average(*numbers):
+    return sum(numbers) / len(numbers)
+
+print(calculate_average(10, 20, 30))  # 20.0
+# calculate_average(10, -5, 30)  # Raises ValueError</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Rate Limiting Decorator</h3>
+        <p>Control how often a function can be called.</p>
+        <pre><code class="language-python">def rate_limit(max_calls, time_window):
+    """Limit function calls to max_calls per time_window seconds."""
+    calls = []
+    
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            now = time.time()
+            # Remove old calls outside time window
+            while calls and calls[0] < now - time_window:
+                calls.pop(0)
+            
+            if len(calls) >= max_calls:
+                wait_time = time_window - (now - calls[0])
+                raise Exception(f"Rate limit exceeded. Wait {wait_time:.1f}s")
+            
+            calls.append(now)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@rate_limit(max_calls=3, time_window=10)
+def api_call():
+    print("API called at", time.strftime("%H:%M:%S"))
+    return "Data"
+
+# Try calling more than 3 times within 10 seconds</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Sample Code</h2>
+      <pre><code class="language-python">def logger(fn):
+    def wrapper(*args, **kwargs):
+        print("calling", fn.__name__)
+        return fn(*args, **kwargs)
+    return wrapper
+
+@logger
+def add(*nums, scale=1):
+    return sum(nums) * scale
+
+print(add(2, 3, 4, scale=2))
+# Output:
+# calling add
+# 18</code></pre>
+    </section>
+
+    <section>
+      <h2>Stacking Decorators</h2>
+      <p>
+        You can apply multiple decorators to a single function. They are applied from bottom to top
+        (the decorator closest to the function is applied first).
+      </p>
+      <pre><code class="language-python">def bold(func):
+    def wrapper(*args, **kwargs):
+        return f"<b>{func(*args, **kwargs)}</b>"
+    return wrapper
+
+def italic(func):
+    def wrapper(*args, **kwargs):
+        return f"<i>{func(*args, **kwargs)}</i>"
+    return wrapper
+
+@bold
+@italic
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("World"))  # <b><i>Hello, World!</i></b></code></pre>
+    </section>
+
+    <section>
+      <h2>Class-Based Decorators</h2>
+      <p>
+        Decorators can also be implemented as classes by defining the <code>__call__</code> method.
+        This approach is useful when you need to maintain state or configure the decorator.
+      </p>
+      <pre><code class="language-python">class CountCalls:
+    def __init__(self, func):
+        self.func = func
+        self.count = 0
+    
+    def __call__(self, *args, **kwargs):
+        self.count += 1
+        print(f"Call {self.count} to {self.func.__name__}")
+        return self.func(*args, **kwargs)
+
+@CountCalls
+def say_hello():
+    return "Hello!"
+
+say_hello()  # Call 1 to say_hello
+say_hello()  # Call 2 to say_hello
+say_hello()  # Call 3 to say_hello</code></pre>
+    </section>
+
+    <section>
+      <h2>Lambda Functions</h2>
+      <p>
+        Lambda functions are small anonymous functions defined with the <code>lambda</code> keyword.
+        They're useful for short, simple operations, especially as arguments to higher-order functions.
+      </p>
+      <pre><code class="language-python"># Basic lambda
+square = lambda x: x ** 2
+print(square(5))  # 25
+
+# Lambda with multiple arguments
+add = lambda x, y: x + y
+print(add(3, 7))  # 10
+
+# Using lambda with built-in functions
+numbers = [1, 2, 3, 4, 5]
+squared = list(map(lambda x: x ** 2, numbers))
+print(squared)  # [1, 4, 9, 16, 25]
+
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+print(evens)  # [2, 4]
+
+# Sorting with lambda
+people = [
+    {'name': 'Alice', 'age': 30},
+    {'name': 'Bob', 'age': 25},
+    {'name': 'Charlie', 'age': 35}
+]
+sorted_people = sorted(people, key=lambda p: p['age'])
+print([p['name'] for p in sorted_people])  # ['Bob', 'Alice', 'Charlie']</code></pre>
+    </section>
+
+    <section>
+      <h2>Partial Functions</h2>
+      <p>
+        The <code>functools.partial</code> function creates new functions with some arguments
+        pre-filled. This is useful for creating specialized versions of general functions.
+      </p>
+      <pre><code class="language-python">from functools import partial
+
+def power(base, exponent):
+    return base ** exponent
+
+# Create specialized functions
+square = partial(power, exponent=2)
+cube = partial(power, exponent=3)
+
+print(square(5))  # 25
+print(cube(3))    # 27
+
+# Another example with multiple arguments
+def greet(greeting, name, punctuation="!"):
+    return f"{greeting}, {name}{punctuation}"
+
+casual_greet = partial(greet, "Hey")
+formal_greet = partial(greet, "Good evening")
+
+print(casual_greet("Alice"))         # Hey, Alice!
+print(formal_greet("Mr. Smith"))     # Good evening, Mr. Smith!</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Decorators and closures are essential for clean, composable Python. Master these concepts to write more elegant and maintainable code.</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

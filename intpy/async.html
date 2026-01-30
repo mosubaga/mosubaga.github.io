@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intermediate Python - Async</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="advfunctions.html">Functions</a></li>
+      <li><a href="generators.html">Generators</a></li>
+      <li><a href="concurrency.html">Concurrency</a></li>
+      <li><a href="async.html">Async</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Asynchronous Python (asyncio)</h1>
+      <p>
+        <code>asyncio</code> enables cooperative multitasking in a single thread. Tasks
+        yield control at <code>await</code> points so other tasks can run. This is perfect
+        for I/O-heavy workloads such as network calls, file access via executors, or
+        high-concurrency servers.
+      </p>
+    </section>
+
+    <section>
+      <h2>Core Building Blocks</h2>
+
+      <div class="card">
+        <h3>Event Loop</h3>
+        <p>
+          The event loop schedules coroutines, pauses them at await points, and resumes them
+          when the awaited operation completes.
+        </p>
+        <pre><code class="language-python">import asyncio
+
+async def hello():
+    return "hi"
+
+async def main():
+    result = await hello()
+    print(result)
+
+asyncio.run(main())</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Coroutines and Await</h3>
+        <p>
+          A coroutine is declared with <code>async def</code> and must be awaited. If you call
+          it without awaiting, you just get a coroutine object.
+        </p>
+        <pre><code class="language-python">import asyncio
+
+async def fetch_status():
+    await asyncio.sleep(0.1)
+    return 200
+
+coro = fetch_status()
+print(coro)          # &lt;coroutine object ...&gt;
+print(asyncio.run(fetch_status()))  # 200</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Tasks</h3>
+        <p>
+          A task schedules a coroutine to run concurrently. Use <code>asyncio.create_task</code>
+          to run multiple coroutines at once.
+        </p>
+        <pre><code class="language-python">import asyncio
+
+async def work(name, delay):
+    await asyncio.sleep(delay)
+    return f"{name} done"
+
+async def main():
+    t1 = asyncio.create_task(work("A", 0.2))
+    t2 = asyncio.create_task(work("B", 0.1))
+    results = await asyncio.gather(t1, t2)
+    print(results)
+
+asyncio.run(main())
+# ['A done', 'B done']</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Concurrency Patterns</h2>
+      <div class="card">
+        <h3>Gather vs. As-Completed</h3>
+        <p>
+          <code>asyncio.gather</code> waits for all tasks and returns results in the original order.
+          <code>asyncio.as_completed</code> yields tasks as they finish, ideal for early results.
+        </p>
+        <pre><code class="language-python">import asyncio
+
+async def job(n):
+    await asyncio.sleep(n / 10)
+    return n
+
+async def main():
+    tasks = [job(3), job(1), job(2)]
+
+    ordered = await asyncio.gather(*tasks)
+    print("gather:", ordered)
+
+    for finished in asyncio.as_completed([job(3), job(1), job(2)]):
+        print("as_completed:", await finished)
+
+asyncio.run(main())</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Timeouts</h3>
+        <p>
+          Use <code>asyncio.wait_for</code> to limit how long a coroutine can take.
+        </p>
+        <pre><code class="language-python">import asyncio
+
+async def slow():
+    await asyncio.sleep(1)
+    return "done"
+
+async def main():
+    try:
+        print(await asyncio.wait_for(slow(), timeout=0.2))
+    except asyncio.TimeoutError:
+        print("Timed out")
+
+asyncio.run(main())</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Async I/O in Practice</h2>
+      <div class="card">
+        <h3>Concurrent HTTP Fetches (aiohttp)</h3>
+        <p>
+          Async HTTP libraries like <code>aiohttp</code> let you fetch many URLs without blocking.
+        </p>
+        <pre><code class="language-python">import asyncio
+import aiohttp
+
+async def fetch(session, url):
+    async with session.get(url) as resp:
+        return url, await resp.text()
+
+async def main():
+    urls = ["https://example.com", "https://example.org", "https://example.net"]
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+    print([u for u, _ in results])
+
+# asyncio.run(main())</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Offloading Blocking Work</h3>
+        <p>
+          If you must call a blocking function, run it in a thread using
+          <code>asyncio.to_thread</code> (Python 3.9+).
+        </p>
+        <pre><code class="language-python">import asyncio
+from pathlib import Path
+
+async def read_file(path):
+    return await asyncio.to_thread(Path(path).read_text)
+
+async def main():
+    contents = await read_file("notes.txt")
+    print(contents)
+
+# asyncio.run(main())</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Synchronization Primitives</h2>
+      <div class="card">
+        <h3>Lock, Semaphore, Queue</h3>
+        <p>
+          Asyncio provides primitives to coordinate tasks without blocking the event loop.
+          Use them when shared resources or backpressure are required.
+        </p>
+        <pre><code class="language-python">import asyncio
+
+async def worker(name, sem):
+    async with sem:
+        await asyncio.sleep(0.2)
+        return f"{name} finished"
+
+async def main():
+    sem = asyncio.Semaphore(2)
+    tasks = [worker(f"job-{i}", sem) for i in range(5)]
+    results = await asyncio.gather(*tasks)
+    print(results)
+
+# asyncio.run(main())</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>When to Use Async</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Async Benefit</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Many HTTP calls</td>
+            <td>High throughput</td>
+            <td>Web scraping</td>
+          </tr>
+          <tr>
+            <td>Chat servers</td>
+            <td>Many clients</td>
+            <td>WebSockets</td>
+          </tr>
+          <tr>
+            <td>Mixed I/O tasks</td>
+            <td>Efficient waiting</td>
+            <td>API gateways</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Sample Code: Async Worker Pool</h2>
+      <pre><code class="language-python">import asyncio
+from asyncio import Queue
+
+async def producer(queue):
+    for i in range(5):
+        await queue.put(i)
+    for _ in range(2):
+        await queue.put(None)  # sentinel
+
+async def consumer(name, queue):
+    while True:
+        item = await queue.get()
+        if item is None:
+            break
+        await asyncio.sleep(0.1)
+        print(f"{name} processed {item}")
+
+async def main():
+    queue = Queue()
+    await producer(queue)
+    consumers = [asyncio.create_task(consumer(f"c{i}", queue)) for i in range(2)]
+    await asyncio.gather(*consumers)
+
+# asyncio.run(main())</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Asyncio shines when you need many concurrent I/O tasks with minimal threads.</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

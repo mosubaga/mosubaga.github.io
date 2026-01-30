@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intermediate Perl | Regex References</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reference.html">References</a></li>
+      <li><a href="modules.html">Modules</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="regexref.html">Regex Refs</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>References to Regex</h1>
+      <p>
+        Store regular expressions in variables or data structures to reuse them
+        across your program. This is especially handy for routing, validation, and
+        advanced matching workflows.
+      </p>
+      <ul class="list">
+        <li>Compile regexes once with <code>qr//</code>.</li>
+        <li>Store regex refs in hashes or arrays for flexible matching.</li>
+        <li>Pass regex refs into subroutines safely.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern Library in a Hash</h2>
+      <p>
+        Hash-based pattern libraries make validation consistent across your app.
+        You can look up a pattern by name and apply it to input values.
+      </p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my %patterns = (
+    id   => qr/^ID-\d{4}$/,
+    mail => qr/^[\w.+-]+\@[\w.-]+\.[a-z]{2,}$/i,
+);
+
+for my $input ("ID-2048", "user@gmail.com", "maria@gmail.com") {
+    my $status = ($input =~ $patterns{id})   ? "id"   :
+                 ($input =~ $patterns{mail}) ? "mail" :
+                 "unknown";
+    print "$input => $status\n";
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Regex Arrays for Sequential Checks</h2>
+      <p>
+        Arrays are handy when the order of checks matters. You can loop through
+        a list of regexes and stop on the first match.
+      </p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my @checks = (
+    qr/^\d{3}-\d{2}-\d{4}$/,  # SSN-like
+    qr/^\+?\d{10,15}$/,       # phone
+    qr/^[A-Z]{3}\d{2}$/       # code
+);
+
+my $value = "ABC12";
+for my $regex (@checks) {
+    if ($value =~ $regex) {
+        print "matched: $regex\n";
+        last;
+    }
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Passing Regex References to Subroutines</h2>
+      <p>
+        Subroutines can accept regex references as arguments. This keeps your
+        matching logic flexible and testable.
+      </p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+sub validate {
+    my ($value, $pattern) = @_;
+    return $value =~ $pattern ? 1 : 0;
+}
+
+my $sku_pattern = qr/^SKU-\d{5}$/;
+print validate("SKU-12345", $sku_pattern), "\n"; # 1
+print validate("SKU-12", $sku_pattern), "\n";    # 0</code></pre>
+    </section>
+
+    <section>
+      <h2>Sample: Pattern Library</h2>
+      <p>This script keeps regex patterns in a hash for quick lookups.</p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my %patterns = (
+    id   => qr/^ID-\d{4}$/,
+    mail => qr/^[\w.+-]+\@[\w.-]+\.[a-z]{2,}$/i,
+);
+
+for my $input ("ID-2048", "user@gmail.com", "maria@gmail.com") {
+    my $status = ($input =~ $patterns{id})   ? "id"   :
+                 ($input =~ $patterns{mail}) ? "mail" :
+                 "unknown";
+    print "$input => $status\n";
+}</code></pre>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

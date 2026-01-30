@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intermediate Perl | OOP</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reference.html">References</a></li>
+      <li><a href="modules.html">Modules</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="regexref.html">Regex Refs</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Object-Oriented Perl with Packages</h1>
+      <p>
+        Perl objects are typically blessed references. A package defines methods,
+        and your constructor returns a reference blessed into that package. This
+        keeps data and behavior together while still using Perl's lightweight style.
+      </p>
+      <ul class="list">
+        <li>Use a hash reference to store object state.</li>
+        <li>Call methods with <code>$object-&gt;method()</code>.</li>
+        <li>Keep constructors in modules for reuse.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Constructor and Methods</h2>
+      <p>
+        A common Perl object is a hash reference blessed into a package. Methods
+        receive the object as the first argument (<code>$self</code>).
+      </p>
+      <pre><code class="language-perl"># File: Task.pm
+package Task;
+use strict;
+use warnings;
+
+sub new {
+    my ($class, %args) = @_;
+    my $self = {
+        title  => $args{title},
+        status => $args{status} || "open",
+    };
+    return bless $self, $class;
+}
+
+sub summary {
+    my ($self) = @_;
+    return "$self->{title} [$self->{status}]";
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use Task;
+
+my $task = Task->new(title => "Write docs", status => "active");
+print $task->summary, "\n";</code></pre>
+    </section>
+
+    <section>
+      <h2>Accessors and Encapsulation</h2>
+      <p>
+        Perl doesn't enforce private fields, but you can encapsulate data by
+        providing accessors and keeping fields internal to the object hash.
+      </p>
+      <pre><code class="language-perl">package User;
+use strict;
+use warnings;
+
+sub new {
+    my ($class, %args) = @_;
+    my $self = {
+        name  => $args{name},
+        email => $args{email},
+    };
+    return bless $self, $class;
+}
+
+sub name {
+    my ($self, $value) = @_;
+    $self->{name} = $value if defined $value;
+    return $self->{name};
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use User;
+
+my $user = User->new(name => "Aiko", email => "aiko@gmail.com");
+$user->name("Aiko Tanaka");
+print $user->name, "\n";</code></pre>
+    </section>
+
+    <section>
+      <h2>Inheritance</h2>
+      <p>
+        Use <code>@ISA</code> to declare inheritance. The child class can override
+        parent methods or call them explicitly.
+      </p>
+      <pre><code class="language-perl">package Member;
+use strict;
+use warnings;
+
+sub new {
+    my ($class, %args) = @_;
+    return bless { name => $args{name} }, $class;
+}
+
+sub role {
+    return "member";
+}
+
+1;
+
+package Admin;
+use strict;
+use warnings;
+our @ISA = qw(Member);
+
+sub role {
+    return "admin";
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use Admin;
+
+my $admin = Admin->new(name => "Maya");
+print $admin->role, "\n";  # admin</code></pre>
+    </section>
+
+    <section>
+      <h2>Blessed Hashes vs. Scalar References</h2>
+      <p>
+        Most objects are hash references, but you can bless other reference types
+        such as scalars or arrays when appropriate.
+      </p>
+      <pre><code class="language-perl">package Counter;
+use strict;
+use warnings;
+
+sub new {
+    my ($class, $start) = @_;
+    my $self = \($start || 0);
+    return bless $self, $class;
+}
+
+sub inc {
+    my ($self) = @_;
+    $$self++;
+    return $$self;
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use Counter;
+
+my $counter = Counter->new(10);
+print $counter->inc(), "\n";  # 11</code></pre>
+    </section>
+
+    <section>
+      <h2>Sample: Task Object</h2>
+      <p>A minimal object with a constructor and a method.</p>
+      <pre><code class="language-perl"># File: Task.pm
+package Task;
+use strict;
+use warnings;
+
+sub new {
+    my ($class, %args) = @_;
+    my $self = {
+        title  => $args{title},
+        status => $args{status} || "open",
+    };
+    return bless $self, $class;
+}
+
+sub summary {
+    my ($self) = @_;
+    return "$self->{title} [$self->{status}]";
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use Task;
+
+my $task = Task->new(title => "Write docs", status => "active");
+print $task->summary, "\n";</code></pre>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

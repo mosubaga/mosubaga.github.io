@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intermediate Perl | Welcome</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reference.html">References</a></li>
+      <li><a href="modules.html">Modules</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="regexref.html">Regex Refs</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Welcome to Intermediate Perl</h1>
+      <p>
+        This mini-site focuses on the skills that make Perl scripts more powerful and
+        maintainable: references, modules, object-oriented patterns, and reusable
+        regular expressions. Each page includes a short code sample you can run as a
+        starting point for your own experiments.
+      </p>
+      <p>
+        Think of this as your bridge between basic syntax and real-world Perl
+        programs that scale with your data and your team.
+      </p>
+    </section>
+
+    <section>
+      <h2>Starter Script: Structured Output</h2>
+      <p>This script formats a report from multiple arrays using references.</p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my @languages = ("Perl", "Python", "Ruby");
+my @levels    = ("Intermediate", "Intermediate", "Beginner");
+
+my $rows = [\@languages, \@levels];
+
+for my $i (0 .. $#{$rows->[0]}) {
+    printf "%s - %s\n", $rows->[0][$i], $rows->[1][$i];
+}
+</code></pre>
+    </section>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

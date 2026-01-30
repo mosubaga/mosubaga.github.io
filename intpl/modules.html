@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intermediate Perl | Modules</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reference.html">References</a></li>
+      <li><a href="modules.html">Modules</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="regexref.html">Regex Refs</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Modules and Packages</h1>
+      <p>
+        Modules package reusable logic into <code>.pm</code> files. Packages separate
+        namespaces to avoid variable collisions, while <code>Exporter</code> makes
+        it simple to share selected functions.
+      </p>
+      <ul class="list">
+        <li>Place module code in a package and end with <code>1;</code>.</li>
+        <li>Use <code>Exporter</code> to expose a clean API.</li>
+        <li>Keep namespaces distinct for safer code reuse.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Module Basics</h2>
+      <p>
+        A module file path matches its package name. For example, <code>My::Tools</code>
+        lives in <code>My/Tools.pm</code>. Modules are loaded with <code>use</code>, and
+        they should return a true value at the end.
+      </p>
+      <pre><code class="language-perl"># File: My/Tools.pm
+package My::Tools;
+use strict;
+use warnings;
+
+sub greet {
+    my ($name) = @_;
+    return "Hello, $name!";
+}
+
+1;  # Module must return true
+
+# File: app.pl
+use strict;
+use warnings;
+use My::Tools;
+
+print My::Tools::greet("Aki"), "\n";</code></pre>
+    </section>
+
+    <section>
+      <h2>Exporting Functions</h2>
+      <p>
+        Use <code>Exporter</code> to expose a controlled list of functions. This keeps
+        your module API clean and prevents namespace collisions.
+      </p>
+      <pre><code class="language-perl"># File: My/Report.pm
+package My::Report;
+use strict;
+use warnings;
+use Exporter 'import';
+
+our @EXPORT_OK = qw(format_line summarize);
+
+sub format_line {
+    my ($label, $value) = @_;
+    return sprintf "%s: %s", $label, $value;
+}
+
+sub summarize {
+    my ($items) = @_;
+    return join(", ", @$items);
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use My::Report qw(format_line summarize);
+
+print format_line("Status", "Ready"), "\n";
+print summarize(["alpha", "beta", "gamma"]), "\n";</code></pre>
+    </section>
+
+    <section>
+      <h2>Namespaces and Variables</h2>
+      <p>
+        Packages create separate namespaces. Fully qualify symbols to avoid collisions,
+        or use lexical (<code>my</code>) variables inside modules for safer encapsulation.
+      </p>
+      <pre><code class="language-perl">package My::Config;
+use strict;
+use warnings;
+
+our $DEFAULT_TIMEOUT = 30;
+my $secret_key = "abc123";  # lexical, not accessible outside
+
+sub timeout {
+    return $DEFAULT_TIMEOUT;
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use My::Config;
+
+print My::Config::timeout(), "\n";
+print $My::Config::DEFAULT_TIMEOUT, "\n";</code></pre>
+    </section>
+
+    <section>
+      <h2>Loading Modules from Custom Paths</h2>
+      <p>
+        If your modules are in a local directory, add it to <code>@INC</code> using
+        <code>use lib</code> so Perl can find them.
+      </p>
+      <pre><code class="language-perl"># File structure:
+# lib/My/Calc.pm
+# app.pl
+
+# app.pl
+use strict;
+use warnings;
+use lib "lib";
+use My::Calc;
+
+print My::Calc::add(2, 3), "\n";
+
+# lib/My/Calc.pm
+package My::Calc;
+use strict;
+use warnings;
+
+sub add {
+    my ($a, $b) = @_;
+    return $a + $b;
+}
+
+1;</code></pre>
+    </section>
+
+    <section>
+      <h2>Sample: Simple Utility Module</h2>
+      <p>Two files: a reusable module and a script that imports it.</p>
+      <pre><code class="language-perl"># File: My/Report.pm
+package My::Report;
+use strict;
+use warnings;
+use Exporter 'import';
+
+our @EXPORT_OK = qw(format_line);
+
+sub format_line {
+    my ($label, $value) = @_;
+    return sprintf "%s: %s", $label, $value;
+}
+
+1;
+
+# File: app.pl
+use strict;
+use warnings;
+use My::Report qw(format_line);
+
+print format_line("Status", "Ready"), "\n";</code></pre>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

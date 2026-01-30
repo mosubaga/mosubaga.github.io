@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intermediate Python - OOP</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="advfunctions.html">Functions</a></li>
+      <li><a href="generators.html">Generators</a></li>
+      <li><a href="concurrency.html">Concurrency</a></li>
+      <li><a href="async.html">Async</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Object-Oriented Programming (OOP)</h1>
+      <p>
+        OOP organizes code around classes and objects. It supports encapsulation, inheritance,
+        and polymorphism so you can model complex systems with reusable components. Python's
+        approach to OOP is flexible and pragmatic, supporting multiple paradigms while providing
+        powerful object-oriented features.
+      </p>
+    </section>
+
+    <section>
+      <h2>Core Concepts</h2>
+      
+      <div class="card">
+        <h3>Classes and Objects</h3>
+        <p>
+          A class is a blueprint for creating objects. An object is an instance created from that blueprint.
+          Use <code>__init__</code> to define how new objects are initialized. The <code>self</code> parameter
+          represents the instance being created and gives access to instance attributes and methods.
+        </p>
+        <pre><code class="language-python">class User:
+    """A simple user class."""
+    
+    # Class attribute (shared by all instances)
+    user_count = 0
+    
+    def __init__(self, name, email):
+        # Instance attributes (unique to each instance)
+        self.name = name
+        self.email = email
+        self.is_active = True
+        User.user_count += 1
+    
+    def deactivate(self):
+        """Deactivate this user."""
+        self.is_active = False
+    
+    def greet(self):
+        """Return a greeting message."""
+        return f"Hello, I'm {self.name}!"
+
+# Creating instances
+user1 = User("Mia", "mia@example.com")
+user2 = User("Alex", "alex@example.com")
+
+print(user1.greet())  # Hello, I'm Mia!
+print(User.user_count)  # 2
+
+user1.deactivate()
+print(user1.is_active)  # False</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Instance vs Class vs Static Methods</h3>
+        <p>
+          Python provides three types of methods: instance methods (work with instance data),
+          class methods (work with class data), and static methods (don't access instance or class data).
+        </p>
+        <pre><code class="language-python">class BankAccount:
+    # Class attribute
+    interest_rate = 0.02
+    
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+    
+    # Instance method (needs self)
+    def deposit(self, amount):
+        """Add money to account."""
+        self.balance += amount
+        return self.balance
+    
+    def withdraw(self, amount):
+        """Remove money from account."""
+        if amount > self.balance:
+            raise ValueError("Insufficient funds")
+        self.balance -= amount
+        return self.balance
+    
+    # Class method (needs cls)
+    @classmethod
+    def set_interest_rate(cls, rate):
+        """Set interest rate for all accounts."""
+        cls.interest_rate = rate
+    
+    @classmethod
+    def from_json(cls, json_string):
+        """Alternative constructor from JSON."""
+        import json
+        data = json.loads(json_string)
+        return cls(data['owner'], data['balance'])
+    
+    # Static method (no self or cls)
+    @staticmethod
+    def validate_amount(amount):
+        """Check if amount is valid."""
+        return isinstance(amount, (int, float)) and amount > 0
+
+# Using different method types
+account = BankAccount("Sarah", 1000)
+account.deposit(500)  # Instance method
+print(account.balance)  # 1500
+
+BankAccount.set_interest_rate(0.03)  # Class method
+print(BankAccount.interest_rate)  # 0.03
+
+print(BankAccount.validate_amount(100))  # True (static method)
+print(BankAccount.validate_amount(-50))  # False</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Inheritance</h3>
+        <p>
+          <code>self</code> refers to the current instance. <code>super()</code> lets you call
+          parent class methods to extend behavior. Inheritance allows you to create specialized
+          classes that reuse and extend the functionality of base classes.
+        </p>
+        <pre><code class="language-python">class User:
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+        self.is_active = True
+    
+    def get_info(self):
+        return f"{self.name} ({self.email})"
+
+class Admin(User):
+    def __init__(self, name, email, level):
+        # Call parent constructor
+        super().__init__(name, email)
+        self.level = level
+        self.permissions = []
+    
+    def add_permission(self, permission):
+        """Add a permission to this admin."""
+        self.permissions.append(permission)
+    
+    def get_info(self):
+        """Override parent method."""
+        base_info = super().get_info()
+        return f"{base_info} [Admin Level {self.level}]"
+
+class Moderator(User):
+    def __init__(self, name, email, sections):
+        super().__init__(name, email)
+        self.sections = sections
+    
+    def can_moderate(self, section):
+        return section in self.sections
+
+# Using inheritance
+admin = Admin("Maya", "maya@example.com", 2)
+admin.add_permission("delete_users")
+print(admin.get_info())  # Maya (maya@example.com) [Admin Level 2]
+
+mod = Moderator("John", "john@example.com", ["comments", "posts"])
+print(mod.can_moderate("comments"))  # True
+print(mod.can_moderate("users"))  # False</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Multiple Inheritance</h3>
+        <p>
+          Python supports multiple inheritance, where a class can inherit from multiple parent classes.
+          The Method Resolution Order (MRO) determines which parent's method is called. Use
+          <code>ClassName.mro()</code> to see the order.
+        </p>
+        <pre><code class="language-python">class Loggable:
+    """Mixin for adding logging capability."""
+    def log(self, message):
+        print(f"[{self.__class__.__name__}] {message}")
+
+class Serializable:
+    """Mixin for JSON serialization."""
+    def to_dict(self):
+        return {k: v for k, v in self.__dict__.items() 
+                if not k.startswith('_')}
+
+class Product(Loggable, Serializable):
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+    
+    def apply_discount(self, percent):
+        old_price = self.price
+        self.price *= (1 - percent / 100)
+        self.log(f"Discount applied: ${old_price} → ${self.price}")
+
+# Using multiple inheritance
+product = Product("Laptop", 1000)
+product.apply_discount(10)
+# Output: [Product] Discount applied: $1000 → $900.0
+
+print(product.to_dict())
+# Output: {'name': 'Laptop', 'price': 900.0}
+
+# Check method resolution order
+print([c.__name__ for c in Product.mro()])
+# ['Product', 'Loggable', 'Serializable', 'object']</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Encapsulation and Property Decorators</h3>
+        <p>
+          Python uses naming conventions for encapsulation: single underscore (_) for internal use,
+          double underscore (__) for name mangling. The <code>@property</code> decorator creates
+          managed attributes with getter, setter, and deleter methods.
+        </p>
+        <pre><code class="language-python">class Temperature:
+    def __init__(self, celsius=0):
+        self._celsius = celsius
+    
+    @property
+    def celsius(self):
+        """Get temperature in Celsius."""
+        return self._celsius
+    
+    @celsius.setter
+    def celsius(self, value):
+        """Set temperature in Celsius."""
+        if value < -273.15:
+            raise ValueError("Temperature below absolute zero!")
+        self._celsius = value
+    
+    @property
+    def fahrenheit(self):
+        """Get temperature in Fahrenheit."""
+        return self._celsius * 9/5 + 32
+    
+    @fahrenheit.setter
+    def fahrenheit(self, value):
+        """Set temperature using Fahrenheit."""
+        self.celsius = (value - 32) * 5/9
+
+# Using properties
+temp = Temperature(25)
+print(temp.celsius)      # 25
+print(temp.fahrenheit)   # 77.0
+
+temp.fahrenheit = 32     # Set using Fahrenheit
+print(temp.celsius)      # 0.0
+
+# temp.celsius = -300  # Raises ValueError
+
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self._age = age  # Protected attribute
+        self.__ssn = None  # Private attribute (name mangled)
+    
+    @property
+    def age(self):
+        return self._age
+    
+    @age.setter
+    def age(self, value):
+        if not 0 <= value <= 150:
+            raise ValueError("Invalid age")
+        self._age = value
+
+person = Person("Alice", 30)
+person.age = 31  # Uses setter
+print(person.age)  # Uses getter: 31</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Dunder Methods (Magic Methods)</h3>
+        <p>
+          Methods like <code>__repr__</code>, <code>__str__</code>, <code>__len__</code>, and
+          <code>__getitem__</code> define how objects behave with built-in Python syntax.
+          These special methods enable operator overloading and integration with Python's protocols.
+        </p>
+        <pre><code class="language-python">class Vector:
+    """A simple 2D vector class."""
+    
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def __repr__(self):
+        """Official string representation."""
+        return f"Vector({self.x}, {self.y})"
+    
+    def __str__(self):
+        """Informal string representation."""
+        return f"&lt;{self.x}, {self.y}&gt;"
+    
+    def __add__(self, other):
+        """Add two vectors."""
+        return Vector(self.x + other.x, self.y + other.y)
+    
+    def __sub__(self, other):
+        """Subtract two vectors."""
+        return Vector(self.x - other.x, self.y - other.y)
+    
+    def __mul__(self, scalar):
+        """Multiply vector by scalar."""
+        return Vector(self.x * scalar, self.y * scalar)
+    
+    def __eq__(self, other):
+        """Check equality."""
+        return self.x == other.x and self.y == other.y
+    
+    def __len__(self):
+        """Return magnitude."""
+        return int((self.x ** 2 + self.y ** 2) ** 0.5)
+    
+    def __abs__(self):
+        """Return magnitude as float."""
+        return (self.x ** 2 + self.y ** 2) ** 0.5
+
+# Using magic methods
+v1 = Vector(2, 3)
+v2 = Vector(1, 1)
+
+print(v1)           # &lt;2, 3&gt; (uses __str__)
+print(repr(v1))     # Vector(2, 3) (uses __repr__)
+
+v3 = v1 + v2        # Uses __add__
+print(v3)           # &lt;3, 4&gt;
+
+v4 = v1 * 2         # Uses __mul__
+print(v4)           # &lt;4, 6&gt;
+
+print(v1 == v2)     # False (uses __eq__)
+print(len(v1))      # 3 (uses __len__)
+print(abs(v1))      # 3.605... (uses __abs__)</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Context Managers</h3>
+        <p>
+          Context managers handle setup and teardown logic using <code>__enter__</code> and
+          <code>__exit__</code> methods. They're used with the <code>with</code> statement
+          to ensure resources are properly managed.
+        </p>
+        <pre><code class="language-python">class FileManager:
+    """Custom context manager for file operations."""
+    
+    def __init__(self, filename, mode):
+        self.filename = filename
+        self.mode = mode
+        self.file = None
+    
+    def __enter__(self):
+        """Open the file and return it."""
+        self.file = open(self.filename, self.mode)
+        return self.file
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Close the file, even if an error occurred."""
+        if self.file:
+            self.file.close()
+        # Return False to propagate exceptions
+        return False
+
+# Using the context manager
+with FileManager('test.txt', 'w') as f:
+    f.write('Hello, World!')
+# File is automatically closed
+
+class Timer:
+    """Context manager for timing code blocks."""
+    
+    def __enter__(self):
+        self.start = time.time()
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.end = time.time()
+        self.elapsed = self.end - self.start
+        print(f"Elapsed time: {self.elapsed:.4f} seconds")
+        return False
+
+import time
+
+with Timer():
+    # Code to time
+    time.sleep(1)
+# Output: Elapsed time: 1.0001 seconds</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Advanced OOP Patterns</h2>
+      
+      <div class="card">
+        <h3>Abstract Base Classes (ABC)</h3>
+        <p>
+          Abstract base classes define interfaces that subclasses must implement. They ensure
+          that derived classes provide specific methods and can't be instantiated directly.
+        </p>
+        <pre><code class="language-python">from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    """Abstract base class for shapes."""
+    
+    @abstractmethod
+    def area(self):
+        """Calculate area - must be implemented by subclasses."""
+        pass
+    
+    @abstractmethod
+    def perimeter(self):
+        """Calculate perimeter - must be implemented by subclasses."""
+        pass
+    
+    def describe(self):
+        """Concrete method available to all subclasses."""
+        return f"{self.__class__.__name__}: area={self.area():.2f}"
+
+class Rectangle(Shape):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        return self.width * self.height
+    
+    def perimeter(self):
+        return 2 * (self.width + self.height)
+
+class Circle(Shape):
+    def __init__(self, radius):
+        self.radius = radius
+    
+    def area(self):
+        return 3.14159 * self.radius ** 2
+    
+    def perimeter(self):
+        return 2 * 3.14159 * self.radius
+
+# Cannot instantiate abstract class
+# shape = Shape()  # Raises TypeError
+
+# Can instantiate concrete classes
+rect = Rectangle(5, 3)
+print(rect.describe())  # Rectangle: area=15.00
+
+circle = Circle(4)
+print(circle.area())    # 50.27</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Data Classes</h3>
+        <p>
+          The <code>@dataclass</code> decorator automatically generates <code>__init__</code>,
+          <code>__repr__</code>, <code>__eq__</code>, and other methods, reducing boilerplate code
+          for classes that mainly store data.
+        </p>
+        <pre><code class="language-python">from dataclasses import dataclass, field
+from typing import List
+
+@dataclass
+class Product:
+    """Product with automatic methods."""
+    name: str
+    price: float
+    quantity: int = 0
+    tags: List[str] = field(default_factory=list)
+    
+    def total_value(self):
+        return self.price * self.quantity
+
+# Automatically has __init__, __repr__, __eq__
+p1 = Product("Laptop", 999.99, 5, ["electronics", "computers"])
+p2 = Product("Laptop", 999.99, 5, ["electronics", "computers"])
+
+print(p1)  # Product(name='Laptop', price=999.99, quantity=5, ...)
+print(p1 == p2)  # True
+print(p1.total_value())  # 4999.95
+
+@dataclass(order=True)
+class Student:
+    """Student with comparison methods."""
+    name: str = field(compare=False)
+    grade: float
+    age: int = field(compare=False)
+
+students = [
+    Student("Alice", 92.5, 20),
+    Student("Bob", 88.0, 21),
+    Student("Charlie", 95.0, 19)
+]
+
+# Can sort because order=True
+sorted_students = sorted(students)
+print([s.name for s in sorted_students])
+# ['Bob', 'Alice', 'Charlie']</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Composition Over Inheritance</h3>
+        <p>
+          Composition means building complex objects by combining simpler ones, rather than
+          using inheritance. This often leads to more flexible and maintainable code.
+        </p>
+        <pre><code class="language-python">class Engine:
+    def __init__(self, horsepower):
+        self.horsepower = horsepower
+        self.running = False
+    
+    def start(self):
+        self.running = True
+        return "Engine started"
+    
+    def stop(self):
+        self.running = False
+        return "Engine stopped"
+
+class Wheels:
+    def __init__(self, count):
+        self.count = count
+    
+    def rotate(self):
+        return f"{self.count} wheels rotating"
+
+class Car:
+    """Car composed of engine and wheels."""
+    
+    def __init__(self, model, horsepower):
+        self.model = model
+        self.engine = Engine(horsepower)  # Composition
+        self.wheels = Wheels(4)           # Composition
+    
+    def start(self):
+        return self.engine.start()
+    
+    def drive(self):
+        if not self.engine.running:
+            return "Cannot drive - engine not running"
+        return f"{self.model} driving: {self.wheels.rotate()}"
+    
+    def stop(self):
+        return self.engine.stop()
+
+# Using composition
+car = Car("Toyota", 200)
+print(car.start())   # Engine started
+print(car.drive())   # Toyota driving: 4 wheels rotating
+print(car.stop())    # Engine stopped</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Singleton Pattern</h3>
+        <p>
+          The Singleton pattern ensures only one instance of a class exists. This is useful
+          for managing shared resources like configuration or database connections.
+        </p>
+        <pre><code class="language-python">class Singleton:
+    """Singleton implementation using __new__."""
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    def __init__(self):
+        # Be careful - __init__ is called each time
+        if not hasattr(self, 'initialized'):
+            self.initialized = True
+            self.data = []
+
+# Both variables reference the same instance
+s1 = Singleton()
+s2 = Singleton()
+
+s1.data.append("test")
+print(s1 is s2)  # True
+print(s2.data)   # ['test']
+
+# Alternative using metaclass
+class SingletonMeta(type):
+    _instances = {}
+    
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class Database(metaclass=SingletonMeta):
+    def __init__(self):
+        self.connection = "Connected"
+
+db1 = Database()
+db2 = Database()
+print(db1 is db2)  # True</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Descriptors</h3>
+        <p>
+          Descriptors are objects that customize attribute access. They implement
+          <code>__get__</code>, <code>__set__</code>, and/or <code>__delete__</code>
+          to control how attributes are accessed, modified, or deleted.
+        </p>
+        <pre><code class="language-python">class Validator:
+    """Descriptor that validates values."""
+    
+    def __init__(self, min_value=None, max_value=None):
+        self.min_value = min_value
+        self.max_value = max_value
+    
+    def __set_name__(self, owner, name):
+        self.name = f"_{name}"
+    
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        return getattr(obj, self.name, None)
+    
+    def __set__(self, obj, value):
+        if self.min_value is not None and value < self.min_value:
+            raise ValueError(f"Value must be &gt;= {self.min_value}")
+        if self.max_value is not None and value > self.max_value:
+            raise ValueError(f"Value must be &lt;= {self.max_value}")
+        setattr(obj, self.name, value)
+
+class Person:
+    age = Validator(min_value=0, max_value=150)
+    height = Validator(min_value=0)
+    
+    def __init__(self, age, height):
+        self.age = age
+        self.height = height
+
+# Using descriptor
+person = Person(25, 175)
+print(person.age)  # 25
+
+person.age = 30  # OK
+# person.age = -5  # Raises ValueError
+# person.age = 200  # Raises ValueError</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Polymorphism</h2>
+      <p>
+        Polymorphism allows objects of different classes to be treated uniformly through
+        a common interface. This is achieved through inheritance, duck typing, or abstract base classes.
+      </p>
+      <pre><code class="language-python">class Animal:
+    def speak(self):
+        raise NotImplementedError("Subclass must implement")
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+class Duck(Animal):
+    def speak(self):
+        return "Quack!"
+
+# Polymorphism in action
+def animal_sounds(animals):
+    for animal in animals:
+        print(f"{animal.__class__.__name__}: {animal.speak()}")
+
+zoo = [Dog(), Cat(), Duck()]
+animal_sounds(zoo)
+# Output:
+# Dog: Woof!
+# Cat: Meow!
+# Duck: Quack!
+
+# Duck typing - "If it walks like a duck and quacks like a duck..."
+class Robot:
+    def speak(self):
+        return "Beep boop!"
+
+# Works even though Robot doesn't inherit from Animal
+all_speakers = [Dog(), Cat(), Robot()]
+animal_sounds(all_speakers)
+# Robot: Beep boop!</code></pre>
+    </section>
+
+    <section>
+      <h2>Mini Example</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Concept</th>
+            <th>Snippet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Initialization</td>
+            <td><code>def __init__(self, name): self.name = name</code></td>
+          </tr>
+          <tr>
+            <td>Inheritance</td>
+            <td><code>class Admin(User): super().__init__(name)</code></td>
+          </tr>
+          <tr>
+            <td>Dunder</td>
+            <td><code>def __repr__(self): return f"User({self.name})"</code></td>
+          </tr>
+          <tr>
+            <td>Property</td>
+            <td><code>@property<br>def age(self): return self._age</code></td>
+          </tr>
+          <tr>
+            <td>Class method</td>
+            <td><code>@classmethod<br>def create(cls, data): return cls(**data)</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Sample Code</h2>
+      <pre><code class="language-python">class User:
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f"User({self.name})"
+
+class Admin(User):
+    def __init__(self, name, level):
+        super().__init__(name)
+        self.level = level
+
+    def __str__(self):
+        return f"Admin({self.name}, level={self.level})"
+
+print(Admin("Maya", 2))
+# Output: Admin(Maya, level=2)</code></pre>
+    </section>
+
+    <section>
+      <h2>Real-World Example: Library System</h2>
+      <p>
+        Here's a comprehensive example combining multiple OOP concepts to build a library management system.
+      </p>
+      <pre><code class="language-python">from datetime import datetime, timedelta
+from abc import ABC, abstractmethod
+
+class LibraryItem(ABC):
+    """Abstract base class for library items."""
+    
+    def __init__(self, title, item_id):
+        self.title = title
+        self.item_id = item_id
+        self.checked_out = False
+        self.due_date = None
+    
+    @abstractmethod
+    def get_checkout_period(self):
+        """Return number of days item can be checked out."""
+        pass
+    
+    def checkout(self):
+        if self.checked_out:
+            raise ValueError("Item already checked out")
+        self.checked_out = True
+        days = self.get_checkout_period()
+        self.due_date = datetime.now() + timedelta(days=days)
+        due_str = self.due_date.strftime('%Y-%m-%d')
+        return f"{self.title} checked out until {due_str}"
+    
+    def return_item(self):
+        self.checked_out = False
+        self.due_date = None
+        return f"{self.title} returned"
+    
+    def __repr__(self):
+        status = "Checked out" if self.checked_out else "Available"
+        return f"{self.__class__.__name__}('{self.title}', {status})"
+
+class Book(LibraryItem):
+    def __init__(self, title, item_id, author, pages):
+        super().__init__(title, item_id)
+        self.author = author
+        self.pages = pages
+    
+    def get_checkout_period(self):
+        return 14  # Books can be checked out for 2 weeks
+
+class DVD(LibraryItem):
+    def __init__(self, title, item_id, director, runtime):
+        super().__init__(title, item_id)
+        self.director = director
+        self.runtime = runtime
+    
+    def get_checkout_period(self):
+        return 7  # DVDs can be checked out for 1 week
+
+class Magazine(LibraryItem):
+    def __init__(self, title, item_id, issue):
+        super().__init__(title, item_id)
+        self.issue = issue
+    
+    def get_checkout_period(self):
+        return 3  # Magazines can be checked out for 3 days
+
+class Member:
+    def __init__(self, name, member_id):
+        self.name = name
+        self.member_id = member_id
+        self.checked_out_items = []
+    
+    def checkout_item(self, item):
+        if len(self.checked_out_items) &gt;= 5:
+            raise ValueError("Maximum checkout limit reached")
+        result = item.checkout()
+        self.checked_out_items.append(item)
+        return result
+    
+    def return_item(self, item):
+        if item not in self.checked_out_items:
+            raise ValueError("Item not checked out by this member")
+        result = item.return_item()
+        self.checked_out_items.remove(item)
+        return result
+
+# Using the library system
+book = Book("Python Programming", "B001", "John Doe", 350)
+dvd = DVD("The Matrix", "D001", "Wachowskis", 136)
+magazine = Magazine("Tech Monthly", "M001", "Issue 42")
+
+member = Member("Alice", "M1001")
+
+print(member.checkout_item(book))
+# Output: Python Programming checked out until 2026-02-13
+
+print(member.checkout_item(dvd))
+# Output: The Matrix checked out until 2026-02-06
+
+print(book)  # Book('Python Programming', Checked out)
+print(member.return_item(book))  # Python Programming returned</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>OOP helps structure medium and large Python projects. Master these concepts to write maintainable, reusable, and elegant code.</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

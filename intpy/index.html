@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intermediate Python - Home</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="collections.html">Collections</a></li>
+      <li><a href="advfunctions.html">Functions</a></li>
+      <li><a href="generators.html">Generators</a></li>
+      <li><a href="concurrency.html">Concurrency</a></li>
+      <li><a href="async.html">Async</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>Intermediate Python</h1>
+      <p>
+        Welcome to the intermediate Python guide. This site deepens core language knowledge and helps
+        you write cleaner, faster, and more maintainable code. Each page focuses on a practical topic
+        with concepts, key syntax, and real-world use cases.
+      </p>
+      <p>
+        Topics include object-oriented programming, advanced data structures, decorators and scope,
+        generators for memory efficiency, and concurrency using both threads/processes and asyncio.
+      </p>
+      <div class="card">
+        <h3>How to use this guide</h3>
+        <p>
+          Start with OOP and Collections for strong foundations, then explore Functions and Generators
+          before moving into Concurrency and Async for performance and scalability.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Quick Map</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Focus</th>
+            <th>Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>OOP</td>
+            <td>Classes, inheritance, dunder methods</td>
+            <td>Reusable, clean architectures</td>
+          </tr>
+          <tr>
+            <td>Collections</td>
+            <td>deque, Counter, namedtuple</td>
+            <td>Faster, clearer data handling</td>
+          </tr>
+          <tr>
+            <td>Functions</td>
+            <td>*args/**kwargs, decorators</td>
+            <td>Flexible APIs and reusable logic</td>
+          </tr>
+          <tr>
+            <td>Generators</td>
+            <td>yield, iterators</td>
+            <td>Memory-efficient pipelines</td>
+          </tr>
+          <tr>
+            <td>Concurrency</td>
+            <td>threads/processes</td>
+            <td>Speed up I/O and CPU tasks</td>
+          </tr>
+          <tr>
+            <td>Async</td>
+            <td>async/await with asyncio</td>
+            <td>High-throughput I/O code</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Sample Code</h2>
+      <pre><code class="language-python"># A tiny taste of intermediate Python
+from dataclasses import dataclass
+
+@dataclass
+class Task:
+    name: str
+    done: bool = False
+
+tasks = [Task("read docs"), Task("build project", True)]
+pending = [t for t in tasks if not t.done]
+print(pending)</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Intermediate Python Guide - Build stronger, faster Python code.</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

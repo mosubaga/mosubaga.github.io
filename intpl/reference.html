@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intermediate Perl | References</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="reference.html">References</a></li>
+      <li><a href="modules.html">Modules</a></li>
+      <li><a href="oop.html">OOP</a></li>
+      <li><a href="regexref.html">Regex Refs</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section>
+      <h1>References and Data Structures</h1>
+      <p>
+        References let you build nested structures like arrays of hashes or hashes of
+        arrays. This is the foundation for complex configuration data, JSON-like
+        layouts, and layered reports.
+      </p>
+      <ul class="list">
+        <li>Reference scalars, arrays, hashes, and subroutines.</li>
+        <li>Use anonymous structures to nest data cleanly.</li>
+        <li>De-reference with <code>-></code> and braces to traverse layers.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Array References</h2>
+      <p>
+        An array reference points to an array. This is useful for passing arrays
+        into subroutines, storing arrays inside other structures, or returning
+        multiple lists from a function.
+      </p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my @scores = (88, 92, 75, 90);
+my $scores_ref = \@scores;   # create reference
+
+print $scores_ref->[0], "\n"; # 88
+
+# Add and read values through the reference
+push @$scores_ref, 95;
+print join(", ", @$scores_ref), "\n";
+
+sub average {
+    my ($nums) = @_;          # array reference
+    my $total = 0;
+    $total += $_ for @$nums;
+    return $total / @$nums;
+}
+
+print average($scores_ref), "\n";</code></pre>
+    </section>
+
+    <section>
+      <h2>Hash References</h2>
+      <p>
+        A hash reference points to a hash. This is a common way to model records with
+        named fields, and it makes passing structured data around simple and explicit.
+      </p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my %user = (
+    name  => "Aiko",
+    role  => "editor",
+    active => 1,
+);
+
+my $user_ref = \%user;        # create reference
+
+print $user_ref->{name}, "\n"; # Aiko
+
+# Update through the reference
+$user_ref->{role} = "admin";
+$user_ref->{last_login} = "2026-01-30";
+
+for my $key (sort keys %$user_ref) {
+    print "$key => $user_ref->{$key}\n";
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Nested Data: Hashes of Arrays</h2>
+      <p>
+        Combine array and hash references to build richer data structures, such as
+        tags per user or multiple values per key.
+      </p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $profiles = {
+    Maya => ["perl", "regex", "docs"],
+    Jin  => ["ops", "pipelines"],
+};
+
+# Add a new tag
+push @{$profiles->{Jin}}, "monitoring";
+
+# Print tags per user
+for my $name (sort keys %$profiles) {
+    print "$name: ", join(", ", @{$profiles->{$name}}), "\n";
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Sample: Array of Hashes</h2>
+      <p>This script stores project data in an array of hashes.</p>
+      <pre><code class="language-perl">#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $projects = [
+    { name => "Parser",  status => "active",  owner => "Jin" },
+    { name => "Indexer", status => "paused",  owner => "Maya" },
+    { name => "Exporter",status => "active",  owner => "Luis" },
+];
+
+for my $proj (@$projects) {
+    printf "%s (%s) - %s\n", $proj->{name}, $proj->{status}, $proj->{owner};
+}
+</code></pre>
+    </section>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>
