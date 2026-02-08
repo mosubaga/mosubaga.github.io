@@ -12,12 +12,24 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="./js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
-    <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          processEscapes: true,
+          // Enable math parsing inside <pre> blocks used below.
+          skipTags: ["script", "noscript", "style", "textarea"]
+        }
+      });
+    </script>
+    <script type="text/javascript" async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <script referrerpolicy="no-referrer-when-downgrade" type="text/javascript" src="https://api.onelink-preview.com/moxie.min.js" data-oljs="P123E-BDEF-2FE3-FD20"></script>
     <style>
         .boxed{border-left:4px solid #7c9cff;padding:12px;background:#f3f6ff;border-radius:6px}
         ol li{margin:8px 0}
-        .math{font-family: "Courier New", monospace;background:#fff8e1;padding:8px;border-radius:6px}
+        .math{font-family: "Courier New", monospace;background:#ffffff;padding:8px;border-radius:6px}
         footer{margin-top:2rem;color:#666;font-size:.9rem}
     </style>
   </head>
@@ -87,10 +99,10 @@
                 </ul>
 
                 <p>We want the posterior probabilities P(A<sub>i</sub> | B). Bayes' theorem says</p>
-                <pre class="math">P(A_i | B) = P(B | A_i) * P(A_i) / P(B)</pre>
+                <pre class="math">\[ P(A_i \mid B) = \frac{P(B \mid A_i) P(A_i)}{P(B)} \]</pre>
 
                 <p>Start with the priors (before the host opens any door):</p>
-                <pre class="math">P(A1) = P(A2) = P(A3) = 1/3</pre>
+                <pre class="math">\[ P(A_1) = P(A_2) = P(A_3) = \frac{1}{3} \]</pre>
 
                 <p>Compute the likelihoods P(B | A<sub>i</sub>) — the chance the host opens door 3 given where the car actually is:</p>
                 <ol>
@@ -100,14 +112,14 @@
                 </ol>
 
                 <p>Compute the total probability P(B) by the law of total probability:</p>
-                <pre class="math">P(B) = Σ_i P(B | A_i) P(A_i) = (1/2)*(1/3) + 1*(1/3) + 0*(1/3) = 1/6 + 1/3 = 1/2</pre>
+                <pre class="math">\[ P(B) = \sum_i P(B \mid A_i) P(A_i) = \left(\frac{1}{2}\right)\left(\frac{1}{3}\right) + 1\left(\frac{1}{3}\right) + 0\left(\frac{1}{3}\right) = \frac{1}{6} + \frac{1}{3} = \frac{1}{2} \]</pre>
 
                 <p>Now apply Bayes' theorem to get the posteriors.</p>
-                <pre class="math">P(A1 | B) = (P(B | A1) * P(A1)) / P(B) = (1/2 * 1/3) / (1/2) = (1/6) / (1/2) = 1/3</pre>
+                <pre class="math">\[ P(A_1 \mid B) = \frac{P(B \mid A_1) P(A_1)}{P(B)} = \frac{\left(\frac{1}{2}\right)\left(\frac{1}{3}\right)}{\frac{1}{2}} = \frac{\frac{1}{6}}{\frac{1}{2}} = \frac{1}{3} \]</pre>
 
-                <pre class="math">P(A2 | B) = (P(B | A2) * P(A2)) / P(B) = (1 * 1/3) / (1/2) = (1/3) / (1/2) = 2/3</pre>
+                <pre class="math">\[ P(A_2 \mid B) = \frac{P(B \mid A_2) P(A_2)}{P(B)} = \frac{1 \cdot \left(\frac{1}{3}\right)}{\frac{1}{2}} = \frac{\frac{1}{3}}{\frac{1}{2}} = \frac{2}{3} \]</pre>
 
-                <pre class="math">P(A3 | B) = 0</pre>
+                <pre class="math">\[ P(A_3 \mid B) = 0 \]</pre>
 
                 <p>Interpretation: after the host opens door 3, the probability the car is behind your original choice (door 1) is still <strong>1/3</strong>, and the probability it is behind the other unopened door (door 2) is <strong>2/3</strong>. So switching doubles your chance of winning.</p>
 
