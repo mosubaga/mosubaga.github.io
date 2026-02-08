@@ -50,6 +50,35 @@
         <p>Where the solution must satisfy the condition</p>
         <p><span class="math display">\[ \int_{-\infty}^{\infty} \! \Psi^*\Psi \, \mathrm{d}x = 1\]</span></p>
 
+        <hr>
+
+        <h3>Derivation Sketch: From Classical Energy to Schr&ouml;dinger</h3>
+        <p>
+          Start with the classical non-relativistic energy of a particle in a potential
+          <span class="math display">\[ E = \frac{p^{2}}{2m} + U(\mathbf{r},t). \]</span>
+          De Broglie and Planck relations suggest
+          <span class="math display">\[ E \to i\hbar \frac{\partial}{\partial t}, \qquad \mathbf{p} \to -i\hbar \nabla. \]</span>
+          Substituting these operators into the classical energy expression gives the time-dependent
+          Schr&ouml;dinger equation
+          <span class="math display">\[ i\hbar \frac{\partial \Psi}{\partial t} = -\frac{\hbar^{2}}{2m}\nabla^{2}\Psi + U\Psi. \]</span>
+          For time-independent potentials, separation of variables yields the stationary form
+          <span class="math display">\[ \hat{H}\Psi = E\Psi. \]</span>
+        </p>
+
+        <h3>Why This Leads to the Dirac Equation</h3>
+        <p>
+          The Schr&ouml;dinger equation is not relativistic; it uses the non-relativistic energy-momentum
+          relation. To be consistent with special relativity, start from
+          <span class="math display">\[ E^{2} = p^{2}c^{2} + m^{2}c^{4}. \]</span>
+          Replacing <span class="math display">\(E\)</span> and <span class="math display">\( \mathbf{p} \)</span> by operators leads to the
+          second-order Klein&ndash;Gordon equation. Dirac sought a first-order equation in both time and space:
+          <span class="math display">\[ i\hbar \frac{\partial \Psi}{\partial t} = \left( c\,\boldsymbol{\alpha}\cdot \mathbf{p} + \beta m c^{2} \right)\Psi. \]</span>
+          Requiring that squaring this equation reproduces
+          <span class="math display">\[ E^{2} = p^{2}c^{2} + m^{2}c^{4} \]</span>
+          forces the matrices <span class="math display">\(\boldsymbol{\alpha}\)</span> and <span class="math display">\(\beta\)</span>
+          to satisfy specific anticommutation relations. This introduces spin naturally and explains why
+          the Dirac equation supersedes Schr&ouml;dinger in the relativistic regime.
+        </p>
 
 
 
