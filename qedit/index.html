@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Quick Web Editor</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="center"><h1>Quick Web Text Editor</h1></div>
+
+<div class="card">
+  <div class="controls">
+    <input id="fileInput" type="file" />
+    <button id="saveBtn" class="btn btn-strawberry" type="button">Save As</button>
+    <button id="copyBtn" class="btn btn-mint" type="button" disabled>Copy Text</button>
+    <span id="fileMeta" class="muted"></span>
+  </div>
+  <div id="dropzone" class="dropzone" tabindex="0">Drag the file in</div>
+  <div id="editorWrap" class="editor-wrap" aria-hidden="true">
+    <div id="editor" class="editor"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/script.js"></script>
+</body>
+</html>
