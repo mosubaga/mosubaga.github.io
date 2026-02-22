@@ -39,16 +39,143 @@
 
     <div class="container" style="margin-top: 80px">
 
-        <div>
-          Probability is a branch in mathematics on how likely an event is to occur. Most probalilities are expressed as fractions, decimal numbers or percentages and are measured on a scaled between zero and one. If an event is impossible to occur, the probability is 0. A certain event has a probability of 1. Calculating permutations and combinations are essential on finding probabilities of an event.
-        </div>
-        <br>
-        <div style="border:1px solid black;"><span class="math-article" >To calculate permutation:</span>
-            <p><span class="math display">\[ _{n}P_{r} = \dfrac{n!}{(n - r)!} \]</span></p>
-        </div><br>
-        <div style="border:1px solid black;"><span class="math-article" >To calculate combination:</span>
-          <p><span class="math display">\[ _{n}C_{r} = \dfrac{n!}{r!(n - r)!} \]</span></p>
-      </div>
+      <h1>Introduction to Probability</h1>
+
+      <h2>1.1 The Science of Uncertainty</h2>
+      <p>
+        <strong>Probability theory</strong> is a mathematical discipline that applies abstract,
+        logical-deductive reasoning to formalize the rules of chance. While the concepts of
+        uncertainty are as old as civilization, the formal field developed relatively late
+        compared to geometry or algebra.
+      </p>
+
+      <h3>Historical Context</h3>
+      <p>
+        The birth of modern probability is traditionally attributed to a 17th-century
+        correspondence between <strong>Blaise Pascal</strong> and <strong>Pierre de Fermat</strong>
+        regarding games of chance. Earlier contributions were made by
+        <strong>Gerolamo Cardano</strong>, who wrote the first book on gambling around 1584, and
+        <strong>Galileo Galilei</strong>. The field underwent a major transformation in the 20th
+        century when <strong>Andrei Kolmogorov</strong> established a rigorous axiomatic
+        foundation, placing probability firmly within the realm of modern mathematics.
+      </p>
+
+      <h3>Probability vs. Statistics</h3>
+      <p>While closely related, these two fields approach uncertainty from different directions:</p>
+      <ul>
+        <li>
+          <strong>Probability Theory:</strong> Starts with known models and axioms to determine the
+          likelihood of various outcomes.
+        </li>
+        <li>
+          <strong>Statistics:</strong> The "art of learning from data". It uses observations to
+          infer the underlying probability models or population characteristics.
+        </li>
+      </ul>
+
+      <h2>1.2 Experiments, Sample Spaces, and Events</h2>
+      <p>To analyze chance mathematically, we must define the framework of a <strong>random experiment</strong>.</p>
+      <ul>
+        <li>
+          <strong>Experiment:</strong> Any process, real or hypothetical, with outcomes that can be
+          identified in advance but cannot be predicted with certainty.
+        </li>
+        <li>
+          <strong>Sample Space (\(S\) or \(\Omega\)):</strong> The set of all possible outcomes of
+          an experiment.
+          <ul>
+            <li><em>Example:</em> Tossing a coin twice results in the sample space \(S = \{HH, HT, TH, TT\}\).</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Event:</strong> Any subset of the sample space. An event <strong>occurs</strong>
+          if the actual outcome of the experiment is a member of that subset.
+          <ul>
+            <li>
+              <em>Special Events:</em> The <strong>sure event</strong> (\(S\) itself) is certain to
+              occur, while the <strong>impossible event</strong> (the empty set \(\emptyset\)) can
+              never occur.
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>1.3 Interpretations of Probability</h2>
+      <p>There are three primary ways to interpret what a "probability" actually represents:</p>
+      <ol>
+        <li>
+          <strong>Classical Interpretation:</strong> Based on the assumption of
+          <strong>equally likely outcomes</strong>. The probability of an event is the ratio of
+          favorable cases to the total number of possible cases in the sample space.
+        </li>
+        <li>
+          <strong>Frequentist Interpretation:</strong> Views probability as the
+          <strong>limiting relative frequency</strong> of an event. If an experiment is repeated
+          \(n\) times and the event occurs \(h\) times, the probability is approximately \(h/n\)
+          for very large \(n\).
+        </li>
+        <li>
+          <strong>Subjective (Bayesian) Interpretation:</strong> Defines probability as a measure of
+          an individual's <strong>degree of belief</strong> or conviction regarding the occurrence
+          of a unique, non-repeatable event.
+        </li>
+      </ol>
+
+      <h2>1.4 Kolmogorov&rsquo;s Axioms</h2>
+      <p>
+        Regardless of the interpretation used, all probability measures must satisfy three
+        fundamental axioms established by Kolmogorov:
+      </p>
+      <ul>
+        <li><strong>Axiom 1 (Non-negativity):</strong> For any event \(E\), \(0 \leq P(E) \leq 1\).</li>
+        <li><strong>Axiom 2 (Certainty):</strong> The probability of the entire sample space is 1, \(P(S) = 1\).</li>
+        <li>
+          <strong>Axiom 3 (Additivity):</strong> For any sequence of <strong>mutually exclusive</strong>
+          events (events that cannot happen at the same time), the probability of their union is
+          the sum of their individual probabilities.
+        </li>
+      </ul>
+
+      <h2>1.5 The Algebra of Events</h2>
+      <p>
+        Logical relations between events are expressed using set theory. <strong>Venn diagrams</strong>
+        are often used to visualize these relationships.
+      </p>
+      <ul>
+        <li><strong>Union (\(A \cup B\)):</strong> The event that "either \(A\) or \(B\) or both" occur.</li>
+        <li><strong>Intersection (\(A \cap B\)):</strong> The event that "both \(A\) and \(B\)" occur.</li>
+        <li><strong>Complement (\(A^c\)):</strong> The event that "\(A\) does not occur".</li>
+        <li>
+          <strong>DeMorgan&rsquo;s Laws:</strong> Useful identities for simplifying complex event relations:
+          <ol>
+            <li>\((A \cup B)^c = A^c \cap B^c\)</li>
+            <li>\((A \cap B)^c = A^c \cup B^c\)</li>
+          </ol>
+        </li>
+      </ul>
+
+      <h2>1.6 Principles of Counting (Combinatorics)</h2>
+      <p>
+        In many experiments where outcomes are equally likely, calculating probability reduces to a
+        problem of counting.
+      </p>
+      <ul>
+        <li>
+          <strong>The Basic Principle of Counting (Multiplication Rule):</strong> If one task can
+          result in \(m\) outcomes and a second task in \(n\) outcomes, there are \(m \times n\)
+          total possible outcomes for the two tasks combined.
+        </li>
+        <li>
+          <strong>Permutations (\(P_{n,k}\)):</strong> The number of ways to arrange \(k\) items
+          from a set of \(n\) when <strong>order matters</strong>.
+        </li>
+        <li>
+          <strong>Combinations (\(n\) choose \(k\)):</strong> The number of ways to select a subset
+          of \(k\) items from a set of \(n\) when <strong>order does not matter</strong>. This is
+          expressed as:
+          <p><span class="math display">\[ \binom{n}{k} = \frac{n!}{k!(n-k)!} \]</span></p>
+        </li>
+      </ul>
 
 
 
