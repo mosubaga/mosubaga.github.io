@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>JSON &amp; HTML Formatter</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css" />
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+<main class="demo-page">
+  <div class="page-header demo-hero">
+    <h1 class="ff-heading ff-heading-lg ff-title-gradient">JSON &amp; HTML Formatter</h1>
+    <p>Paste or upload a JSON or HTML file to pretty-print it. Drag &amp; drop supported.</p>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar demo-row">
+    <!-- Upload -->
+    <button class="btn btn-primary ff-btn ff-btn-pink" id="btnUpload" title="Upload a JSON or HTML file">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      Upload file
+    </button>
+    <input type="file" id="fileInput" accept=".json,.html,.htm" hidden />
+
+    <!-- Format -->
+    <button class="btn ff-btn ff-btn-violet" id="btnFormat" title="Pretty-print the content">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+      </svg>
+      Format
+    </button>
+
+    <!-- Save -->
+    <button class="btn btn-success ff-btn ff-btn-blue" id="btnSave" title="Save formatted content to file">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+      </svg>
+      Save
+    </button>
+
+    <!-- Copy -->
+    <button class="btn ff-btn ff-btn-candy" id="btnCopy" title="Copy to clipboard">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      Copy
+    </button>
+
+    <div class="toolbar-spacer"></div>
+
+    <!-- File type badge -->
+    <span class="file-type-badge ff-badge ff-badge-candy" id="fileTypeBadge"></span>
+
+    <!-- Clear -->
+    <button class="btn btn-danger ff-btn ff-btn-ghost" id="btnClear" title="Clear the editor">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+      </svg>
+      Clear
+    </button>
+  </div>
+
+  <!-- Editor -->
+  <div class="editor-wrapper ff-card ff-card-blue dropzone-fixed" id="dropZone">
+    <div class="drop-overlay" id="dropOverlay">
+      <div class="drop-overlay-inner">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p>Drop your JSON or HTML file here</p>
+      </div>
+    </div>
+    <pre
+      id="editor"
+      class="hljs ff-input"
+      contenteditable="true"
+      role="textbox"
+      aria-multiline="true"
+      spellcheck="false"
+      data-placeholder="Paste JSON or HTML here, or upload / drag &amp; drop a file..."
+    ></pre>
+  </div>
+
+  <!-- Status bar -->
+  <div class="status-bar ff-cloud" hidden>
+    <span class="status-msg" id="statusMsg"></span>
+    <span id="charCount" style="margin-left:auto; color: var(--text-dim);"></span>
+  </div>
+
+  <!-- Info -->
+  <div class="info-section demo-grid">
+    <div class="info-card ff-card ff-card-pink">
+      <h2>// Supported formats</h2>
+      <ul>
+        <li><strong style="color:var(--accent-yellow)">JSON</strong> — Pretty-prints with 2-space indentation and sorted keys.</li>
+        <li><strong style="color:#ff8c5a">HTML</strong> — Indents tags and normalises whitespace for readability.</li>
+      </ul>
+    </div>
+    <div class="info-card ff-card ff-card-violet">
+      <h2>// Keyboard shortcuts</h2>
+      <ul>
+        <li><kbd style="font-family:var(--font-mono);background:var(--bg-hover);padding:1px 5px;border-radius:3px;border:1px solid var(--border)">Ctrl+Shift+F</kbd> — Format</li>
+        <li><kbd style="font-family:var(--font-mono);background:var(--bg-hover);padding:1px 5px;border-radius:3px;border:1px solid var(--border)">Ctrl+S</kbd> — Save</li>
+        <li><kbd style="font-family:var(--font-mono);background:var(--bg-hover);padding:1px 5px;border-radius:3px;border:1px solid var(--border)">Ctrl+Shift+C</kbd> — Copy</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
+
