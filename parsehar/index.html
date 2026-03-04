@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HAR Inspector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/ramune.css">
+  <style>
+    /* Supplemental styles not covered by ramune.css */
+    .row { display: grid; grid-template-columns: max-content 1fr; gap: 8px; align-items: start; }
+    .value { word-break: break-word; color: var(--ramune-deep); }
+    .results { display: grid; gap: 12px; }
+    .dropzone { border-style: dashed !important; text-align: center; cursor: pointer; opacity: 0.8; }
+    .dropzone:hover { opacity: 1; }
+    pre.code {
+      background: var(--ramune-foam);
+      color: var(--ramune-deep);
+      padding: 10px;
+      border-radius: var(--radius-md);
+      overflow: auto;
+      max-height: 50vh;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid rgba(59,174,219,0.25);
+      font-family: monospace;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    details { margin-top: 8px; }
+    summary { cursor: pointer; color: var(--ramune-deep); font-family: var(--font-body); }
+    .warn { color: var(--ramune-gold); font-size: 0.88rem; margin-top: 4px; }
+    .error-msg { color: var(--ramune-label-red); margin-top: 0.5rem; font-size: 0.9rem; }
+    .meta-text { opacity: 0.65; font-size: 0.9rem; margin-top: 0.25rem; }
+    .muted { opacity: 0.6; font-size: 0.9rem; }
+    .note { font-size: 0.82rem; opacity: 0.6; }
+    #fileInput { font-family: var(--font-body); font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+
+<main class="demo-page">
+
+  <header class="demo-header">
+    <h1 class="ramune-heading ramune-heading-lg">HAR Inspector</h1>
+  </header>
+
+  <section class="demo-section">
+    <div class="demo-row">
+      <input id="fileInput" type="file" accept=".har,application/json,.json" />
+      <button id="sampleBtn" type="button" class="ramune-btn ramune-btn-secondary">Load sample HAR</button>
+      <span class="muted">Filters: method in GET/POST/PUT/PATCH/DELETE</span>
+    </div>
+  </section>
+
+  <div id="dropzone" class="ramune-card dropzone" tabindex="0">Drop a HAR file here</div>
+  <div id="meta" class="meta-text"></div>
+  <div id="error" class="error-msg" role="alert" aria-live="polite"></div>
+
+  <div id="counts" class="demo-row" style="margin: 8px 0 12px;"></div>
+
+  <div id="results" class="results" aria-live="polite"></div>
+
+</main>
+
+<script type="text/javascript">
+  (function () {
+    const fileInput = document.getElementById("fileInput");
+    const dropzone = document.getElementById("dropzone");
+    const errorBox = document.getElementById("error");
+    const meta = document.getElementById("meta");
+    const countsEl = document.getElementById("counts");
+    const results = document.getElementById("results");
+    const sampleBtn = document.getElementById("sampleBtn");
+
+    const METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE"]);
+    const METHOD_PILL_CLASS = {
+      GET:    "ramune-badge ramune-badge-blue",
+      POST:   "ramune-badge ramune-badge-green",
+      PUT:    "ramune-badge ramune-badge-violet",
+      PATCH:  "ramune-badge ramune-badge-gold",
+      DELETE: "ramune-badge ramune-badge-red",
+    };
+
+    // track last matches for "Copy all"
+    let lastMatches = [];
+
+    function clearMessages() {
+      errorBox.textContent = "";
+      meta.textContent = "";
+      countsEl.textContent = "";
+    }
+    function clearResults() {
+      results.innerHTML = "";
+    }
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error || new Error("Failed to read file."));
+        reader.readAsText(file, "utf-8");
+      });
+    }
+    function isObject(v) { return v && typeof v === "object"; }
+
+    // Pretty-print helper: if value looks like JSON, parse+stringify with 2-space indent
+    function prettyMaybeJSON(text) {
+      if (typeof text !== "string" || !text.trim()) return text;
+      const trimmed = text.trim();
+      try {
+        const parsed = JSON.parse(trimmed);
+        return JSON.stringify(parsed, null, 2);
+      } catch {
+        return text;
+      }
+    }
+
+    async function copyToClipboard(str) {
+      try {
+        await navigator.clipboard.writeText(str);
+        return true;
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = str;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch {}
+        document.body.removeChild(ta);
+        return ok;
+      }
+    }
+
+    function makeCopyBtn(label, getText) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ramune-btn ramune-btn-secondary";
+      btn.style.fontSize = "0.78rem";
+      btn.style.padding = "0.25em 0.75em";
+      btn.textContent = label;
+      btn.addEventListener("click", async () => {
+        const str = getText();
+        const ok = await copyToClipboard(str);
+        btn.textContent = ok ? "Copied!" : "Copy failed";
+        setTimeout(() => (btn.textContent = label), 1200);
+      });
+      return btn;
+    }
+
+    function renderToolbar(matches) {
+      countsEl.innerHTML = "";
+      const count = document.createElement("span");
+      count.className = "ramune-chip";
+      count.textContent = `Matched filters: ${matches.length}`;
+
+      const copyAllBtn = makeCopyBtn("Copy all matches (JSON)", () =>
+        JSON.stringify(matches, null, 2)
+      );
+
+      const note = document.createElement("span");
+      note.className = "note";
+      note.textContent = "Copies an array of {index, method, url, status, requestBody, responseBody}";
+
+      countsEl.appendChild(count);
+      countsEl.appendChild(copyAllBtn);
+      countsEl.appendChild(note);
+    }
+
+    function renderCard({ idx, url, method, status, postText, respText, warnings }) {
+      const card = document.createElement("div");
+      card.className = "ramune-card";
+      const pillClass = METHOD_PILL_CLASS[method] || "ramune-badge";
+      const warnList = warnings.length ? `<div class="warn">Warnings: ${warnings.join("; ")}</div>` : "";
+
+      const prettyPost = postText != null ? prettyMaybeJSON(postText) : null;
+      const prettyResp = respText != null ? prettyMaybeJSON(respText) : null;
+
+      const postSection = (method === "POST" || method === "PUT" || method === "PATCH")
+        ? `<details><summary>Request body</summary>
+             <pre class="code" data-kind="post">${prettyPost ?? "(postData.text not found)"}</pre>
+           </details>` : "";
+
+      const respSection = `<details open><summary>Response body</summary>
+           <pre class="code" data-kind="resp">${prettyResp ?? "(response.content.text not found)"}</pre>
+         </details>`;
+
+      card.innerHTML = `
+        <div class="row">
+          <div class="ramune-label">#</div><div class="value">${idx}</div>
+          <div class="ramune-label">Method</div><div class="value"><span class="${pillClass}">${method || "(missing)"}</span></div>
+          <div class="ramune-label">Status</div><div class="value">${status ?? "(missing response.status)"}</div>
+          <div class="ramune-label">URL</div><div class="value">${url || "(missing)"}</div>
+        </div>
+        <div class="toolbar demo-row" style="margin: 8px 0;"></div>
+        ${postSection}
+        ${respSection}
+        ${warnList}
+      `;
+
+      const toolbar = card.querySelector(".toolbar");
+      toolbar.appendChild(makeCopyBtn("Copy URL", () => url || ""));
+      toolbar.appendChild(makeCopyBtn("Copy method", () => method || ""));
+      toolbar.appendChild(makeCopyBtn("Copy status", () => String(status ?? "")));
+      if (postText != null) {
+        const prePost = card.querySelector('pre[data-kind="post"]');
+        toolbar.appendChild(makeCopyBtn("Copy request body", () => prePost?.textContent || ""));
+      }
+      if (respText != null) {
+        const preResp = card.querySelector('pre[data-kind="resp"]');
+        toolbar.appendChild(makeCopyBtn("Copy response body", () => preResp?.textContent || ""));
+      }
+
+      results.appendChild(card);
+    }
+
+    function analyzeHAR(har, sourceLabel) {
+      clearMessages();
+      clearResults();
+      lastMatches = [];
+
+      if (!isObject(har)) {
+        errorBox.textContent = "HAR is not a JSON object.";
+        return;
+      }
+      const log = har.log;
+      if (!isObject(log)) {
+        errorBox.textContent = 'Missing "log" object in HAR.';
+        return;
+      }
+      const entries = Array.isArray(log.entries) ? log.entries : [];
+      meta.textContent = `Loaded: ${sourceLabel} | entries: ${entries.length}`;
+
+      if (!entries.length) {
+        countsEl.textContent = "No entries found in HAR.";
+        return;
+      }
+
+      let matched = 0;
+
+      entries.forEach((entry, i) => {
+        const warnings = [];
+
+        const req = entry && entry.request;
+        if (!isObject(req)) {
+          warnings.push("entry.request missing");
+          return;
+        }
+
+        const url = req.url;
+        const method = (req.method || "").toUpperCase();
+        const urlStr = typeof url === "string" ? url : "";
+
+        const includesKeyword = urlStr.includes("api") || urlStr.includes("notify");
+        const methodAllowed = METHODS.has(method);
+
+        if (!includesKeyword || !methodAllowed) {
+          return;
+        }
+        matched++;
+
+        // Request body (for POST/PUT/PATCH)
+        let postText = null;
+        if (method === "POST" || method === "PUT" || method === "PATCH") {
+          if (req.postData && typeof req.postData === "object") {
+            if (typeof req.postData.text === "string") {
+              postText = req.postData.text;
+            } else {
+              warnings.push("request.postData.text not found");
+            }
+          } else {
+            warnings.push("request.postData missing");
+          }
+        }
+
+        // Response status and body
+        let status = null;
+        let respText = null;
+        if (isObject(entry.response)) {
+          if (typeof entry.response.status === "number") {
+            status = entry.response.status;
+          } else {
+            warnings.push("response.status missing");
+          }
+
+          const content = entry.response.content;
+          if (isObject(content)) {
+            if (typeof content.text === "string") {
+              if (content.encoding === "base64") {
+                try {
+                  respText = atob(content.text);
+                } catch {
+                  respText = content.text;
+                  warnings.push("response.content.text base64 decode failed");
+                }
+              } else {
+                respText = content.text;
+              }
+            } else {
+              warnings.push("response.content.text not found");
+            }
+          } else {
+            warnings.push("response.content missing");
+          }
+        } else {
+          warnings.push("response missing");
+        }
+
+        // Collect match for "Copy all"
+        lastMatches.push({
+          index: i + 1,
+          method,
+          url: urlStr || "(request.url missing)",
+          status: status,
+          requestBody: postText ?? null,
+          responseBody: respText ?? null,
+        });
+
+        // Emit card
+        renderCard({
+          idx: i + 1,
+          url: urlStr || "(request.url missing)",
+          method,
+          status,
+          postText,
+          respText,
+          warnings,
+        });
+      });
+
+      renderToolbar(lastMatches);
+
+      if (matched === 0) {
+        const hint = document.createElement("div");
+        hint.className = "muted";
+        hint.textContent = 'No matching entries. Tip: ensure methods are GET/POST/PUT/PATCH/DELETE.';
+        results.appendChild(hint);
+      }
+    }
+
+    async function handleFile(file) {
+      clearMessages();
+      clearResults();
+      if (!file) return;
+      try {
+        const text = await readFileAsText(file);
+        const data = JSON.parse(text);
+        analyzeHAR(data, `${file.name} (${file.size || 0} bytes)`);
+      } catch (e) {
+        errorBox.textContent = "Invalid HAR/JSON or read error: " + e.message;
+      }
+    }
+
+    // File input
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files && fileInput.files[0];
+      handleFile(file);
+    });
+
+    // Drag & drop
+    ["dragenter", "dragover", "dragleave", "drop"].forEach(evtName => {
+      dropzone.addEventListener(evtName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+    dropzone.addEventListener("dragover", () => dropzone.style.background = "rgba(59,174,219,0.12)");
+    dropzone.addEventListener("dragleave", () => dropzone.style.background = "");
+    dropzone.addEventListener("drop", (e) => {
+      dropzone.style.background = "";
+      const dt = e.dataTransfer;
+      const file = dt && dt.files && dt.files[0];
+      if (file) handleFile(file);
+    });
+
+    // Keyboard accessibility for dropzone
+    dropzone.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") fileInput.click();
+    });
+
+    // Sample HAR (minimal) for quick testing
+    sampleBtn.addEventListener("click", () => {
+      const sampleHar = {
+        log: {
+          entries: [
+            {
+              request: { url: "https://api.example.com/v1/apis/resource", method: "POST", postData: { text: '{"hello":"world","arr":[1,2,3]}' } },
+              response: { status: 200, content: { text: '{"status":"ok","meta":{"t":123}}' } }
+            },
+            {
+              request: { url: "https://example.com/notify?id=1", method: "GET" },
+              response: { status: 204, content: { text: "" } }
+            },
+            {
+              request: { url: "https://example.com/other", method: "GET" },
+              response: { status: 200, content: { text: "ignored" } }
+            },
+            {
+              request: { url: "https://api.example.com/apis/update", method: "PATCH", postData: { text: '{"x":1}' } },
+              response: { status: 202, content: { text: '{"updated":true}' } }
+            },
+            {
+              request: { url: "https://api.example.com/apis/delete", method: "DELETE" },
+              response: { status: 404, content: { text: '{"error":"not found"}' } }
+            }
+          ]
+        }
+      };
+      analyzeHAR(sampleHar, "Sample HAR");
+    });
+  })();
+</script>
+</body>
+</html>
