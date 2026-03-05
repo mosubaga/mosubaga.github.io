@@ -1,0 +1,419 @@
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Calibri, "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    font-size: 13px;
+    color: #1f1f1f;
+    background: linear-gradient(180deg, #dfe6f3 0%, #eef1f7 100%);
+}
+
+/* ============================================================
+   App Shell
+   ============================================================ */
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #f6f8fc;
+}
+
+/* ============================================================
+   Toolbar
+   ============================================================ */
+#toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: linear-gradient(180deg, #365f9f 0%, #2b579a 100%);
+    border-bottom: 1px solid #1f447f;
+    flex-shrink: 0;
+    user-select: none;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.12);
+}
+
+#toolbar-left {
+    display: flex;
+    gap: 6px;
+}
+
+#toolbar button {
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    white-space: nowrap;
+}
+
+#toolbar button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+#toolbar button:active:not(:disabled) {
+    background: rgba(0, 0, 0, 0.16);
+    border-color: rgba(0, 0, 0, 0.26);
+}
+
+#toolbar button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+#file-name {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ============================================================
+   Formula Bar
+   ============================================================ */
+#formula-bar {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    padding: 4px 8px;
+    background: #eef3fb;
+    border-bottom: 1px solid #cad5e8;
+    flex-shrink: 0;
+}
+
+#name-box {
+    width: 72px;
+    min-width: 72px;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 6px;
+    border: 1px solid #b6c3dd;
+    font-size: 12px;
+    font-family: inherit;
+    text-align: center;
+    color: #2f3b54;
+    background: #fff;
+    cursor: default;
+}
+
+#formula-sep {
+    width: 1px;
+    height: 20px;
+    background: #c5d1e5;
+    margin: 0 8px;
+    flex-shrink: 0;
+}
+
+#formula-input {
+    flex: 1;
+    border: 1px solid #b6c3dd;
+    outline: none;
+    font-size: 13px;
+    font-family: inherit;
+    color: #1f1f1f;
+    padding: 2px 8px;
+    background: #fff;
+}
+
+#formula-input:disabled {
+    color: #8d95a5;
+    cursor: default;
+    background: #f8f9fc;
+}
+
+#formula-input:not(:disabled):focus {
+    border-color: #2b579a;
+    box-shadow: inset 0 0 0 1px rgba(43, 87, 154, 0.15);
+}
+
+/* ============================================================
+   Sheet Area
+   ============================================================ */
+#sheet-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #edf1f8 0%, #f4f6fb 100%);
+}
+
+/* ============================================================
+   Drop Overlay
+   ============================================================ */
+#drop-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(43, 87, 154, 0.1);
+    border: 4px dashed #2b579a;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+#drop-overlay.hidden {
+    display: none;
+}
+
+#drop-content {
+    text-align: center;
+    color: #2b579a;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 32px 48px;
+    border-radius: 4px;
+    box-shadow: 0 8px 28px rgba(23, 37, 66, 0.18);
+    border: 1px solid #d2dced;
+}
+
+#drop-icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+}
+
+#drop-label {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* ============================================================
+   Welcome Screen
+   ============================================================ */
+#welcome-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+}
+
+#welcome-screen.hidden {
+    display: none;
+}
+
+#welcome-box {
+    text-align: center;
+    color: #4d5970;
+    background: #fff;
+    padding: 36px 42px;
+    border: 1px solid #d2dced;
+    box-shadow: 0 10px 30px rgba(25, 40, 74, 0.14);
+}
+
+#welcome-icon {
+    font-size: 72px;
+    margin-bottom: 16px;
+}
+
+#welcome-box h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #2b579a;
+    margin-bottom: 10px;
+}
+
+#welcome-box p {
+    font-size: 15px;
+    color: #64708a;
+    margin-bottom: 20px;
+}
+
+#btn-open-welcome {
+    padding: 10px 26px;
+    background: #2b579a;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+#btn-open-welcome:hover {
+    background: #21457b;
+}
+
+.hint {
+    font-size: 12px;
+    color: #8a93a8;
+    margin-top: 10px !important;
+}
+
+/* ============================================================
+   Grid Wrapper
+   ============================================================ */
+#grid-wrapper {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #f1f3f8;
+    outline: none;
+    padding: 14px;
+}
+
+#grid-wrapper.hidden {
+    display: none;
+}
+
+#grid-scroll {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    outline: none;
+    background: #fff;
+    border: 1px solid #cfd8e8;
+    box-shadow: 0 10px 24px rgba(28, 43, 76, 0.12);
+}
+
+/* ============================================================
+   Grid Table
+   ============================================================ */
+#grid {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    min-width: 100%;
+}
+
+/* Corner cell (top-left) */
+.corner {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    width: 52px;
+    min-width: 52px;
+    background: #e9eef7;
+    border-right: 1px solid #bcc9e1;
+    border-bottom: 1px solid #bcc9e1;
+}
+
+/* Column headers (A, B, C...) */
+.col-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #e9eef7;
+    border-right: 1px solid #c9d3e8;
+    border-bottom: 2px solid #b2c0dc;
+    padding: 0 6px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #33435f;
+    height: 24px;
+    min-width: 82px;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.col-header.active {
+    background: #2b579a;
+    color: #fff;
+    border-bottom-color: #21457b;
+}
+
+/* Row headers (1, 2, 3...) */
+.row-header {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background: #e9eef7;
+    border-right: 2px solid #b2c0dc;
+    border-bottom: 1px solid #c9d3e8;
+    padding: 0 6px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 600;
+    color: #33435f;
+    height: 22px;
+    width: 52px;
+    min-width: 52px;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.row-header.active {
+    background: #2b579a;
+    color: #fff;
+    border-right-color: #21457b;
+}
+
+/* Data cells */
+.cell {
+    border-right: 1px solid #e0e5f0;
+    border-bottom: 1px solid #e0e5f0;
+    padding: 0 6px;
+    height: 22px;
+    min-width: 82px;
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: cell;
+    font-size: 13px;
+    color: #1f1f1f;
+    background: #fff;
+    vertical-align: middle;
+}
+
+.cell:hover {
+    background: #f5f8fd;
+}
+
+/* Selected (active) cell */
+.cell.active {
+    background: #fff;
+    outline: 2px solid #2b579a;
+    outline-offset: -2px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Cell in edit mode (formula bar is being used) */
+.cell.editing {
+    background: #fff9e8;
+    outline: 2px solid #c88400;
+    outline-offset: -2px;
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================================
+   Status Bar
+   ============================================================ */
+#status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+    padding: 0 12px;
+    background: #2b579a;
+    border-top: 1px solid #21457b;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    flex-shrink: 0;
+    user-select: none;
+}

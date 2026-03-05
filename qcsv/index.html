@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>qCSV - CSV Editor</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+
+        <!-- Toolbar -->
+        <div id="toolbar">
+            <div id="toolbar-left">
+                <button id="btn-open" title="Open CSV file">Open</button>
+                <button id="btn-save" title="Save CSV file (Ctrl+S)" disabled>Save</button>
+                <input type="file" id="file-input" accept=".csv" hidden>
+            </div>
+            <div id="file-name">No file open</div>
+        </div>
+
+        <!-- Formula bar -->
+        <div id="formula-bar">
+            <div id="name-box">&#8212;</div>
+            <div id="formula-sep"></div>
+            <input type="text" id="formula-input" placeholder="Select a cell to edit" disabled>
+        </div>
+
+        <!-- Spreadsheet area -->
+        <div id="sheet-area">
+
+            <!-- Drop overlay (covers whole page while dragging) -->
+            <div id="drop-overlay" class="hidden">
+                <div id="drop-content">
+                    <div id="drop-icon">&#128193;</div>
+                    <div id="drop-label">Drop CSV file here</div>
+                </div>
+            </div>
+
+            <!-- Welcome screen -->
+            <div id="welcome-screen">
+                <div id="welcome-box">
+                    <div id="welcome-icon">&#128202;</div>
+                    <h1>qCSV Editor</h1>
+                    <p>Open a CSV file to get started</p>
+                    <button id="btn-open-welcome">Browse for CSV file&hellip;</button>
+                    <p class="hint">or drag &amp; drop a CSV file anywhere on the page</p>
+                </div>
+            </div>
+
+            <!-- Grid (hidden until file loaded) -->
+            <div id="grid-wrapper" class="hidden">
+                <div id="grid-scroll" tabindex="-1">
+                    <table id="grid" cellspacing="0">
+                        <thead id="grid-head"></thead>
+                        <tbody id="grid-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Status bar -->
+        <div id="status-bar">
+            <span id="status-info">Ready</span>
+            <span id="status-cell"></span>
+        </div>
+
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
