@@ -1,4 +1,6 @@
 (function () {
+  const monacoVersion = "0.52.2";
+  const monacoBaseUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${monacoVersion}/min`;
   const fileInput = document.getElementById("fileInput");
   const dropzone = document.getElementById("dropzone");
   const saveBtn = document.getElementById("saveBtn");
@@ -7,53 +9,88 @@
   const editorWrap = document.getElementById("editorWrap");
 
   let editor = null;
+  let monacoReady = null;
   let currentName = "untitled.txt";
   copyBtn.disabled = true;
 
-  function ensureEditor() {
+  function loadMonaco() {
+    if (window.monaco && window.monaco.editor) {
+      return Promise.resolve(window.monaco);
+    }
+    if (monacoReady) return monacoReady;
+    monacoReady = new Promise((resolve, reject) => {
+      window.MonacoEnvironment = {
+        getWorkerUrl() {
+          const workerSource =
+            `self.MonacoEnvironment={baseUrl:'${monacoBaseUrl}/'};` +
+            `importScripts('${monacoBaseUrl}/vs/base/worker/workerMain.min.js');`;
+          return `data:text/javascript;charset=utf-8,${encodeURIComponent(workerSource)}`;
+        },
+      };
+      if (!window.require) {
+        reject(new Error("Monaco loader is unavailable."));
+        return;
+      }
+      window.require.config({ paths: { vs: `${monacoBaseUrl}/vs` } });
+      window.require(["vs/editor/editor.main"], () => resolve(window.monaco), reject);
+    });
+    return monacoReady;
+  }
+
+  async function ensureEditor() {
     if (editor) return editor;
-    editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.session.setMode("ace/mode/text");
-    editor.setFontSize("18px");
+    const monaco = await loadMonaco();
+    editor = monaco.editor.create(document.getElementById("editor"), {
+      value: "",
+      language: "plaintext",
+      theme: "vs-dark",
+      fontSize: 18,
+      automaticLayout: true,
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false,
+    });
     return editor;
   }
 
   function setModeFromFilename(name) {
+    if (!editor || !window.monaco) return;
     const ext = (name.split(".").pop() || "").toLowerCase();
     const map = {
-      pl : "perl",
-      pm : "perl",
+      pl: "perl",
+      pm: "perl",
       js: "javascript",
       mjs: "javascript",
       cjs: "javascript",
       ts: "typescript",
-      tsx: "tsx",
-      jsx: "jsx",
+      tsx: "typescript",
+      jsx: "javascript",
       html: "html",
       htm: "html",
       css: "css",
-      json: "javascript",
+      json: "json",
       md: "markdown",
       markdown: "markdown",
-      txt: "text",
+      txt: "plaintext",
       py: "python",
       rb: "ruby",
       java: "java",
-      c: "c_cpp",
-      h: "c_cpp",
-      cpp: "c_cpp",
-      hpp: "c_cpp",
-      go: "golang",
+      c: "c",
+      h: "cpp",
+      cpp: "cpp",
+      hpp: "cpp",
+      go: "go",
       rs: "rust",
       php: "php",
-      sh: "sh",
+      sh: "shell",
       yaml: "yaml",
       yml: "yaml",
       xml: "xml",
     };
-    const mode = map[ext] || "text";
-    editor.session.setMode(`ace/mode/${mode}`);
+    const language = map[ext] || "plaintext";
+    const model = editor.getModel();
+    if (model) {
+      window.monaco.editor.setModelLanguage(model, language);
+    }
   }
 
   function showEditor() {
@@ -75,20 +112,20 @@
     if (!file) return;
     try {
       const text = await readFile(file);
-      const ed = ensureEditor();
-      ed.setValue(text, -1);
+      const ed = await ensureEditor();
+      ed.setValue(text);
       currentName = file.name || "untitled.txt";
       setModeFromFilename(currentName);
-        fileMeta.textContent = `${currentName} (${file.size || 0} bytes)`;
-        copyBtn.disabled = false;
+      fileMeta.textContent = `${currentName} (${file.size || 0} bytes)`;
+      copyBtn.disabled = false;
       showEditor();
     } catch (e) {
       fileMeta.textContent = "Could not read file.";
     }
   }
 
-  function saveAs() {
-    const ed = ensureEditor();
+  async function saveAs() {
+    const ed = await ensureEditor();
     const blob = new Blob([ed.getValue()], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -124,9 +161,11 @@
     if (e.key === "Enter" || e.key === " ") fileInput.click();
   });
 
-  saveBtn.addEventListener("click", saveAs);
+  saveBtn.addEventListener("click", () => {
+    saveAs();
+  });
   copyBtn.addEventListener("click", async () => {
-    const ed = ensureEditor();
+    const ed = await ensureEditor();
     const text = ed.getValue();
     let ok = false;
     if (navigator.clipboard && navigator.clipboard.writeText) {
