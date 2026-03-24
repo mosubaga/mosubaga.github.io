@@ -54,10 +54,56 @@
         <p>The matrix is a Markov matrix and the eigenvalues are:</p>
         <p><span class="math display">\[ \lambda = 0.7, 1 \]</span></p>
         <p>Can calulate the eigenvectors are as eigenvalues are determined.</p>
-        <p><span class="math display">\[ v_1 = \begin{bmatrix} 0.5\\ 1 \end{bmatrix}  \space v_2 = \begin{bmatrix} 1\\ -1 \end{bmatrix} \]<span><p>
+        <p><span class="math display">\[ v_1 = \begin{bmatrix} 0.5\\ 1 \end{bmatrix}  \space v_2 = \begin{bmatrix} 1\\ -1 \end{bmatrix} \]</span></p>
         <p>From the findings above, if there are 1500 people in town and if human = 500 and zombies = 1000:</p>
-            <p><span class="math display"><span>\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} 500\\ 1000 \end{bmatrix}=  \begin{bmatrix} 500\\1000 \end{bmatrix}\]</span></p>
-            <p>No matter how much progresses, the number of humans and zombies will remain the same.</p>
+        <p><span class="math display">\[\begin{bmatrix} 0.8 & 0.1\\ 0.2 & 0.9 \end{bmatrix}\begin{bmatrix} 500\\ 1000 \end{bmatrix}=  \begin{bmatrix} 500\\1000 \end{bmatrix}\]</span></p>
+        <p>No matter how much progresses, the number of humans and zombies will remain the same.</p>
+
+        <hr>
+
+        <h3>How Eigenvalues and Eigenvectors Are Used in Quantum Mechanics</h3>
+        <p>
+            Eigenvalues and eigenvectors play a central role in quantum mechanics because
+            physical quantities are represented by operators. If an operator
+            \( \hat{A} \) acts on a state \( \psi \) and satisfies
+        </p>
+        <p><span class="math display">\[ \hat{A}\psi = a\psi \]</span></p>
+        <p>
+            then \( \psi \) is an eigenvector, or eigenstate, of the operator and
+            \( a \) is the corresponding eigenvalue.
+        </p>
+
+        <p>
+            In physics, the eigenvalue is the measurable value of the quantity. For
+            example, if \( \hat{H} \) is the Hamiltonian operator, then solving
+        </p>
+        <p><span class="math display">\[ \hat{H}\psi_n = E_n\psi_n \]</span></p>
+        <p>
+            gives the allowed energy levels \(E_n\) of the system and the corresponding
+            energy eigenstates \(\psi_n\).
+        </p>
+
+        <p>
+            This matters because a general quantum state can be written as a linear
+            combination of eigenstates:
+        </p>
+        <p><span class="math display">\[ \Psi = \sum_n c_n \psi_n \]</span></p>
+        <p>
+            When a measurement is made, the probability of observing the eigenvalue
+            \(E_n\) is related to the coefficient \(c_n\). In that sense, eigenvectors
+            provide the natural basis for describing quantum states.
+        </p>
+
+        <p>
+            Eigenvalues also simplify time evolution. If the system starts in a single
+            energy eigenstate, then its time dependence is especially simple:
+        </p>
+        <p><span class="math display">\[ \Psi_n(x,t) = \psi_n(x)e^{-iE_nt/\hbar} \]</span></p>
+        <p>
+            So, just as eigenvectors reveal the long-term behavior of the zombie-human
+            system, eigenstates in quantum mechanics reveal the special states whose
+            behavior under measurement and time evolution is easiest to understand.
+        </p>
     </div><!-- /.container -->
 
 

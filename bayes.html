@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>Bayes' Theorem</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Custom styles for this template -->
+        <!-- Hightlight -->
+        <link rel="stylesheet" href="css/prism.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="css/prism.js"></script>
+        <link href="starter-template.css" rel="stylesheet" />
+        <script src="https://api.onelink-preview.com/moxie.min.js"></script>
+        <script
+            type="text/javascript"
+            async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"
+        ></script>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="headercontainer">
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="perl.html">Perl</a></li>
+                        <li><a href="python.html">Python</a></li>
+                        <li><a href="go.html">Go</a></li>
+                        <li><a href="articles.html">Articles</a></li>
+                        <li><a href="reference.html">Reference</a></li>
+                        <li><a href="rotk.html">ROTK</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <div class="container" style="margin-top: 80px">
+            <h1>Bayes' Theorem</h1>
+
+            <p>
+                <strong>Bayes' theorem</strong> is a mathematical formula used to
+                determine the probability of an event based on prior knowledge of
+                conditions that might be related to that event. At its core, it is a
+                tool for <strong>updating beliefs</strong> when new evidence is
+                introduced. Rather than letting evidence determine a belief in a vacuum,
+                the theorem treats it as a way to revise what you already knew.
+            </p>
+
+            <h2>How the Formula Works</h2>
+            <p>The theorem is mathematically stated as:</p>
+            <p>\[ P(A|B) = \frac{P(B|A)P(A)}{P(B)} \]</p>
+
+            <ul>
+                <li>
+                    <strong>\(P(A)\) (The Prior):</strong> Your initial degree of
+                    belief in a hypothesis \(A\) before seeing any evidence.
+                </li>
+                <li>
+                    <strong>\(P(B|A)\) (The Likelihood):</strong> The probability that
+                    the evidence \(B\) would occur if your hypothesis is true.
+                </li>
+                <li>
+                    <strong>\(P(B)\) (The Evidence):</strong> The total probability of
+                    the evidence occurring under all possible scenarios.
+                </li>
+                <li>
+                    <strong>\(P(A|B)\) (The Posterior):</strong> Your updated belief in
+                    the hypothesis after accounting for the new evidence.
+                </li>
+            </ul>
+
+            <hr />
+
+            <h2>Application 1: Medical Testing</h2>
+            <p>
+                One of the most famous applications is interpreting medical test
+                results. A common mistake is assuming a test's accuracy, for example
+                \(90\%\), is the same as the probability that a patient has the disease.
+            </p>
+
+            <h3>The Example</h3>
+            <p>
+                Imagine a screening for a disease that affects
+                <strong>\(1\%\) of the population</strong>, the prior.
+            </p>
+            <ul>
+                <li>
+                    <strong>Sensitivity:</strong> The test correctly identifies
+                    \(80\%\) of people who have the disease.
+                </li>
+                <li>
+                    <strong>Specificity:</strong> The test correctly identifies
+                    \(90.4\%\) of people who are healthy, meaning it has a
+                    <strong>\(9.6\%\) false positive rate</strong>.
+                </li>
+            </ul>
+
+            <p>
+                If a patient tests positive, Bayes' theorem reveals the actual chance
+                they have the disease is only about <strong>\(7.8\%\)</strong>.
+            </p>
+
+            <h3>Why This Happens</h3>
+            <p>
+                Because the disease is rare, the number of <strong>false positives</strong>
+                from the healthy \(99\%\) of the population overwhelms the
+                <strong>true positives</strong> from the sick \(1\%\). To make this
+                intuitive, consider \(1{,}000\) people:
+            </p>
+            <ol>
+                <li>10 people have the disease, and 8 will test positive.</li>
+                <li>990 people are healthy, and roughly 95 will test positive anyway.</li>
+                <li>
+                    That makes 103 positive tests in total, and only 8 of those 103
+                    actually have the disease, which is about \(7.8\%\).
+                </li>
+            </ol>
+
+            <hr />
+
+            <h2>Application 2: Detecting Spam and Fake Ads</h2>
+            <p>
+                Bayesian filtering is a cornerstone of modern email and internet safety.
+                It treats the content of a message or ad as a series of tests.
+            </p>
+            <ul>
+                <li><strong>The Event:</strong> Is this message spam?</li>
+                <li>
+                    <strong>The Test:</strong> Does it contain specific words such as
+                    "viagra," "free," or "winner"?
+                </li>
+            </ul>
+
+            <h3>The Process</h3>
+            <ol>
+                <li>
+                    <strong>Prior Probability:</strong> The filter starts with a
+                    general probability that any incoming message might be spam.
+                </li>
+                <li>
+                    <strong>Likelihood:</strong> The system is trained on many emails
+                    to learn that certain words have a much higher probability of
+                    appearing in spam than in normal messages.
+                </li>
+                <li>
+                    <strong>Updating:</strong> As the filter scans a message and finds
+                    trigger words, it uses Bayes' theorem to incrementally update the
+                    probability that the message is spam.
+                </li>
+                <li>
+                    <strong>Threshold:</strong> Rather than a simple yes/no blacklist,
+                    the filter calculates a final probability and compares it against a
+                    threshold.
+                </li>
+            </ol>
+
+            <hr />
+
+            <h2>Why Bayes' Theorem Matters</h2>
+            <p>
+                The most important lesson of Bayes' theorem is that
+                <strong>new evidence should not replace your prior beliefs, but update
+                them</strong>. If the prior is extremely low, such as a very rare
+                disease or a very trusted sender, it takes a large amount of evidence,
+                or a very high <strong>Bayes factor</strong>, to significantly change
+                the final probability.
+            </p>
+
+            <h2>Odds Form and Bayes Factor</h2>
+            <p>
+                A very useful way to interpret Bayes' theorem is through
+                <strong>odds</strong>. In odds form, the posterior odds equal the prior
+                odds times the Bayes factor:
+            </p>
+            <p>
+                \[
+                \frac{P(A|B)}{P(A^c|B)} =
+                \frac{P(A)}{P(A^c)} \cdot
+                \frac{P(B|A)}{P(B|A^c)}
+                \]
+            </p>
+            <p>
+                The ratio
+                \( \frac{P(B|A)}{P(B|A^c)} \) is called the
+                <strong>Bayes factor</strong>. It measures how strongly the evidence
+                favors one hypothesis over another. This point of view is especially
+                useful in statistics, scientific inference, and machine learning,
+                because it separates what you believed before seeing the data from what
+                the new data is telling you.
+            </p>
+
+            <h2>Naive Bayes in Machine Learning</h2>
+            <p>
+                One of the most practical descendants of Bayes' theorem is the
+                <strong>Naive Bayes classifier</strong>. It assumes that features are
+                conditionally independent given the class, which is often not exactly
+                true but works surprisingly well in practice.
+            </p>
+            <p>
+                For features \(x_1, x_2, \dots, x_n\) and class \(C\), the classifier
+                uses
+            </p>
+            <p>
+                \[
+                P(C \mid x_1, \dots, x_n)
+                \propto
+                P(C)\prod_{i=1}^{n} P(x_i \mid C)
+                \]
+            </p>
+            <p>
+                This idea powers many simple but effective systems for text
+                classification, spam detection, and document tagging.
+            </p>
+        </div>
+    </body>
+</html>

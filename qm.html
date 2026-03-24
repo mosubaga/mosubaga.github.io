@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>The Schr&ouml;dinger Equation</title>
+    <title>Quantum Mechanics Notes</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -38,50 +38,239 @@
     </nav>
 
     <div class="container" style="margin-top: 80px">
+      <h1>Quantum Mechanics Notes</h1>
+      <p>
+        These notes collect the original Schr&ouml;dinger and Dirac equation overview,
+        followed by two standard Schr&ouml;dinger equation examples: the harmonic
+        oscillator and the free particle. The equations below use MathJax delimiters so
+        they render directly in the browser.
+      </p>
 
-        <div>
-          The Schr&ouml;dinger Equation was published in 1926, forming the basis for Quantum Mechanics.
-        </div><br>
+      <div>
+        The Schr&ouml;dinger Equation was published in 1926, forming the basis for
+        Quantum Mechanics.
+      </div>
+      <br>
 
-        <div style="border:1px solid black;"><span class="math-article" >The initial form is:</span>
-          <p><span class="math display">\[ \hat{H}\Psi=E\Psi  \]</span></p>
-          <p><span class="math display">\[ -\dfrac{\hbar^{2}}{2m}\bigtriangledown ^{2} \Psi +U\Psi=E\Psi = i\hbar \dfrac{\partial \Psi}{\partial t} \]</span></p>
-        </div><br>
-        <p>Where the solution must satisfy the condition</p>
-        <p><span class="math display">\[ \int_{-\infty}^{\infty} \! \Psi^*\Psi \, \mathrm{d}x = 1\]</span></p>
+      <div style="border:1px solid black;">
+        <span class="math-article">The initial form is:</span>
+        <p>\[ \hat{H}\Psi = E\Psi \]</p>
+        <p>\[ -\dfrac{\hbar^{2}}{2m}\nabla^{2} \Psi + U\Psi = E\Psi = i\hbar \dfrac{\partial \Psi}{\partial t} \]</p>
+      </div>
+      <br>
+      <p>Where the solution must satisfy the condition</p>
+      <p>\[ \int_{-\infty}^{\infty} \! \Psi^*\Psi \, \mathrm{d}x = 1 \]</p>
 
-        <hr>
+      <hr>
 
-        <h3>Derivation Sketch: From Classical Energy to Schr&ouml;dinger</h3>
-        <p>
-          Start with the classical non-relativistic energy of a particle in a potential
-          <span class="math display">\[ E = \frac{p^{2}}{2m} + U(\mathbf{r},t). \]</span>
-          De Broglie and Planck relations suggest
-          <span class="math display">\[ E \to i\hbar \frac{\partial}{\partial t}, \qquad \mathbf{p} \to -i\hbar \nabla. \]</span>
-          Substituting these operators into the classical energy expression gives the time-dependent
-          Schr&ouml;dinger equation
-          <span class="math display">\[ i\hbar \frac{\partial \Psi}{\partial t} = -\frac{\hbar^{2}}{2m}\nabla^{2}\Psi + U\Psi. \]</span>
-          For time-independent potentials, separation of variables yields the stationary form
-          <span class="math display">\[ \hat{H}\Psi = E\Psi. \]</span>
-        </p>
+      <h2>Derivation Sketch: From Classical Energy to Schr&ouml;dinger</h2>
+      <p>
+        Start with the classical non-relativistic energy of a particle in a potential
+        \[ E = \frac{p^{2}}{2m} + U(\mathbf{r},t). \]
+        De Broglie and Planck relations suggest
+        \[ E \to i\hbar \frac{\partial}{\partial t}, \qquad \mathbf{p} \to -i\hbar \nabla. \]
+        Substituting these operators into the classical energy expression gives the
+        time-dependent Schr&ouml;dinger equation
+        \[ i\hbar \frac{\partial \Psi}{\partial t} = -\frac{\hbar^{2}}{2m}\nabla^{2}\Psi + U\Psi. \]
+        For time-independent potentials, separation of variables yields the stationary
+        form
+        \[ \hat{H}\Psi = E\Psi. \]
+      </p>
 
-        <h3>Why This Leads to the Dirac Equation</h3>
-        <p>
-          The Schr&ouml;dinger equation is not relativistic; it uses the non-relativistic energy-momentum
-          relation. To be consistent with special relativity, start from
-          <span class="math display">\[ E^{2} = p^{2}c^{2} + m^{2}c^{4}. \]</span>
-          Replacing <span class="math display">\(E\)</span> and <span class="math display">\( \mathbf{p} \)</span> by operators leads to the
-          second-order Klein&ndash;Gordon equation. Dirac sought a first-order equation in both time and space:
-          <span class="math display">\[ i\hbar \frac{\partial \Psi}{\partial t} = \left( c\,\boldsymbol{\alpha}\cdot \mathbf{p} + \beta m c^{2} \right)\Psi. \]</span>
-          Requiring that squaring this equation reproduces
-          <span class="math display">\[ E^{2} = p^{2}c^{2} + m^{2}c^{4} \]</span>
-          forces the matrices <span class="math display">\(\boldsymbol{\alpha}\)</span> and <span class="math display">\(\beta\)</span>
-          to satisfy specific anticommutation relations. This introduces spin naturally and explains why
-          the Dirac equation supersedes Schr&ouml;dinger in the relativistic regime.
-        </p>
+      <h2>Why This Leads to the Dirac Equation</h2>
+      <p>
+        The Schr&ouml;dinger equation is not relativistic; it uses the
+        non-relativistic energy-momentum relation. To be consistent with special
+        relativity, start from
+        \[ E^{2} = p^{2}c^{2} + m^{2}c^{4}. \]
+        Replacing \(E\) and \( \mathbf{p} \) by operators leads to the second-order
+        Klein-Gordon equation. Dirac sought a first-order equation in both time and
+        space:
+        \[ i\hbar \frac{\partial \Psi}{\partial t} = \left( c\,\boldsymbol{\alpha}\cdot \mathbf{p} + \beta m c^{2} \right)\Psi. \]
+        Requiring that squaring this equation reproduces
+        \[ E^{2} = p^{2}c^{2} + m^{2}c^{4} \]
+        forces the matrices \(\boldsymbol{\alpha}\) and \(\beta\) to satisfy specific
+        anticommutation relations. This introduces spin naturally and explains why the
+        Dirac equation supersedes Schr&ouml;dinger in the relativistic regime.
+      </p>
 
+      <hr>
 
+      <h2>Solving the Harmonic Oscillator</h2>
+      <p>
+        To solve the Schr&ouml;dinger equation for the <strong>harmonic oscillator</strong>,
+        physicists generally use one of two primary methods: a "diabolically clever"
+        <strong>algebraic technique</strong> using ladder operators or a "brute force"
+        <strong>analytic approach</strong> using power series.
+      </p>
 
+      <h3>1. Setting up the Problem</h3>
+      <p>
+        The potential energy for a simple harmonic oscillator is given by
+        <strong>\(V(x) = \frac{1}{2}m\omega^2x^2\)</strong>, where \(m\) is the mass and
+        \(\omega\) is the classical frequency of oscillation. The
+        <strong>time-independent Schr&ouml;dinger equation</strong> for this system is:
+      </p>
+      <p>\[ -\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2} + \frac{1}{2}m\omega^2x^2\psi = E\psi \]</p>
+
+      <h3>2. The Algebraic Method (Ladder Operators)</h3>
+      <p>
+        This method factors the Hamiltonian using two non-Hermitian operators,
+        <strong>\(a_-\)</strong> (the lowering or annihilation operator) and
+        <strong>\(a_+\)</strong> (the raising or creation operator).
+      </p>
+      <ul>
+        <li>
+          <strong>Operator Definitions:</strong> The operators are defined such that they
+          satisfy the commutation relation \( [a_-, a_+] = 1 \).
+        </li>
+        <li>
+          <strong>Rewriting the Hamiltonian:</strong> The Hamiltonian can be expressed as
+          \( H = \hbar\omega(a_+ a_- + 1/2) \).
+        </li>
+        <li>
+          <strong>The Ground State:</strong> The lowest energy state, \(\psi_0\), must be
+          annihilated by the lowering operator, \( a_-\psi_0 = 0 \), because there is no
+          lower state. Solving this first-order differential equation yields the
+          <strong>Gaussian ground state</strong>:
+        </li>
+      </ul>
+      <p>\[ \psi_0(x) = \left(\frac{m\omega}{\pi\hbar}\right)^{1/4} e^{-\frac{m\omega}{2\hbar}x^2} \]</p>
+      <ul>
+        <li>
+          <strong>Generating Excited States:</strong> Higher states are generated by
+          repeatedly applying the raising operator to the ground state:
+          \( \psi_n = \frac{1}{\sqrt{n!}}(a_+)^n \psi_0 \).
+        </li>
+      </ul>
+
+      <h3>3. The Analytic Method (Power Series)</h3>
+      <p>
+        This method solves the differential equation directly by introducing a
+        dimensionless variable \( \xi = \sqrt{\frac{m\omega}{\hbar}}x \).
+      </p>
+      <ul>
+        <li>
+          <strong>Peeling off the Exponential:</strong> To find a normalizable solution,
+          one peels off the required Gaussian behavior at large distances:
+          \( \psi(\xi) = h(\xi)e^{-\xi^2/2} \).
+        </li>
+        <li>
+          <strong>Hermite Polynomials:</strong> Substituting this into the
+          Schr&ouml;dinger equation leads to a differential equation for \(h(\xi)\),
+          which is solved using a <strong>power series</strong>.
+        </li>
+        <li>
+          <strong>Quantization Condition:</strong> For the series to be normalizable,
+          meaning it does not blow up at infinity, it must terminate into a polynomial.
+          This requirement forces the energy to take only specific, discrete values.
+        </li>
+      </ul>
+
+      <h3>4. The Final Results</h3>
+      <p>Regardless of the method used, the solutions are consistent:</p>
+      <ul>
+        <li>
+          <strong>Energy Eigenvalues:</strong> The allowed energy levels are quantized and
+          equally spaced:
+        </li>
+      </ul>
+      <p>\[ E_n = \left(n + \frac{1}{2}\right)\hbar\omega, \quad n = 0, 1, 2, \dots \]</p>
+      <ul>
+        <li>
+          <strong>Zero-Point Energy:</strong> Even in the ground state (\(n=0\)), the
+          system has a non-zero energy of <strong>\(E_0 = \frac{1}{2}\hbar\omega\)</strong>,
+          a consequence of the uncertainty principle.
+        </li>
+        <li>
+          <strong>Eigenfunctions:</strong> The wave functions for the \(n\)-th state
+          involve <strong>Hermite polynomials</strong> \(H_n\):
+        </li>
+      </ul>
+      <p>\[ \psi_n(x) = \left(\frac{m\omega}{\pi\hbar}\right)^{1/4} \frac{1}{\sqrt{2^n n!}} H_n(\xi) e^{-\xi^2/2} \]</p>
+      <ul>
+        <li>
+          <strong>Spatial Features:</strong> Higher-energy wave functions oscillate more
+          rapidly and are more spread out into classically forbidden regions where
+          \(E < V\).
+        </li>
+      </ul>
+
+      <hr>
+
+      <h2>Solving the Free Particle</h2>
+      <p>
+        Solving the Schr&ouml;dinger equation for a <strong>free particle</strong>, where
+        the potential energy is \(V(x) = 0\) everywhere, is a surprisingly subtle
+        process because the standard stationary-state solutions are not physically
+        realizable on their own.
+      </p>
+
+      <h3>1. The Time-Independent Schr&ouml;dinger Equation</h3>
+      <p>For a free particle, the equation simplifies to:</p>
+      <p>\[ -\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2} = E\psi \quad \text{or} \quad \frac{d^2\psi}{dx^2} = -k^2\psi \]</p>
+      <p>
+        where the wave number is defined as
+        <strong>\(k \equiv \frac{\sqrt{2mE}}{\hbar}\)</strong>. Since there are no
+        boundary conditions to restrict the possible values of \(k\), the free particle
+        can carry <strong>any positive energy</strong>.
+      </p>
+
+      <h3>2. Separable Solutions (Stationary States)</h3>
+      <p>The general solution is typically written in exponential form:</p>
+      <p>\[ \psi(x) = Ae^{ikx} + Be^{-ikx} \]</p>
+      <p>
+        When the standard time dependence \(e^{-iEt/\hbar}\) is added, the full wave
+        function becomes a combination of traveling waves:
+      </p>
+      <p>\[ \Psi(x, t) = Ae^{ik(x - \frac{\hbar k}{2m}t)} + Be^{-ik(x + \frac{\hbar k}{2m}t)} \]</p>
+      <ul>
+        <li>Terms with \(e^{ikx}\) represent waves traveling to the right.</li>
+        <li>Terms with \(e^{-ikx}\) represent waves traveling to the left.</li>
+        <li>These waves carry a definite momentum \(p = \hbar k\).</li>
+      </ul>
+
+      <h3>3. The Normalization Problem</h3>
+      <p>
+        The primary difficulty is that these stationary states are <strong>not
+        normalizable</strong>. The integral of \(|\Psi|^2\) over all space is infinite,
+        meaning there is no such thing as a free particle with a perfectly definite
+        energy and momentum. Such a state would have a completely undetermined position
+        according to the <strong>uncertainty principle</strong>.
+      </p>
+
+      <h3>4. The Physical Solution: Wave Packets</h3>
+      <p>
+        To represent a real particle, one must use a <strong>wave packet</strong>, a
+        linear combination or superposition of these stationary states. The general
+        solution takes the form:
+      </p>
+      <p>\[ \Psi(x, t) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} \phi(k) e^{i(kx - \frac{\hbar k^2}{2m}t)} \, dk \]</p>
+      <p>
+        The function <strong>\(\phi(k)\)</strong> determines the shape of the packet and
+        is found using the initial state \(\Psi(x, 0)\) through a Fourier transform:
+      </p>
+      <p>\[ \phi(k) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} \Psi(x, 0) e^{-ikx} \, dx \]</p>
+
+      <h3>5. Key Characteristics of the Motion</h3>
+      <ul>
+        <li>
+          <strong>Group vs. Phase Velocity:</strong> Individual ripples in the wave move
+          at the phase velocity \(v_p = \frac{\hbar k}{2m}\), but the overall envelope of
+          the packet moves at the group velocity \(v_g = \frac{\hbar k}{m}\). Only the
+          group velocity matches the classical speed of the particle.
+        </li>
+        <li>
+          <strong>Spreading:</strong> Unlike classical particles, quantum wave packets
+          naturally spread out and flatten over time, meaning the particle's position
+          becomes increasingly uncertain as it moves.
+        </li>
+        <li>
+          <strong>Conservation:</strong> While the packet spreads in position space, the
+          probability distribution of momentum, \( |\phi(k)|^2 \), remains constant over
+          time, reflecting the conservation of momentum.
+        </li>
+      </ul>
     </div>
 
     <!-- Bootstrap core JavaScript
