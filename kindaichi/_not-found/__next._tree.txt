@@ -1,0 +1,5 @@
+:HL["/kindaichi/_next/static/chunks/05ua~1p4_febx.css","style"]
+:HL["/kindaichi/_next/static/chunks/0cx7n.~s90mix.css","style"]
+:HL["/kindaichi/_next/static/chunks/0kfnn7yar1o6d.css","style"]
+:HL["/kindaichi/_next/static/chunks/0a9s3ihg5kwb7.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"QVOCP5O2NhzouPM3xiSLt"}
