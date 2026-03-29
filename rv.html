@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>Random Variables</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Custom styles for this template -->
+        <!-- Hightlight -->
+        <link rel="stylesheet" href="css/prism.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="css/prism.js"></script>
+        <link href="starter-template.css" rel="stylesheet" />
+        <script src="https://api.onelink-preview.com/moxie.min.js"></script>
+        <script
+            type="text/javascript"
+            async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"
+        ></script>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="headercontainer">
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="perl.html">Perl</a></li>
+                        <li><a href="python.html">Python</a></li>
+                        <li><a href="go.html">Go</a></li>
+                        <li><a href="articles.html">Articles</a></li>
+                        <li><a href="reference.html">Reference</a></li>
+                        <li><a href="rotk.html">ROTK</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+        <body>
+            <div class="container" style="margin-top: 80px">
+                <h1>Discrete Random Variables</h1>
+
+                <h3><strong>1. Definition of a Random Variable</strong></h3>
+                <p>
+                    A <strong>random variable</strong> is defined as a real-valued
+                    function defined on the sample space of an experiment. Rather
+                    than looking at every detail of an outcome, we use random
+                    variables to focus on a specific numerical quantity of interest
+                    (for example, the sum of two dice or the number of heads in
+                    coin flips).
+                </p>
+
+                <h3><strong>2. Discrete Random Variables and PMFs</strong></h3>
+                <p>
+                    A random variable is considered <strong>discrete</strong> if it
+                    can take on at most a countable number of possible values.
+                </p>
+                <ul>
+                    <li>
+                        <strong>Probability Mass Function (PMF):</strong> For a
+                        discrete random variable \(X\), the PMF \(p(x)\) is defined
+                        as the probability that \(X\) takes on the value \(x\):
+                        \(p(x) = P(X = x)\).
+                    </li>
+                    <li>
+                        The sum of these probabilities across all possible values
+                        must always equal 1.
+                    </li>
+                </ul>
+
+                <h3><strong>3. Summarizing Random Variables</strong></h3>
+                <p>
+                    The chapter introduces two primary ways to summarize the
+                    behavior of a distribution:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Expected Value (Mean):</strong> Denoted as \(E[X]\)
+                        or \(\mu\), the expected value is the probability-weighted
+                        average of all possible values. It represents the "center
+                        of gravity" of the distribution.
+                    </li>
+                    <li>
+                        <strong>Variance and Standard Deviation:</strong> The
+                        <strong>variance</strong> (\(Var(X)\)) measures the "spread"
+                        or dispersion of the values around the mean. The
+                        <strong>standard deviation</strong> is simply the square
+                        root of the variance.
+                    </li>
+                </ul>
+
+                <h3><strong>4. Key Discrete Probability Distributions</strong></h3>
+                <p>
+                    A significant portion of the chapter is dedicated to several
+                    "named" distributions that occur frequently in real-world
+                    applications:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Bernoulli:</strong> A trial with only two possible
+                        outcomes, success or failure.
+                    </li>
+                    <li>
+                        <strong>Binomial:</strong> Represents the number of
+                        successes in \(n\) independent Bernoulli trials.
+                    </li>
+                    <li>
+                        <strong>Poisson:</strong> Often used to model the number of
+                        events occurring in a fixed interval of time or space
+                        (e.g., typographical errors on a page).
+                    </li>
+                    <li>
+                        <strong>Geometric and Negative Binomial:</strong> The
+                        Geometric distribution models the number of trials until the
+                        first success, while the Negative Binomial models the trials
+                        until the \(r\)th success.
+                    </li>
+                    <li>
+                        <strong>Hypergeometric:</strong> Used when sampling from a
+                        finite population without replacement.
+                    </li>
+                </ul>
+
+                <h3><strong>5. Cumulative Distribution Function (CDF)</strong></h3>
+                <p>
+                    The <strong>Cumulative Distribution Function</strong> (\(F(x)\))
+                    is defined for any value \(x\) as the probability that the
+                    random variable is less than or equal to \(x\):
+                    \(F(x) = P(X \leq x)\).
+                </p>
+                <p>Key properties of a discrete CDF include:</p>
+                <ol>
+                    <li>It is a <strong>nondecreasing</strong> function.</li>
+                    <li>It ranges from <strong>0 to 1</strong>.</li>
+                    <li>
+                        It is <strong>right-continuous</strong> and typically
+                        resembles a "staircase" for discrete variables.
+                    </li>
+                </ol>
+
+                <h1>Continuous Random Variables</h1>
+
+                <h3>
+                    <strong>1. Introduction and Probability Density Functions (PDF)</strong>
+                </h3>
+                <p>
+                    A random variable \(X\) is defined as
+                    <strong>continuous</strong> (or absolutely continuous) if there
+                    exists a non-negative function \(f(x)\), known as the
+                    <strong>probability density function</strong>, such that the
+                    probability of \(X\) falling within any set \(B\) is the
+                    integral of \(f(x)\) over that set.
+                </p>
+                <ul>
+                    <li>
+                        <strong>Key Property:</strong> The probability that a
+                        continuous random variable assumes any one
+                        <strong>fixed, specific value is zero</strong>. Consequently,
+                        for any interval, it does not matter whether the endpoints
+                        are included in the probability calculation (e.g.,
+                        \(P(a \leq X \leq b) = P(a < X < b)\)).
+                    </li>
+                    <li>
+                        <strong>Cumulative Distribution Function (CDF):</strong> For
+                        a continuous variable, the CDF \(F(x)\) is the integral of
+                        the PDF from \(-\infty\) to \(x\). It is a differentiable
+                        function, and its derivative is the PDF (\(F'(x) = f(x)\)).
+                    </li>
+                </ul>
+
+                <h3><strong>2. Expectation and Variance</strong></h3>
+                <p>
+                    The chapter adapts the summaries of center and spread to the
+                    continuous case:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Expected Value (Mean):</strong> Defined as the
+                        integral \(E[X] = \int_{-\infty}^{\infty} x f(x) dx\). It
+                        represents the weighted average of all possible values.
+                    </li>
+                    <li>
+                        <strong>Variance and Standard Deviation:</strong> The
+                        variance is defined as \(Var(X) = E[(X - \mu)^2]\),
+                        measuring the spread of the distribution around the mean.
+                    </li>
+                </ul>
+
+                <h3><strong>3. Key Continuous Distributions</strong></h3>
+                <p>
+                    A major portion of the chapter is dedicated to specific
+                    families of distributions used to model real-world phenomena:
+                </p>
+                <ul>
+                    <li>
+                        <strong>The Uniform Random Variable:</strong> Models
+                        scenarios where a variable is "equally likely" to be
+                        anywhere within a specified interval \((a, b)\).
+                    </li>
+                    <li>
+                        <strong>Normal Random Variables:</strong> Characterized by a
+                        symmetric, bell-shaped density curve. It is the most widely
+                        used model for continuous measurements. This section also
+                        covers the <strong>Normal Approximation to the Binomial Distribution</strong>,
+                        used when the number of trials \(n\) is large.
+                    </li>
+                    <li>
+                        <strong>Exponential Random Variables:</strong> Frequently
+                        used to model lifetimes, such as the time until a battery
+                        wears out or the time between events. This section
+                        introduces <strong>Hazard Rate Functions</strong>.
+                    </li>
+                    <li>
+                        <strong>Other Distributions:</strong> The chapter provides
+                        brief overviews of the <strong>Gamma, Weibull, Cauchy, Beta,
+                        and Pareto</strong> distributions.
+                    </li>
+                </ul>
+
+                <h3>
+                    <strong>4. Distribution of a Function of a Random Variable</strong>
+                </h3>
+                <p>
+                    The final section provides mathematical techniques for
+                    determining the probability distribution of a new random
+                    variable \(Y\) that is defined as a function of an existing
+                    random variable \(X\) (e.g., \(Y = X^2\) or \(Y = e^X\)).
+                </p>
+            </div>
+        </body>
+</html>
