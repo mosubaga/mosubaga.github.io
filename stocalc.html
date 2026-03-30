@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>Stochastic Calculus</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Custom styles for this template -->
+        <!-- Hightlight -->
+        <link rel="stylesheet" href="css/prism.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="css/prism.js"></script>
+        <link href="starter-template.css" rel="stylesheet" />
+        <script src="https://api.onelink-preview.com/moxie.min.js"></script>
+        <script
+            type="text/javascript"
+            async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"
+        ></script>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="headercontainer">
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="perl.html">Perl</a></li>
+                        <li><a href="python.html">Python</a></li>
+                        <li><a href="go.html">Go</a></li>
+                        <li><a href="articles.html">Articles</a></li>
+                        <li><a href="reference.html">Reference</a></li>
+                        <li><a href="rotk.html">ROTK</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+        <body>
+            <div class="container" style="margin-top: 80px">
+                <h1>Brownian Motion and Itô's Lemma</h1>
+
+                <p>
+                    <strong>Brownian motion</strong> (also known as the
+                    <strong>Wiener process</strong>) is a mathematical model used
+                    to describe random, continuous motion. It is one of the most
+                    important concepts in probability theory, with applications
+                    ranging from physics to finance.
+                </p>
+
+                <h3>1. The Origin and History</h3>
+                <p>
+                    The process is named after the Scottish botanist
+                    <strong>Robert Brown</strong>, who in 1828 observed pollen
+                    grains suspended in water moving in a highly irregular,
+                    jittery fashion. This movement was later understood to be
+                    caused by the pollen grains being bombarded by water
+                    molecules from all directions. In the early 20th century,
+                    mathematicians like <strong>Norbert Wiener</strong> developed
+                    the formal mathematical framework for this motion, which is
+                    why it is often called the Wiener process.
+                </p>
+
+                <h3>2. Intuition: The Limit of a Random Walk</h3>
+                <p>
+                    The easiest way to visualize Brownian motion is to imagine a
+                    <strong>random walk</strong>. Think of a person tossing a fair
+                    coin:
+                </p>
+                <ul>
+                    <li>If it’s heads, they take a small step forward.</li>
+                    <li>If it’s tails, they take a small step backward.</li>
+                </ul>
+                <p>
+                    As the size of the steps gets smaller and the frequency of
+                    the steps gets faster, this jagged movement eventually
+                    smooths out into a continuous but highly "wiggly" path. This
+                    limiting process is exactly what Brownian motion is.
+                </p>
+
+                <h3>3. The Three Defining Rules</h3>
+                <p>
+                    For a process to be considered a
+                    <strong>Standard Brownian Motion</strong>, it must follow
+                    three specific rules:
+                </p>
+                <ol>
+                    <li>
+                        <strong>Independent Increments:</strong> What happens in
+                        the future does not depend on the past. If you know where
+                        the process is now, knowing how it got there doesn't help
+                        you predict its next move.
+                    </li>
+                    <li>
+                        <strong>Stationary Increments:</strong> The "distance" the
+                        process moves over a specific time interval depends only
+                        on the <em>length</em> of that interval, not on
+                        <em>when</em> it occurs. For example, the movement
+                        between minute 1 and minute 2 has the same probability
+                        distribution as the movement between minute 10 and minute
+                        11.
+                    </li>
+                    <li>
+                        <strong>Continuous Paths:</strong> The path never jumps.
+                        You can draw the entire history of a Brownian motion
+                        without ever lifting your pen from the paper.
+                    </li>
+                </ol>
+                <p>Additionally, it always starts at zero (\(B_0 = 0\)).</p>
+
+                <h3>4. The "Wiggly" Nature of the Path</h3>
+                <p>
+                    While the path is <strong>continuous</strong>, it is also
+                    <strong>nowhere differentiable</strong>. This means that if
+                    you zoom in on a Brownian path, it remains just as jagged and
+                    rough no matter how far you zoom; it never "smooths out" into
+                    a straight line.
+                </p>
+                <p>
+                    Another strange property is its
+                    <strong>infinite variation</strong>: in any finite interval
+                    of time, no matter how small, a Brownian particle actually
+                    travels an infinite total distance because it is constantly
+                    oscillating back and forth at an infinite frequency.
+                </p>
+
+                <h3>5. Key Statistical Concepts</h3>
+                <ul>
+                    <li>
+                        <strong>Normal Distribution:</strong> The position of a
+                        Brownian particle at any time \(t\) follows a
+                        <strong>Normal (Gaussian) distribution</strong>. Its
+                        average (mean) position is 0, and its spread (variance)
+                        is equal to \(t\).
+                    </li>
+                    <li>
+                        <strong>The Martingale Property:</strong> Brownian motion
+                        is a "fair game". If you are at a certain position now,
+                        your expected position at any point in the future is
+                        exactly where you are right now.
+                    </li>
+                    <li>
+                        <strong>Reflection Principle:</strong> If a Brownian
+                        motion reaches a certain value \(a\), the probability
+                        that it will eventually end up above that value is the
+                        same as the probability it ends up below it.
+                    </li>
+                </ul>
+
+                <h3>6. Common Variants</h3>
+                <ul>
+                    <li>
+                        <strong>Drift:</strong> You can add a constant "trend" to
+                        Brownian motion, making it generally move upward or
+                        downward over time.
+                    </li>
+                    <li>
+                        <strong>Geometric Brownian Motion (GBM):</strong> This is
+                        a version where the <em>percentage</em> change is a
+                        Brownian motion rather than the absolute change. This is
+                        the standard model used to represent
+                        <strong>stock prices</strong>, because stock prices cannot
+                        be negative and investors tend to think in terms of
+                        percentage returns.
+                    </li>
+                    <li>
+                        <strong>Brownian Bridge:</strong> This is a Brownian
+                        motion that is "pinned" so it starts at zero and is
+                        guaranteed to end at zero at a specific future time.
+                    </li>
+                </ul>
+
+                <h3>7. Why Does It Matter?</h3>
+                <p>
+                    Brownian motion is the foundation of
+                    <strong>Stochastic Calculus</strong>. It provides a way to
+                    model "noise" in systems that were previously thought to be
+                    deterministic. It is also deeply connected to the
+                    <strong>Heat Equation</strong> in physics, as the way heat
+                    diffuses through a metal rod is mathematically identical to
+                    the way a collection of Brownian particles would spread out.
+                </p>
+
+                <p>
+                    The relationship between Brownian motion and Itô's Lemma
+                    (also known as Itô's formula) stems from the unique path
+                    properties of Brownian motion, specifically its
+                    <strong>non-differentiability</strong> and
+                    <strong>non-zero quadratic variation</strong>.
+                </p>
+
+                <h3>1. The Failure of Classical Calculus</h3>
+                <p>
+                    In ordinary calculus, the change in a smooth function
+                    \(f(t)\) is given by \(df = f'(t)dt\). This is possible
+                    because we can approximate the change using a first-order
+                    Taylor expansion, where higher-order terms like \((dt)^2\)
+                    are negligible and vanish in the limit.
+                </p>
+                <p>
+                    However, Brownian motion (\(B_t\)) is
+                    <strong>nowhere differentiable</strong> and has
+                    <strong>infinite total variation</strong>. This means its
+                    paths are too "jagged" to be integrated using classical
+                    Riemann-Stieltjes theory. If we attempt a Taylor expansion on
+                    a function of Brownian motion, \(f(B_t)\), the second-order
+                    term involving \((\Delta B_t)^2\) does not vanish.
+                </p>
+
+                <h3>2. The Fundamental Rule: \((dB_t)^2 = dt\)</h3>
+                <p>
+                    The core bridge between Brownian motion and Itô's Lemma is
+                    the behavior of its <strong>quadratic variation</strong>. For
+                    a standard Brownian motion, the square of its increments
+                    \((\Delta B_t)^2\) is approximately equal to the time
+                    increment \(\Delta t\). Formally, the quadratic variation
+                    converges to \(t\) as the partition size goes to zero:
+                </p>
+                <div class="equation">
+                    \[
+                    \lim_{n \to \infty} \sum (B_{t_{j+1}} - B_{t_j})^2 = t
+                    \text{ (in probability)}
+                    \]
+                </div>
+                <p>
+                    In differential notation, this is expressed as the formal
+                    rule: <strong>\((dB_t)^2 = dt\)</strong>.
+                </p>
+
+                <h3>3. Derivation via Taylor Expansion</h3>
+                <p>
+                    To find the differential of a function \(f(B_t)\), we use a
+                    second-order Taylor expansion:
+                </p>
+                <div class="equation">
+                    \[
+                    f(B_{t+\Delta t}) - f(B_t) \approx f'(B_t)\Delta B_t +
+                    \frac{1}{2}f''(B_t)(\Delta B_t)^2
+                    \]
+                </div>
+                <p>In the limit as \(\Delta t \to 0\):</p>
+                <ul>
+                    <li>
+                        The first term \(f'(B_t)\Delta B_t\) becomes the
+                        stochastic integral \(\int f'(B_s)dB_s\).
+                    </li>
+                    <li>
+                        Because \((\Delta B_t)^2 \approx \Delta t\), the second
+                        term \(\frac{1}{2}f''(B_t)(\Delta B_t)^2\) becomes
+                        \(\frac{1}{2}\int f''(B_s)ds\).
+                    </li>
+                </ul>
+
+                <h3>4. The Result: Itô's Lemma</h3>
+                <p>
+                    This leads to the fundamental formula of stochastic
+                    calculus. For a function \(f \in C^2\):
+                </p>
+                <div class="equation">
+                    \[
+                    f(B_t) = f(B_0) + \int_{0}^{t} f'(B_s)dB_s +
+                    \frac{1}{2}\int_{0}^{t} f''(B_s)ds
+                    \]
+                </div>
+                <p>Or in the more common differential form:</p>
+                <div class="equation">
+                    \[
+                    df(B_t) = f'(B_t)dB_t + \frac{1}{2}f''(B_t)dt
+                    \]
+                </div>
+                <p>
+                    The term <strong>\(\frac{1}{2}f''(B_t)dt\)</strong> is known
+                    as the <strong>Itô correction term</strong>. It represents
+                    the extra "drift" created by the volatility of Brownian
+                    motion, which is absent in deterministic calculus.
+                </p>
+
+                <h3>5. Extension to Itô Processes</h3>
+                <p>
+                    Itô's Lemma also applies to more general
+                    <strong>Itô processes</strong> of the form
+                    \(dX_t = u_t dt + v_t dB_t\). For a function
+                    \(g(t, X_t)\), the differential is:
+                </p>
+                <div class="equation">
+                    \[
+                    dg(t, X_t) = \frac{\partial g}{\partial t}dt +
+                    \frac{\partial g}{\partial x}dX_t +
+                    \frac{1}{2}\frac{\partial^2 g}{\partial x^2}(dX_t)^2
+                    \]
+                </div>
+                <p>
+                    Using the formal multiplication rules (where
+                    \(dt \cdot dt = 0\) and \(dB_t \cdot dB_t = dt\)), the term
+                    \((dX_t)^2\) simplifies to \(v_t^2 dt\), allowing for the
+                    calculation of complex stochastic differentials.
+                </p>
+
+                <h1>Itô's Lemma (Derivation)</h1>
+
+                <h2>Setup</h2>
+                <p>
+                    Let \( W_t \) be a standard Brownian motion, and let \( X_t \)
+                    satisfy the stochastic differential equation
+                </p>
+                <div class="equation">
+                    \[
+                    dX_t = a(t,X_t)\,dt + b(t,X_t)\,dW_t.
+                    \]
+                </div>
+                <p>
+                    Let \( f(t,x) \in C^{1,2} \), meaning:
+                </p>
+                <ul>
+                    <li>once continuously differentiable in \( t \)</li>
+                    <li>twice continuously differentiable in \( x \)</li>
+                </ul>
+                <p>We define:</p>
+                <div class="equation">
+                    \[
+                    Y_t = f(t, X_t).
+                    \]
+                </div>
+
+                <h2>Key Idea: Second-Order Expansion</h2>
+                <p>We consider a small increment:</p>
+                <div class="equation">
+                    \[
+                    \Delta X \approx a(t,X_t)\Delta t + b(t,X_t)\Delta W.
+                    \]
+                </div>
+                <p>Expand using Taylor:</p>
+                <div class="equation">
+                    \[
+                    \Delta f
+                    = f_t \Delta t + f_x \Delta X
+                    + \frac12 f_{xx} (\Delta X)^2
+                    + f_{tx}\Delta t\,\Delta X
+                    + \frac12 f_{tt}(\Delta t)^2.
+                    \]
+                </div>
+
+                <h2>Important Scaling</h2>
+                <p>Brownian motion satisfies:</p>
+                <div class="equation">
+                    \[
+                    \Delta W \sim (\Delta t)^{1/2}
+                    \]
+                </div>
+                <p>Thus:</p>
+                <ul>
+                    <li>\( (\Delta W)^2 \sim \Delta t \) and is important.</li>
+                    <li>\( \Delta t \Delta W \sim (\Delta t)^{3/2} \) is negligible.</li>
+                    <li>\( (\Delta t)^2 \) is negligible.</li>
+                </ul>
+
+                <h2>Compute \((\Delta X)^2\)</h2>
+                <div class="equation">
+                    \[
+                    (\Delta X)^2 \approx b^2 (\Delta W)^2
+                    \]
+                </div>
+                <p>Thus:</p>
+                <div class="equation">
+                    \[
+                    (\Delta X)^2 \leadsto b^2 \Delta t
+                    \]
+                </div>
+
+                <h2>Substitute Back</h2>
+                <div class="equation">
+                    \[
+                    \Delta f
+                    \approx f_t \Delta t + f_x(a\Delta t + b\Delta W) +
+                    \frac12 f_{xx} b^2 \Delta t
+                    \]
+                </div>
+                <p>Group terms:</p>
+                <div class="equation">
+                    \[
+                    \Delta f
+                    \approx
+                    \left(f_t + a f_x + \frac12 b^2 f_{xx}\right)\Delta t
+                    + b f_x \Delta W
+                    \]
+                </div>
+
+                <h2>Final Result (Itô’s Lemma)</h2>
+                <div class="boxed">
+                    <div class="equation">
+                        \[
+                        \boxed{
+                        df(t,X_t)
+                        =
+                        \left(
+                        f_t(t,X_t)
+                        + a(t,X_t) f_x(t,X_t)
+                        + \frac12 b(t,X_t)^2 f_{xx}(t,X_t)
+                        \right)dt
+                        +
+                        b(t,X_t) f_x(t,X_t)\,dW_t
+                        }
+                        \]
+                    </div>
+                </div>
+
+                <h2>Itô Calculus Rules</h2>
+                <div class="equation">
+                    \[
+                    (dt)^2 = 0, \quad dt\,dW_t = 0, \quad (dW_t)^2 = dt
+                    \]
+                </div>
+
+                <h2>Integral Form</h2>
+                <div class="equation">
+                    \[
+                    f(t,X_t) - f(0,X_0)
+                    =
+                    \int_0^t
+                    \left(
+                    f_s + a f_x + \frac12 b^2 f_{xx}
+                    \right)\,ds
+                    +
+                    \int_0^t b f_x\,dW_s
+                    \]
+                </div>
+
+                <h2>Example: \( f(x) = x^2 \)</h2>
+                <p>Let \( X_t = W_t \):</p>
+                <div class="equation">
+                    \[
+                    d(W_t^2) = 2W_t\,dW_t + dt
+                    \]
+                </div>
+
+                <h2>Multidimensional Version</h2>
+                <p>For \( X_t \in \mathbb{R}^n \):</p>
+                <div class="equation">
+                    \[
+                    df =
+                    \left(
+                    f_t
+                    +
+                    \sum a_i f_{x_i}
+                    +
+                    \frac12 \sum (\sigma\sigma^\top)_{ij} f_{x_i x_j}
+                    \right)dt
+                    +
+                    \sum \sigma_{ik} f_{x_i} dW_k
+                    \]
+                </div>
+
+                <h2>Generator Interpretation</h2>
+                <p>Define:</p>
+                <div class="equation">
+                    \[
+                    \mathcal L f = f_t + a f_x + \frac12 b^2 f_{xx}
+                    \]
+                </div>
+                <p>Then:</p>
+                <div class="equation">
+                    \[
+                    df = (\mathcal L f)\,dt + b f_x\,dW_t
+                    \]
+                </div>
+
+                <h2>Summary</h2>
+                <div class="equation">
+                    \[
+                    df = (f_t + a f_x + \frac12 b^2 f_{xx})dt + b f_x dW_t
+                    \]
+                </div>
+                <p>The extra term arises from:</p>
+                <div class="equation">
+                    \[
+                    (dW_t)^2 = dt
+                    \]
+                </div>
+                <p>
+                    which reflects the <strong>quadratic variation</strong> of
+                    Brownian motion.
+                </p>
+            </div>
+        </body>
+</html>
