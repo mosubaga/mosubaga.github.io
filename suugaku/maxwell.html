@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxwell's Equations and Their Tensor Form</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                inlineMath: [['\\(', '\\)']],
+                tags: 'ams'
+            },
+            chtml: {
+                linebreaks: { automatic: true, width: 'container' }
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        .page-kicker {
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2b6cb0;
+            font-weight: 700;
+        }
+
+        .lead {
+            font-size: 1.08rem;
+            max-width: 70ch;
+            margin: 0;
+        }
+
+        .artwork-shell {
+            margin: 2rem 0 2.5rem;
+        }
+
+        #maxwell-sketch {
+            min-height: 300px;
+            border: 1px solid #cbd9e8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f6fbff;
+            box-shadow: 0 8px 24px rgba(37, 68, 96, 0.14);
+        }
+
+        #maxwell-sketch canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #65758a;
+            margin: 0.75rem auto 0;
+            max-width: 68ch;
+        }
+
+        .equation {
+            background: #fbfdff;
+            border-left: 5px solid #2b6cb0;
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 18px 0;
+            overflow-x: auto;
+        }
+
+        .equation mjx-container {
+            margin: 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .equation-pair {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 18px 0;
+        }
+
+        .equation-card {
+            background: #fbfdff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .equation-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: #2b6cb0;
+        }
+
+        .symbol-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.65rem 1.5rem;
+            padding-left: 1rem;
+        }
+
+        .field-note {
+            background: #f6fbff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 760px) {
+            .container {
+                padding: 2rem 1.25rem;
+            }
+
+            .equation-pair,
+            .symbol-list {
+                grid-template-columns: 1fr;
+            }
+
+            #maxwell-sketch {
+                min-height: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <p class="page-kicker">Electromagnetism Notes</p>
+            <h1 style="margin: 0 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem);">
+                Maxwell's Equations and Their Tensor Form
+            </h1>
+            <p class="lead">
+                Maxwell's equations unify electricity, magnetism, and light into one coherent theory.
+                This page gives the four classical laws, the meaning of each term, the wave equation,
+                and the compact relativistic tensor notation.
+            </p>
+        </header>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Overview</h2>
+            <p>
+                Maxwell's equations describe how electric fields \(\mathbf{E}\), magnetic fields \(\mathbf{B}\),
+                charges, and currents interact. Their power is that local field rules also predict a global
+                phenomenon: self-sustaining electromagnetic waves that travel at the speed of light.
+            </p>
+            <ul class="symbol-list">
+                <li>\(\rho\): electric charge density.</li>
+                <li>\(\mathbf{J}\): electric current density.</li>
+                <li>\(\epsilon_0\): vacuum permittivity.</li>
+                <li>\(\mu_0\): vacuum permeability.</li>
+                <li>\(\Phi_E\): electric flux through a surface.</li>
+                <li>\(\Phi_B\): magnetic flux through a surface.</li>
+            </ul>
+        </section>
+
+        <section class="artwork-shell">
+            <div id="maxwell-sketch" aria-label="Animated p5 artwork showing an electromagnetic wave"></div>
+            <p class="sketch-caption">
+                A p5.js sketch of a plane electromagnetic wave: the electric field and magnetic field oscillate at right angles,
+                and the combined wave moves in the direction of energy flow.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">1. Gauss's Law for Electric Fields</h2>
+            <p>
+                Electric charge is the source of electric flux. A closed surface with more net charge inside it
+                has more electric field passing through it.
+            </p>
+            <div class="equation-pair">
+                <div class="equation-card">
+                    <h3>Differential Form</h3>
+                    \[
+                    \nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0}
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Integral Form</h3>
+                    \[
+                    \oint_{S} \mathbf{E} \cdot d\mathbf{a}
+                    = \frac{q_{\mathrm{enc}}}{\epsilon_0}
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                The differential form is local: it says what happens at a point. The integral form is global:
+                it adds the flux over an entire closed surface.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">2. Gauss's Law for Magnetism</h2>
+            <p>
+                Magnetic field lines form loops rather than beginning or ending on isolated magnetic charges.
+                In the classical theory, there are no magnetic monopoles.
+            </p>
+            <div class="equation-pair">
+                <div class="equation-card">
+                    <h3>Differential Form</h3>
+                    \[
+                    \nabla \cdot \mathbf{B} = 0
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Integral Form</h3>
+                    \[
+                    \oint_{S} \mathbf{B} \cdot d\mathbf{a} = 0
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                Any magnetic field line entering a closed surface must also leave it, so the net magnetic flux is zero.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">3. Faraday's Law of Induction</h2>
+            <p>
+                A changing magnetic field creates a circulating electric field. This is the mathematical heart of
+                induction, generators, and transformers.
+            </p>
+            <div class="equation-pair">
+                <div class="equation-card">
+                    <h3>Differential Form</h3>
+                    \[
+                    \nabla \times \mathbf{E}
+                    = -\frac{\partial \mathbf{B}}{\partial t}
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Integral Form</h3>
+                    \[
+                    \oint_{C} \mathbf{E} \cdot d\mathbf{l}
+                    = -\frac{d\Phi_B}{dt}
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                The minus sign is Lenz's law: the induced effect opposes the change in magnetic flux that produced it.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">4. The Ampere-Maxwell Law</h2>
+            <p>
+                Magnetic fields are produced by electric currents and by changing electric fields. Maxwell's added term,
+                the displacement current, makes the equation consistent with charge conservation.
+            </p>
+            <div class="equation-pair">
+                <div class="equation-card">
+                    <h3>Differential Form</h3>
+                    \[
+                    \nabla \times \mathbf{B}
+                    = \mu_0 \mathbf{J}
+                    + \mu_0 \epsilon_0
+                    \frac{\partial \mathbf{E}}{\partial t}
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Integral Form</h3>
+                    \[
+                    \oint_{C} \mathbf{B} \cdot d\mathbf{l}
+                    = \mu_0 I_{\mathrm{enc}}
+                    + \mu_0 \epsilon_0 \frac{d\Phi_E}{dt}
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                Without the displacement-current term, the original Ampere law fails in time-dependent settings,
+                such as the gap between the plates of a charging capacitor.
+            </p>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Maxwell's Correction and the Birth of Electromagnetic Waves</h2>
+            <p>
+                In empty space, where \(\rho = 0\) and \(\mathbf{J} = \mathbf{0}\), the four equations reduce to a
+                coupled set for \(\mathbf{E}\) and \(\mathbf{B}\). Taking the curl of Faraday's law and using the
+                Ampere-Maxwell law gives the wave equations
+            </p>
+            <div class="equation">
+                \[
+                \nabla^2 \mathbf{E}
+                = \mu_0\epsilon_0
+                \frac{\partial^2 \mathbf{E}}{\partial t^2},
+                \qquad
+                \nabla^2 \mathbf{B}
+                = \mu_0\epsilon_0
+                \frac{\partial^2 \mathbf{B}}{\partial t^2}.
+                \]
+            </div>
+            <p>
+                These have wave speed
+            </p>
+            <div class="equation">
+                \[
+                c = \frac{1}{\sqrt{\mu_0\epsilon_0}}.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                Because this speed matches the measured speed of light, Maxwell concluded that light is an
+                electromagnetic wave. The electric and magnetic fields regenerate each other as the wave propagates.
+            </p>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Maxwell's Equations in Matter</h2>
+            <p>
+                In materials, microscopic charges inside atoms polarize and magnetize. It is often more useful to
+                work with the auxiliary fields \(\mathbf{D}\) and \(\mathbf{H}\), which separate free sources from
+                bound material response:
+            </p>
+            <div class="equation">
+                \[
+                \begin{aligned}
+                \nabla \cdot \mathbf{D} &= \rho_{\mathrm{free}},\\
+                \nabla \cdot \mathbf{B} &= 0,\\
+                \nabla \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t},\\
+                \nabla \times \mathbf{H} &= \mathbf{J}_{\mathrm{free}} + \frac{\partial \mathbf{D}}{\partial t}.
+                \end{aligned}
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                For simple linear materials, one often writes \(\mathbf{D} = \epsilon\mathbf{E}\) and
+                \(\mathbf{B} = \mu\mathbf{H}\), but real materials can be nonlinear, anisotropic, or dispersive.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">1. The Current 4-Vector \(J^\mu\)</h2>
+            <p>
+                Special relativity combines charge density and current density into the 4-current:
+            </p>
+            <div class="equation">
+                \[
+                J^\mu = (c\rho,\; J_x,\; J_y,\; J_z).
+                \]
+            </div>
+            <p>
+                Charge conservation becomes the compact continuity equation
+            </p>
+            <div class="equation" style="margin-bottom: 0;">
+                \[
+                \partial_\mu J^\mu = 0.
+                \]
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">2. The Electromagnetic Field Tensor \(F^{\mu\nu}\)</h2>
+            <p>
+                The electric and magnetic fields combine into an antisymmetric tensor called the Faraday tensor.
+                In terms of the 4-potential \(A^\mu = (V/c,\mathbf{A})\),
+            </p>
+            <div class="equation">
+                \[
+                F_{\mu\nu} = \partial_\mu A_\nu - \partial_\nu A_\mu.
+                \]
+            </div>
+            <p>
+                One common convention writes the contravariant tensor as
+            </p>
+            <div class="equation">
+                \[
+                F^{\mu\nu} =
+                \begin{pmatrix}
+                0 & -E_x/c & -E_y/c & -E_z/c \\
+                E_x/c & 0 & -B_z & B_y \\
+                E_y/c & B_z & 0 & -B_x \\
+                E_z/c & -B_y & B_x & 0
+                \end{pmatrix}.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                The diagonal entries vanish and \(F^{\mu\nu} = -F^{\nu\mu}\). Different sign conventions occur in
+                the literature because authors choose different metric signatures and index placements.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">3. Maxwell's Equations in Tensor Form</h2>
+            <p>
+                The four classical equations become two compact tensor equations:
+            </p>
+            <div class="equation">
+                \[
+                \partial_\nu F^{\mu\nu} = \mu_0 J^\mu
+                \]
+            </div>
+            <p>
+                This inhomogeneous equation contains Gauss's law for electricity and the Ampere-Maxwell law.
+            </p>
+            <div class="equation">
+                \[
+                \partial_\lambda F_{\mu\nu}
+                + \partial_\mu F_{\nu\lambda}
+                + \partial_\nu F_{\lambda\mu}
+                = 0.
+                \]
+            </div>
+            <p>
+                This homogeneous equation contains Gauss's law for magnetism and Faraday's law. Using the dual
+                tensor \(\tilde{F}^{\mu\nu}\), it is equivalently written as
+            </p>
+            <div class="equation" style="margin-bottom: 0;">
+                \[
+                \partial_\nu \tilde{F}^{\mu\nu} = 0.
+                \]
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">4. Potential, Gauge Invariance, and the Lorenz Gauge</h2>
+            <p>
+                Potentials are not unique. The fields are unchanged under the gauge transformation
+            </p>
+            <div class="equation">
+                \[
+                A_\mu \longrightarrow A_\mu + \partial_\mu \chi,
+                \]
+            </div>
+            <p>
+                for a scalar function \(\chi\). In the Lorenz gauge,
+            </p>
+            <div class="equation">
+                \[
+                \partial_\mu A^\mu = 0,
+                \]
+            </div>
+            <p>
+                Maxwell's equations reduce to a wave equation for the 4-potential:
+            </p>
+            <div class="equation">
+                \[
+                \Box A^\mu = \mu_0 J^\mu,
+                \qquad
+                \Box =
+                \nabla^2 - \frac{1}{c^2}\frac{\partial^2}{\partial t^2}.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                This formulation shows why electromagnetism fits so naturally into spacetime: electric and magnetic
+                fields are frame-dependent parts of a single field tensor.
+            </p>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Physical Significance</h2>
+            <p>
+                Maxwell's equations replace action-at-a-distance with field dynamics. Charges and currents shape
+                fields; fields store energy and momentum; and changing fields travel through empty space as waves.
+            </p>
+            <p style="margin-bottom: 0;">
+                The tensor formulation makes the unification sharper: what one observer describes as a purely electric
+                field, another moving observer may describe as a mixture of electric and magnetic fields. Electricity
+                and magnetism are different perspectives on one electromagnetic field.
+            </p>
+        </section>
+
+        <footer>
+            Built as a compact reference page on Maxwell's equations, unification, and relativistic tensor notation.
+        </footer>
+    </div>
+
+    <script>
+    new p5(function(p) {
+        let holder;
+        let wavePoints = [];
+
+        function targetSize() {
+            const width = Math.max(320, Math.min(920, holder ? holder.offsetWidth : 900));
+            const height = Math.max(260, Math.round(width * 0.46));
+            return { width, height };
+        }
+
+        function buildWave() {
+            wavePoints = [];
+            const steps = 72;
+            for (let i = 0; i < steps; i++) {
+                wavePoints.push(i / (steps - 1));
+            }
+        }
+
+        p.setup = function() {
+            holder = document.getElementById('maxwell-sketch');
+            const size = targetSize();
+            const canvas = p.createCanvas(size.width, size.height);
+            canvas.parent('maxwell-sketch');
+            p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+            p.textFont('Parkinsans, Helvetica, Arial, sans-serif');
+            buildWave();
+        };
+
+        p.windowResized = function() {
+            const size = targetSize();
+            p.resizeCanvas(size.width, size.height);
+        };
+
+        function drawArrow(x1, y1, x2, y2, color, weight) {
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const head = Math.max(7, weight * 3.5);
+            p.stroke(color);
+            p.strokeWeight(weight);
+            p.line(x1, y1, x2, y2);
+            p.noStroke();
+            p.fill(color);
+            p.push();
+            p.translate(x2, y2);
+            p.rotate(angle);
+            p.triangle(0, 0, -head, head * 0.45, -head, -head * 0.45);
+            p.pop();
+        }
+
+        p.draw = function() {
+            const w = p.width;
+            const h = p.height;
+            const cx = w * 0.5;
+            const cy = h * 0.52;
+            const depth = h * 0.18;
+            const amplitude = h * 0.24;
+            const left = w * 0.08;
+            const right = w * 0.9;
+            const time = p.frameCount * 0.028;
+
+            p.background(247, 252, 255);
+
+            p.stroke(214, 226, 238);
+            p.strokeWeight(1);
+            for (let i = 0; i < 9; i++) {
+                const y = p.map(i, 0, 8, h * 0.16, h * 0.86);
+                p.line(w * 0.06, y, w * 0.94, y);
+            }
+            for (let i = 0; i < 11; i++) {
+                const x = p.map(i, 0, 10, w * 0.07, w * 0.93);
+                p.line(x, h * 0.13, x, h * 0.88);
+            }
+
+            p.noStroke();
+            p.fill(34, 74, 116, 28);
+            p.rect(w * 0.06, cy - 1, w * 0.88, 2);
+
+            drawArrow(left, cy, right, cy, p.color(49, 104, 156), 3);
+            p.noStroke();
+            p.fill(49, 104, 156);
+            p.textSize(Math.max(13, w * 0.018));
+            p.text('propagation', right - 92, cy - 14);
+
+            const electricColor = p.color(219, 78, 74);
+            const magneticColor = p.color(24, 143, 118);
+            const electricLight = p.color(219, 78, 74, 95);
+            const magneticLight = p.color(24, 143, 118, 95);
+
+            p.noFill();
+            p.stroke(electricLight);
+            p.strokeWeight(3);
+            p.beginShape();
+            for (const t of wavePoints) {
+                const x = p.lerp(left, right, t);
+                const phase = t * Math.PI * 4.4 - time;
+                const y = cy - Math.sin(phase) * amplitude;
+                p.vertex(x, y);
+            }
+            p.endShape();
+
+            p.stroke(magneticLight);
+            p.beginShape();
+            for (const t of wavePoints) {
+                const x = p.lerp(left, right, t);
+                const phase = t * Math.PI * 4.4 - time;
+                const z = Math.cos(phase) * depth;
+                const y = cy + z * 0.55;
+                p.vertex(x, y);
+            }
+            p.endShape();
+
+            for (let i = 0; i < wavePoints.length; i += 4) {
+                const t = wavePoints[i];
+                const x = p.lerp(left, right, t);
+                const phase = t * Math.PI * 4.4 - time;
+                const e = Math.sin(phase) * amplitude;
+                const b = Math.cos(phase) * depth;
+
+                drawArrow(x, cy, x, cy - e, electricColor, 2);
+                drawArrow(x - b * 0.55, cy + b * 0.42, x + b * 0.55, cy - b * 0.42, magneticColor, 2);
+            }
+
+            p.noStroke();
+            p.fill(255, 255, 255, 230);
+            p.rect(w * 0.075, h * 0.08, Math.min(265, w * 0.48), 72, 8);
+            p.fill(electricColor);
+            p.circle(w * 0.105, h * 0.125, 10);
+            p.fill(43, 54, 68);
+            p.textSize(Math.max(13, w * 0.017));
+            p.text('Electric field E', w * 0.125, h * 0.135);
+            p.fill(magneticColor);
+            p.circle(w * 0.105, h * 0.185, 10);
+            p.fill(43, 54, 68);
+            p.text('Magnetic field B', w * 0.125, h * 0.195);
+
+            p.fill(43, 54, 68);
+            p.textSize(Math.max(12, w * 0.015));
+            p.text('E perpendicular B, both perpendicular to wave travel', w * 0.36, h * 0.91);
+        };
+    });
+    </script>
+</body>
+</html>

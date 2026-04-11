@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euler-Lagrange Equation, Hamiltonian Mechanics, and the Legendre Transform</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                inlineMath: [['\\(', '\\)']],
+                tags: 'ams'
+            },
+            chtml: {
+                linebreaks: { automatic: true, width: 'container' }
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .page-kicker {
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2364a0;
+            font-weight: 700;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            max-width: 72ch;
+            margin: 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: min(1000px, calc(100vw - 40px));
+        }
+
+        h1,
+        h2,
+        p,
+        li {
+            overflow-wrap: break-word;
+        }
+
+        .definition-box,
+        .example-box,
+        .equation,
+        .equation-card,
+        .boxed-equation,
+        #euler-sketch {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .artwork-shell {
+            margin: 2rem 0 2.5rem;
+        }
+
+        #euler-sketch {
+            min-height: 310px;
+            border: 1px solid #c9dce8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fcff;
+            box-shadow: 0 8px 24px rgba(37, 68, 96, 0.13);
+        }
+
+        #euler-sketch canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #65758a;
+            margin: 0.75rem auto 0;
+            max-width: 72ch;
+        }
+
+        .equation {
+            background: #fbfdff;
+            border-left: 5px solid #2364a0;
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 18px 0;
+            overflow-x: auto;
+        }
+
+        .equation mjx-container {
+            margin: 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .equation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 18px 0;
+        }
+
+        .equation-card {
+            background: #fbfdff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .equation-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: #2364a0;
+        }
+
+        .symbol-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.65rem 1.5rem;
+            padding-left: 1rem;
+        }
+
+        .boxed-equation {
+            background: #eef7fb;
+            border: 1px solid #bdd8e8;
+            border-radius: 8px;
+            padding: 4px 14px;
+            margin: 22px 0;
+        }
+
+        .note-panel {
+            background: #f7fbf8;
+            border: 1px solid #cfe2d4;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                box-sizing: border-box;
+                padding: 12px;
+            }
+
+            .container {
+                padding: 2rem 1.25rem;
+                width: calc(100vw - 24px);
+                margin: 28px auto;
+            }
+
+            .equation-grid,
+            .symbol-list {
+                grid-template-columns: 1fr;
+            }
+
+            #euler-sketch {
+                min-height: 250px;
+            }
+
+            header h1 {
+                font-size: 2.3rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <p class="page-kicker">Calculus of Variations Notes</p>
+            <h1 style="margin: 0 0 1rem; line-height: 1.1; font-size: 3.4rem;">
+                Euler-Lagrange Equation
+            </h1>
+            <p class="lead">
+                The Euler-Lagrange equation turns the idea of a stationary action into a differential equation.
+                It is the bridge from variational principles to Lagrangian mechanics, Hamiltonian mechanics,
+                field theory, geometry, and optimization.
+            </p>
+        </header>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Overview</h2>
+            <p>
+                Instead of describing motion by forces alone, the Euler-Lagrange framework asks which path makes
+                an integral quantity stationary. In mechanics that integral is the action:
+            </p>
+            <div class="equation">
+                \[
+                S[q] = \int_{t_1}^{t_2} L(q(t), \dot{q}(t), t)\,dt.
+                \]
+            </div>
+            <p>
+                The true path does not necessarily minimize the action; more precisely, it makes the first variation
+                vanish. This stationary-action viewpoint is powerful because it handles generalized coordinates,
+                constraints, and symmetries naturally.
+            </p>
+            <ul class="symbol-list">
+                <li>\(q(t)\): generalized coordinate.</li>
+                <li>\(\dot{q}(t)\): generalized velocity.</li>
+                <li>\(L = T - V\): Lagrangian for many mechanical systems.</li>
+                <li>\(S[q]\): action functional.</li>
+                <li>\(\eta(t)\): small endpoint-fixed variation.</li>
+                <li>\(p = \partial L / \partial \dot{q}\): conjugate momentum.</li>
+            </ul>
+        </section>
+
+        <section class="artwork-shell">
+            <div id="euler-sketch" aria-label="Animated p5 artwork illustrating the Euler-Lagrange equation"></div>
+            <p class="sketch-caption">
+                A p5.js sketch of nearby trial paths. The highlighted path is stationary: tiny endpoint-fixed variations
+                raise or lower the path locally, but the first-order change in the action vanishes.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">1. Historical Context and Motivation</h2>
+            <p>
+                Newtonian mechanics describes motion through force laws such as \(m\ddot{q}=F\). This is direct and
+                effective, but it can become awkward for constrained systems, non-Cartesian coordinates, and problems
+                where symmetry is the organizing feature.
+            </p>
+            <p>
+                Euler and Lagrange developed the calculus of variations in the 18th century. In mechanics, their ideas
+                were distilled into Hamilton's principle: among all paths with fixed endpoints, the physical path makes
+                the action stationary.
+            </p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    \delta S = 0.
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                This single condition produces Newton's equations for ordinary particles, geodesic equations in geometry,
+                and field equations in modern physics.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">2. The Variational Problem</h2>
+            <p>
+                Let \(y=y(x)\) be differentiable on \([a,b]\). A functional assigns a number to an entire function:
+            </p>
+            <div class="equation">
+                \[
+                J[y] = \int_a^b L(x, y(x), y'(x))\,dx.
+                \]
+            </div>
+            <p>
+                The endpoint values are fixed:
+            </p>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Left Endpoint</h3>
+                    \[
+                    y(a) = y_a
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Right Endpoint</h3>
+                    \[
+                    y(b) = y_b
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                The goal is to find a function \(y\) for which \(J[y]\) is stationary under all allowed small changes.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">3. Variations and the First Variation</h2>
+            <p>
+                Choose an arbitrary smooth variation \(\eta(x)\) that vanishes at the endpoints:
+            </p>
+            <div class="equation">
+                \[
+                \eta(a)=0,
+                \qquad
+                \eta(b)=0.
+                \]
+            </div>
+            <p>
+                Perturb the path by a small parameter \(\varepsilon\):
+            </p>
+            <div class="equation">
+                \[
+                y_\varepsilon(x) = y(x) + \varepsilon \eta(x).
+                \]
+            </div>
+            <p>
+                Define the ordinary single-variable function \(\Phi(\varepsilon)=J[y_\varepsilon]\). Stationarity of
+                the original functional means
+            </p>
+            <div class="equation">
+                \[
+                \Phi'(0)=0.
+                \]
+            </div>
+            <p>
+                Differentiating under the integral sign gives the first variation:
+            </p>
+            <div class="equation">
+                \[
+                \Phi'(0)
+                =
+                \int_a^b
+                \left(
+                \frac{\partial L}{\partial y}\eta
+                +
+                \frac{\partial L}{\partial y'}\eta'
+                \right)\,dx.
+                \]
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">4. Integration by Parts</h2>
+            <p>
+                The \(\eta'\) term is inconvenient because the variation appears differentiated. Integration by parts
+                moves the derivative onto \(\partial L/\partial y'\):
+            </p>
+            <div class="equation">
+                \[
+                \int_a^b
+                \frac{\partial L}{\partial y'}\eta'\,dx
+                =
+                \left[
+                \frac{\partial L}{\partial y'}\eta
+                \right]_a^b
+                -
+                \int_a^b
+                \frac{d}{dx}
+                \left(
+                \frac{\partial L}{\partial y'}
+                \right)\eta\,dx.
+                \]
+            </div>
+            <p>
+                The boundary term vanishes because \(\eta(a)=\eta(b)=0\). Therefore
+            </p>
+            <div class="equation">
+                \[
+                \Phi'(0)
+                =
+                \int_a^b
+                \left[
+                \frac{\partial L}{\partial y}
+                -
+                \frac{d}{dx}
+                \left(
+                \frac{\partial L}{\partial y'}
+                \right)
+                \right]\eta\,dx.
+                \]
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">5. The Euler-Lagrange Equation</h2>
+            <p>
+                Since \(\eta\) is arbitrary inside the interval, the fundamental lemma of the calculus of variations
+                says the coefficient of \(\eta\) must vanish:
+            </p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    \frac{\partial L}{\partial y}
+                    -
+                    \frac{d}{dx}
+                    \left(
+                    \frac{\partial L}{\partial y'}
+                    \right)
+                    = 0.
+                    \]
+                </div>
+            </div>
+            <p>
+                In mechanics the independent variable is time and \(y\) is replaced by generalized coordinates \(q_i\):
+            </p>
+            <div class="equation">
+                \[
+                \frac{\partial L}{\partial q_i}
+                -
+                \frac{d}{dt}
+                \left(
+                \frac{\partial L}{\partial \dot{q}_i}
+                \right)
+                = 0,
+                \qquad i=1,\dots,n.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                These are second-order differential equations for the generalized coordinates.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">6. Example: Newton's Law from a Lagrangian</h2>
+            <p>
+                For a particle moving in one dimension with mass \(m\) and potential energy \(V(q)\), use
+            </p>
+            <div class="equation">
+                \[
+                L(q,\dot{q}) = \frac{1}{2}m\dot{q}^2 - V(q).
+                \]
+            </div>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Position Derivative</h3>
+                    \[
+                    \frac{\partial L}{\partial q}
+                    =
+                    -\frac{dV}{dq}
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Velocity Derivative</h3>
+                    \[
+                    \frac{\partial L}{\partial \dot{q}}
+                    =
+                    m\dot{q}
+                    \]
+                </div>
+            </div>
+            <p>
+                The Euler-Lagrange equation becomes
+            </p>
+            <div class="equation">
+                \[
+                -\frac{dV}{dq}
+                -
+                \frac{d}{dt}(m\dot{q})
+                = 0
+                \quad\Longleftrightarrow\quad
+                m\ddot{q} = -\frac{dV}{dq}.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                The right-hand side is the force \(F=-dV/dq\), so the variational principle recovers Newton's
+                second law.
+            </p>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Why the Equation Is Significant</h2>
+            <p>
+                The Euler-Lagrange equation is significant because it changes the language of mechanics from forces to
+                structure. Once a system's Lagrangian is known, the equations of motion follow mechanically, even in
+                coordinates where Newtonian force bookkeeping would be difficult.
+            </p>
+            <div class="note-panel">
+                <p style="margin-top: 0;">
+                    <strong>Symmetry gives conservation laws.</strong> If \(L\) does not depend on a coordinate \(q_i\),
+                    then its conjugate momentum is conserved:
+                </p>
+                <div class="equation" style="margin-bottom: 0;">
+                    \[
+                    \frac{\partial L}{\partial q_i}=0
+                    \quad\Longrightarrow\quad
+                    \frac{d}{dt}
+                    \left(
+                    \frac{\partial L}{\partial \dot{q}_i}
+                    \right)=0.
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                This is the gateway to Noether's theorem: continuous symmetries of the action correspond to conserved
+                quantities such as energy, momentum, and angular momentum.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">7. From Lagrangian to Hamiltonian Mechanics</h2>
+            <p>
+                Hamiltonian mechanics rewrites the same dynamics using coordinates \(q_i\) and momenta \(p_i\), rather
+                than coordinates and velocities. First define conjugate momentum:
+            </p>
+            <div class="equation">
+                \[
+                p_i = \frac{\partial L}{\partial \dot{q}_i}.
+                \]
+            </div>
+            <p>
+                When the velocity-to-momentum map can be inverted, the Hamiltonian is the Legendre transform of the
+                Lagrangian with respect to the velocities:
+            </p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    H(q,p,t)
+                    =
+                    \sum_i p_i\dot{q}_i
+                    -
+                    L(q,\dot{q},t),
+                    \]
+                </div>
+            </div>
+            <p>
+                where \(\dot{q}\) is then rewritten as a function of \((q,p,t)\). This produces Hamilton's equations:
+            </p>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Coordinate Evolution</h3>
+                    \[
+                    \dot{q}_i = \frac{\partial H}{\partial p_i}
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Momentum Evolution</h3>
+                    \[
+                    \dot{p}_i = -\frac{\partial H}{\partial q_i}
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                The Euler-Lagrange equation and Hamilton's equations describe the same classical dynamics when the
+                Legendre transform is non-degenerate. The Hamiltonian form is first-order and is especially important
+                in phase-space geometry, canonical transformations, statistical mechanics, and quantum mechanics.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">8. What the Legendre Transform Does</h2>
+            <p>
+                A Legendre transform changes which variables are treated as independent. In this setting, it trades
+                velocity \(\dot{q}\) for momentum \(p\). For a simple particle,
+            </p>
+            <div class="equation">
+                \[
+                L(q,\dot{q})
+                =
+                \frac{1}{2}m\dot{q}^2 - V(q),
+                \qquad
+                p = m\dot{q}.
+                \]
+            </div>
+            <p>
+                Solve for \(\dot{q}=p/m\), then compute
+            </p>
+            <div class="equation">
+                \[
+                H(q,p)
+                =
+                p\left(\frac{p}{m}\right)
+                -
+                \left[
+                \frac{1}{2}m\left(\frac{p}{m}\right)^2 - V(q)
+                \right]
+                =
+                \frac{p^2}{2m}+V(q).
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                For this common case, \(H=T+V\), the total energy. More generally, the Hamiltonian is the energy-like
+                generator of time evolution in phase space.
+            </p>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Where It Is Used</h2>
+            <p>
+                The same Euler-Lagrange structure appears far beyond introductory mechanics. It gives geodesics in
+                differential geometry, minimal surfaces in geometry and materials science, field equations in classical
+                field theory, and optimization equations in control theory.
+            </p>
+            <p style="margin-bottom: 0;">
+                In Hamiltonian mechanics, it provides the starting point for passing from configuration space to phase
+                space. In modern physics, this variational foundation is one reason classical mechanics, quantum
+                mechanics, and field theory share a common mathematical grammar.
+            </p>
+        </section>
+
+        <footer>
+            Built as a compact reference page on the Euler-Lagrange equation, Hamiltonian mechanics, and the Legendre transform.
+        </footer>
+    </div>
+
+    <script>
+    new p5(function(p) {
+        let holder;
+        let samples = [];
+
+        function targetSize() {
+            const width = Math.max(240, Math.min(920, holder ? holder.offsetWidth : 900));
+            const height = Math.max(270, Math.round(width * 0.48));
+            return { width, height };
+        }
+
+        function stationaryY(t) {
+            return 0.64 - 0.28 * Math.sin(Math.PI * t);
+        }
+
+        function variationShape(t, phase, amp) {
+            return amp * Math.sin(Math.PI * t) * Math.sin(2 * Math.PI * t + phase);
+        }
+
+        function buildSamples() {
+            samples = [];
+            for (let i = 0; i < 7; i++) {
+                samples.push({
+                    phase: i * 0.82 + 0.3,
+                    amp: 0.035 + i * 0.006
+                });
+            }
+        }
+
+        p.setup = function() {
+            holder = document.getElementById('euler-sketch');
+            const size = targetSize();
+            const canvas = p.createCanvas(size.width, size.height);
+            canvas.parent('euler-sketch');
+            p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+            p.textFont('Parkinsans, Helvetica, Arial, sans-serif');
+            buildSamples();
+        };
+
+        p.windowResized = function() {
+            const size = targetSize();
+            p.resizeCanvas(size.width, size.height);
+        };
+
+        function plotPoint(t, yValue) {
+            const left = p.width * 0.1;
+            const right = p.width * 0.9;
+            const top = p.height * 0.16;
+            const bottom = p.height * 0.82;
+            return {
+                x: p.lerp(left, right, t),
+                y: p.lerp(top, bottom, yValue)
+            };
+        }
+
+        function drawPath(fn, pathColor, weight) {
+            p.noFill();
+            p.stroke(pathColor);
+            p.strokeWeight(weight);
+            p.beginShape();
+            for (let i = 0; i <= 100; i++) {
+                const t = i / 100;
+                const pt = plotPoint(t, fn(t));
+                p.vertex(pt.x, pt.y);
+            }
+            p.endShape();
+        }
+
+        function drawEndpoint(t, label) {
+            const pt = plotPoint(t, stationaryY(t));
+            p.noStroke();
+            p.fill(36, 100, 160);
+            p.circle(pt.x, pt.y, 12);
+            p.fill(43, 54, 68);
+            p.textSize(13);
+            p.text(label, pt.x - 18, pt.y - 18);
+        }
+
+        p.draw = function() {
+            const w = p.width;
+            const h = p.height;
+            const time = p.frameCount * 0.035;
+
+            p.background(248, 252, 255);
+
+            p.stroke(216, 229, 238);
+            p.strokeWeight(1);
+            for (let i = 0; i < 8; i++) {
+                const y = p.map(i, 0, 7, h * 0.16, h * 0.82);
+                p.line(w * 0.08, y, w * 0.92, y);
+            }
+            for (let i = 0; i < 9; i++) {
+                const x = p.map(i, 0, 8, w * 0.1, w * 0.9);
+                p.line(x, h * 0.13, x, h * 0.86);
+            }
+
+            p.noStroke();
+            p.fill(255, 255, 255, 226);
+            p.rect(w * 0.065, h * 0.055, Math.min(330, w * 0.5), 78, 8);
+            p.fill(43, 54, 68);
+            p.textSize(14);
+            p.text('Stationary action: delta S = 0', w * 0.09, h * 0.11);
+            p.textSize(13);
+            p.fill(92, 108, 124);
+            p.text('trial paths share fixed endpoints', w * 0.09, h * 0.155);
+
+            for (const sample of samples) {
+                drawPath(function(t) {
+                    return stationaryY(t) + variationShape(t, sample.phase + time * 0.4, sample.amp);
+                }, p.color(93, 112, 130, 60), 1.5);
+            }
+
+            drawPath(function(t) {
+                return stationaryY(t) + variationShape(t, time, 0.075);
+            }, p.color(221, 90, 77, 145), 2);
+
+            drawPath(stationaryY, p.color(24, 139, 118), 4);
+
+            for (let i = 1; i < 6; i++) {
+                const t = i / 6;
+                const base = plotPoint(t, stationaryY(t));
+                const varied = plotPoint(t, stationaryY(t) + variationShape(t, time, 0.075));
+                p.stroke(221, 90, 77, 130);
+                p.strokeWeight(1.5);
+                p.line(base.x, base.y, varied.x, varied.y);
+                p.noStroke();
+                p.fill(221, 90, 77);
+                p.circle(varied.x, varied.y, 5);
+            }
+
+            drawEndpoint(0, 'q(t1)');
+            drawEndpoint(1, 'q(t2)');
+
+            const legendX = Math.min(w * 0.68, w - 190);
+            const formulaLabel = w < 540
+                ? 'Euler-Lagrange: d/dt(dL/dqdot) = dL/dq'
+                : 'Euler-Lagrange: d/dt(partial L / partial qdot) = partial L / partial q';
+
+            p.noStroke();
+            p.fill(24, 139, 118);
+            p.circle(legendX, h * 0.12, 10);
+            p.fill(43, 54, 68);
+            p.textSize(13);
+            p.text('stationary path', legendX + 18, h * 0.13);
+            p.fill(221, 90, 77);
+            p.circle(legendX, h * 0.175, 10);
+            p.fill(43, 54, 68);
+            p.text('variation y + epsilon eta', legendX + 18, h * 0.185);
+
+            p.fill(43, 54, 68);
+            p.textSize(13);
+            p.text(formulaLabel, w * 0.12, h * 0.93);
+        };
+    });
+    </script>
+</body>
+</html>

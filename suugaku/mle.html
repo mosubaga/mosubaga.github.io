@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Likelihood Estimation in Logistic Regression</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: min(1000px, calc(100vw - 40px));
+        }
+
+        h1,
+        h2,
+        p,
+        li {
+            overflow-wrap: break-word;
+        }
+
+        .lead {
+            font-size: 1.08rem;
+            max-width: 75ch;
+        }
+
+        .artwork-shell {
+            margin: 2rem 0 2.5rem;
+        }
+
+        #mle-sketch {
+            min-height: 330px;
+            border: 1px solid #cbdde5;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fbfdff;
+            box-shadow: 0 8px 24px rgba(38, 68, 82, 0.13);
+        }
+
+        #mle-sketch canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #65758a;
+            margin: 0.75rem auto 0;
+            max-width: 75ch;
+        }
+
+        .equation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 18px 0;
+        }
+
+        .equation-card {
+            background: #fbfdff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .equation-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: #2364a0;
+        }
+
+        .note-panel {
+            background: #f7fbf8;
+            border: 1px solid #cfe2d4;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                box-sizing: border-box;
+                padding: 12px;
+            }
+
+            .container {
+                padding: 2rem 1.25rem;
+                width: calc(100vw - 24px);
+                margin: 28px auto;
+            }
+
+            .equation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #mle-sketch {
+                min-height: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Understanding Maximum Likelihood Estimation in Logistic Regression</h1>
+
+        <p class="lead"><strong>Maximum Likelihood Estimation (MLE)</strong> is the fundamental procedure used to determine the parameters, the weights and biases, of a logistic regression model. While linear regression often relies on minimizing the sum of squares, logistic regression uses MLE because binary classification outcomes follow a distribution (Bernoulli) that is far from the Gaussian distribution assumed in standard least-squares models.</p>
+
+        <section class="artwork-shell">
+            <div id="mle-sketch" aria-label="Animated p5 artwork showing a logistic curve fitting binary data by maximum likelihood"></div>
+            <p class="sketch-caption">
+                A p5.js sketch of MLE in motion. The candidate logistic curve changes slope and intercept while the lower panel tracks the negative log-likelihood. The fitted curve is the one that makes the observed 0 and 1 labels most probable.
+            </p>
+        </section>
+
+        <h2>1. The Objective: Maximizing Probability</h2>
+        <p>The core philosophy of MLE is to find the parameter values that make the observed data most probable. In a logistic regression setting, the model predicts the probability \( y \) that a given input belongs to a specific class (e.g., class 1). For every data point in the training set, we want the model to assign a high probability to the correct label: a probability close to 1 for positive instances and close to 0 for negative instances.</p>
+        <p>The model does not try to make every prediction exactly 0 or 1. Instead, it gives a probability \( y_n \in (0,1) \), then scores that probability against the observed Bernoulli outcome. A positive point contributes \( y_n \) to the likelihood, while a negative point contributes \( 1-y_n \). A good model therefore makes the correct class probable without leaving the probability scale.</p>
+
+        <h2>2. Constructing the Likelihood Function</h2>
+        <p>To evaluate a set of weights, we calculate the <strong>likelihood function</strong>, which represents the joint probability of all observed data points given those weights. Assuming the data points are independent and identically distributed (i.i.d.), this joint probability is calculated by multiplying the individual probabilities assigned by the model to each observed outcome.</p>
+        
+        <p>For a binary dataset with labels \( t \in \{0, 1\} \), the likelihood function is expressed as:</p>
+        <div class="formula">
+            $$ p(t \mid w) = \prod_{n} y_n^{t_n} (1 - y_n)^{1 - t_n} $$
+        </div>
+        <p>In this formula, \( y_n \) is the model's predicted probability for the \( n \)-th instance, and \( t_n \) is the actual observed label.</p>
+        <p>For logistic regression, the predicted probability comes from the sigmoid function applied to a linear score:</p>
+        <div class="formula">
+            $$ y_n = \sigma(a_n) = \frac{1}{1+\exp(-a_n)}, \qquad a_n = w^\top x_n $$
+        </div>
+        <p>The linear score \( a_n \) can be any real number, but the sigmoid converts it into a valid probability. The intercept term is usually included by appending a constant feature \( x_{n0}=1 \).</p>
+        <p><strong>Example (tiny dataset):</strong> Suppose the model predicts probabilities \( y = [0.9, 0.4, 0.7] \) for three examples, and the true labels are \( t = [1, 0, 1] \). The likelihood is:</p>
+        <div class="formula">
+            $$ p(t \mid w) = 0.9^{1}(1-0.9)^{0} \cdot 0.4^{0}(1-0.4)^{1} \cdot 0.7^{1}(1-0.7)^{0} $$
+        </div>
+        <p>So the joint probability is \( 0.9 \times 0.6 \times 0.7 = 0.378 \). A different set of weights would change the \( y_n \) values and therefore change this likelihood.</p>
+
+        <h2>3. The Log-Likelihood and Numerical Stability</h2>
+        <p>In practice, it is mathematically more convenient and numerically stable to maximize the <strong>logarithm</strong> of the likelihood function. This transformation is beneficial for several reasons:</p>
+        <ul>
+            <li><strong>From Products to Sums:</strong> The natural logarithm turns the product of many small probabilities into a sum of log-probabilities, simplifying the calculation of derivatives.</li>
+            <li><strong>Numerical Underflow:</strong> Multiplying hundreds of probabilities (each between 0 and 1) can result in numbers so small they exceed a computer's precision; addition avoids this "underflow" issue.</li>
+            <li><strong>Monotonicity:</strong> Because the logarithm is a monotonically increasing function, the parameters that maximize the log-likelihood are identical to those that maximize the original likelihood.</li>
+        </ul>
+
+        <h2>4. The Cross-Entropy Error Function</h2>
+        <p>Machine learning frameworks typically use optimization algorithms designed to <em>minimize</em> a function rather than maximize it. Therefore, instead of maximizing the log-likelihood, we minimize the <strong>negative log-likelihood</strong>, which is known in logistic regression as the <strong>cross-entropy error function</strong>.</p>
+        <div class="formula">
+            $$ E(w) = - \sum_{n} \left[t_n \ln(y_n) + (1 - t_n) \ln(1 - y_n)\right] $$
+        </div>
+        <p>This error function is <strong>convex</strong>, meaning optimization algorithms do not have to navigate a landscape of competing local minima.</p>
+        <p>More precisely, the unregularized logistic regression loss is strictly convex when the feature matrix has enough independent information to identify the weights uniquely; otherwise, multiple weight vectors can give the same optimum.</p>
+        <p><strong>Example (same dataset):</strong> Using \( y = [0.9, 0.4, 0.7] \) and \( t = [1, 0, 1] \):</p>
+        <div class="formula">
+            $$ E(w) = -\left[\ln(0.9) + \ln(0.6) + \ln(0.7)\right] \approx 0.971 $$
+        </div>
+        <p>Lower values of \( E(w) \) indicate a better fit to the observed labels.</p>
+
+        <h2>5. Iterative Optimization</h2>
+        <p>Unlike linear regression, which has a "closed-form" solution (a single formula to find the answer), logistic regression requires <strong>iterative numerical methods</strong>. Because the relationship between the weights and the output is nonlinear (due to the sigmoid function), the optimal weights are found by repeatedly adjusting them in the direction that reduces the cross-entropy error. Common methods include:</p>
+        <ul>
+            <li><strong>Gradient Descent:</strong> Repeatedly nudging the weights based on the gradient of the error.</li>
+            <li><strong>Iterative Reweighted Least Squares (IRLS):</strong> A more advanced method using the <strong>Newton-Raphson</strong> scheme to reach the minimum more efficiently by using second-order information (the Hessian).</li>
+        </ul>
+        <p><strong>Example (one gradient step):</strong> With feature vector \( x = [1, x_1] \) and weights \( w = [b, w_1] \), the prediction is \( y = \sigma(w^\top x) \). A single gradient descent update looks like:</p>
+        <div class="formula">
+            $$ w \leftarrow w - \eta \sum_{n} (y_n - t_n) x_n $$
+        </div>
+        <p>Here \( \eta \) is the learning rate. If the model predicts too high when the true label is 0, the gradient term is positive and the weights are nudged downward.</p>
+        <div class="equation-grid">
+            <div class="equation-card">
+                <h3>Gradient</h3>
+                $$ \nabla E(w) = \sum_n (y_n - t_n)x_n $$
+            </div>
+            <div class="equation-card">
+                <h3>Hessian</h3>
+                $$ H = \sum_n y_n(1-y_n)x_nx_n^\top $$
+            </div>
+        </div>
+        <p>The Hessian is positive semidefinite because each term is weighted by \( y_n(1-y_n) \ge 0 \). This is the algebraic reason logistic regression has a well-behaved convex optimization landscape under ordinary non-separable conditions.</p>
+
+        <h2>6. Challenges: Linear Separability and Overfitting</h2>
+        <p>A specific vulnerability of MLE in logistic regression occurs when a dataset is <strong>linearly separable</strong> (the two classes can be perfectly split by a straight line). In this case, MLE will attempt to drive the predicted probabilities for every training point to exactly 1 or 0. This causes the magnitude of the weights to go to <strong>infinity</strong>, turning the smooth S-curve of the sigmoid into an infinitely steep step function. To prevent this, practitioners often use <strong>regularization</strong> or Bayesian priors to keep the weights stable and bounded.</p>
+        <p><strong>Example (regularization):</strong> A common fix is L2 regularization, which adds a penalty for large weights:</p>
+        <div class="formula">
+            $$ E_{\text{reg}}(w) = E(w) + \lambda \lVert w \rVert^2 $$
+        </div>
+        <p>The hyperparameter \( \lambda \) controls how strongly we discourage large weights, preventing runaway solutions on separable data.</p>
+
+        <h2>7. A Compact Worked Example</h2>
+        <p>Suppose we have a single feature \( x \) (plus a bias) and three observations:</p>
+        <ul>
+            <li>Inputs: \( x = [0, 1, 2] \)</li>
+            <li>Labels: \( t = [0, 0, 1] \)</li>
+        </ul>
+        <p>Let the model be \( y_n = \sigma(b + w x_n) \) with \( b = -1 \) and \( w = 1 \). Then:</p>
+        <div class="formula">
+            $$ y = [\sigma(-1), \sigma(0), \sigma(1)] \approx [0.269, 0.5, 0.731] $$
+        </div>
+        <p>The log-likelihood encourages the model to push \( y_1 \) and \( y_2 \) closer to 0, and \( y_3 \) closer to 1. After a few gradient steps, the model learns a steeper slope \( w \) and a more negative bias \( b \), which increases class separation while still keeping probabilities between 0 and 1.</p>
+
+        <h2>8. Reading the Fitted Coefficients</h2>
+        <p>Logistic regression coefficients are easiest to interpret on the log-odds scale. The model says:</p>
+        <div class="formula">
+            $$ \log\left(\frac{y_n}{1-y_n}\right) = w^\top x_n $$
+        </div>
+        <p>A one-unit increase in feature \(x_j\), holding the other features fixed, changes the log-odds by \(w_j\). Exponentiating gives an odds ratio:</p>
+        <div class="formula">
+            $$ \frac{\text{new odds}}{\text{old odds}} = \exp(w_j) $$
+        </div>
+        <p>This interpretation is one reason logistic regression remains useful even when more flexible classifiers are available: the fitted parameters are not just a decision rule, but a probability model with interpretable effects.</p>
+
+        <h2>9. MLE as a Probability Calibration Problem</h2>
+        <p>MLE rewards probability estimates that are confident when correct and cautious when the data are ambiguous. A prediction of \(0.99\) for an event that actually occurs receives a small loss, but the same \(0.99\) prediction for an event that does not occur receives a very large penalty. This asymmetry is exactly what makes cross-entropy sensitive to overconfident mistakes.</p>
+        <div class="note-panel">
+            <p style="margin: 0;">
+                <strong>Key point:</strong> Logistic regression is not merely fitting a boundary. It is fitting the probabilities around that boundary. The decision boundary \(w^\top x = 0\) is where \(y=0.5\), but the likelihood also cares about how quickly the probabilities move away from 0.5 on either side.
+            </p>
+        </div>
+    </div>
+    <script>
+    new p5(function(p) {
+        let holder;
+        const data = [
+            { x: -2.2, t: 0 },
+            { x: -1.7, t: 0 },
+            { x: -1.15, t: 0 },
+            { x: -0.62, t: 0 },
+            { x: -0.18, t: 1 },
+            { x: 0.32, t: 0 },
+            { x: 0.82, t: 1 },
+            { x: 1.22, t: 1 },
+            { x: 1.68, t: 1 },
+            { x: 2.18, t: 1 }
+        ];
+
+        function targetSize() {
+            const width = Math.max(260, Math.min(920, holder ? holder.offsetWidth : 900));
+            const height = Math.max(300, Math.round(width * 0.46));
+            return { width, height };
+        }
+
+        function sigmoid(z) {
+            return 1 / (1 + Math.exp(-z));
+        }
+
+        function model(x, b, w) {
+            return sigmoid(b + w * x);
+        }
+
+        function lossFor(b, w) {
+            let total = 0;
+            for (const point of data) {
+                const y = p.constrain(model(point.x, b, w), 0.001, 0.999);
+                total -= point.t * Math.log(y) + (1 - point.t) * Math.log(1 - y);
+            }
+            return total;
+        }
+
+        function xToScreen(x) {
+            return p.map(x, -2.6, 2.6, p.width * 0.09, p.width * 0.91);
+        }
+
+        function yToScreen(y) {
+            return p.map(y, 0, 1, p.height * 0.68, p.height * 0.16);
+        }
+
+        function drawCurve(b, w, curveColor, weight) {
+            p.noFill();
+            p.stroke(curveColor);
+            p.strokeWeight(weight);
+            p.beginShape();
+            for (let i = 0; i <= 120; i++) {
+                const x = p.map(i, 0, 120, -2.6, 2.6);
+                p.vertex(xToScreen(x), yToScreen(model(x, b, w)));
+            }
+            p.endShape();
+        }
+
+        p.setup = function() {
+            holder = document.getElementById('mle-sketch');
+            const size = targetSize();
+            const canvas = p.createCanvas(size.width, size.height);
+            canvas.parent('mle-sketch');
+            p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+            p.textFont('Parkinsans, Helvetica, Arial, sans-serif');
+        };
+
+        p.windowResized = function() {
+            const size = targetSize();
+            p.resizeCanvas(size.width, size.height);
+        };
+
+        p.draw = function() {
+            const w = p.width;
+            const h = p.height;
+            const time = p.frameCount * 0.026;
+            const fittedB = -0.28;
+            const fittedW = 2.25;
+            const candidateB = fittedB + 0.9 * Math.sin(time * 0.85);
+            const candidateW = fittedW + 1.15 * Math.sin(time * 0.63 + 1.1);
+            const candidateLoss = lossFor(candidateB, candidateW);
+            const fittedLoss = lossFor(fittedB, fittedW);
+
+            p.background(251, 253, 255);
+
+            p.stroke(218, 229, 238);
+            p.strokeWeight(1);
+            for (let i = 0; i <= 5; i++) {
+                const y = p.map(i, 0, 5, h * 0.68, h * 0.16);
+                p.line(w * 0.075, y, w * 0.925, y);
+            }
+            p.line(w * 0.09, h * 0.68, w * 0.91, h * 0.68);
+            p.line(w * 0.09, h * 0.16, w * 0.09, h * 0.68);
+
+            p.noStroke();
+            p.fill(43, 54, 68);
+            p.textSize(w < 540 ? 12 : 14);
+            p.text('probability P(t = 1 | x)', w * 0.1, h * 0.11);
+            p.fill(92, 108, 124);
+            p.text('negative log-likelihood', w * 0.1, h * 0.82);
+
+            p.stroke(200, 210, 218);
+            p.strokeWeight(1);
+            p.line(xToScreen(0), h * 0.16, xToScreen(0), h * 0.69);
+
+            drawCurve(candidateB, candidateW, p.color(218, 89, 77, 150), 2.4);
+            drawCurve(fittedB, fittedW, p.color(28, 139, 118), 4);
+
+            for (const point of data) {
+                const px = xToScreen(point.x);
+                const py = yToScreen(point.t ? 0.94 : 0.06);
+                const predictedY = yToScreen(model(point.x, fittedB, fittedW));
+
+                p.stroke(28, 139, 118, 70);
+                p.strokeWeight(1.5);
+                p.line(px, py, px, predictedY);
+
+                p.noStroke();
+                if (point.t) {
+                    p.fill(28, 139, 118);
+                } else {
+                    p.fill(48, 87, 151);
+                }
+                p.circle(px, py, w < 540 ? 9 : 12);
+                p.fill(255, 255, 255, 215);
+                p.circle(px - 2, py - 2, w < 540 ? 2.5 : 3.5);
+            }
+
+            const barLeft = w * 0.1;
+            const barTop = h * 0.86;
+            const barWidth = w * 0.62;
+            const maxLoss = 16;
+            p.noStroke();
+            p.fill(230, 238, 244);
+            p.rect(barLeft, barTop, barWidth, 12, 6);
+            p.fill(218, 89, 77);
+            p.rect(barLeft, barTop, barWidth * p.constrain(candidateLoss / maxLoss, 0, 1), 12, 6);
+            p.fill(28, 139, 118);
+            p.rect(barLeft, barTop + 21, barWidth * p.constrain(fittedLoss / maxLoss, 0, 1), 12, 6);
+
+            const labelX = Math.min(w * 0.75, w - 180);
+            p.fill(218, 89, 77);
+            p.circle(labelX, h * 0.2, 10);
+            p.fill(43, 54, 68);
+            p.textSize(13);
+            p.text('candidate curve', labelX + 16, h * 0.21);
+            p.fill(28, 139, 118);
+            p.circle(labelX, h * 0.26, 10);
+            p.fill(43, 54, 68);
+            p.text('maximum-likelihood fit', labelX + 16, h * 0.27);
+
+            p.fill(92, 108, 124);
+            p.textSize(12);
+            if (w < 560) {
+                p.text('candidate E = ' + candidateLoss.toFixed(2), barLeft, barTop - 8);
+                p.text('fit E = ' + fittedLoss.toFixed(2), barLeft + barWidth * 0.52, barTop - 8);
+            } else {
+                p.text('candidate E = ' + candidateLoss.toFixed(2), barLeft + barWidth + 12, barTop + 11);
+                p.text('fit E = ' + fittedLoss.toFixed(2), barLeft + barWidth + 12, barTop + 32);
+            }
+
+            p.fill(43, 54, 68);
+            p.textSize(12);
+            p.text('x', w * 0.92, h * 0.72);
+            p.text('1', w * 0.055, yToScreen(1) + 4);
+            p.text('0', w * 0.055, yToScreen(0) + 4);
+        };
+    });
+    </script>
+</body>
+</html>

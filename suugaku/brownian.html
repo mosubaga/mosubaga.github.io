@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brownian Motion</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- MathJax for LaTeX rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- p5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: min(1000px, calc(100vw - 40px));
+        }
+
+        .sketch-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0 2.5rem 0;
+        }
+
+        #brownian-sketch {
+            width: min(100%, 700px);
+        }
+
+        #brownian-sketch canvas {
+            width: 100% !important;
+            height: auto !important;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(80, 40, 120, 0.18);
+            display: block;
+        }
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.88em;
+            color: #7f8c8d;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .equation {
+            margin: 18px 0;
+        }
+        .boxed {
+            background: #eef6ff;
+            border-left: 6px solid #6a4fcf;
+            border-radius: 6px;
+            padding: 4px 20px;
+            margin: 24px 0;
+        }
+
+        @media (max-width: 820px) {
+            body {
+                box-sizing: border-box;
+                padding: 12px;
+            }
+
+            .container {
+                padding: 2rem 1.25rem;
+                width: calc(100vw - 24px);
+                margin: 28px auto;
+            }
+
+            h1 {
+                line-height: 1.12;
+            }
+
+            .boxed {
+                padding: 4px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Brownian Motion</h1>
+
+        <!-- p5.js artwork -->
+        <div class="sketch-container">
+            <div id="brownian-sketch"></div>
+        </div>
+        <p class="sketch-caption">
+            A large particle (orange) buffeted by many small fluid molecules (blue).
+            Its erratic trail illustrates the hallmark of Brownian motion.
+        </p>
+
+        <h2>1. Historical background</h2>
+        <p>
+            In 1827, the Scottish botanist Robert Brown observed under his microscope that
+            pollen grains suspended in water moved in rapid, irregular, seemingly endless
+            agitation. He initially wondered whether the motion was a sign of life, but found
+            the same jittering in inorganic dust particles and even in ground-up sphinx fragments
+            millennia old. The phenomenon is now called <em>Brownian motion</em> in his honor.
+        </p>
+        <p>
+            The physical explanation had to wait until 1905, when Albert Einstein published a
+            landmark paper showing that Brownian motion is a direct consequence of the
+            <em>molecular-kinetic theory of heat</em>: a suspended particle is incessantly
+            bombarded by the surrounding fluid molecules, each collision delivering a random
+            impulse. Because the impacts are individually tiny yet overwhelmingly numerous,
+            the net effect on the particle is a random walk whose statistical properties can be
+            predicted with precision. The same year, Marian Smoluchowski independently arrived
+            at related results. Jean Perrin's meticulous experiments (1908–1909) confirmed
+            Einstein's formulae and provided one of the strongest early confirmations of the
+            atomic hypothesis, earning Perrin the 1926 Nobel Prize in Physics.
+        </p>
+
+        <h2>2. The random-walk model</h2>
+        <p>
+            The simplest model considers a particle making discrete steps in one dimension.
+            At each time step \(\Delta t\) the particle moves by \(+\ell\) or \(-\ell\) with
+            equal probability \(\tfrac{1}{2}\). After \(N\) steps the position is
+        </p>
+        <div class="equation">
+            \begin{equation}
+            X_N = \ell \sum_{i=1}^{N} \xi_i,
+            \end{equation}
+        </div>
+        <p>
+            where \(\xi_i \in \{-1,+1\}\) are independent, identically distributed random
+            variables with \(\mathbb{E}[\xi_i]=0\) and \(\mathbb{E}[\xi_i^2]=1\).
+            Because the steps are independent and have zero mean,
+        </p>
+        <div class="equation">
+            \begin{equation}
+            \mathbb{E}[X_N] = 0,
+            \qquad
+            \mathbb{E}[X_N^2] = N\ell^2.
+            \end{equation}
+        </div>
+        <p>
+            So while the <em>average</em> displacement is zero, the <em>root-mean-square</em>
+            displacement grows as \(\sqrt{N}\). Setting \(t = N\Delta t\) and
+            \(D = \ell^2 / (2\Delta t)\), this becomes
+        </p>
+        <div class="equation">
+            \begin{equation}
+            \mathbb{E}[X^2] = 2Dt,
+            \end{equation}
+        </div>
+        <p>
+            the celebrated diffusive scaling law. The quantity \(D\) is called the
+            <em>diffusion coefficient</em>.
+        </p>
+
+        <h2>3. The Wiener process</h2>
+        <p>
+            Taking the continuum limit — step size \(\ell \to 0\) and step duration
+            \(\Delta t \to 0\) with \(D\) held fixed — one obtains the <em>Wiener process</em>
+            \((W_t)_{t \geq 0}\), which is the rigorous mathematical model for Brownian motion.
+            It is characterized by four properties:
+        </p>
+        <ol>
+            <li>\(W_0 = 0\) almost surely.</li>
+            <li>The increments \(W_t - W_s\) are independent of \(\mathcal{F}_s\) whenever \(s < t\) (independent increments).</li>
+            <li>For \(s < t\), the increment \(W_t - W_s \sim \mathcal{N}(0, t-s)\).</li>
+            <li>The sample paths \(t \mapsto W_t\) are continuous almost surely.</li>
+        </ol>
+        <p>
+            A remarkable consequence of property (3) and the law of the iterated logarithm is
+            that while continuous, the Wiener process is <em>nowhere differentiable</em>
+            with probability one — reflecting the physically unbounded, instantaneous
+            "velocity" of a Brownian particle.
+        </p>
+
+        <h2>4. Einstein's diffusion equation</h2>
+        <p>
+            Einstein derived the evolution of the probability density
+            \(p(x,t)\) of finding the particle at position \(x\) at time \(t\) from the
+            assumption that the displacements in a short interval \(\tau\) are governed by
+            a symmetric distribution \(\phi(\Delta)\). Expanding in a Taylor series he
+            obtained the <em>diffusion equation</em>
+        </p>
+        <div class="boxed">
+            <div class="equation">
+                \begin{equation}
+                \frac{\partial p}{\partial t} = D\,\frac{\partial^2 p}{\partial x^2}.
+                \end{equation}
+            </div>
+        </div>
+        <p>
+            With the initial condition \(p(x,0)=\delta(x)\) (particle starts at the origin),
+            the solution is a Gaussian that spreads over time:
+        </p>
+        <div class="equation">
+            \begin{equation}
+            p(x,t) = \frac{1}{\sqrt{4\pi D t}}\exp\!\left(-\frac{x^2}{4Dt}\right).
+            \end{equation}
+        </div>
+        <p>
+            One immediately recovers \(\mathbb{E}[X^2]=2Dt\) by computing the variance of
+            this Gaussian. In \(d\) spatial dimensions the mean-squared displacement becomes
+            \(\mathbb{E}[|\mathbf{X}|^2] = 2dDt\).
+        </p>
+
+        <h2>5. The Einstein–Smoluchowski–Stokes relation</h2>
+        <p>
+            Einstein connected \(D\) to measurable physical quantities. For a spherical
+            particle of radius \(r\) in a fluid of viscosity \(\eta\) at absolute
+            temperature \(T\), Stokes's law gives the drag coefficient \(\gamma = 6\pi\eta r\),
+            and Einstein's relation reads
+        </p>
+        <div class="boxed">
+            <div class="equation">
+                \begin{equation}
+                D = \frac{k_{\mathrm{B}} T}{\gamma} = \frac{k_{\mathrm{B}} T}{6\pi\eta r},
+                \end{equation}
+            </div>
+        </div>
+        <p>
+            where \(k_{\mathrm{B}}\) is Boltzmann's constant.
+            This is one instance of the more general <em>fluctuation–dissipation theorem</em>:
+            the same thermal fluctuations that drive the random walk also cause the viscous
+            resistance, and the two are related by temperature. By measuring \(D\)
+            experimentally (from \(\mathbb{E}[X^2]=2Dt\)) and knowing \(\eta\) and \(r\),
+            Perrin was able to determine \(k_{\mathrm{B}}\) and thereby Avogadro's number
+            \(N_A = R/k_{\mathrm{B}}\) with remarkable accuracy.
+        </p>
+
+        <h2>6. Itô calculus and stochastic differential equations</h2>
+        <p>
+            The Wiener process forms the foundation of modern stochastic calculus.
+            Because Brownian sample paths have infinite variation, ordinary Riemann–Stieltjes
+            integration cannot be used to define integrals driven by \(W_t\).
+            Kiyosi Itô (1944) introduced a stochastic integral that instead uses the
+            <em>non-anticipating</em> (adapted) structure of the integrand, giving rise to
+            the <em>Itô integral</em>
+        </p>
+        <div class="equation">
+            \begin{equation}
+            \int_0^t f(s)\,dW_s = \lim_{n\to\infty}
+            \sum_{k} f(t_k)\bigl(W_{t_{k+1}}-W_{t_k}\bigr).
+            \end{equation}
+        </div>
+        <p>
+            A key consequence is <em>Itô's lemma</em>: if \(X_t\) satisfies the stochastic
+            differential equation \(dX_t = \mu_t\,dt + \sigma_t\,dW_t\), then for a smooth
+            function \(f(t,x)\),
+        </p>
+        <div class="equation">
+            \begin{equation}
+            df(t,X_t)
+            = \left(\frac{\partial f}{\partial t}
+              + \mu_t \frac{\partial f}{\partial x}
+              + \frac{\sigma_t^2}{2}\frac{\partial^2 f}{\partial x^2}\right)dt
+            + \sigma_t\frac{\partial f}{\partial x}\,dW_t.
+            \end{equation}
+        </div>
+        <p>
+            The extra second-derivative term — absent in ordinary calculus — is the
+            signature of the quadratic variation \([W]_t = t\) of Brownian motion,
+            capturing the rough, nowhere-differentiable nature of the sample paths.
+            Itô calculus is the backbone of modern mathematical finance, filtering
+            theory, and the study of stochastic partial differential equations.
+        </p>
+    </div>
+
+    <script>
+    new p5(function(p) {
+        const W = 700, H = 340;
+        const N_SMALL = 180;   // fluid molecules
+        const TRAIL_LEN = 300; // positions to keep
+
+        let smallParticles = [];
+        let bigX, bigY;
+        let trail = [];
+
+        p.setup = function() {
+            let cnv = p.createCanvas(W, H);
+            cnv.parent('brownian-sketch');
+            p.colorMode(p.RGB, 255);
+
+            bigX = W / 2;
+            bigY = H / 2;
+
+            for (let i = 0; i < N_SMALL; i++) {
+                smallParticles.push({
+                    x: p.random(W),
+                    y: p.random(H),
+                    vx: p.random(-3, 3),
+                    vy: p.random(-3, 3),
+                    r: p.random(2, 4)
+                });
+            }
+        };
+
+        p.draw = function() {
+            p.background(18, 14, 36);
+
+            // --- grid of faint dots for depth ---
+            p.noStroke();
+            for (let gx = 30; gx < W; gx += 40) {
+                for (let gy = 20; gy < H; gy += 40) {
+                    p.fill(255, 255, 255, 18);
+                    p.circle(gx, gy, 2);
+                }
+            }
+
+            // --- update and draw small particles ---
+            for (let s of smallParticles) {
+                s.x += s.vx;
+                s.y += s.vy;
+
+                // bounce off walls
+                if (s.x < 0 || s.x > W) { s.vx *= -1; s.x = p.constrain(s.x, 0, W); }
+                if (s.y < 0 || s.y > H) { s.vy *= -1; s.y = p.constrain(s.y, 0, H); }
+
+                // check collision with big particle (radius 14)
+                let dx = s.x - bigX;
+                let dy = s.y - bigY;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 20) {
+                    // elastic-like push
+                    let nx = dx / (dist + 0.001);
+                    let ny = dy / (dist + 0.001);
+                    s.vx = nx * Math.abs(s.vx + s.vy) + p.random(-0.5, 0.5);
+                    s.vy = ny * Math.abs(s.vx + s.vy) + p.random(-0.5, 0.5);
+                    // impart random nudge to big particle
+                    bigX += nx * -1.1;
+                    bigY += ny * -1.1;
+                }
+
+                // draw with soft glow
+                p.fill(100, 180, 255, 60);
+                p.noStroke();
+                p.circle(s.x, s.y, s.r * 4);
+                p.fill(160, 220, 255, 200);
+                p.circle(s.x, s.y, s.r * 1.6);
+            }
+
+            // add random thermal noise to big particle
+            bigX += p.randomGaussian(0, 0.6);
+            bigY += p.randomGaussian(0, 0.6);
+            bigX = p.constrain(bigX, 14, W - 14);
+            bigY = p.constrain(bigY, 14, H - 14);
+
+            // record trail
+            trail.push({x: bigX, y: bigY});
+            if (trail.length > TRAIL_LEN) trail.shift();
+
+            // --- draw trail ---
+            p.noFill();
+            for (let i = 1; i < trail.length; i++) {
+                let alpha = p.map(i, 0, trail.length, 0, 180);
+                let r = p.map(i, 0, trail.length, 80, 240);
+                let g = p.map(i, 0, trail.length, 40, 110);
+                p.stroke(r, g, 50, alpha);
+                p.strokeWeight(p.map(i, 0, trail.length, 0.5, 1.5));
+                p.line(trail[i-1].x, trail[i-1].y, trail[i].x, trail[i].y);
+            }
+
+            // --- draw big particle ---
+            // glow
+            p.noStroke();
+            p.fill(255, 140, 40, 30);
+            p.circle(bigX, bigY, 60);
+            p.fill(255, 150, 50, 60);
+            p.circle(bigX, bigY, 40);
+            // core
+            p.fill(255, 170, 60, 230);
+            p.circle(bigX, bigY, 26);
+            // highlight
+            p.fill(255, 230, 180, 180);
+            p.circle(bigX - 4, bigY - 4, 8);
+        };
+    });
+    </script>
+</body>
+</html>
