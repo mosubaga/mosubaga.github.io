@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Big-O Notation</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Highlight -->
+        <link rel="stylesheet" href="css/prism.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="css/prism.js"></script>
+        <link href="starter-template.css" rel="stylesheet" />
+        <script src="https://api.onelink-preview.com/moxie.min.js"></script>
+        <script
+            type="text/javascript"
+            async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"
+        ></script>
+        <style>
+            .complexity-card {
+                border-left: 4px solid #337ab7;
+                padding: 0.75rem 1.25rem;
+                margin-bottom: 1.5rem;
+                background: #f9f9f9;
+            }
+            .complexity-card h3 {
+                margin-top: 0;
+            }
+            .lang-label {
+                font-size: 0.85em;
+                font-weight: bold;
+                color: #555;
+                text-transform: uppercase;
+                margin-top: 1rem;
+                margin-bottom: 0.2rem;
+            }
+            .summary-table th {
+                background: #337ab7;
+                color: #fff;
+            }
+            .summary-table td, .summary-table th {
+                padding: 8px 14px;
+                border: 1px solid #ddd;
+            }
+            pre[class*="language-"] {
+                margin-top: 0.25rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="headercontainer">
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="perl.html">Perl</a></li>
+                        <li><a href="python.html">Python</a></li>
+                        <li><a href="go.html">Go</a></li>
+                        <li><a href="articles.html">Articles</a></li>
+                        <li><a href="reference.html">Reference</a></li>
+                        <li><a href="rotk.html">ROTK</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container" style="margin-top: 80px">
+            <h1>Big-O Notation in Programming</h1>
+
+            <p>
+                Big-O notation describes how the runtime or space requirements of an algorithm grow as the input size
+                \(n\) increases. It captures the <em>worst-case</em> upper bound, ignoring constant factors and
+                lower-order terms. Understanding Big-O is essential for choosing the right algorithm and predicting
+                how code will scale.
+            </p>
+
+            <h2>Summary Table</h2>
+            <table class="summary-table" style="border-collapse: collapse; margin-bottom: 2rem;">
+                <thead>
+                    <tr>
+                        <th>Notation</th>
+                        <th>Name</th>
+                        <th>Example Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>\(O(1)\)</td><td>Constant</td><td>Hash-map lookup, array index access</td></tr>
+                    <tr><td>\(O(\log n)\)</td><td>Logarithmic</td><td>Binary search, balanced BST lookup</td></tr>
+                    <tr><td>\(O(n)\)</td><td>Linear</td><td>Linear scan, single-pass sum</td></tr>
+                    <tr><td>\(O(n \log n)\)</td><td>Linearithmic</td><td>Merge sort, heap sort</td></tr>
+                    <tr><td>\(O(n^2)\)</td><td>Quadratic</td><td>Bubble sort, naive nested loops</td></tr>
+                    <tr><td>\(O(2^n)\)</td><td>Exponential</td><td>Naive recursive Fibonacci, power set</td></tr>
+                    <tr><td>\(O(n!)\)</td><td>Factorial</td><td>Brute-force permutations, TSP brute force</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================================ -->
+            <h2>1. \(O(1)\) — Constant Time</h2>
+
+            <p>
+                The algorithm takes the same amount of time regardless of input size. There are no loops or recursion
+                driven by \(n\); the operation is a fixed number of steps.
+            </p>
+
+            <div class="complexity-card">
+                <h3>Where is it used?</h3>
+                <ul>
+                    <li>Hash-map / dictionary lookup or insertion</li>
+                    <li>Accessing an element by index in an array</li>
+                    <li>Push / pop on a stack</li>
+                    <li>Reading the first element of a linked list</li>
+                </ul>
+
+                <div class="lang-label">Python</div>
+<pre><code class="language-python"># Dictionary lookup — O(1) average
+phone_book = {"Alice": "555-0100", "Bob": "555-0101"}
+
+def get_number(name):
+    return phone_book.get(name)   # hash lookup, not a scan
+
+print(get_number("Alice"))  # "555-0100"
+
+# Array index access — O(1)
+items = [10, 20, 30, 40, 50]
+print(items[3])  # 40 — direct memory offset, no iteration
+</code></pre>
+
+                <div class="lang-label">JavaScript</div>
+<pre><code class="language-javascript">// Object property lookup — O(1) average
+const phoneBook = { Alice: "555-0100", Bob: "555-0101" };
+
+function getNumber(name) {
+    return phoneBook[name];   // hash lookup, not a scan
+}
+
+console.log(getNumber("Alice")); // "555-0100"
+
+// Array index access — O(1)
+const items = [10, 20, 30, 40, 50];
+console.log(items[3]); // 40
+</code></pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>2. \(O(\log n)\) — Logarithmic Time</h2>
+
+            <p>
+                Each step of the algorithm halves (or otherwise reduces by a constant fraction) the problem size.
+                A problem of size \(n\) requires at most \(\log_2 n\) steps to resolve.
+                This is exceptionally efficient — searching one billion items takes only ~30 comparisons.
+            </p>
+
+            <div class="complexity-card">
+                <h3>Where is it used?</h3>
+                <ul>
+                    <li>Binary search in a sorted array</li>
+                    <li>Lookup / insert / delete in a balanced binary search tree (e.g. AVL, Red-Black)</li>
+                    <li>Heap operations (min-heap, max-heap)</li>
+                    <li>Fast exponentiation (squaring)</li>
+                </ul>
+
+                <div class="lang-label">Python</div>
+<pre><code class="language-python">def binary_search(arr, target):
+    """Search a sorted array for target. Returns index or -1."""
+    low, high = 0, len(arr) - 1
+
+    while low <= high:
+        mid = (low + high) // 2   # discard half the range each iteration
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            low = mid + 1          # target is in the right half
+        else:
+            high = mid - 1         # target is in the left half
+
+    return -1
+
+sorted_list = [1, 3, 5, 7, 9, 11, 13, 15]
+print(binary_search(sorted_list, 7))   # 3  (index)
+print(binary_search(sorted_list, 6))   # -1 (not found)
+</code></pre>
+
+                <div class="lang-label">JavaScript</div>
+<pre><code class="language-javascript">function binarySearch(arr, target) {
+    let low = 0, high = arr.length - 1;
+
+    while (low <= high) {
+        const mid = Math.floor((low + high) / 2); // discard half each step
+        if (arr[mid] === target) return mid;
+        else if (arr[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+
+    return -1;
+}
+
+const sortedList = [1, 3, 5, 7, 9, 11, 13, 15];
+console.log(binarySearch(sortedList, 7));  // 3
+console.log(binarySearch(sortedList, 6));  // -1
+</code></pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>3. \(O(n)\) — Linear Time</h2>
+
+            <p>
+                Runtime grows in direct proportion to the input size. A single pass through all \(n\) elements is
+                the classic example. Doubling the input doubles the work.
+            </p>
+
+            <div class="complexity-card">
+                <h3>Where is it used?</h3>
+                <ul>
+                    <li>Finding the maximum / minimum in an unsorted list</li>
+                    <li>Computing a sum or product of all elements</li>
+                    <li>Linear (sequential) search</li>
+                    <li>Copying or printing every element of a collection</li>
+                </ul>
+
+                <div class="lang-label">Python</div>
+<pre><code class="language-python">def find_max(numbers):
+    """Return the largest number in a list."""
+    max_val = numbers[0]
+    for num in numbers:          # visit every element once — O(n)
+        if num > max_val:
+            max_val = num
+    return max_val
+
+data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
+print(find_max(data))  # 9
+</code></pre>
+
+                <div class="lang-label">JavaScript</div>
+<pre><code class="language-javascript">function findMax(numbers) {
+    let maxVal = numbers[0];
+    for (const num of numbers) {   // visit every element once — O(n)
+        if (num > maxVal) maxVal = num;
+    }
+    return maxVal;
+}
+
+const data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3];
+console.log(findMax(data)); // 9
+</code></pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>4. \(O(n \log n)\) — Linearithmic Time</h2>
+
+            <p>
+                Often the best achievable complexity for comparison-based sorting algorithms. Each of the \(\log n\)
+                "levels" of recursion does \(O(n)\) work, giving \(n \log n\) total.
+            </p>
+
+            <div class="complexity-card">
+                <h3>Where is it used?</h3>
+                <ul>
+                    <li>Merge sort</li>
+                    <li>Heap sort</li>
+                    <li>Quick sort (average case)</li>
+                    <li>Most standard library sort functions</li>
+                </ul>
+
+                <div class="lang-label">Python</div>
+<pre><code class="language-python">def merge_sort(arr):
+    """Recursively split and merge — O(n log n)."""
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])    # log n levels of recursion
+    right = merge_sort(arr[mid:])
+
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):  # O(n) merge step per level
+        if left[i] <= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    return result + left[i:] + right[j:]
+
+print(merge_sort([38, 27, 43, 3, 9, 82, 10]))
+# [3, 9, 10, 27, 38, 43, 82]
+</code></pre>
+
+                <div class="lang-label">JavaScript</div>
+<pre><code class="language-javascript">function mergeSort(arr) {
+    if (arr.length <= 1) return arr;
+
+    const mid = Math.floor(arr.length / 2);
+    const left  = mergeSort(arr.slice(0, mid));   // log n levels
+    const right = mergeSort(arr.slice(mid));
+
+    return merge(left, right);
+}
+
+function merge(left, right) {
+    const result = [];
+    let i = 0, j = 0;
+    while (i < left.length && j < right.length) { // O(n) per level
+        if (left[i] <= right[j]) result.push(left[i++]);
+        else result.push(right[j++]);
+    }
+    return result.concat(left.slice(i), right.slice(j));
+}
+
+console.log(mergeSort([38, 27, 43, 3, 9, 82, 10]));
+// [3, 9, 10, 27, 38, 43, 82]
+</code></pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>5. \(O(n^2)\) — Quadratic Time</h2>
+
+            <p>
+                Typical of algorithms with two nested loops each iterating over the input. Quadratic algorithms
+                become impractical for large inputs — 10,000 items means 100,000,000 operations.
+            </p>
+
+            <div class="complexity-card">
+                <h3>Where is it used?</h3>
+                <ul>
+                    <li>Bubble sort, insertion sort, selection sort</li>
+                    <li>Checking all pairs of elements (e.g. naive duplicate detection)</li>
+                    <li>Matrix multiplication (naive \(O(n^3)\) is even worse)</li>
+                </ul>
+
+                <div class="lang-label">Python</div>
+<pre><code class="language-python">def bubble_sort(arr):
+    """Sort by repeatedly swapping adjacent out-of-order elements."""
+    n = len(arr)
+    for i in range(n):              # outer loop: n passes
+        for j in range(0, n - i - 1):  # inner loop: up to n comparisons
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+
+data = [64, 34, 25, 12, 22, 11, 90]
+print(bubble_sort(data))  # [11, 12, 22, 25, 34, 64, 90]
+</code></pre>
+
+                <div class="lang-label">JavaScript</div>
+<pre><code class="language-javascript">function bubbleSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n; i++) {             // outer loop: n passes
+        for (let j = 0; j < n - i - 1; j++) { // inner loop: n comparisons
+            if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            }
+        }
+    }
+    return arr;
+}
+
+const data = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(data)); // [11, 12, 22, 25, 34, 64, 90]
+</code></pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>6. \(O(2^n)\) — Exponential Time</h2>
+
+            <p>
+                The number of operations doubles with each additional element. This arises in algorithms that
+                explore every possible subset or make two recursive calls without memoization.
+                Even modest inputs (e.g. \(n=50\)) are infeasible without optimization.
+            </p>
+
+            <div class="complexity-card">
+                <h3>Where is it used?</h3>
+                <ul>
+                    <li>Naive recursive Fibonacci (without memoization)</li>
+                    <li>Generating all subsets (power set) of a set</li>
+                    <li>Brute-force solutions to the 0/1 knapsack problem</li>
+                </ul>
+
+                <div class="lang-label">Python</div>
+<pre><code class="language-python">def fib_naive(n):
+    """Compute the n-th Fibonacci number — O(2^n) without memoization."""
+    if n <= 1:
+        return n
+    return fib_naive(n - 1) + fib_naive(n - 2)  # two branches every call
+
+# Each call spawns two more calls — the call tree has ~2^n nodes.
+print(fib_naive(10))  # 55  (fast for small n, catastrophically slow for large n)
+
+# Better: memoized version is O(n)
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+print(fib(50))  # 12586269025  (instant)
+</code></pre>
+
+                <div class="lang-label">JavaScript</div>
+<pre><code class="language-javascript">// Naive recursive Fibonacci — O(2^n)
+function fibNaive(n) {
+    if (n <= 1) return n;
+    return fibNaive(n - 1) + fibNaive(n - 2); // two branches every call
+}
+
+console.log(fibNaive(10)); // 55
+
+// Better: memoized version is O(n)
+function fibMemo(n, memo = {}) {
+    if (n <= 1) return n;
+    if (memo[n] !== undefined) return memo[n];
+    memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+    return memo[n];
+}
+
+console.log(fibMemo(50)); // 12586269025
+</code></pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>7. \(O(n!)\) — Factorial Time</h2>
+
+            <p>
+                The number of operations is proportional to the factorial of the input size.
+                \(10! = 3{,}628{,}800\) and \(20! \approx 2.4 \times 10^{18}\).
+                Factorial algorithms are only practical for very small inputs and arise when every permutation
+                of the input must be considered.
+            </p>
+
+            <div class="complexity-card">
+                <h3>Where is it used?</h3>
+                <ul>
+                    <li>Brute-force Travelling Salesman Problem (try every route)</li>
+                    <li>Generating all permutations of a list</li>
+                    <li>Brute-force scheduling or assignment problems</li>
+                </ul>
+
+                <div class="lang-label">Python</div>
+<pre><code class="language-python">def all_permutations(items):
+    """Generate every permutation — O(n!) results, O(n!) time."""
+    if len(items) <= 1:
+        return [items[:]]   # base case: one permutation
+
+    result = []
+    for i, item in enumerate(items):
+        rest = items[:i] + items[i + 1:]          # remaining elements
+        for perm in all_permutations(rest):        # recurse on n-1 elements
+            result.append([item] + perm)
+    return result
+
+perms = all_permutations([1, 2, 3])
+for p in perms:
+    print(p)
+# [1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]
+</code></pre>
+
+                <div class="lang-label">JavaScript</div>
+<pre><code class="language-javascript">function allPermutations(items) {
+    if (items.length <= 1) return [[...items]]; // base case
+
+    const result = [];
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const rest = [...items.slice(0, i), ...items.slice(i + 1)]; // remove item
+        for (const perm of allPermutations(rest)) {   // recurse on n-1 items
+            result.push([item, ...perm]);
+        }
+    }
+    return result;
+}
+
+const perms = allPermutations([1, 2, 3]);
+perms.forEach(p => console.log(p));
+// [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]
+</code></pre>
+            </div>
+
+            <!-- ============================================================ -->
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>
+                    <strong>Always prefer lower complexity</strong> when a better algorithm exists.
+                    An \(O(n \log n)\) sort will always beat \(O(n^2)\) for large data.
+                </li>
+                <li>
+                    <strong>Constants matter in practice</strong>, but Big-O describes asymptotic behaviour —
+                    an \(O(n)\) algorithm with a large constant can be slower than \(O(n^2)\) for tiny inputs.
+                </li>
+                <li>
+                    <strong>Memoization / dynamic programming</strong> can transform exponential algorithms
+                    into polynomial ones (e.g. \(O(2^n) \rightarrow O(n)\) for Fibonacci).
+                </li>
+                <li>
+                    <strong>Space complexity</strong> follows the same notation — an algorithm can be
+                    time-efficient but memory-expensive, or vice versa.
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>
