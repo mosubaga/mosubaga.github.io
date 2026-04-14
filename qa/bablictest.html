@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+    referrerpolicy="no-referrer-when-downgrade"
+    type="text/javascript"
+    src="https://api.onelink-preview.com/moxie.min.js"
+    data-oljs="P123E-BDEF-2FE3-FD20"
+    ></script>
+    <title>Bablic test</title>
+  </head>
+  <body>
+    <div id="one" bablic-exclude>
+      This is not translated.
+      <div id="two" bablic-include>
+        Translate this first one.
+        <div id="three" bablic-exclude>
+          This too is not translated.
+          <div id="four" bablic-include>
+            Translate this second one.
+            <div id="five" bablic-exclude>
+              Also this too is not translated.
+              <div id="six" bablic-include>
+                Translate this third one.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
