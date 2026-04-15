@@ -12,6 +12,7 @@
     <title>Bablic test</title>
   </head>
   <body>
+    <h2 bablic-exclude>When you use Include/Exclude as ATTRIBUTE</h2>
     <div id="one" bablic-exclude>
       This is not translated.
       <div id="two" bablic-include>
@@ -30,5 +31,26 @@
         </div>
       </div>
     </div>
+    <hr>
+    <h2 bablic-exclude>When you use Include/Exclude as CLASS</h2>
+    <div id="classone" class="bablic-exclude">
+	    This is not translated.
+	  <div id="classtwo" class="bablic-include">
+		  Translate this first one.
+		<div id="classthree" class="bablic-exclude">
+			This too is not translated.
+			<div id="classfour" class="bablic-include">
+				Translate this second one.
+				<div id="classfive" class="bablic-exclude">
+					Also this too is not translated.
+					<div id="classsix" class="bablic-include">
+						Translate this third one.
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  </div>
+  </div>
+    
   </body>
 </html>
