@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Cloud Study Plan — Free Tier</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f2eb;
+    --bg2: #edeae1;
+    --ink: #1a1814;
+    --ink2: #4a4740;
+    --ink3: #8a8780;
+    --accent: #c8501a;
+    --accent2: #1a6bc8;
+    --rule: #d4d0c6;
+    --card: #fffefb;
+
+    --p1-c: #c8501a; --p1-bg: #fdf0ea;
+    --p2-c: #1a7a3a; --p2-bg: #eaf5ee;
+    --p3-c: #b07010; --p3-bg: #fdf5e0;
+    --p4-c: #8a1a5a; --p4-bg: #faeaf3;
+    --p5-c: #2a3aaa; --p5-bg: #eaecfa;
+    --p6-c: #4a4740; --p6-bg: #edeae1;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: 3rem 4rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,80,26,0.07) 0%, transparent 70%);
+  }
+
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    max-width: 640px;
+  }
+
+  header h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent);
+  }
+
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--ink2);
+  }
+
+  .meta-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── Alert bar ── */
+  .alert-bar {
+    background: #fff8f0;
+    border-bottom: 1px solid #f0d4b8;
+    padding: 0.75rem 4rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink2);
+    line-height: 1.5;
+  }
+
+  .alert-icon {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Main layout ── */
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 3rem 4rem 5rem;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Phase cards ── */
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .phase-card:hover {
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .phase-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .phase-header:hover {
+    background: var(--bg);
+  }
+
+  .phase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .phase-title-wrap {}
+
+  .phase-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--ink);
+    display: block;
+  }
+
+  .phase-sub {
+    font-size: 12px;
+    color: var(--ink3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .phase-duration {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink3);
+    white-space: nowrap;
+  }
+
+  .phase-chevron {
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink3);
+    font-size: 10px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .phase-card.open .phase-chevron {
+    transform: rotate(90deg);
+  }
+
+  .phase-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .phase-card.open .phase-body {
+    display: block;
+  }
+
+  /* ── Services row ── */
+  .services-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin: 1rem 0 0.5rem;
+  }
+
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .service-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    border: 1px solid var(--rule);
+    color: var(--ink2);
+    background: var(--bg);
+  }
+
+  /* ── Topic list ── */
+  .topics-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 0.5rem;
+  }
+
+  .topic-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .topic-list li {
+    font-size: 13.5px;
+    color: var(--ink2);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    border-bottom: 1px solid var(--bg2);
+    line-height: 1.5;
+  }
+
+  .topic-list li:last-child {
+    border-bottom: none;
+  }
+
+  .topic-list li::before {
+    content: '–';
+    position: absolute;
+    left: 2px;
+    color: var(--ink3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── Project box ── */
+  .project-box {
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 6px;
+    border-left: 3px solid;
+    background: var(--bg);
+  }
+
+  .project-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .project-text {
+    font-size: 13px;
+    color: var(--ink2);
+    line-height: 1.55;
+  }
+
+  /* ── Free Tier table ── */
+  .tier-section {
+    margin-top: 2.5rem;
+  }
+
+  .tier-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .tier-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    background: var(--bg);
+    padding: 9px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tier-table td {
+    padding: 9px 14px;
+    color: var(--ink2);
+    border-bottom: 1px solid var(--bg2);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .tier-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .tier-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .badge-perm {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #eaf5ee;
+    color: #1a7a3a;
+    border: 1px solid #b8dfc6;
+    padding: 1px 6px;
+    border-radius: 99px;
+    margin-left: 6px;
+  }
+
+  .badge-12mo {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #fdf5e0;
+    color: #b07010;
+    border: 1px solid #f0d890;
+    padding: 1px 6px;
+    border-radius: 99px;
+    margin-left: 6px;
+  }
+
+  /* ── Tips section ── */
+  .tips-section {
+    margin-top: 2.5rem;
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 0.75rem;
+  }
+
+  .tip-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+  }
+
+  .tip-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+
+  .tip-body {
+    font-size: 12.5px;
+    color: var(--ink2);
+    line-height: 1.55;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.5rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink3);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ── Print ── */
+  @media print {
+    .phase-body { display: block !important; }
+    .phase-chevron { display: none; }
+    .phase-header { cursor: default; }
+  }
+
+  @media (max-width: 680px) {
+    header, .alert-bar { padding-left: 1.5rem; padding-right: 1.5rem; }
+    main { padding: 2rem 1.5rem 4rem; }
+    footer { padding: 1.25rem 1.5rem; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .phase-header { grid-template-columns: auto 1fr auto; }
+    .phase-duration { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Personal study guide</div>
+  <h1>AWS Cloud Computing<br><em>Free Tier</em> Study Plan</h1>
+  <div class="header-meta">
+    <div class="meta-item"><span class="meta-dot"></span> 14 weeks</div>
+    <div class="meta-item"><span class="meta-dot"></span> 6 phases</div>
+    <div class="meta-item"><span class="meta-dot" style="background:var(--accent2)"></span> $0 AWS cost</div>
+    <div class="meta-item"><span class="meta-dot" style="background:var(--accent2)"></span> Foundations → Architecture</div>
+  </div>
+</header>
+
+<div class="alert-bar">
+  <span class="alert-icon">!</span>
+  <span>Before anything else: go to <strong>Billing → Budgets</strong> and create a $1 alert. Also enable the "Free Tier usage alerts" toggle under Billing Preferences. This ensures you'll never be surprised by a charge.</span>
+</div>
+
+<main>
+  <div class="section-label">Study phases — click to expand</div>
+
+  <div id="phases"></div>
+
+  <!-- Free Tier reference table -->
+  <div class="tier-section">
+    <div class="section-label">Free Tier quick reference</div>
+    <table class="tier-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Free allowance</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lambda</td>
+          <td>1M requests/month + 400,000 GB-seconds compute</td>
+          <td><span class="badge-perm">Permanent</span></td>
+        </tr>
+        <tr>
+          <td>DynamoDB</td>
+          <td>25 GB storage + 200M requests/month</td>
+          <td><span class="badge-perm">Permanent</span></td>
+        </tr>
+        <tr>
+          <td>CloudWatch</td>
+          <td>10 custom metrics, 5 GB log ingestion/month</td>
+          <td><span class="badge-perm">Permanent</span></td>
+        </tr>
+        <tr>
+          <td>API Gateway</td>
+          <td>1M REST API calls/month</td>
+          <td><span class="badge-perm">Permanent</span></td>
+        </tr>
+        <tr>
+          <td>EC2 (t2.micro)</td>
+          <td>750 hours/month</td>
+          <td><span class="badge-12mo">12 months</span></td>
+        </tr>
+        <tr>
+          <td>RDS (db.t2.micro)</td>
+          <td>750 hours/month + 20 GB storage</td>
+          <td><span class="badge-12mo">12 months</span></td>
+        </tr>
+        <tr>
+          <td>S3</td>
+          <td>5 GB storage + 20,000 GET + 2,000 PUT requests</td>
+          <td><span class="badge-12mo">12 months</span></td>
+        </tr>
+        <tr>
+          <td>CloudFront</td>
+          <td>1 TB data transfer out + 10M HTTP requests/month</td>
+          <td><span class="badge-12mo">12 months</span></td>
+        </tr>
+        <tr>
+          <td>SNS</td>
+          <td>1M publishes, 100,000 HTTP deliveries/month</td>
+          <td><span class="badge-perm">Permanent</span></td>
+        </tr>
+        <tr>
+          <td>SQS</td>
+          <td>1M requests/month</td>
+          <td><span class="badge-perm">Permanent</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tips -->
+  <div class="tips-section">
+    <div class="section-label">Practical tips</div>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-title">Use IAM roles, not keys</div>
+        <div class="tip-body">Never hardcode AWS credentials in code. Assign IAM roles to Lambda and EC2 instances. Store secrets in SSM Parameter Store or Secrets Manager.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Stop EC2 instances when idle</div>
+        <div class="tip-body">The free tier gives 750 hours/month — enough for one t2.micro running 24/7. If you spin up multiple instances, stop them when not in use.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Avoid NAT Gateways</div>
+        <div class="tip-body">NAT Gateways cost ~$0.045/hour and are NOT free tier. For learning purposes, deploy resources in public subnets or use VPC endpoints instead.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Pair with AWS Skill Builder</div>
+        <div class="tip-body">AWS Skill Builder has free digital courses mapped to each service. The Cloud Practitioner Essentials course is a great companion to Phases 1–3.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Tag every resource</div>
+        <div class="tip-body">Add a tag like <code style="font-family:monospace;font-size:11px;background:var(--bg2);padding:1px 4px;border-radius:3px">Project=learning</code> to everything you create. Makes cleanup — and billing analysis — much easier.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-title">Delete resources after each phase</div>
+        <div class="tip-body">Before moving to the next phase, delete resources from the previous one (RDS snapshots, EC2 AMIs, etc.). Use CloudFormation stacks so teardown is one command.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>AWS Cloud Study Plan — Free Tier Edition</span>
+  <span>14 weeks · 6 phases · $0</span>
+</footer>
+
+<script>
+const phases = [
+  {
+    num: "Phase 1",
+    title: "Foundations & setup",
+    sub: "Account, IAM, CLI",
+    duration: "Week 1–2",
+    color: { c: 'var(--p1-c)', bg: 'var(--p1-bg)' },
+    services: ["IAM", "AWS Console", "AWS CLI", "CloudShell", "Billing Dashboard"],
+    topics: [
+      "Create a free tier account and enable MFA on the root account immediately",
+      "Set up billing alerts at $0 via CloudWatch; enable free tier usage alerts",
+      "Understand the global infrastructure: Regions, Availability Zones, Edge Locations",
+      "IAM fundamentals: users, groups, roles, and inline vs. managed policies",
+      "Least-privilege principle — why it matters and how to apply it from day one",
+      "Install and configure the AWS CLI locally; run your first aws sts get-caller-identity",
+      "Explore the console — service categories, resource tagging, and the search bar"
+    ],
+    project: { label: "Mini project", text: "Create an IAM user with S3 read-only permissions, generate access keys, and run 'aws s3 ls' from the CLI. Then delete the access keys and understand why roles are preferred." }
+  },
+  {
+    num: "Phase 2",
+    title: "Storage & object access",
+    sub: "S3, CloudFront",
+    duration: "Week 3–4",
+    color: { c: 'var(--p2-c)', bg: 'var(--p2-bg)' },
+    services: ["S3", "S3 Glacier", "CloudFront", "ACM"],
+    topics: [
+      "S3 buckets: creation, naming rules, versioning, and lifecycle rules",
+      "Storage classes: Standard, Intelligent-Tiering, Glacier Instant Retrieval",
+      "Bucket policies vs. ACLs vs. IAM roles — when each applies",
+      "Static website hosting on S3 with index.html and error pages",
+      "CloudFront distribution in front of S3 — CDN basics and cache invalidation",
+      "Server-side encryption: SSE-S3 (free) and SSE-KMS overview",
+      "S3 event notifications → Lambda (preview of Phase 3 integration)"
+    ],
+    project: { label: "Mini project", text: "Host a personal static site (HTML/CSS/JS) on S3. Put a CloudFront distribution in front of it. Enable versioning, upload a new index.html, and test rolling back to the previous version." }
+  },
+  {
+    num: "Phase 3",
+    title: "Compute — serverless & VMs",
+    sub: "Lambda, EC2, API Gateway",
+    duration: "Week 5–7",
+    color: { c: 'var(--p3-c)', bg: 'var(--p3-bg)' },
+    services: ["Lambda", "EC2 t2.micro", "API Gateway", "EventBridge", "SAM CLI"],
+    topics: [
+      "Lambda: runtimes (Node.js, Python), handler structure, execution roles",
+      "Cold starts, concurrency, memory vs. timeout trade-offs",
+      "API Gateway: REST API → Lambda integration, stages, CORS configuration",
+      "EventBridge schedules: cron expressions to trigger Lambda on a schedule",
+      "EC2: launch a t2.micro, configure security groups, attach a key pair",
+      "SSH into EC2 from your terminal, install packages, understand AMIs and snapshots",
+      "EC2 instance profiles (roles attached to the instance) vs. hardcoded credentials"
+    ],
+    project: { label: "Mini project", text: "Build a serverless REST API: POST /items via API Gateway → Lambda function that returns a JSON response. Add an EventBridge cron rule that invokes a second Lambda every morning at 08:00 UTC." }
+  },
+  {
+    num: "Phase 4",
+    title: "Databases",
+    sub: "DynamoDB, RDS",
+    duration: "Week 8–9",
+    color: { c: 'var(--p4-c)', bg: 'var(--p4-bg)' },
+    services: ["DynamoDB", "RDS MySQL", "SSM Parameter Store"],
+    topics: [
+      "DynamoDB: partition keys, sort keys, and the single-table design pattern",
+      "Free tier: 25 GB storage + 200M requests/month — permanent, no expiry",
+      "RDS: MySQL on db.t2.micro (free for 12 months), automated backups",
+      "When to use relational vs. NoSQL — practical decision criteria",
+      "DynamoDB Streams: trigger Lambda on item changes (event-driven pattern)",
+      "SSM Parameter Store: store DB connection strings and API keys securely",
+      "Secrets Manager vs. Parameter Store — cost and use-case comparison"
+    ],
+    project: { label: "Mini project", text: "Extend your Phase 3 REST API to persist items in DynamoDB (PutItem / GetItem). Store any configuration strings in SSM Parameter Store and read them in Lambda at runtime — no hardcoded secrets." }
+  },
+  {
+    num: "Phase 5",
+    title: "Networking & security",
+    sub: "VPC, Route 53, ACM",
+    duration: "Week 10–11",
+    color: { c: 'var(--p5-c)', bg: 'var(--p5-bg)' },
+    services: ["VPC", "Security Groups", "NACLs", "Route 53", "ACM", "VPC Flow Logs"],
+    topics: [
+      "VPC: CIDR block planning, public vs. private subnets, internet gateways",
+      "Security Groups (stateful, instance-level) vs. NACLs (stateless, subnet-level)",
+      "NAT Gateways: what they do and why you should avoid creating them (not free)",
+      "Route 53: DNS concepts, hosted zones, A records, CNAME vs. Alias",
+      "ACM: request a free TLS certificate and attach it to CloudFront",
+      "VPC Flow Logs → CloudWatch Logs for network traffic analysis",
+      "VPC Endpoints: private connectivity to S3 and DynamoDB without the internet"
+    ],
+    project: { label: "Mini project", text: "Launch your EC2 instance inside a custom VPC with a public and a private subnet. Attach your ACM certificate to your CloudFront distribution and confirm HTTPS is working on your Phase 2 static site." }
+  },
+  {
+    num: "Phase 6",
+    title: "Observability & infrastructure as code",
+    sub: "CloudWatch, CloudFormation, SAM",
+    duration: "Week 12–14",
+    color: { c: 'var(--p6-c)', bg: 'var(--p6-bg)' },
+    services: ["CloudWatch", "CloudTrail", "CloudFormation", "SAM CLI", "X-Ray"],
+    topics: [
+      "CloudWatch Logs, Metrics, Dashboards — structured logging from Lambda",
+      "CloudWatch Alarms: alert on Lambda error rate, DynamoDB throttles",
+      "X-Ray tracing on Lambda: visualise latency breakdown across services",
+      "CloudTrail: audit API calls — who created, modified, or deleted what",
+      "CloudFormation: YAML/JSON template anatomy, stacks, change sets, rollback",
+      "SAM (Serverless Application Model): simplified Lambda + API Gateway templates",
+      "Deploy and tear down your full app stack with a single CLI command"
+    ],
+    project: { label: "Capstone project", text: "Write a CloudFormation (or SAM) template that provisions your entire app: S3 bucket, CloudFront distribution, Lambda functions, API Gateway, DynamoDB table, IAM roles, and CloudWatch alarms. One 'sam deploy' command should reproduce everything from scratch." }
+  }
+];
+
+const container = document.getElementById('phases');
+
+phases.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'phase-card';
+  if (i === 0) card.classList.add('open');
+
+  const tags = p.services.map(s => `<span class="service-tag">${s}</span>`).join('');
+  const topics = p.topics.map(t => `<li>${t}</li>`).join('');
+  const isCapstone = p.project.label.toLowerCase().includes('capstone');
+  const projColor = isCapstone ? 'var(--accent2)' : p.color.c;
+
+  card.innerHTML = `
+    <div class="phase-header">
+      <span class="phase-num" style="background:${p.color.bg};color:${p.color.c};border:1px solid ${p.color.c}22">${p.num}</span>
+      <div class="phase-title-wrap">
+        <span class="phase-title">${p.title}</span>
+        <span class="phase-sub">${p.sub}</span>
+      </div>
+      <span class="phase-duration">${p.duration}</span>
+      <span class="phase-chevron">▶</span>
+    </div>
+    <div class="phase-body">
+      <div class="services-label">AWS services</div>
+      <div class="service-tags">${tags}</div>
+      <div class="topics-label">What you'll learn</div>
+      <ul class="topic-list">${topics}</ul>
+      <div class="project-box" style="border-color:${projColor}">
+        <div class="project-label" style="color:${projColor}">${p.project.label}</div>
+        <div class="project-text">${p.project.text}</div>
+      </div>
+    </div>
+  `;
+
+  card.querySelector('.phase-header').addEventListener('click', () => {
+    card.classList.toggle('open');
+  });
+
+  container.appendChild(card);
+});
+</script>
+</body>
+</html>
