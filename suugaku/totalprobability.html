@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Law of Total Probability and Gambler's Ruin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        .sketch-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0 0.75rem;
+        }
+
+        #total-probability-sketch {
+            width: min(100%, 760px);
+        }
+
+        #total-probability-sketch canvas {
+            width: 100% !important;
+            height: auto !important;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(80, 40, 120, 0.16);
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.88em;
+            color: #7f8c8d;
+            margin: 0 0 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Law of Total Probability</h1>
+        <p>
+            The law of total probability is a way of computing the probability of an event
+            by splitting the sample space into cases. Instead of trying to measure the event
+            all at once, we condition on a set of mutually exclusive and exhaustive events,
+            solve each case, and then add the weighted results.
+        </p>
+
+        <div class="sketch-container">
+            <div id="total-probability-sketch" aria-label="Animated p5 artwork showing partition probabilities flowing into one total probability"></div>
+        </div>
+        <p class="sketch-caption">
+            A partition of the sample space: each case contributes \(P(A \mid B_i)P(B_i)\) to the total.
+        </p>
+
+        <div class="definition-box">
+            <p>
+                If \(B_1, B_2, \ldots, B_n\) form a partition of the sample space and
+                \(P(B_i) &gt; 0\), then for any event \(A\),
+            </p>
+            <div class="formula">
+                \[
+                    P(A) = \sum_{i=1}^{n} P(A \mid B_i)P(B_i).
+                \]
+            </div>
+        </div>
+
+        <p>
+            The formula says: first ask which case \(B_i\) happened, then ask how likely
+            \(A\) is inside that case. The final probability is the average of those
+            conditional probabilities, weighted by how likely each case is.
+        </p>
+
+        <h2>A Small Example</h2>
+        <p>
+            Suppose a bag is chosen at random. Bag 1 is chosen with probability \(0.4\) and
+            contains red balls with probability \(0.7\). Bag 2 is chosen with probability
+            \(0.6\) and contains red balls with probability \(0.2\). If \(A\) is the event
+            "draw a red ball", then
+        </p>
+        <div class="math">
+            \(P(A) = P(A\mid B_1)P(B_1) + P(A\mid B_2)P(B_2)\)<br>
+            \(P(A) = (0.7)(0.4) + (0.2)(0.6) = 0.40.\)
+        </div>
+        <p>
+            The key move is not the arithmetic. It is choosing a useful partition. In this
+            example, the partition is "which bag was selected." In many stochastic-process
+            problems, the useful partition is "what happens on the next step."
+        </p>
+
+        <h2>First-Step Analysis</h2>
+        <p>
+            First-step analysis is the law of total probability applied to a process that
+            evolves one step at a time. To compute the probability of a future event, condition
+            on the first transition. After that first transition, the process starts again
+            from a new state.
+        </p>
+
+        <div class="example-box">
+            <p>
+                If \(u_i\) denotes the probability of eventually reaching a target state when
+                starting from state \(i\), then conditioning on the next state gives
+            </p>
+            <div class="formula">
+                \[
+                    u_i = \sum_j P(i \to j)u_j.
+                \]
+            </div>
+            <p>
+                This is total probability: the next state \(j\) partitions all possible first
+                moves, and \(u_j\) is the conditional probability of eventual success after
+                that first move.
+            </p>
+        </div>
+
+        <h2>Gambler's Ruin</h2>
+        <p>
+            In the classical gambler's ruin problem, a gambler starts with \(i\) dollars and
+            plays repeated independent bets. On each bet the gambler wins one dollar with
+            probability \(p\) and loses one dollar with probability \(q = 1-p\). The game stops
+            when the gambler reaches either \(0\) dollars or \(N\) dollars.
+        </p>
+        <p>
+            Let \(u_i\) be the probability that the gambler reaches \(N\) before reaching
+            \(0\), starting from \(i\). The boundary values are immediate:
+        </p>
+        <div class="formula">
+            \[
+                u_0 = 0,\qquad u_N = 1.
+            \]
+        </div>
+        <p>
+            For \(1 \leq i \leq N-1\), condition on the outcome of the next bet. If the
+            gambler wins, the new fortune is \(i+1\). If the gambler loses, the new fortune
+            is \(i-1\). By the law of total probability,
+        </p>
+        <div class="definition-box">
+            <div class="formula">
+                \[
+                    u_i = p\,u_{i+1} + q\,u_{i-1}.
+                \]
+            </div>
+        </div>
+
+        <p>
+            This recurrence is the central connection. The law of total probability turns the
+            question "what is the chance of eventual success?" into a relationship between
+            neighboring states.
+        </p>
+
+        <h2>Solving the Recurrence</h2>
+        <p>
+            When \(p \neq q\), the solution to
+            \(u_i = p\,u_{i+1} + q\,u_{i-1}\) with \(u_0=0\) and \(u_N=1\) is
+        </p>
+        <div class="formula">
+            \[
+                u_i =
+                \frac{1 - \left(\frac{q}{p}\right)^i}
+                     {1 - \left(\frac{q}{p}\right)^N}.
+            \]
+        </div>
+        <p>
+            When the game is fair, \(p=q=\tfrac{1}{2}\), the recurrence becomes
+            \(u_i = \tfrac{1}{2}u_{i+1} + \tfrac{1}{2}u_{i-1}\). The solution is linear:
+        </p>
+        <div class="formula">
+            \[
+                u_i = \frac{i}{N}.
+            \]
+        </div>
+
+        <h2>Interpretation</h2>
+        <p>
+            In a fair game, the probability of reaching \(N\) before \(0\) is exactly the
+            fraction of the way the gambler has already traveled toward \(N\). Starting with
+            \(3\) dollars and aiming for \(10\), the chance of success is \(3/10\).
+        </p>
+        <p>
+            In an unfair game, the ratio \(q/p\) controls the shape of the answer. If
+            \(p &lt; q\), then losses are more likely than wins, and the chance of reaching
+            \(N\) decreases sharply. If \(p &gt; q\), the recurrence bends in the gambler's
+            favor.
+        </p>
+
+        <h2>Why Total Probability Matters Here</h2>
+        <p>
+            Gambler's ruin is not solved by listing every possible sequence of wins and
+            losses. There are infinitely many possible paths before absorption. The law of
+            total probability avoids that enumeration by grouping paths according to the
+            first bet. Once the first bet is known, the remaining problem has the same form
+            as the original problem, only from a neighboring fortune.
+        </p>
+
+        <div class="example-box">
+            <p>
+                The pattern is useful far beyond gambling examples:
+            </p>
+            <ul>
+                <li>Condition on the next step.</li>
+                <li>Write the target probability in terms of neighboring states.</li>
+                <li>Use boundary conditions to solve the recurrence.</li>
+            </ul>
+        </div>
+
+        <footer>
+            <a href="index.html">Back to Suugaku Notes</a>
+        </footer>
+    </div>
+
+    <script>
+    new p5(function(p) {
+        let holder;
+        const cases = [
+            { label: 'B1', weight: 0.30, conditional: 0.75, color: [43, 108, 176] },
+            { label: 'B2', weight: 0.45, conditional: 0.35, color: [24, 143, 118] },
+            { label: 'B3', weight: 0.25, conditional: 0.60, color: [219, 78, 74] }
+        ];
+
+        function targetSize() {
+            const width = Math.max(300, Math.min(760, holder ? holder.offsetWidth : 760));
+            const height = Math.max(260, Math.round(width * 0.48));
+            return { width, height };
+        }
+
+        function roundedRect(x, y, w, h, r) {
+            p.rect(x, y, w, h, r);
+        }
+
+        function drawArrow(x1, y1, x2, y2, c, alpha) {
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            p.stroke(c[0], c[1], c[2], alpha);
+            p.strokeWeight(3);
+            p.line(x1, y1, x2, y2);
+            p.noStroke();
+            p.fill(c[0], c[1], c[2], alpha);
+            p.push();
+            p.translate(x2, y2);
+            p.rotate(angle);
+            p.triangle(0, 0, -10, -5, -10, 5);
+            p.pop();
+        }
+
+        p.setup = function() {
+            holder = document.getElementById('total-probability-sketch');
+            const size = targetSize();
+            const canvas = p.createCanvas(size.width, size.height);
+            canvas.parent(holder);
+            p.textFont('Parkinsans, Helvetica, Arial, sans-serif');
+        };
+
+        p.windowResized = function() {
+            const size = targetSize();
+            p.resizeCanvas(size.width, size.height);
+        };
+
+        p.draw = function() {
+            const w = p.width;
+            const h = p.height;
+            const t = p.frameCount * 0.025;
+            const left = w * 0.08;
+            const blockTop = h * 0.18;
+            const blockWidth = w * 0.22;
+            const blockGap = h * 0.035;
+            const blockHeight = (h * 0.56 - blockGap * 2) / 3;
+            const middleX = w * 0.51;
+            const rightX = w * 0.78;
+            const total = cases.reduce(function(sum, item) {
+                return sum + item.weight * item.conditional;
+            }, 0);
+
+            p.background(248, 251, 255);
+
+            p.noStroke();
+            p.fill(255, 255, 255, 235);
+            roundedRect(w * 0.04, h * 0.08, w * 0.92, h * 0.78, 14);
+
+            p.fill(43, 54, 68);
+            p.textSize(Math.max(16, w * 0.024));
+            p.textAlign(p.LEFT, p.CENTER);
+            p.text('Partition into cases', left, h * 0.11);
+            p.text('Weighted contributions', middleX - w * 0.11, h * 0.11);
+            p.text('Total', rightX, h * 0.11);
+
+            for (let i = 0; i < cases.length; i++) {
+                const item = cases[i];
+                const y = blockTop + i * (blockHeight + blockGap);
+                const contribution = item.weight * item.conditional;
+                const pulse = 0.72 + 0.28 * Math.sin(t + i * 1.2);
+                const c = item.color;
+
+                p.noStroke();
+                p.fill(c[0], c[1], c[2], 30);
+                roundedRect(left, y, blockWidth, blockHeight, 10);
+                p.fill(c[0], c[1], c[2], 165);
+                roundedRect(left, y, blockWidth * item.weight, blockHeight, 10);
+
+                p.fill(43, 54, 68);
+                p.textSize(Math.max(13, w * 0.018));
+                p.textAlign(p.LEFT, p.CENTER);
+                p.text(item.label + ': P(' + item.label + ') = ' + item.weight.toFixed(2), left + 14, y + blockHeight * 0.35);
+                p.text('P(A|' + item.label + ') = ' + item.conditional.toFixed(2), left + 14, y + blockHeight * 0.68);
+
+                drawArrow(left + blockWidth + 14, y + blockHeight / 2, middleX - 16, y + blockHeight / 2, c, 80 + pulse * 110);
+
+                p.fill(c[0], c[1], c[2], 55);
+                roundedRect(middleX, y + blockHeight * 0.22, w * 0.18, blockHeight * 0.56, 8);
+                p.fill(c[0], c[1], c[2], 185);
+                roundedRect(middleX, y + blockHeight * 0.22, w * 0.18 * contribution / total, blockHeight * 0.56, 8);
+                p.fill(43, 54, 68);
+                p.textAlign(p.CENTER, p.CENTER);
+                p.textSize(Math.max(12, w * 0.016));
+                p.text(contribution.toFixed(3), middleX + w * 0.09, y + blockHeight / 2);
+
+                drawArrow(middleX + w * 0.19, y + blockHeight / 2, rightX - 18, h * 0.50, c, 75 + pulse * 100);
+            }
+
+            p.noStroke();
+            p.fill(238, 246, 255);
+            roundedRect(rightX, h * 0.36, w * 0.13, h * 0.28, 12);
+
+            let stackY = h * 0.61;
+            for (const item of cases) {
+                const contribution = item.weight * item.conditional;
+                const segmentHeight = h * 0.21 * contribution / total;
+                p.fill(item.color[0], item.color[1], item.color[2], 190);
+                roundedRect(rightX + w * 0.025, stackY - segmentHeight, w * 0.08, segmentHeight, 4);
+                stackY -= segmentHeight;
+            }
+
+            p.fill(43, 54, 68);
+            p.textAlign(p.CENTER, p.CENTER);
+            p.textSize(Math.max(13, w * 0.018));
+            p.text('P(A)', rightX + w * 0.065, h * 0.31);
+            p.text(total.toFixed(3), rightX + w * 0.065, h * 0.70);
+
+            p.fill(92, 108, 124);
+            p.textSize(Math.max(12, w * 0.015));
+            p.text('sum of conditional pieces', w * 0.50, h * 0.91);
+        };
+    });
+    </script>
+</body>
+</html>
