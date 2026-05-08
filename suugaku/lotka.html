@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotka–Volterra Equations — Predator–Prey Dynamics</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                inlineMath: [['\\(', '\\)']],
+                tags: 'ams'
+            },
+            chtml: {
+                linebreaks: { automatic: true, width: 'container' }
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        html, body { max-width: 100%; overflow-x: hidden; }
+
+        .page-kicker {
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2364a0;
+            font-weight: 700;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            max-width: 72ch;
+            margin: 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: min(1000px, calc(100vw - 40px));
+        }
+
+        h1, h2, p, li { overflow-wrap: break-word; }
+
+        .definition-box, .example-box, .equation,
+        .equation-card, .boxed-equation { box-sizing: border-box; max-width: 100%; }
+
+        .equation {
+            background: #fbfdff;
+            border-left: 5px solid #2364a0;
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 18px 0;
+            overflow-x: auto;
+        }
+
+        .equation mjx-container {
+            margin: 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .equation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 18px 0;
+        }
+
+        .equation-card {
+            background: #fbfdff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .equation-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: #2364a0;
+        }
+
+        .symbol-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.65rem 1.5rem;
+            padding-left: 1rem;
+        }
+
+        .boxed-equation {
+            background: #eef7fb;
+            border: 1px solid #bdd8e8;
+            border-radius: 8px;
+            padding: 4px 14px;
+            margin: 22px 0;
+        }
+
+        .note-panel {
+            background: #f7fbf8;
+            border: 1px solid #cfe2d4;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 20px 0;
+        }
+
+        /* ── Plot section ── */
+        .plots-wrapper {
+            margin: 2rem 0 2.5rem;
+        }
+
+        .plots-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .plot-card {
+            background: #f8fcff;
+            border: 1px solid #c9dce8;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(37,68,96,0.10);
+        }
+
+        .plot-card canvas {
+            display: block;
+            width: 100%;
+        }
+
+        .plot-card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #2364a0;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.6rem 1rem 0;
+        }
+
+        /* ── Controls ── */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem 1rem;
+            background: #f4f8fc;
+            border: 1px solid #d0e0ef;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .ctrl-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #385474;
+            margin-bottom: 0.3rem;
+        }
+
+        .ctrl-group .ctrl-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ctrl-group input[type=range] { flex: 1; accent-color: #2364a0; }
+
+        .ctrl-group .val-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #2364a0;
+            min-width: 2.8rem;
+            text-align: right;
+        }
+
+        .controls-ic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem 1rem;
+            background: #f7f4fc;
+            border: 1px solid #d5cee8;
+            border-radius: 8px;
+            padding: 0.9rem 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #65758a;
+            margin: 0.5rem auto 0;
+            max-width: 72ch;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+
+        .legend-dot {
+            width: 14px; height: 4px; border-radius: 2px;
+        }
+
+        @media (max-width: 760px) {
+            body { box-sizing: border-box; padding: 12px; }
+            .container {
+                padding: 2rem 1.25rem;
+                width: calc(100vw - 24px);
+                margin: 28px auto;
+            }
+            .equation-grid, .symbol-list { grid-template-columns: 1fr; }
+            .plots-grid { grid-template-columns: 1fr; }
+            .controls-grid { grid-template-columns: repeat(2, 1fr); }
+            .controls-ic-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 2.3rem !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header style="margin-bottom: 2.5rem;">
+        <p class="page-kicker">Differential Equations Notes</p>
+        <h1 style="margin: 0 0 1rem; line-height: 1.1; font-size: 3.4rem;">
+            Lotka–Volterra Equations
+        </h1>
+        <p class="lead">
+            A pair of nonlinear first-order ODEs that model the cyclic dynamics of two interacting
+            populations — a prey species and a predator species — in a closed ecosystem.
+        </p>
+    </header>
+
+    <!-- ── 1. The Equations ── -->
+    <section class="definition-box">
+        <h2 style="margin-top:0;">1. The Equations</h2>
+        <p>
+            Let \(x(t)\) denote the prey (e.g. rabbits) and \(y(t)\) the predator (e.g. foxes).
+            The Lotka–Volterra system is
+        </p>
+        <div class="equation">
+            \[
+            \begin{aligned}
+            \frac{dx}{dt} &= \alpha\, x - \beta\, x y, \\[6pt]
+            \frac{dy}{dt} &= \delta\, x y - \gamma\, y.
+            \end{aligned}
+            \]
+        </div>
+        <p>
+            Both equations are nonlinear because of the interaction term \(xy\), which couples the two
+            populations. This coupling is the engine of the oscillation.
+        </p>
+        <ul class="symbol-list">
+            <li>\(x(t) \ge 0\): prey population density.</li>
+            <li>\(y(t) \ge 0\): predator population density.</li>
+            <li>\(\alpha > 0\): intrinsic prey growth rate.</li>
+            <li>\(\beta > 0\): predation rate coefficient.</li>
+            <li>\(\delta > 0\): predator growth per prey consumed.</li>
+            <li>\(\gamma > 0\): intrinsic predator death rate.</li>
+        </ul>
+    </section>
+
+    <!-- ── 2. Historical Context ── -->
+    <section class="example-box" style="margin-top:2rem;">
+        <h2 style="margin-top:0;">2. Historical Context</h2>
+        <p>
+            Alfred Lotka proposed the equations in 1910 (chemistry) and again in 1920 (ecology).
+            Independently, Vito Volterra derived the same system in 1926 to explain the surprising
+            increase of adriatic shark catches after World War I (when fishing was interrupted).
+            The model confirmed that reducing harvesting pressure on prey inadvertently boosted
+            predator numbers.
+        </p>
+    </section>
+
+    <!-- ── 3. Derivation ── -->
+    <section class="definition-box" style="margin-top:2rem;">
+        <h2 style="margin-top:0;">3. Modelling Assumptions and Derivation</h2>
+
+        <p><strong>Prey equation.</strong> In isolation prey grow exponentially:</p>
+        <div class="equation">
+            \[\frac{dx}{dt} = \alpha\, x.\]
+        </div>
+        <p>
+            Each encounter between a predator and a prey (rate \(\propto xy\)) removes a prey individual,
+            so the full prey equation becomes
+        </p>
+        <div class="equation">
+            \[\frac{dx}{dt} = \alpha\, x - \beta\, x y.\]
+        </div>
+
+        <p><strong>Predator equation.</strong> In isolation predators die exponentially:</p>
+        <div class="equation">
+            \[\frac{dy}{dt} = -\gamma\, y.\]
+        </div>
+        <p>
+            Each encounter also feeds a predator; a fraction \(\delta\) of kills converts into new predators,
+            giving
+        </p>
+        <div class="equation">
+            \[\frac{dy}{dt} = \delta\, x y - \gamma\, y.\]
+        </div>
+    </section>
+
+    <!-- ── 4. Equilibria ── -->
+    <section class="example-box" style="margin-top:2rem;">
+        <h2 style="margin-top:0;">4. Equilibria and Stability</h2>
+        <p>Setting both right-hand sides to zero gives two fixed points:</p>
+
+        <div class="equation-grid">
+            <div class="equation-card">
+                <h3>Trivial equilibrium</h3>
+                \[E_0 = (0,\,0)\]
+                <p style="margin:0.5rem 0 0; font-size:0.9rem;">
+                    Both populations extinct. A saddle point — unstable in the biologically
+                    relevant quadrant \(x,y>0\).
+                </p>
+            </div>
+            <div class="equation-card">
+                <h3>Coexistence equilibrium</h3>
+                \[E^* = \!\left(\frac{\gamma}{\delta},\;\frac{\alpha}{\beta}\right)\]
+                <p style="margin:0.5rem 0 0; font-size:0.9rem;">
+                    Both species coexist. All trajectories starting in \(x,y>0\) orbit around
+                    \(E^*\) periodically — it is a <em>centre</em>, not a spiral.
+                </p>
+            </div>
+        </div>
+
+        <p>
+            Linearising around \(E^*\) yields eigenvalues \(\pm i\sqrt{\alpha\gamma}\) (purely imaginary),
+            confirming the centre character at the linearised level. The full nonlinear system
+            is also a centre, proved by the conserved quantity below.
+        </p>
+    </section>
+
+    <!-- ── 5. Conservation Law ── -->
+    <section class="definition-box" style="margin-top:2rem;">
+        <h2 style="margin-top:0;">5. First Integral (Conservation Law)</h2>
+        <p>
+            Despite being nonlinear, the Lotka–Volterra system admits a conserved quantity \(V(x,y)\)
+            that is constant along every trajectory:
+        </p>
+        <div class="boxed-equation">
+            \[
+            V(x,y) = \delta\, x - \gamma \ln x + \beta\, y - \alpha \ln y = \text{const}.
+            \]
+        </div>
+        <p>
+            <strong>Proof sketch.</strong> Divide the prey equation by \(x\) and the predator
+            equation by \(y\):
+        </p>
+        <div class="equation">
+            \[
+            \frac{\dot x}{x} = \alpha - \beta y, \qquad
+            \frac{\dot y}{y} = \delta x - \gamma.
+            \]
+        </div>
+        <p>Then compute \(\dot V\):</p>
+        <div class="equation">
+            \[
+            \frac{dV}{dt}
+            = \delta\dot x - \frac{\gamma \dot x}{x} + \beta \dot y - \frac{\alpha \dot y}{y}
+            = (\delta - \tfrac{\gamma}{x})(\alpha x - \beta xy)
+              + (\beta - \tfrac{\alpha}{y})(\delta xy - \gamma y)
+            = 0.
+            \]
+        </div>
+        <p>
+            Because \(V\) is conserved and strictly convex with a unique minimum at \(E^*\),
+            the level curves of \(V\) are closed loops around \(E^*\), which are precisely the
+            orbits of the system — confirming the exact periodicity.
+        </p>
+
+        <div class="note-panel">
+            <strong>Period.</strong> There is no closed-form expression for the period \(T\) of a
+            general orbit. For orbits near \(E^*\) the linearised period is
+            \(T \approx 2\pi / \sqrt{\alpha\gamma}\), independent of \(\beta\) and \(\delta\).
+        </div>
+    </section>
+
+    <!-- ── 6. Phase Portrait & Time Series (Interactive) ── -->
+    <section class="plots-wrapper">
+        <h2>6. Interactive Phase Portrait &amp; Time Series</h2>
+        <p>Adjust the parameters and initial conditions; both plots update in real time.</p>
+
+        <p style="font-size:0.88rem; color:#555; margin-bottom:0.6rem;"><strong>Parameters</strong></p>
+        <div class="controls-grid">
+            <div class="ctrl-group">
+                <label>\(\alpha\) — prey growth</label>
+                <div class="ctrl-row">
+                    <input type="range" id="sl-alpha" min="0.1" max="2.0" step="0.05" value="0.6">
+                    <span class="val-badge" id="lbl-alpha">0.60</span>
+                </div>
+            </div>
+            <div class="ctrl-group">
+                <label>\(\beta\) — predation rate</label>
+                <div class="ctrl-row">
+                    <input type="range" id="sl-beta" min="0.1" max="3.0" step="0.05" value="1.3">
+                    <span class="val-badge" id="lbl-beta">1.30</span>
+                </div>
+            </div>
+            <div class="ctrl-group">
+                <label>\(\delta\) — predator conversion</label>
+                <div class="ctrl-row">
+                    <input type="range" id="sl-delta" min="0.1" max="3.0" step="0.05" value="1.0">
+                    <span class="val-badge" id="lbl-delta">1.00</span>
+                </div>
+            </div>
+            <div class="ctrl-group">
+                <label>\(\gamma\) — predator death</label>
+                <div class="ctrl-row">
+                    <input type="range" id="sl-gamma" min="0.1" max="2.0" step="0.05" value="1.0">
+                    <span class="val-badge" id="lbl-gamma">1.00</span>
+                </div>
+            </div>
+        </div>
+
+        <p style="font-size:0.88rem; color:#555; margin-bottom:0.6rem;"><strong>Initial Conditions</strong></p>
+        <div class="controls-ic-grid">
+            <div class="ctrl-group">
+                <label>\(x_0\) — initial prey</label>
+                <div class="ctrl-row">
+                    <input type="range" id="sl-x0" min="0.05" max="3.0" step="0.05" value="0.9">
+                    <span class="val-badge" id="lbl-x0">0.90</span>
+                </div>
+            </div>
+            <div class="ctrl-group">
+                <label>\(y_0\) — initial predator</label>
+                <div class="ctrl-row">
+                    <input type="range" id="sl-y0" min="0.05" max="3.0" step="0.05" value="0.5">
+                    <span class="val-badge" id="lbl-y0">0.50</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="plots-grid">
+            <div class="plot-card">
+                <div class="plot-card-title">Time Series</div>
+                <canvas id="cv-time" height="260"></canvas>
+            </div>
+            <div class="plot-card">
+                <div class="plot-card-title">Phase Portrait</div>
+                <canvas id="cv-phase" height="260"></canvas>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#2364a0;"></div>
+                <span>Prey \(x(t)\)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#e05c3a;"></div>
+                <span>Predator \(y(t)\)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#999; width:10px; height:10px; border-radius:50%;"></div>
+                <span>Equilibrium \(E^*\)</span>
+            </div>
+        </div>
+        <p class="sketch-caption">
+            The solution is computed via the fourth-order Runge–Kutta (RK4) method with step \(h = 0.02\)
+            over \(t\in[0,\,60]\). The phase portrait shows the closed orbit in \((x,y)\)-space.
+        </p>
+    </section>
+
+    <!-- ── 7. Numerical Method ── -->
+    <section class="definition-box" style="margin-top:2rem;">
+        <h2 style="margin-top:0;">7. Numerical Solution via RK4</h2>
+        <p>
+            Because the Lotka–Volterra system has no explicit closed-form solution for \(x(t)\) and \(y(t)\)
+            individually, we integrate numerically.  The classical fourth-order Runge–Kutta scheme
+            advances one step from \((x_n, y_n)\) at time \(t_n\) to \(t_{n+1} = t_n + h\):
+        </p>
+        <div class="equation">
+            \[
+            \mathbf{u}_n = \begin{pmatrix} x_n \\ y_n \end{pmatrix}, \quad
+            \mathbf{f}(\mathbf{u}) = \begin{pmatrix} \alpha x - \beta xy \\ \delta xy - \gamma y \end{pmatrix}.
+            \]
+        </div>
+        <div class="equation">
+            \[
+            \begin{aligned}
+            \mathbf{k}_1 &= \mathbf{f}(\mathbf{u}_n), \\
+            \mathbf{k}_2 &= \mathbf{f}\!\left(\mathbf{u}_n + \tfrac{h}{2}\mathbf{k}_1\right), \\
+            \mathbf{k}_3 &= \mathbf{f}\!\left(\mathbf{u}_n + \tfrac{h}{2}\mathbf{k}_2\right), \\
+            \mathbf{k}_4 &= \mathbf{f}\!\left(\mathbf{u}_n + h\,\mathbf{k}_3\right), \\[6pt]
+            \mathbf{u}_{n+1} &= \mathbf{u}_n + \frac{h}{6}\!\left(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4\right).
+            \end{aligned}
+            \]
+        </div>
+        <p>
+            The local truncation error is \(O(h^5)\) and the global error \(O(h^4)\), making RK4 well
+            suited for smooth ODEs like this one.  The conserved quantity \(V\) stays nearly constant
+            over long integrations (typical drift \(\lesssim 10^{-4}\) for \(h=0.02\)), confirming
+            the solution quality.
+        </p>
+    </section>
+
+    <!-- ── 8. Limitations ── -->
+    <section class="example-box" style="margin-top:2rem; margin-bottom:3rem;">
+        <h2 style="margin-top:0;">8. Limitations of the Model</h2>
+        <p>
+            The classic Lotka–Volterra model is a beautiful mathematical object but an idealised
+            ecological one.  Key simplifications:
+        </p>
+        <ul>
+            <li><strong>No carrying capacity.</strong> Prey grow without bound in the absence of predators.
+                Adding a logistic term \(-rx^2\) converts the centre into a stable spiral.</li>
+            <li><strong>Mass-action interaction.</strong> The term \(xy\) assumes random mixing; real
+                ecosystems have spatial structure and predator saturation (Holling functional responses).</li>
+            <li><strong>Neutral stability.</strong> Every orbit is neutrally stable — a tiny perturbation
+                shifts to a different closed orbit permanently.  Real populations show damped oscillations
+                toward a stable limit cycle.</li>
+            <li><strong>Two-species only.</strong> Real food webs involve many interacting species.</li>
+        </ul>
+        <p>
+            Despite these limitations, the Lotka–Volterra equations remain the canonical entry point
+            for population dynamics and have influenced fields from epidemiology to game theory.
+        </p>
+    </section>
+
+</div><!-- /container -->
+
+<script>
+/* =========================================================
+   RK4 solver for Lotka-Volterra
+   ========================================================= */
+function rk4(alpha, beta, delta, gamma, x0, y0, tMax, h) {
+    const steps = Math.round(tMax / h);
+    const ts = new Float64Array(steps + 1);
+    const xs = new Float64Array(steps + 1);
+    const ys = new Float64Array(steps + 1);
+    ts[0] = 0; xs[0] = x0; ys[0] = y0;
+
+    for (let n = 0; n < steps; n++) {
+        const x = xs[n], y = ys[n];
+
+        const fx = (xx, yy) => alpha * xx - beta * xx * yy;
+        const fy = (xx, yy) => delta * xx * yy - gamma * yy;
+
+        const k1x = fx(x, y),          k1y = fy(x, y);
+        const k2x = fx(x+h/2*k1x, y+h/2*k1y), k2y = fy(x+h/2*k1x, y+h/2*k1y);
+        const k3x = fx(x+h/2*k2x, y+h/2*k2y), k3y = fy(x+h/2*k2x, y+h/2*k2y);
+        const k4x = fx(x+h*k3x, y+h*k3y),     k4y = fy(x+h*k3x, y+h*k3y);
+
+        xs[n+1] = x + h/6*(k1x + 2*k2x + 2*k3x + k4x);
+        ys[n+1] = y + h/6*(k1y + 2*k2y + 2*k3y + k4y);
+        ts[n+1] = ts[n] + h;
+    }
+    return { ts, xs, ys };
+}
+
+/* =========================================================
+   Drawing utilities
+   ========================================================= */
+function clearCanvas(ctx, W, H) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#f8fcff';
+    ctx.fillRect(0, 0, W, H);
+}
+
+function drawGrid(ctx, W, H, pad, xMin, xMax, yMin, yMax) {
+    const mapX = v => pad + (v - xMin) / (xMax - xMin) * (W - 2*pad);
+    const mapY = v => H - pad - (v - yMin) / (yMax - yMin) * (H - 2*pad);
+
+    ctx.strokeStyle = '#dde9f4';
+    ctx.lineWidth = 1;
+    // horizontal gridlines
+    for (let i = 0; i <= 4; i++) {
+        const y = yMin + i * (yMax - yMin) / 4;
+        ctx.beginPath();
+        ctx.moveTo(mapX(xMin), mapY(y));
+        ctx.lineTo(mapX(xMax), mapY(y));
+        ctx.stroke();
+    }
+    // vertical gridlines
+    for (let i = 0; i <= 5; i++) {
+        const x = xMin + i * (xMax - xMin) / 5;
+        ctx.beginPath();
+        ctx.moveTo(mapX(x), mapY(yMin));
+        ctx.lineTo(mapX(x), mapY(yMax));
+        ctx.stroke();
+    }
+    // axes
+    ctx.strokeStyle = '#8aa5bf';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(mapX(xMin), mapY(0)); ctx.lineTo(mapX(xMax), mapY(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mapX(0), mapY(yMin)); ctx.lineTo(mapX(0), mapY(yMax)); ctx.stroke();
+
+    return { mapX, mapY };
+}
+
+function drawLine(ctx, arr1, arr2, mapA, mapB, color, lw) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lw;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    for (let i = 0; i < arr1.length; i++) {
+        const px = mapA(arr1[i]), py = mapB(arr2[i]);
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+}
+
+/* =========================================================
+   Main render
+   ========================================================= */
+const cvTime  = document.getElementById('cv-time');
+const cvPhase = document.getElementById('cv-phase');
+const ctxT = cvTime.getContext('2d');
+const ctxP = cvPhase.getContext('2d');
+
+function getParams() {
+    return {
+        alpha: parseFloat(document.getElementById('sl-alpha').value),
+        beta:  parseFloat(document.getElementById('sl-beta').value),
+        delta: parseFloat(document.getElementById('sl-delta').value),
+        gamma: parseFloat(document.getElementById('sl-gamma').value),
+        x0:   parseFloat(document.getElementById('sl-x0').value),
+        y0:   parseFloat(document.getElementById('sl-y0').value),
+    };
+}
+
+const cvSizes = {};
+
+function initCanvasSize(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.offsetWidth || 400;
+    const H = parseInt(canvas.getAttribute('height')) || 260;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cvSizes[canvas.id] = { W, H };
+}
+
+function initAllCanvases() {
+    initCanvasSize(cvTime);
+    initCanvasSize(cvPhase);
+}
+
+function render() {
+    const { alpha, beta, delta, gamma, x0, y0 } = getParams();
+    const { ts, xs, ys } = rk4(alpha, beta, delta, gamma, x0, y0, 60, 0.02);
+
+    const { W: WT, H: HT } = cvSizes[cvTime.id]  || { W: 400, H: 260 };
+    const { W: WP, H: HP } = cvSizes[cvPhase.id] || { W: 400, H: 260 };
+    const padT = 36, padP = 36;
+
+    // — Time series —
+    const tMax = 60;
+    const popMax = Math.max(...xs, ...ys) * 1.12 + 0.1;
+
+    clearCanvas(ctxT, WT, HT);
+    const { mapX: mTt, mapY: mTp } = drawGrid(ctxT, WT, HT, padT, 0, tMax, 0, popMax);
+
+    // axis labels
+    ctxT.fillStyle = '#5a7a9a';
+    ctxT.font = '11px sans-serif';
+    ctxT.fillText('t', WT - padT + 4, HT - padT + 4);
+    ctxT.fillText('pop.', padT - 2, padT - 8);
+
+    drawLine(ctxT, ts, xs, mTt, mTp, '#2364a0', 2.2);
+    drawLine(ctxT, ts, ys, mTt, mTp, '#e05c3a', 2.2);
+
+    // tick labels t-axis
+    ctxT.fillStyle = '#7a90a8';
+    ctxT.font = '10px sans-serif';
+    ctxT.textAlign = 'center';
+    for (let v = 0; v <= tMax; v += 10) {
+        ctxT.fillText(v, mTt(v), HT - padT + 14);
+    }
+    ctxT.textAlign = 'left';
+
+    // — Phase portrait —
+    const xMax = Math.max(...xs) * 1.15 + 0.05;
+    const yMax = Math.max(...ys) * 1.15 + 0.05;
+
+    clearCanvas(ctxP, WP, HP);
+    const { mapX: mPx, mapY: mPy } = drawGrid(ctxP, WP, HP, padP, 0, xMax, 0, yMax);
+
+    ctxP.fillStyle = '#5a7a9a';
+    ctxP.font = '11px sans-serif';
+    ctxP.fillText('x (prey)', WP - padP - 52, HP - padP + 16);
+    ctxP.fillText('y', padP - 6, padP - 8);
+
+    // orbit
+    drawLine(ctxP, xs, ys, mPx, mPy, '#6a3a9a', 2);
+
+    // starting point
+    ctxP.fillStyle = '#2364a0';
+    ctxP.beginPath();
+    ctxP.arc(mPx(x0), mPy(y0), 5, 0, 2*Math.PI);
+    ctxP.fill();
+
+    // equilibrium E*
+    const ex = gamma / delta, ey = alpha / beta;
+    if (ex < xMax * 0.98 && ey < yMax * 0.98) {
+        ctxP.fillStyle = '#888';
+        ctxP.beginPath();
+        ctxP.arc(mPx(ex), mPy(ey), 5, 0, 2*Math.PI);
+        ctxP.fill();
+        // crosshair
+        ctxP.strokeStyle = '#bbb';
+        ctxP.lineWidth = 1;
+        ctxP.setLineDash([3,3]);
+        ctxP.beginPath(); ctxP.moveTo(mPx(ex), padP); ctxP.lineTo(mPx(ex), HP-padP); ctxP.stroke();
+        ctxP.beginPath(); ctxP.moveTo(padP, mPy(ey)); ctxP.lineTo(WP-padP, mPy(ey)); ctxP.stroke();
+        ctxP.setLineDash([]);
+
+        ctxP.fillStyle = '#777';
+        ctxP.font = '10px sans-serif';
+        ctxP.fillText('E*', mPx(ex)+6, mPy(ey)-6);
+    }
+
+    // tick labels x-axis phase
+    ctxP.fillStyle = '#7a90a8';
+    ctxP.font = '10px sans-serif';
+    ctxP.textAlign = 'center';
+    const xStep = xMax > 2 ? 1 : 0.5;
+    for (let v = 0; v <= xMax; v += xStep) {
+        ctxP.fillText(v.toFixed(1), mPx(v), HP - padP + 14);
+    }
+    ctxP.textAlign = 'left';
+}
+
+/* =========================================================
+   Wire up sliders
+   ========================================================= */
+const sliderMap = [
+    ['sl-alpha','lbl-alpha'],['sl-beta','lbl-beta'],
+    ['sl-delta','lbl-delta'],['sl-gamma','lbl-gamma'],
+    ['sl-x0','lbl-x0'],['sl-y0','lbl-y0'],
+];
+
+sliderMap.forEach(([slId, lblId]) => {
+    const sl = document.getElementById(slId);
+    const lbl = document.getElementById(lblId);
+    sl.addEventListener('input', () => {
+        lbl.textContent = parseFloat(sl.value).toFixed(2);
+        render();
+    });
+});
+
+/* =========================================================
+   Initial render + resize
+   ========================================================= */
+window.addEventListener('load', () => { initAllCanvases(); render(); });
+window.addEventListener('resize', () => { initAllCanvases(); render(); });
+</script>
+</body>
+</html>
