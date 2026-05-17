@@ -1,0 +1,69 @@
+{
+  "characters": [
+    {
+      "character": "Ramza",
+      "default_job": "Squire (Ramza)",
+      "how_to_get": "Chapter Unlock : Prologue Ramza is the main character of Final Fantasy Tactics, meaning that he will be automatically recruited to the party as soon as you start the prologue."
+    },
+    {
+      "character": "Mustadio",
+      "default_job": "Machinist",
+      "how_to_get": "Chapter Unlock : Chapter 2 Mustadio joins your party permanently after the battle at Goug Lowtown."
+    },
+    {
+      "character": "Agrias",
+      "default_job": "Holy Knight",
+      "how_to_get": "Chapter Unlock : Chapter 2 Agrias joins your party permanently after the battle at Balias Swale."
+    },
+    {
+      "character": "Boco",
+      "default_job": "Chocobo",
+      "how_to_get": "Chapter Unlock : Chapter 2 Boco joins your party as a Guest during the Araguay Woods battle, and will join permanently after the battle."
+    },
+    {
+      "character": "Rapha",
+      "default_job": "Skyseer",
+      "how_to_get": "Chapter Unlock : Chapter 3 Rapha joins your party after the battle on the Riovanes Castle Roof."
+    },
+    {
+      "character": "Marach",
+      "default_job": "Netherseer",
+      "how_to_get": "Chapter Unlock : Chapter 3 Marach joins your party after the battle on the Riovanes Castle Roof."
+    },
+    {
+      "character": "Beowulf",
+      "default_job": "Templar",
+      "how_to_get": "Chapter Unlock : Chapter 4 Beowulf joins your party after you complete the Gollund Coilery quest."
+    },
+    {
+      "character": "Reis",
+      "default_job": "Dragonkin",
+      "how_to_get": "Chapter Unlock : Chapter 4 Reis joins your party in her Holy Dragon form after you complete the Gollund Coilery sidequest. To obtain her Dragonkin form, complete the Nelveska Temple sidequest."
+    },
+    {
+      "character": "Construct 8",
+      "default_job": "Automaton",
+      "how_to_get": "Chapter Unlock : Chapter 4 Construct 8 joins your party after completing the Gollund Coilery sidequest. Once you obtain the Aquarius Zodiac Stone, return to the Clockwork City of Goug and it will join your party."
+    },
+    {
+      "character": "Orlandeau",
+      "default_job": "Sword Saint",
+      "how_to_get": "Chapter Unlock : Chapter 4 Orlandeau joins your party after the battle at Fort Besselat Sluice."
+    },
+    {
+      "character": "Cloud",
+      "default_job": "Soldier",
+      "how_to_get": "Chapter Unlock : Chapter 4 Cloud joins your party after the battle at the Trade City of Sal Ghidos. Once you acquire the Cancer Zodiac Stone, return to the Clockwork City of Goug to summon Cloud, and then go to Sal Ghidos to trigger this battle."
+    },
+    {
+      "character": "Meliadoul",
+      "default_job": "Divine Knight",
+      "how_to_get": "Chapter Unlock : Chapter 4 Meliadoul joins your party after defeating Zalera at the Limberry Castle Undercroft."
+    },
+    {
+      "character": "Byblos",
+      "default_job": "Byblos",
+      "how_to_get": "Chapter Unlock : Chapter 4 The Byblos joins your party as a Guest during the Terminus battle at Midlight's Deep, and will join permanently after the battle."
+    }
+  ]
+}

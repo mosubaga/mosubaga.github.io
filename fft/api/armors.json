@@ -1,0 +1,274 @@
+{
+	"armor":[
+		{
+			"name" : "Leather Armor",
+			"hp" : "10",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "200",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Linen Cuirass",
+			"hp" : "20",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "600",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Bronze Armor",
+			"hp" : "30",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "800",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Chain Mail",
+			"hp" : "40",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "1300",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Mythril Armor",
+			"hp" : "50",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "2000",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Plate Mail",
+			"hp" : "60",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "3000",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Gold Armor",
+			"hp" : "70",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "3600",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Diamond Armor",
+			"hp" : "80",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "6000",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Platina Armor",
+			"hp" : "90",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "9000",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Carabini Mail",
+			"hp" : "100",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "13000",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Crystal Mail",
+			"hp" : "110",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "19000",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Reflect Mail",
+			"hp" : "130",
+			"mp": "0",
+			"location" : "Buy At Shop",
+			"cost" : "18000",
+			"characteristics" : "Always Reflect"
+		},
+		{
+			"name" : "Genji Armor",
+			"hp" : "150",
+			"mp": "0",
+			"location" : "Steal From Elmdor",
+			"cost" : "10",
+			"characteristics" : "---"
+		},
+		{
+			"name" : "Maximillian",
+			"hp" : "200",
+			"mp": "0",
+			"location" : "Find In Deep Dungeon (Horror)",
+			"cost" : "---",
+			"characteristics" : "---"
+		}
+	],
+  "clothes":[
+		{
+			"name" : "Clothes",
+			"hp" : "5",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "150"
+		},
+		{
+			"name" : "Leather Outfit",
+			"hp" : "10",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "300"
+		},
+		{
+			"name" : "Leather Vest",
+			"hp" : "18",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "500"
+		},
+		{
+			"name" : "Secret Clothes",
+			"hp" : "20",
+			"mp" : "0",
+			"location" : "Find In Deep Dungeon (Tiger)",
+			"cost" : "---"
+		},
+		{
+			"name" : "Chain Vest",
+			"hp" : "24",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "900"
+		},
+		{
+			"name" : "Mythril Vest",
+			"hp" : "30",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "1500"
+		},
+		{
+			"name" : "Adaman Vest",
+			"hp" : "36",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "1600"
+		},
+		{
+			"name" : "Wizard Outfit",
+			"hp" : "42",
+			"mp" : "15",
+			"location" : "Buy At Shop",
+			"cost" : "1900"
+		},
+		{
+			"name" : "Brigandine",
+			"hp" : "50",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "500"
+		},
+		{
+			"name" : "Judo Outfit",
+			"hp" : "60",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "4000"
+		},
+		{
+			"name" : "Power Sleeve",
+			"hp" : "70",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "7000"
+		},
+		{
+			"name" : "Earth Clothes",
+			"hp" : "85",
+			"mp" : "10",
+			"location" : "Buy At Shop",
+			"cost" : "10000"
+		},
+		{
+			"name" : "Black Costume",
+			"hp" : "100",
+			"mp" : "0",
+			"location" : "Buy At Shop",
+			"cost" : "12000"
+		},
+		{
+			"name" : "Rubber Conscious",
+			"hp" : "150",
+			"mp" : "30",
+			"location" : "Poach A Hydra",
+			"cost" : "48000"
+		}
+	],
+    	"robes":[
+		{
+			"name" : "Linen Robe",
+			"hp" : "10",
+			"mp" : "10",
+			"location" : "Buy At Shop",
+			"cost" : "1200"
+		},
+		{
+			"name" : "Silk Robe",
+			"hp" : "20",
+			"mp" : "16",
+			"location" : "Buy At Shop",
+			"cost" : "2400"
+		},
+		{
+			"name" : "Wizard Robe",
+			"hp" : "30",
+			"mp" : "22",
+			"location" : "Buy At Shop",
+			"cost" : "4000"
+		},
+		{
+			"name" : "Chameleon Robe",
+			"hp" : "40",
+			"mp" : "28",
+			"location" : "Buy At Shop",
+			"cost" : "5000"
+		},
+		{
+			"name" : "White Robe",
+			"hp" : "50",
+			"mp" : "34",
+			"location" : "Buy At Shop",
+			"cost" : "9000"
+		},
+		{
+			"name" : "Black Robe",
+			"hp" : "60",
+			"mp" : "30",
+			"location" : "Buy At Shop",
+			"cost" : "13000"
+		},
+		{
+			"name" : "Light Robe",
+			"hp" : "75",
+			"mp" : "50",
+			"location" : "Buy At Shop",
+			"cost" : "3000"
+		},
+		{
+			"name" : "Robe of Lords",
+			"hp" : "100",
+			"mp" : "80",
+			"location" : "Find In Deep Dungeon (Voyage)",
+			"cost" : "---"
+		}
+	]
+}
