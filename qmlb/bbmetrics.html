@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MLB Statistics — Old &amp; Modern Metrics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =============================================
+       RAMUNE SODA CSS THEME — vars & base
+       ============================================= */
+    :root {
+      --ramune-blue:         #3BAEDB;
+      --ramune-blue-rgb:     59, 174, 219;
+      --ramune-deep:         #1A6FA8;
+      --ramune-sky:          #B8E9F8;
+      --ramune-foam:         #EAF9FF;
+      --ramune-marble:       #F0F7FA;
+      --ramune-label-cream:  #FFF8EC;
+      --ramune-label-red:    #E8334A;
+      --ramune-label-green:  #3EBD7F;
+      --ramune-gold:         #F5C842;
+      --ramune-violet:       #C4A8E8;
+      --ramune-violet-light: #F0EAFF;
+      --ramune-glass-tint:   rgba(59,174,219,0.13);
+      --ramune-shadow:       rgba(26,111,168,0.22);
+
+      --font-display: 'M PLUS Rounded 1c', sans-serif;
+      --font-body:    'Zen Maru Gothic', sans-serif;
+
+      --radius-pill: 999px;
+      --radius-lg:   24px;
+      --radius-md:   14px;
+      --radius-sm:   8px;
+
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: linear-gradient(175deg, #f9fdff 0%, var(--ramune-violet-light) 24%, #dff4ff 62%, #cbeefe 100%);
+      color: var(--ramune-deep);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(59,174,219,0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(59,174,219,0.10) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(184,233,248,0.20) 0%, transparent 70%),
+        radial-gradient(circle at 10% 15%, rgba(196,168,232,0.22) 0%, transparent 40%),
+        radial-gradient(circle at 88% 78%, rgba(196,168,232,0.18) 0%, transparent 38%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Bubbles ──────────────────────────────────────────────── */
+    .bubbles {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1;
+      overflow: hidden; mix-blend-mode: normal;
+    }
+    .bubble {
+      position: absolute; bottom: -140px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 28%,
+        rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.42) 34%,
+        rgba(var(--ramune-blue-rgb),0.30) 74%, rgba(var(--ramune-blue-rgb),0.12) 100%);
+      border: 1px solid rgba(var(--ramune-blue-rgb),0.40);
+      box-shadow: inset -2px -3px 8px rgba(var(--ramune-blue-rgb),0.30), 0 0 10px rgba(255,255,255,0.5);
+      animation: ramune-bubble-rise linear infinite;
+      will-change: transform, opacity;
+    }
+    .bubble::before {
+      content: ''; position: absolute;
+      top: 22%; left: 24%; width: 28%; height: 28%;
+      border-radius: 50%; background: rgba(255,255,255,0.7); filter: blur(0.3px);
+    }
+    .bubble-1  { left:4%;  width:12px; height:12px; --bubble-drift:14px;  --bubble-scale:1.1;  --bubble-opacity:0.28; animation-duration:10s;   animation-delay:-2s; }
+    .bubble-2  { left:8%;  width:24px; height:24px; --bubble-drift:-12px; --bubble-scale:0.9;  --bubble-opacity:0.42; animation-duration:14s;   animation-delay:-7s; }
+    .bubble-3  { left:13%; width:17px; height:17px; --bubble-drift:18px;  --bubble-scale:1.3;  --bubble-opacity:0.36; animation-duration:12s;   animation-delay:-10s; }
+    .bubble-4  { left:18%; width:34px; height:34px; --bubble-drift:-16px; --bubble-scale:0.8;  --bubble-opacity:0.26; animation-duration:17s;   animation-delay:-4s; }
+    .bubble-5  { left:23%; width:14px; height:14px; --bubble-drift:11px;  --bubble-scale:1.0;  --bubble-opacity:0.45; animation-duration:9s;    animation-delay:-13s; }
+    .bubble-6  { left:28%; width:27px; height:27px; --bubble-drift:-9px;  --bubble-scale:1.2;  --bubble-opacity:0.33; animation-duration:13s;   animation-delay:-6s; }
+    .bubble-7  { left:33%; width:10px; height:10px; --bubble-drift:13px;  --bubble-scale:1.4;  --bubble-opacity:0.48; animation-duration:8s;    animation-delay:-3s; }
+    .bubble-8  { left:38%; width:40px; height:40px; --bubble-drift:-20px; --bubble-scale:0.75; --bubble-opacity:0.22; animation-duration:18s;   animation-delay:-11s; }
+    .bubble-9  { left:43%; width:20px; height:20px; --bubble-drift:15px;  --bubble-scale:1.15; --bubble-opacity:0.38; animation-duration:11s;   animation-delay:-5s; }
+    .bubble-10 { left:48%; width:15px; height:15px; --bubble-drift:-10px; --bubble-scale:1.05; --bubble-opacity:0.34; animation-duration:12s;   animation-delay:-8s; }
+    .bubble-11 { left:53%; width:32px; height:32px; --bubble-drift:17px;  --bubble-scale:0.88; --bubble-opacity:0.24; animation-duration:16s;   animation-delay:-1s; }
+    .bubble-12 { left:58%; width:12px; height:12px; --bubble-drift:-11px; --bubble-scale:1.25; --bubble-opacity:0.47; animation-duration:9s;    animation-delay:-9s; }
+    .bubble-13 { left:63%; width:25px; height:25px; --bubble-drift:19px;  --bubble-scale:1.0;  --bubble-opacity:0.31; animation-duration:14s;   animation-delay:-14s; }
+    .bubble-14 { left:68%; width:19px; height:19px; --bubble-drift:-14px; --bubble-scale:1.2;  --bubble-opacity:0.4;  animation-duration:10s;   animation-delay:-12s; }
+    .bubble-15 { left:73%; width:9px;  height:9px;  --bubble-drift:10px;  --bubble-scale:1.45; --bubble-opacity:0.5;  animation-duration:8s;    animation-delay:-15s; }
+    .bubble-16 { left:78%; width:37px; height:37px; --bubble-drift:-18px; --bubble-scale:0.78; --bubble-opacity:0.23; animation-duration:19s;   animation-delay:-2s; }
+    .bubble-17 { left:83%; width:22px; height:22px; --bubble-drift:16px;  --bubble-scale:1.08; --bubble-opacity:0.35; animation-duration:13s;   animation-delay:-6s; }
+    .bubble-18 { left:88%; width:14px; height:14px; --bubble-drift:-9px;  --bubble-scale:1.3;  --bubble-opacity:0.46; animation-duration:9s;    animation-delay:-4s; }
+    .bubble-19 { left:93%; width:29px; height:29px; --bubble-drift:20px;  --bubble-scale:0.92; --bubble-opacity:0.29; animation-duration:15s;   animation-delay:-10s; }
+    .bubble-20 { left:97%; width:17px; height:17px; --bubble-drift:-15px; --bubble-scale:1.18; --bubble-opacity:0.39; animation-duration:11s;   animation-delay:-7s; }
+
+    /* ── Ramune Components ────────────────────────────────────── */
+    .ramune-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(16px) saturate(160%);
+      border: 1.5px solid rgba(59,174,219,0.28);
+      border-radius: var(--radius-lg);
+      padding: 1.6rem 1.75rem 1.75rem;
+      box-shadow: 0 4px 24px var(--ramune-shadow), inset 0 1px 0 rgba(255,255,255,0.9);
+      position: relative; overflow: hidden;
+      transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+    }
+    .ramune-card::before {
+      content: ''; position: absolute; top: -40%; right: -20%;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(196,168,232,0.12) 0%, rgba(59,174,219,0.09) 50%, transparent 70%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .ramune-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 14px 42px var(--ramune-shadow), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    /* Tint variants */
+    .ramune-card.trad {
+      border-color: rgba(232,51,74,0.22);
+    }
+    .ramune-card.trad::before {
+      background: radial-gradient(circle, rgba(232,51,74,0.09) 0%, rgba(245,200,66,0.07) 50%, transparent 70%);
+    }
+    .ramune-card.modern {
+      border-color: rgba(62,189,127,0.24);
+    }
+    .ramune-card.modern::before {
+      background: radial-gradient(circle, rgba(62,189,127,0.10) 0%, rgba(59,174,219,0.08) 50%, transparent 70%);
+    }
+    .ramune-card.bridge {
+      border-color: rgba(245,200,66,0.35);
+    }
+    .ramune-card.bridge::before {
+      background: radial-gradient(circle, rgba(245,200,66,0.13) 0%, rgba(59,174,219,0.08) 50%, transparent 70%);
+    }
+
+    .ramune-btn {
+      display: inline-flex; align-items: center; gap: 0.5em;
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.92rem; letter-spacing: 0.03em;
+      padding: 0.6em 1.5em; border: none;
+      border-radius: var(--radius-pill); cursor: pointer;
+      position: relative; overflow: hidden;
+      transition: transform 0.22s var(--ease-spring), box-shadow 0.22s var(--ease-smooth);
+      text-decoration: none;
+    }
+    .ramune-btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 60%);
+      border-radius: inherit; pointer-events: none;
+    }
+    .ramune-btn:active { transform: scale(0.95); }
+    .ramune-btn-primary {
+      background: linear-gradient(135deg, var(--ramune-blue) 0%, var(--ramune-deep) 100%);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(59,174,219,0.40), 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .ramune-btn-primary:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 28px rgba(59,174,219,0.50);
+    }
+    .ramune-btn-secondary {
+      background: rgba(255,255,255,0.80);
+      color: var(--ramune-deep);
+      box-shadow: 0 2px 10px rgba(26,111,168,0.12);
+      border: 1.5px solid rgba(59,174,219,0.35);
+    }
+    .ramune-btn-secondary:hover {
+      transform: translateY(-2px) scale(1.04);
+      background: var(--ramune-sky);
+    }
+
+    .ramune-badge {
+      display: inline-flex; align-items: center; gap: 0.3em;
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.70rem; letter-spacing: 0.05em;
+      padding: 0.22em 0.72em; border-radius: var(--radius-pill);
+    }
+    .ramune-badge-blue   { background: var(--ramune-sky);          color: var(--ramune-deep); }
+    .ramune-badge-green  { background: #d0f4e7;                    color: #1a6b45; }
+    .ramune-badge-red    { background: #fde0e4;                    color: #9b1a28; }
+    .ramune-badge-gold   { background: #fef3c7;                    color: #92610a; }
+    .ramune-badge-violet { background: var(--ramune-violet-light); color: #5c3d8f; border:1px solid rgba(196,168,232,0.45); }
+
+    .ramune-tag {
+      display: inline-flex; align-items: center;
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.2em 0.6em; border-radius: var(--radius-sm);
+      color: #fff; box-shadow: 0 2px 6px rgba(59,174,219,0.35);
+    }
+    .ramune-tag-blue   { background: var(--ramune-blue); }
+    .ramune-tag-red    { background: var(--ramune-label-red); box-shadow: 0 2px 6px rgba(232,51,74,0.35); }
+    .ramune-tag-green  { background: var(--ramune-label-green); box-shadow: 0 2px 6px rgba(62,189,127,0.35); }
+    .ramune-tag-gold   { background: #d4980a; box-shadow: 0 2px 6px rgba(212,152,10,0.35); }
+
+    .ramune-chip {
+      display: inline-flex; align-items: center; gap: 0.4em;
+      font-family: var(--font-body); font-size: 0.80rem;
+      padding: 0.28em 0.8em;
+      background: var(--ramune-glass-tint);
+      border: 1px solid rgba(59,174,219,0.28);
+      border-radius: var(--radius-pill); color: var(--ramune-deep);
+      backdrop-filter: blur(6px);
+      transition: background 0.2s, transform 0.2s var(--ease-spring);
+    }
+    .ramune-chip:hover { background: rgba(59,174,219,0.24); transform: scale(1.05); }
+    .ramune-chip.elite {
+      background: rgba(245,200,66,0.18);
+      border-color: rgba(245,200,66,0.45);
+      color: #7a5200; font-weight: 700;
+    }
+
+    .ramune-marble {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255,255,255,0.9) 0%, rgba(184,233,248,0.7) 30%,
+        rgba(59,174,219,0.5) 70%, rgba(26,111,168,0.8) 100%);
+      box-shadow: 0 3px 12px rgba(26,111,168,0.30), inset 0 1px 2px rgba(255,255,255,0.6);
+    }
+
+    .ramune-divider {
+      border: none; height: 2px; border-radius: var(--radius-pill); margin: 1.1rem 0;
+      background: linear-gradient(90deg, transparent, rgba(59,174,219,0.35) 30%, rgba(59,174,219,0.35) 70%, transparent);
+    }
+
+    .ramune-progress {
+      height: 9px; border-radius: var(--radius-pill);
+      background: rgba(59,174,219,0.12);
+      overflow: hidden; border: 1px solid rgba(59,174,219,0.18);
+    }
+    .ramune-progress-fill {
+      height: 100%; border-radius: var(--radius-pill);
+      background: linear-gradient(90deg, var(--ramune-sky), var(--ramune-blue));
+      box-shadow: 0 0 8px rgba(59,174,219,0.45);
+      position: relative; overflow: hidden;
+    }
+    .ramune-progress-fill::after {
+      content: ''; position: absolute; top:0; left:-100%; width:60%; height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      animation: ramune-shimmer 2s infinite;
+    }
+
+    /* ── Keyframes ────────────────────────────────────────────── */
+    @keyframes ramune-float    { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-8px)} }
+    @keyframes ramune-shimmer  { to { left: 160%; } }
+    @keyframes ramune-pop      { 0%{transform:scale(0.6);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+    @keyframes ramune-bubble-rise {
+      0%   { transform:translate3d(0,0,0) scale(var(--bubble-scale,1)); opacity:0; }
+      10%  { opacity:var(--bubble-opacity,0.45); }
+      100% { transform:translate3d(var(--bubble-drift,10px), calc(-100vh - 180px), 0) scale(0.55); opacity:0; }
+    }
+    .ramune-float { animation: ramune-float 3s ease-in-out infinite; }
+
+    /* =============================================
+       PAGE LAYOUT
+       ============================================= */
+    main { position: relative; z-index: 2; }
+
+    /* ── Header ─────────────────────────────────────────────────*/
+    .site-header {
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+    }
+    .site-header .ball-icon {
+      font-size: 3.6rem; display: block; margin-bottom: 0.4rem;
+      animation: ramune-float 3s ease-in-out infinite;
+      filter: drop-shadow(0 6px 14px rgba(59,174,219,0.35));
+    }
+    .site-header .kicker {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ramune-blue); margin-bottom: 0.5rem;
+    }
+    .site-header h1 {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(1.7rem, 4vw, 2.8rem);
+      color: var(--ramune-deep); line-height: 1.18;
+    }
+    .site-header h1 span { color: var(--ramune-blue); }
+    .site-header p {
+      font-size: 0.92rem; color: rgba(26,111,168,0.62);
+      margin-top: 0.5rem; font-style: italic;
+    }
+
+    /* ── Main Tab Nav ────────────────────────────────────────── */
+    .tab-nav {
+      display: flex; justify-content: center; gap: 0.85rem;
+      padding: 0.75rem 1.5rem 1rem;
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(240,248,255,0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(59,174,219,0.20);
+    }
+    .tab-nav button {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.9rem; letter-spacing: 0.04em;
+      padding: 0.55em 1.6em; border: 1.5px solid rgba(59,174,219,0.30);
+      border-radius: var(--radius-pill); cursor: pointer;
+      background: rgba(255,255,255,0.70); color: rgba(26,111,168,0.70);
+      transition: all 0.22s var(--ease-spring);
+    }
+    .tab-nav button:hover { background: var(--ramune-sky); color: var(--ramune-deep); }
+    .tab-nav button.active {
+      background: linear-gradient(135deg, var(--ramune-blue), var(--ramune-deep));
+      color: #fff; border-color: transparent;
+      box-shadow: 0 4px 16px rgba(59,174,219,0.40);
+    }
+
+    /* ── Section wrapper ─────────────────────────────────────── */
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    .section-intro {
+      max-width: 760px; margin: 2rem auto 0;
+      padding: 0 1.5rem; text-align: center;
+      font-size: 0.93rem; color: rgba(26,111,168,0.72); line-height: 1.7;
+    }
+    .section-intro strong { color: var(--ramune-deep); }
+
+    /* ── Legend ──────────────────────────────────────────────── */
+    .legend-row {
+      display: flex; justify-content: center; gap: 1rem;
+      flex-wrap: wrap; margin: 1.4rem auto 0;
+      padding: 0.7rem 1.5rem;
+      max-width: 560px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(59,174,219,0.18);
+      border-radius: var(--radius-pill);
+      backdrop-filter: blur(10px);
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 0.80rem; color: rgba(26,111,168,0.75);
+    }
+
+    /* ── Era toggle ───────────────────────────────────────────── */
+    .era-toggle {
+      display: flex; justify-content: center; gap: 0.65rem;
+      flex-wrap: wrap; margin: 1.5rem auto 0; padding: 0 1rem;
+    }
+    .era-btn {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.80rem; letter-spacing: 0.06em;
+      padding: 0.45em 1.3em; border-radius: var(--radius-pill); cursor: pointer;
+      border: 1.5px solid rgba(59,174,219,0.28);
+      background: rgba(255,255,255,0.65); color: rgba(26,111,168,0.65);
+      transition: all 0.22s var(--ease-spring);
+    }
+    .era-btn:hover { background: var(--ramune-sky); color: var(--ramune-deep); }
+    .era-btn.active-old  { background:#fde0e4; border-color:rgba(232,51,74,0.45); color:#9b1a28; }
+    .era-btn.active-new  { background:#d0f4e7; border-color:rgba(62,189,127,0.45); color:#1a6b45; }
+    .era-btn.active-both {
+      background: linear-gradient(135deg, var(--ramune-blue), var(--ramune-deep));
+      color:#fff; border-color:transparent;
+      box-shadow: 0 3px 12px rgba(59,174,219,0.35);
+    }
+
+    /* ── Metrics Grid ─────────────────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 1.4rem;
+      max-width: 1280px; margin: 1.8rem auto 2.5rem;
+      padding: 0 1.5rem;
+    }
+    .show-old  .ramune-card.modern { display: none; }
+    .show-new  .ramune-card.trad   { display: none; }
+    .show-new  .ramune-card.bridge { display: none; }
+
+    /* ── Card inner parts ────────────────────────────────────── */
+    .card-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .card-title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 1.08rem; color: var(--ramune-deep); line-height: 1.25;
+    }
+    .card-abbr {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 0.82rem; color: var(--ramune-blue);
+      font-style: italic; display: block; margin-top: 0.1rem;
+    }
+    .card-tagline {
+      font-size: 0.80rem; color: rgba(26,111,168,0.60);
+      font-style: italic; margin-bottom: 0.8rem;
+    }
+
+    /* ── Formula box ─────────────────────────────────────────── */
+    .formula-box {
+      background: rgba(59,174,219,0.07);
+      border: 1px solid rgba(59,174,219,0.20);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+      text-align: center;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+    }
+    .formula-label {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(26,111,168,0.50); margin-bottom: 0.45rem;
+    }
+    math { font-size: 1.05rem; color: var(--ramune-deep); }
+
+    /* ── Interp & benchmarks ─────────────────────────────────── */
+    .card-interp {
+      font-size: 0.81rem; color: rgba(26,111,168,0.75);
+      line-height: 1.6; margin-top: 0.5rem;
+    }
+    .card-interp strong { color: var(--ramune-deep); }
+
+    .benchmarks {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.85rem;
+    }
+
+    /* ── Comparison Section ───────────────────────────────────── */
+    .compare-section {
+      max-width: 1100px; margin: 0 auto 3.5rem; padding: 0 1.5rem;
+    }
+    .compare-title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ramune-deep);
+      padding-bottom: 0.5rem; margin-bottom: 1.2rem;
+      border-bottom: 1px dashed rgba(59,174,219,0.35);
+    }
+
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.82rem;
+      background: rgba(255,255,255,0.60);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: 0 4px 20px var(--ramune-shadow);
+    }
+    .compare-table th {
+      background: rgba(59,174,219,0.12);
+      color: var(--ramune-deep);
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase;
+      padding: 0.75rem 1rem; text-align: left;
+      border-bottom: 2px solid rgba(59,174,219,0.25);
+    }
+    .compare-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid rgba(59,174,219,0.10);
+      color: var(--ramune-deep);
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: rgba(59,174,219,0.05); }
+    .metric-name { font-family: var(--font-display); font-weight: 800; color: var(--ramune-deep); }
+    .cell-yes  { color: #1a6b45; font-weight: 700; }
+    .cell-no   { color: rgba(26,111,168,0.38); }
+    .cell-best { color: var(--ramune-deep); font-weight: 800; }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      text-align: center; padding: 1.8rem 1rem 2.5rem;
+      font-size: 0.78rem; font-style: italic;
+      color: rgba(26,111,168,0.55);
+      border-top: 1px solid rgba(59,174,219,0.18);
+    }
+    footer a { color: var(--ramune-blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bubble { animation: none; opacity: 0.2; }
+      .ramune-float { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Bubbles -->
+<div class="bubbles" aria-hidden="true">
+  <span class="bubble bubble-1"></span><span class="bubble bubble-2"></span>
+  <span class="bubble bubble-3"></span><span class="bubble bubble-4"></span>
+  <span class="bubble bubble-5"></span><span class="bubble bubble-6"></span>
+  <span class="bubble bubble-7"></span><span class="bubble bubble-8"></span>
+  <span class="bubble bubble-9"></span><span class="bubble bubble-10"></span>
+  <span class="bubble bubble-11"></span><span class="bubble bubble-12"></span>
+  <span class="bubble bubble-13"></span><span class="bubble bubble-14"></span>
+  <span class="bubble bubble-15"></span><span class="bubble bubble-16"></span>
+  <span class="bubble bubble-17"></span><span class="bubble bubble-18"></span>
+  <span class="bubble bubble-19"></span><span class="bubble bubble-20"></span>
+</div>
+
+<main>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <span class="ball-icon">⚾</span>
+    <p class="kicker">Sabermetrics Reference Guide</p>
+    <h1>MLB Statistics<br><span>Old &amp; Modern Metrics</span></h1>
+    <p>From batting average to wRC+ — every formula, explained.</p>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════
+       STICKY NAV
+       ══════════════════════════════════════════════════════════ -->
+  <nav class="tab-nav">
+    <button class="active" onclick="switchTab('hitters',this)">⚾ &nbsp;Hitters</button>
+    <button onclick="switchTab('pitchers',this)">🥎 &nbsp;Pitchers</button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HITTERS
+       ══════════════════════════════════════════════════════════ -->
+  <section id="hitters" class="tab-section active">
+
+    <div class="section-intro">
+      Hitting metrics have evolved from simple counting stats to
+      <strong>context-adjusted, run-value-weighted measures</strong>
+      that better isolate a batter's true contribution regardless of ballpark or era.
+    </div>
+
+    <div style="display:flex;justify-content:center;margin:1.3rem 0 0;">
+      <div class="legend-row">
+        <div class="legend-item"><span class="ramune-tag ramune-tag-red">Traditional</span> Old-school stat</div>
+        <div class="legend-item"><span class="ramune-tag ramune-tag-gold">Bridge</span> Transitional</div>
+        <div class="legend-item"><span class="ramune-tag ramune-tag-green">Modern</span> Sabermetric</div>
+      </div>
+    </div>
+
+    <div class="era-toggle">
+      <button class="era-btn" onclick="filterEra('hitters','old',this)">Traditional Only</button>
+      <button class="era-btn active-both" onclick="filterEra('hitters','both',this)">Show All</button>
+      <button class="era-btn" onclick="filterEra('hitters','new',this)">Modern Only</button>
+    </div>
+
+    <div class="metrics-grid" id="hitters-grid">
+
+      <!-- Batting Average -->
+      <div class="ramune-card trad">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Batting Average <span class="card-abbr">BA / AVG</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-red">Traditional</span>
+        </div>
+        <p class="card-tagline">The oldest and most cited hitting stat.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">BA</mi><mo>=</mo>
+              <mfrac><mi>H</mi><mi>AB</mi></mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp"><strong>H</strong> = Hits &nbsp;·&nbsp; <strong>AB</strong> = At-Bats<br>
+        Measures how often a batter gets a hit per official at-bat. Walks, HBP, and sacrifice flies are excluded — a key weakness.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor &lt;.230</span>
+          <span class="ramune-chip">Avg .260</span>
+          <span class="ramune-chip">Good .280</span>
+          <span class="ramune-chip elite">Elite .300+</span>
+        </div>
+      </div>
+
+      <!-- Slugging -->
+      <div class="ramune-card trad">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Slugging Percentage <span class="card-abbr">SLG</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-red">Traditional</span>
+        </div>
+        <p class="card-tagline">Measures raw power output per at-bat.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">SLG</mi><mo>=</mo>
+              <mfrac>
+                <mrow>
+                  <mi>1B</mi><mo>+</mo><mn>2</mn><mo>&#x22C5;</mo><mi>2B</mi>
+                  <mo>+</mo><mn>3</mn><mo>&#x22C5;</mo><mi>3B</mi>
+                  <mo>+</mo><mn>4</mn><mo>&#x22C5;</mo><mi>HR</mi>
+                </mrow>
+                <mi>AB</mi>
+              </mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Weights hits by bases earned. A home run counts four times more than a single. Ignores walks entirely — missing a quarter of all plate appearances.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor &lt;.350</span>
+          <span class="ramune-chip">Avg .420</span>
+          <span class="ramune-chip">Good .480</span>
+          <span class="ramune-chip elite">Elite .550+</span>
+        </div>
+      </div>
+
+      <!-- RBI -->
+      <div class="ramune-card trad">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Runs Batted In <span class="card-abbr">RBI</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-red">Traditional</span>
+        </div>
+        <p class="card-tagline">Credited when a batter's plate appearance scores a run.</p>
+        <div class="formula-box">
+          <div class="formula-label">Context</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">RBI</mi><mo>=</mo><mtext>Counting Stat</mtext></mrow>
+          </math>
+        </div>
+        <p class="card-interp">No formula — a raw count. Heavily dependent on <strong>lineup position</strong> and <strong>teammates on base</strong>. A cleanup hitter on a great team will always accumulate more RBI than an equally skilled leadoff hitter.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg starter 60–75</span>
+          <span class="ramune-chip">Good 90+</span>
+          <span class="ramune-chip elite">Elite 120+</span>
+        </div>
+      </div>
+
+      <!-- OPS — Bridge -->
+      <div class="ramune-card bridge">
+        <div class="card-header">
+          <div>
+            <div class="card-title">On-Base Plus Slugging <span class="card-abbr">OPS</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-gold">Bridge</span>
+        </div>
+        <p class="card-tagline">The gateway from traditional to modern analysis.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">OPS</mi><mo>=</mo><mi>OBP</mi><mo>+</mo><mi>SLG</mi></mrow>
+          </math>
+        </div>
+        <p class="card-interp">Simple sum of On-Base and Slugging percentages. Correlates well with run scoring. Limitation: OBP and SLG are not on the same scale — adding them is mathematically imprecise but practically useful.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor &lt;.650</span>
+          <span class="ramune-chip">Avg .720</span>
+          <span class="ramune-chip">Good .800</span>
+          <span class="ramune-chip elite">Elite .900+</span>
+        </div>
+      </div>
+
+      <!-- OBP -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">On-Base Percentage <span class="card-abbr">OBP</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">"Get on base" — the single most important offensive skill.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">OBP</mi><mo>=</mo>
+              <mfrac>
+                <mrow><mi>H</mi><mo>+</mo><mi>BB</mi><mo>+</mo><mi>HBP</mi></mrow>
+                <mrow><mi>AB</mi><mo>+</mo><mi>BB</mi><mo>+</mo><mi>HBP</mi><mo>+</mo><mi>SF</mi></mrow>
+              </mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp"><strong>HBP</strong> = Hit by Pitch &nbsp;·&nbsp; <strong>SF</strong> = Sacrifice Fly<br>
+        Includes walks and HBP that BA ignores. A batter who walks 100 times is just as valuable as one who gets 100 extra singles — OBP captures both.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor &lt;.300</span>
+          <span class="ramune-chip">Avg .320</span>
+          <span class="ramune-chip">Good .360</span>
+          <span class="ramune-chip elite">Elite .400+</span>
+        </div>
+      </div>
+
+      <!-- ISO -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Isolated Power <span class="card-abbr">ISO</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">Pure extra-base power, stripped of singles.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">ISO</mi><mo>=</mo><mi>SLG</mi><mo>&#x2212;</mo><mi>BA</mi><mo>=</mo>
+              <mfrac>
+                <mrow>
+                  <mi>2B</mi><mo>+</mo>
+                  <mn>2</mn><mo>&#x22C5;</mo><mi>3B</mi><mo>+</mo>
+                  <mn>3</mn><mo>&#x22C5;</mo><mi>HR</mi>
+                </mrow>
+                <mi>AB</mi>
+              </mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Removes singles from slugging. Isolates the player's ability to hit for extra bases regardless of contact rate. A pure power metric with no contact noise.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor &lt;.100</span>
+          <span class="ramune-chip">Avg .140</span>
+          <span class="ramune-chip">Good .200</span>
+          <span class="ramune-chip elite">Elite .250+</span>
+        </div>
+      </div>
+
+      <!-- BABIP -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Batting Avg on Balls in Play <span class="card-abbr">BABIP</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">Separates skill from luck on contact.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">BABIP</mi><mo>=</mo>
+              <mfrac>
+                <mrow><mi>H</mi><mo>&#x2212;</mo><mi>HR</mi></mrow>
+                <mrow><mi>AB</mi><mo>&#x2212;</mo><mi>SO</mi><mo>&#x2212;</mo><mi>HR</mi><mo>+</mo><mi>SF</mi></mrow>
+              </mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Excludes home runs and strikeouts (outcomes independent of fielding). League average ≈ <strong>.300</strong>. A batter at .380 BABIP is likely lucky; one at .220 is likely unlucky — regression is expected.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Unlucky &lt;.270</span>
+          <span class="ramune-chip">League avg .300</span>
+          <span class="ramune-chip elite">Skill or luck? .350+</span>
+        </div>
+      </div>
+
+      <!-- OPS+ -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">OPS+ <span class="card-abbr">OPS+</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">OPS adjusted for ballpark and league — era-neutral.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow>
+              <msup><mi mathvariant="bold">OPS</mi><mo>+</mo></msup>
+              <mo>=</mo><mn>100</mn><mo>&#x22C5;</mo>
+              <mfenced open="(" close=")">
+                <mrow>
+                  <mfrac><mi>OBP</mi><msub><mi>OBP</mi><mi>lg</mi></msub></mfrac>
+                  <mo>+</mo>
+                  <mfrac><mi>SLG</mi><msub><mi>SLG</mi><mi>lg</mi></msub></mfrac>
+                  <mo>&#x2212;</mo><mn>1</mn>
+                </mrow>
+              </mfenced>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">100 = exactly league average. Above 100 = better than average. Park-factor adjusted. Enables direct cross-era comparison: Babe Ruth's 206 vs Mike Trout's 173 are apples-to-apples.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg 100</span>
+          <span class="ramune-chip">Good 120+</span>
+          <span class="ramune-chip">Star 140+</span>
+          <span class="ramune-chip elite">MVP 160+</span>
+        </div>
+      </div>
+
+      <!-- wOBA -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Weighted On-Base Average <span class="card-abbr">wOBA</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">Assigns run values to each offensive outcome.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula — 2024 weights</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mstyle displaystyle="true">
+              <mfrac>
+                <mrow>
+                  <mn>0.69</mn><mo>&#x22C5;</mo><mi>BB</mi>
+                  <mo>+</mo><mn>0.72</mn><mo>&#x22C5;</mo><mi>HBP</mi>
+                  <mo>+</mo><mn>0.89</mn><mo>&#x22C5;</mo><mi>1B</mi>
+                  <mo>+</mo><mn>1.27</mn><mo>&#x22C5;</mo><mi>2B</mi>
+                  <mo>+</mo><mn>1.62</mn><mo>&#x22C5;</mo><mi>3B</mi>
+                  <mo>+</mo><mn>2.10</mn><mo>&#x22C5;</mo><mi>HR</mi>
+                </mrow>
+                <mrow>
+                  <mi>AB</mi><mo>+</mo><mi>BB</mi><mo>&#x2212;</mo><mi>IBB</mi>
+                  <mo>+</mo><mi>SF</mi><mo>+</mo><mi>HBP</mi>
+                </mrow>
+              </mfrac>
+            </mstyle>
+          </math>
+        </div>
+        <p class="card-interp">Weights derived from <strong>run expectancy matrices</strong>. A HR (2.10) is worth ~3× a walk (0.69). The gold standard for measuring offensive value per plate appearance.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor &lt;.290</span>
+          <span class="ramune-chip">Avg .320</span>
+          <span class="ramune-chip">Good .360</span>
+          <span class="ramune-chip elite">Elite .400+</span>
+        </div>
+      </div>
+
+      <!-- wRC+ -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Weighted Runs Created Plus <span class="card-abbr">wRC+</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">The most complete, park-adjusted offensive metric.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow>
+              <msup><mi mathvariant="bold">wRC</mi><mo>+</mo></msup>
+              <mo>=</mo><mn>100</mn><mo>&#x22C5;</mo>
+              <mfrac>
+                <mrow>
+                  <mfrac>
+                    <mrow><mi>wOBA</mi><mo>&#x2212;</mo><msub><mi>wOBA</mi><mi>lg</mi></msub></mrow>
+                    <msub><mi>wOBA</mi><mi>scale</mi></msub>
+                  </mfrac>
+                  <mo>+</mo>
+                  <mfrac><msub><mi>R</mi><mi>lg</mi></msub><mi>PA</mi></mfrac>
+                </mrow>
+                <mfrac><msub><mi>R</mi><mi>lg</mi></msub><mi>PA</mi></mfrac>
+              </mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Adjusts wOBA for <strong>park factors</strong> and <strong>league run environment</strong>. 100 = league average. The single best number for "who is the best hitter?" across any era or ballpark.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg 100</span>
+          <span class="ramune-chip">Good 120+</span>
+          <span class="ramune-chip">Star 140+</span>
+          <span class="ramune-chip elite">MVP 160+</span>
+        </div>
+      </div>
+
+      <!-- K% / BB% -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Strikeout &amp; Walk Rate <span class="card-abbr">K% / BB%</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">Plate discipline — what happens before the ball is put in play.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formulas</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mtable columnalign="left" rowspacing="0.55em">
+              <mtr><mtd><mi mathvariant="bold">K%</mi><mo>=</mo><mfrac><mi>SO</mi><mi>PA</mi></mfrac></mtd></mtr>
+              <mtr><mtd><mi mathvariant="bold">BB%</mi><mo>=</mo><mfrac><mi>BB</mi><mi>PA</mi></mfrac></mtd></mtr>
+            </mtable>
+          </math>
+        </div>
+        <p class="card-interp"><strong>PA</strong> = Plate Appearances (AB + BB + HBP + SH + SF)<br>
+        K% over 30% signals strikeout liability. BB% over 12% is elite discipline. The spread K%−BB% is a quick single-number plate-discipline summary.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg K% 22%</span>
+          <span class="ramune-chip elite">Elite BB% 12%+</span>
+          <span class="ramune-chip">Good spread BB%−K% &gt;−5%</span>
+        </div>
+      </div>
+
+    </div><!-- /hitters grid -->
+
+    <!-- Hitters comparison table -->
+    <div class="compare-section">
+      <div class="compare-title">📊 &nbsp;Metric Comparison — Hitters</div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Metric</th><th>Era</th><th>Accounts for Walks?</th>
+            <th>Park Adjusted?</th><th>Era Neutral?</th>
+            <th>Run-Value Weighted?</th><th>Best Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric-name">BA</td>
+            <td><span class="ramune-badge ramune-badge-red">Traditional</span></td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td>Contact ability (limited)</td>
+          </tr>
+          <tr>
+            <td class="metric-name">SLG</td>
+            <td><span class="ramune-badge ramune-badge-red">Traditional</span></td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">Partial</td>
+            <td>Raw power output</td>
+          </tr>
+          <tr>
+            <td class="metric-name">RBI</td>
+            <td><span class="ramune-badge ramune-badge-red">Traditional</span></td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td>Context-dependent counting</td>
+          </tr>
+          <tr>
+            <td class="metric-name">OPS</td>
+            <td><span class="ramune-badge ramune-badge-gold">Bridge</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">Partial</td>
+            <td>Quick overall hitting gauge</td>
+          </tr>
+          <tr>
+            <td class="metric-name">OBP</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td>On-base skill isolation</td>
+          </tr>
+          <tr>
+            <td class="metric-name">OPS+</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-yes">✓ Yes</td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">Partial</td>
+            <td>Cross-era comparison</td>
+          </tr>
+          <tr>
+            <td class="metric-name">wOBA</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-yes">✓ Yes</td>
+            <td>True offensive value</td>
+          </tr>
+          <tr>
+            <td class="metric-name cell-best">wRC+</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-yes">✓ Yes</td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-yes">✓ Yes</td>
+            <td class="cell-best">🏆 Best all-in-one hitting metric</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section><!-- /hitters -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       PITCHERS
+       ══════════════════════════════════════════════════════════ -->
+  <section id="pitchers" class="tab-section">
+
+    <div class="section-intro">
+      Pitching metrics evolved to <strong>separate what a pitcher controls</strong>
+      (strikeouts, walks, home runs) from what the defense behind him controls (balls in play).
+      The modern goal: measure <em>true</em> pitching skill, not luck.
+    </div>
+
+    <div style="display:flex;justify-content:center;margin:1.3rem 0 0;">
+      <div class="legend-row">
+        <div class="legend-item"><span class="ramune-tag ramune-tag-red">Traditional</span> Old-school stat</div>
+        <div class="legend-item"><span class="ramune-tag ramune-tag-green">Modern</span> Sabermetric</div>
+      </div>
+    </div>
+
+    <div class="era-toggle">
+      <button class="era-btn" onclick="filterEra('pitchers','old',this)">Traditional Only</button>
+      <button class="era-btn active-both" onclick="filterEra('pitchers','both',this)">Show All</button>
+      <button class="era-btn" onclick="filterEra('pitchers','new',this)">Modern Only</button>
+    </div>
+
+    <div class="metrics-grid" id="pitchers-grid">
+
+      <!-- ERA -->
+      <div class="ramune-card trad">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Earned Run Average <span class="card-abbr">ERA</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-red">Traditional</span>
+        </div>
+        <p class="card-tagline">Runs allowed per 9 innings — the oldest pitching measure.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">ERA</mi><mo>=</mo>
+              <mfrac><mrow><mi>ER</mi><mo>&#x22C5;</mo><mn>9</mn></mrow><mi>IP</mi></mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp"><strong>ER</strong> = Earned Runs &nbsp;·&nbsp; <strong>IP</strong> = Innings Pitched<br>
+        Excludes unearned runs (errors). Still affected by the quality of defense behind the pitcher and the dimensions of the ballpark.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor 5.00+</span>
+          <span class="ramune-chip">Avg 4.20</span>
+          <span class="ramune-chip">Good 3.50</span>
+          <span class="ramune-chip elite">Elite &lt;3.00</span>
+        </div>
+      </div>
+
+      <!-- Wins -->
+      <div class="ramune-card trad">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Wins &amp; Losses <span class="card-abbr">W / L</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-red">Traditional</span>
+        </div>
+        <p class="card-tagline">The most misused stat in baseball history.</p>
+        <div class="formula-box">
+          <div class="formula-label">Win Condition (simplified)</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">W</mi><mo>=</mo>
+              <mtext>Pitcher leads when team takes final lead</mtext>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Awarded by official scorer judgment. A pitcher can throw 8 shutout innings and get a no-decision. Another can allow 5 runs and win because teammates scored 10. <strong>Wins measure teams, not pitchers.</strong></p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg starter 10–12 W</span>
+          <span class="ramune-chip elite">Ace season 18+ W</span>
+        </div>
+      </div>
+
+      <!-- K/9 Traditional -->
+      <div class="ramune-card trad">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Strikeouts per 9 Innings <span class="card-abbr">K/9</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-red">Traditional</span>
+        </div>
+        <p class="card-tagline">Raw strikeout rate — one of the few traditional stats still trusted.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">K/9</mi><mo>=</mo>
+              <mfrac><mrow><mi>SO</mi><mo>&#x22C5;</mo><mn>9</mn></mrow><mi>IP</mi></mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Strikeouts are the one outcome where the defense plays no role. Always a reliable dominance indicator. League average has risen from ~5.0 in the 1970s to ~8.5 today — era context matters.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg (modern) 8.5</span>
+          <span class="ramune-chip">Good 10+</span>
+          <span class="ramune-chip elite">Elite 12+</span>
+        </div>
+      </div>
+
+      <!-- Win % -->
+      <div class="ramune-card trad">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Winning Percentage <span class="card-abbr">W%</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-red">Traditional</span>
+        </div>
+        <p class="card-tagline">Wins as a fraction of decisions.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">W%</mi><mo>=</mo>
+              <mfrac><mi>W</mi><mrow><mi>W</mi><mo>+</mo><mi>L</mi></mrow></mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Slightly better than raw wins since it accounts for losses. Still entirely team-dependent. A pitcher on a 100-win team will always show a higher W% than an equally skilled pitcher on a 70-win team.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg .500</span>
+          <span class="ramune-chip elite">Elite .650+</span>
+        </div>
+      </div>
+
+      <!-- WHIP -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Walks + Hits per Inning <span class="card-abbr">WHIP</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">How many baserunners does the pitcher allow per inning?</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">WHIP</mi><mo>=</mo>
+              <mfrac><mrow><mi>BB</mi><mo>+</mo><mi>H</mi></mrow><mi>IP</mi></mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">A cleaner baserunner-prevention metric than ERA. Still affected by defense (hits can be errors) and doesn't weight outcomes by severity — a walk and a homer each count as 1.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor 1.50+</span>
+          <span class="ramune-chip">Avg 1.30</span>
+          <span class="ramune-chip">Good 1.15</span>
+          <span class="ramune-chip elite">Elite &lt;1.00</span>
+        </div>
+      </div>
+
+      <!-- K/BB -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Strikeout-to-Walk Ratio <span class="card-abbr">K/BB</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">Dominance and control in a single ratio.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">K/BB</mi><mo>=</mo>
+              <mfrac><mi>SO</mi><mi>BB</mi></mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Both SO and BB are defense-independent. A high K/BB means the pitcher misses bats AND throws strikes — the combination that defines aces. Curt Schilling's career K/BB of <strong>4.38</strong> is the highest among pitchers with 3,000+ IP.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor &lt;1.5</span>
+          <span class="ramune-chip">Avg 2.0</span>
+          <span class="ramune-chip">Good 3.0</span>
+          <span class="ramune-chip elite">Elite 4.0+</span>
+        </div>
+      </div>
+
+      <!-- FIP -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Fielding Independent Pitching <span class="card-abbr">FIP</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">ERA calculated using only what the pitcher controls.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">FIP</mi><mo>=</mo>
+              <mfrac>
+                <mrow>
+                  <mn>13</mn><mo>&#x22C5;</mo><mi>HR</mi>
+                  <mo>+</mo><mn>3</mn><mo>&#x22C5;</mo>
+                  <mfenced open="(" close=")"><mrow><mi>BB</mi><mo>+</mo><mi>HBP</mi></mrow></mfenced>
+                  <mo>&#x2212;</mo><mn>2</mn><mo>&#x22C5;</mo><mi>SO</mi>
+                </mrow>
+                <mi>IP</mi>
+              </mfrac>
+              <mo>+</mo><msub><mi>C</mi><mi>FIP</mi></msub>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp"><strong>C<sub>FIP</sub></strong> ≈ 3.10 (recalibrated each season to match league ERA). Ignores all balls in play. If ERA &gt;&gt; FIP, the defense was poor. If ERA &lt;&lt; FIP, the pitcher was lucky. FIP predicts future ERA better than ERA itself.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Poor 5.00+</span>
+          <span class="ramune-chip">Avg 4.20</span>
+          <span class="ramune-chip">Good 3.50</span>
+          <span class="ramune-chip elite">Elite &lt;3.00</span>
+        </div>
+      </div>
+
+      <!-- xFIP -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Expected FIP <span class="card-abbr">xFIP</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">FIP with home-run luck removed — the purest pitching metric.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow><mi mathvariant="bold">xFIP</mi><mo>=</mo>
+              <mfrac>
+                <mrow>
+                  <mn>13</mn><mo>&#x22C5;</mo>
+                  <mfenced open="(" close=")">
+                    <mrow><mi>FB</mi><mo>&#x22C5;</mo><msub><mi>HR/FB</mi><mi>lg</mi></msub></mrow>
+                  </mfenced>
+                  <mo>+</mo><mn>3</mn><mo>&#x22C5;</mo>
+                  <mfenced open="(" close=")"><mrow><mi>BB</mi><mo>+</mo><mi>HBP</mi></mrow></mfenced>
+                  <mo>&#x2212;</mo><mn>2</mn><mo>&#x22C5;</mo><mi>SO</mi>
+                </mrow>
+                <mi>IP</mi>
+              </mfrac>
+              <mo>+</mo><msub><mi>C</mi><mi>FIP</mi></msub>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp"><strong>FB</strong> = Fly balls &nbsp;·&nbsp; <strong>HR/FB<sub>lg</sub></strong> = League avg HR-per-fly-ball (~10.5%)<br>
+        Replaces actual HR with what league-average HR/FB rate would produce. Removes HR luck entirely. Best predictor of next-season ERA.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg ~4.20</span>
+          <span class="ramune-chip elite">Elite &lt;3.20</span>
+        </div>
+      </div>
+
+      <!-- ERA- -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">ERA Minus <span class="card-abbr">ERA−</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">Park- and league-adjusted ERA — like OPS+ but for pitchers.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow>
+              <msup><mi mathvariant="bold">ERA</mi><mo>&#x2212;</mo></msup>
+              <mo>=</mo><mn>100</mn><mo>&#x22C5;</mo>
+              <mfrac>
+                <mi>ERA</mi>
+                <mrow><msub><mi>ERA</mi><mi>lg</mi></msub><mo>&#x22C5;</mo><msub><mi>PF</mi><mi>park</mi></msub></mrow>
+              </mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp"><strong>PF<sub>park</sub></strong> = Park Factor (Coors Field ≈ 1.15, Petco Park ≈ 0.92)<br>
+        100 = league average. <strong>Lower is better.</strong> An ERA− of 75 means 25% fewer runs than a league-average pitcher in the same park. Enables direct cross-era comparison.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg 100</span>
+          <span class="ramune-chip">Good 85</span>
+          <span class="ramune-chip elite">Elite &lt;70</span>
+        </div>
+      </div>
+
+      <!-- Pitcher BABIP -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Pitcher BABIP <span class="card-abbr">BABIP<sub>P</sub></span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">How much ball-in-play luck can a pitcher control?</p>
+        <div class="formula-box">
+          <div class="formula-label">Formula</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mrow>
+              <msub><mi mathvariant="bold">BABIP</mi><mi>P</mi></msub>
+              <mo>=</mo>
+              <mfrac>
+                <mrow><mi>H</mi><mo>&#x2212;</mo><mi>HR</mi></mrow>
+                <mrow><mi>BFP</mi><mo>&#x2212;</mo><mi>SO</mi><mo>&#x2212;</mo><mi>BB</mi><mo>&#x2212;</mo><mi>HBP</mi><mo>&#x2212;</mo><mi>HR</mi></mrow>
+              </mfrac>
+            </mrow>
+          </math>
+        </div>
+        <p class="card-interp">Research shows pitchers have <strong>very little control</strong> over BABIP — it mostly reflects fielding and luck. League average ≈ <strong>.300</strong>. This is why FIP outperforms ERA as a predictive tool.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Lucky &lt;.270</span>
+          <span class="ramune-chip">League avg .300</span>
+          <span class="ramune-chip">Unlucky .340+</span>
+        </div>
+      </div>
+
+      <!-- K% / BB% pitcher -->
+      <div class="ramune-card modern">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Pitcher K% &amp; BB% <span class="card-abbr">K% / BB%</span></div>
+          </div>
+          <span class="ramune-tag ramune-tag-green">Modern</span>
+        </div>
+        <p class="card-tagline">Rate stats that don't inflate with more innings pitched.</p>
+        <div class="formula-box">
+          <div class="formula-label">Formulas</div>
+          <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mtable columnalign="left" rowspacing="0.55em">
+              <mtr><mtd><mi mathvariant="bold">K%</mi><mo>=</mo><mfrac><mi>SO</mi><mi>BFP</mi></mfrac></mtd></mtr>
+              <mtr><mtd><mi mathvariant="bold">BB%</mi><mo>=</mo><mfrac><mi>BB</mi><mi>BFP</mi></mfrac></mtd></mtr>
+            </mtable>
+          </math>
+        </div>
+        <p class="card-interp"><strong>BFP</strong> = Batters Faced by Pitcher. Preferred over K/9 and BB/9 because both use the same denominator — making K%−BB% a valid, single-number plate-discipline summary for the pitcher.</p>
+        <hr class="ramune-divider">
+        <div class="benchmarks">
+          <span class="ramune-chip">Avg K% 22%</span>
+          <span class="ramune-chip elite">Elite K% 28%+</span>
+          <span class="ramune-chip elite">Elite BB% &lt;6%</span>
+        </div>
+      </div>
+
+    </div><!-- /pitchers grid -->
+
+    <!-- Pitchers comparison table -->
+    <div class="compare-section">
+      <div class="compare-title">📊 &nbsp;Metric Comparison — Pitchers</div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Metric</th><th>Era</th><th>Defense Independent?</th>
+            <th>Park Adjusted?</th><th>Era Neutral?</th>
+            <th>Predictive Power</th><th>Best Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric-name">W / L</td>
+            <td><span class="ramune-badge ramune-badge-red">Traditional</span></td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">Very Low</td>
+            <td>Historical records only</td>
+          </tr>
+          <tr>
+            <td class="metric-name">ERA</td>
+            <td><span class="ramune-badge ramune-badge-red">Traditional</span></td>
+            <td class="cell-no">✗ No</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">Moderate</td>
+            <td>General run prevention</td>
+          </tr>
+          <tr>
+            <td class="metric-name">K/9</td>
+            <td><span class="ramune-badge ramune-badge-red">Traditional</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">Moderate</td>
+            <td>Raw strikeout dominance</td>
+          </tr>
+          <tr>
+            <td class="metric-name">WHIP</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-no">Partial</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-no">Moderate</td>
+            <td>Baserunner prevention</td>
+          </tr>
+          <tr>
+            <td class="metric-name">K/BB</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-yes">High</td>
+            <td>Control + dominance combo</td>
+          </tr>
+          <tr>
+            <td class="metric-name">ERA−</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-no">✗ No</td><td class="cell-yes">✓ Yes</td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">Moderate</td>
+            <td>Cross-era ERA comparison</td>
+          </tr>
+          <tr>
+            <td class="metric-name">FIP</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-yes">High</td>
+            <td>True pitching skill</td>
+          </tr>
+          <tr>
+            <td class="metric-name cell-best">xFIP</td>
+            <td><span class="ramune-badge ramune-badge-green">Modern</span></td>
+            <td class="cell-yes">✓ Yes</td><td class="cell-no">✗ No</td>
+            <td class="cell-no">✗ No</td><td class="cell-yes">Very High</td>
+            <td class="cell-best">🏆 Best predictor of future ERA</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section><!-- /pitchers -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════ -->
+  <footer>
+    <p>Formulas from <a href="https://library.fangraphs.com" target="_blank">FanGraphs Library</a>
+    &amp; <a href="https://www.baseball-reference.com" target="_blank">Baseball Reference</a>.
+    wOBA weights updated annually. Data source:
+    <a href="https://www.seanlahman.com" target="_blank">Lahman Baseball Database</a>. 🫧</p>
+  </footer>
+
+</main>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function filterEra(section, era, btn) {
+    const grid = document.getElementById(section + '-grid');
+    grid.classList.remove('show-old','show-new');
+    if (era === 'old') grid.classList.add('show-old');
+    if (era === 'new') grid.classList.add('show-new');
+    const btns = btn.closest('.era-toggle').querySelectorAll('.era-btn');
+    btns.forEach(b => b.classList.remove('active-old','active-new','active-both'));
+    if (era === 'old')  btn.classList.add('active-old');
+    if (era === 'new')  btn.classList.add('active-new');
+    if (era === 'both') btn.classList.add('active-both');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLB Stats — From 1980</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="description" content="Search MLB player and team statistics from 1980 onwards.">
+</head>
+<body>
+
+<!-- Rising bubbles decoration -->
+<div class="bubbles" aria-hidden="true">
+  <span class="bubble bubble-1"></span><span class="bubble bubble-2"></span>
+  <span class="bubble bubble-3"></span><span class="bubble bubble-4"></span>
+  <span class="bubble bubble-5"></span><span class="bubble bubble-6"></span>
+  <span class="bubble bubble-7"></span><span class="bubble bubble-8"></span>
+  <span class="bubble bubble-9"></span><span class="bubble bubble-10"></span>
+  <span class="bubble bubble-11"></span><span class="bubble bubble-12"></span>
+  <span class="bubble bubble-13"></span><span class="bubble bubble-14"></span>
+  <span class="bubble bubble-15"></span><span class="bubble bubble-16"></span>
+  <span class="bubble bubble-17"></span><span class="bubble bubble-18"></span>
+  <span class="bubble bubble-19"></span><span class="bubble bubble-20"></span>
+  <span class="bubble bubble-21"></span>
+</div>
+
+<!-- Navigation -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">⚾ MLB Stats</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="batters.html">Batting</a></li>
+      <li><a href="pitchers.html">Pitching</a></li>
+      <li><a href="teams.html">Teams</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page-wrapper">
+
+  <!-- Hero -->
+  <header class="home-hero">
+    <span class="page-icon">⚾</span>
+    <p class="page-kicker">MLB Statistics Database</p>
+    <h1 class="ramune-heading ramune-heading-lg">MLB Stats from 1980</h1>
+    <p style="color:var(--ramune-deep); opacity:0.65; margin-top:0.75rem; font-size:1rem; max-width:540px; margin-left:auto; margin-right:auto; line-height:1.6;">
+      Explore batting records, pitching stats, and team performance from the modern era of baseball — all data starting from the 1980 season.
+    </p>
+    <p style="color:var(--ramune-deep); opacity:0.65; margin-top:0.75rem; font-size:1rem; max-width:540px; margin-left:auto; margin-right:auto; line-height:1.6;">
+      For more information on what the record represents, please see <a href="bbmetrics.html" target="_blank">Metrics</a> page.
+    </p>
+  </header>
+
+  <!-- Notice -->
+  <div class="notice-banner" style="max-width:640px; margin-left:auto; margin-right:auto; margin-bottom:2.5rem;">
+    <span class="notice-icon">⚠️</span>
+    <span>
+      <strong>Data Coverage Notice:</strong> This database contains records starting from the <strong>1980 season</strong>.
+      Players who retired before 1980 (such as Babe Ruth or Cy Young) will not appear in search results.
+    </span>
+  </div>
+
+  <!-- Feature cards -->
+  <section style="margin-bottom:3rem;">
+    <p style="font-family:var(--font-display);font-size:0.7rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:rgba(26,111,168,0.55);margin-bottom:1.25rem;text-align:center;">
+      What You Can Search
+    </p>
+    <div class="home-grid">
+
+      <a href="batters.html" class="home-feature-card" style="text-decoration:none;">
+        <div class="ramune-card">
+          <span class="feature-icon">🏏</span>
+          <div class="feature-title">Batting Stats</div>
+          <p class="feature-desc">
+            Search for any batter by first and last name. View yearly records and career totals including Batting Average, HR, RBI, OPS, SLG, OBP, ISO, and more.
+          </p>
+          <hr class="ramune-divider">
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            <span class="ramune-chip">BA</span>
+            <span class="ramune-chip">OPS</span>
+            <span class="ramune-chip">HR</span>
+            <span class="ramune-chip">RBI</span>
+            <span class="ramune-chip">SLG</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="pitchers.html" class="home-feature-card" style="text-decoration:none;">
+        <div class="ramune-card">
+          <span class="feature-icon">⚡</span>
+          <div class="feature-title">Pitching Stats</div>
+          <p class="feature-desc">
+            Look up any pitcher by name. View yearly performance and career totals including ERA, WHIP, K/9, BB/9, FIP, Wins, Losses, and Saves.
+          </p>
+          <hr class="ramune-divider">
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            <span class="ramune-chip">ERA</span>
+            <span class="ramune-chip">WHIP</span>
+            <span class="ramune-chip">K/9</span>
+            <span class="ramune-chip">FIP</span>
+            <span class="ramune-chip">SV</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="teams.html" class="home-feature-card" style="text-decoration:none;">
+        <div class="ramune-card">
+          <span class="feature-icon">🏟️</span>
+          <div class="feature-title">Team Records</div>
+          <p class="feature-desc">
+            Select a team from the dropdown to view their season-by-season win/loss records and career averages across all seasons since 1980.
+          </p>
+          <hr class="ramune-divider">
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            <span class="ramune-chip">Wins</span>
+            <span class="ramune-chip">Losses</span>
+            <span class="ramune-chip">Games</span>
+            <span class="ramune-chip">History</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- How to use -->
+  <section style="margin-bottom:2rem;">
+    <div class="ramune-card how-to-card">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+        <div class="ramune-marble"></div>
+        <h2 class="ramune-heading ramune-heading-md">How to Use</h2>
+      </div>
+      <ul class="how-to-steps">
+        <li>
+          <span class="step-num">1</span>
+          <span>Navigate to <strong>Batting</strong> or <strong>Pitching</strong> using the top navigation.</span>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <span>Enter the player's <strong>first name</strong> and <strong>last name</strong> in the search form — both fields must match.</span>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <span>Click <strong>Search</strong> to retrieve the player's yearly records and career totals.</span>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <span>For team stats, go to <strong>Teams</strong>, select a franchise from the dropdown, and click <strong>View Stats</strong>.</span>
+        </li>
+        <li>
+          <span class="step-num">5</span>
+          <span>Remember: only players and teams with records <strong>from 1980 onwards</strong> are available.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Batting Stats — MLB Stats from 1980</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.png">
+</head>
+<body>
+
+<!-- Rising bubbles decoration -->
+<div class="bubbles" aria-hidden="true">
+  <span class="bubble bubble-1"></span><span class="bubble bubble-2"></span>
+  <span class="bubble bubble-3"></span><span class="bubble bubble-4"></span>
+  <span class="bubble bubble-5"></span><span class="bubble bubble-6"></span>
+  <span class="bubble bubble-7"></span><span class="bubble bubble-8"></span>
+  <span class="bubble bubble-9"></span><span class="bubble bubble-10"></span>
+  <span class="bubble bubble-11"></span><span class="bubble bubble-12"></span>
+  <span class="bubble bubble-13"></span><span class="bubble bubble-14"></span>
+  <span class="bubble bubble-15"></span><span class="bubble bubble-16"></span>
+  <span class="bubble bubble-17"></span><span class="bubble bubble-18"></span>
+  <span class="bubble bubble-19"></span><span class="bubble bubble-20"></span>
+  <span class="bubble bubble-21"></span>
+</div>
+
+<!-- Navigation -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">⚾ MLB Stats</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="batters.html" class="active">Batting</a></li>
+      <li><a href="pitchers.html">Pitching</a></li>
+      <li><a href="teams.html">Teams</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page-wrapper">
+
+  <header class="page-header">
+    <span class="page-icon">🏏</span>
+    <p class="page-kicker">Player Lookup</p>
+    <h1 class="ramune-heading ramune-heading-lg">Batting Stats</h1>
+    <p style="color:var(--ramune-deep);opacity:0.65;margin-top:0.5rem;font-size:0.95rem;">
+      Search for a batter's yearly records and career totals from 1980 onwards.
+    </p>
+  </header>
+
+  <!-- Notice -->
+  <div class="notice-banner search-form-card">
+    <span class="notice-icon">⚠️</span>
+    <span>Records are only available from the <strong>1980 season</strong>. Players like Babe Ruth will not be found.</span>
+  </div>
+
+  <!-- Search Form -->
+  <div class="ramune-card search-form-card">
+    <h2 class="ramune-heading ramune-heading-sm" style="margin-bottom:1.25rem;">Find a Batter</h2>
+    <form id="batter-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="ramune-label" for="first-name">First Name</label>
+          <input class="ramune-input" type="text" id="first-name" name="firstName" placeholder="e.g. Cal" autocomplete="off" required>
+        </div>
+        <div class="form-group">
+          <label class="ramune-label" for="last-name">Last Name</label>
+          <input class="ramune-input" type="text" id="last-name" name="lastName" placeholder="e.g. Ripken" autocomplete="off" required>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="ramune-btn ramune-btn-primary">Search 🔍</button>
+        <button type="button" id="clear-btn" class="ramune-btn ramune-btn-secondary">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Error Message -->
+  <div id="error-msg" class="error-message search-form-card" style="display:none;">
+    <span>❌</span>
+    <span id="error-text">Player not found.</span>
+  </div>
+
+  <!-- Results -->
+  <section id="results-section" class="results-section">
+
+    <div class="results-header">
+      <div class="ramune-marble"></div>
+      <div>
+        <div id="player-name-display" class="results-player-name"></div>
+        <div id="player-meta" style="font-size:0.85rem;opacity:0.65;margin-top:0.2rem;"></div>
+      </div>
+    </div>
+
+    <!-- Yearly Table -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <span class="ramune-tag">Yearly</span>
+        <h2>Season-by-Season Records</h2>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Team</th>
+              <th>G</th>
+              <th>AB</th>
+              <th>H</th>
+              <th>HR</th>
+              <th>RBI</th>
+              <th>SB</th>
+              <th>SO</th>
+              <th>BB</th>
+              <th>BA</th>
+              <th>OBP</th>
+              <th>SLG</th>
+              <th>OPS</th>
+              <th>ISO</th>
+            </tr>
+          </thead>
+          <tbody id="yearly-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Career Table -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <span class="ramune-tag" style="background:linear-gradient(135deg,var(--ramune-label-green),#2a9d60);">Career</span>
+        <h2>Career Totals</h2>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Seasons</th>
+              <th>G</th>
+              <th>AB</th>
+              <th>H</th>
+              <th>HR</th>
+              <th>RBI</th>
+              <th>SB</th>
+              <th>SO</th>
+              <th>BB</th>
+              <th>BA</th>
+              <th>OBP</th>
+              <th>SLG</th>
+              <th>OPS</th>
+              <th>ISO</th>
+            </tr>
+          </thead>
+          <tbody id="career-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script src="js/batters.js"></script>
+</body>
+</html>
