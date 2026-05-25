@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Descent and Lagrange Multipliers</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                inlineMath: [['\\(', '\\)']],
+                tags: 'ams'
+            },
+            chtml: {
+                linebreaks: { automatic: true, width: 'container' }
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .page-kicker {
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2364a0;
+            font-weight: 700;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            max-width: 72ch;
+            margin: 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: min(1000px, calc(100vw - 40px));
+        }
+
+        h1, h2, p, li {
+            overflow-wrap: break-word;
+        }
+
+        .definition-box,
+        .example-box,
+        .equation,
+        .equation-card,
+        .boxed-equation,
+        #gd-sketch {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .artwork-shell {
+            margin: 2rem 0 2.5rem;
+        }
+
+        #gd-sketch {
+            min-height: 310px;
+            border: 1px solid #c9dce8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fcff;
+            box-shadow: 0 8px 24px rgba(37, 68, 96, 0.13);
+        }
+
+        #gd-sketch canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #65758a;
+            margin: 0.75rem auto 0;
+            max-width: 72ch;
+        }
+
+        .equation {
+            background: #fbfdff;
+            border-left: 5px solid #2364a0;
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 18px 0;
+            overflow-x: auto;
+        }
+
+        .equation mjx-container {
+            margin: 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .equation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 18px 0;
+        }
+
+        .equation-card {
+            background: #fbfdff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .equation-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: #2364a0;
+        }
+
+        .boxed-equation {
+            background: #eef7fb;
+            border: 1px solid #bdd8e8;
+            border-radius: 8px;
+            padding: 4px 14px;
+            margin: 22px 0;
+        }
+
+        .note-panel {
+            background: #f7fbf8;
+            border: 1px solid #cfe2d4;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                box-sizing: border-box;
+                padding: 12px;
+            }
+
+            .container {
+                padding: 2rem 1.25rem;
+                width: calc(100vw - 24px);
+                margin: 28px auto;
+            }
+
+            .equation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #gd-sketch {
+                min-height: 250px;
+            }
+
+            header h1 {
+                font-size: 2.3rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <p class="page-kicker">Optimization</p>
+            <h1 style="margin: 0 0 1rem; line-height: 1.1; font-size: 3.4rem;">
+                Gradient Descent &amp; Lagrange Multipliers
+            </h1>
+            <p class="lead">
+                Gradient descent descends a function's surface by repeatedly stepping in the
+                direction of steepest decrease. Lagrange multipliers extend this to constrained
+                problems — finding extrema on a surface intersected by a constraint curve or manifold.
+            </p>
+        </header>
+
+        <!-- ───── PART I: GRADIENT DESCENT ───── -->
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Part I — Gradient Descent</h2>
+            <p>
+                Given a differentiable function \(f: \mathbb{R}^n \to \mathbb{R}\), the gradient
+                \(\nabla f(\mathbf{x})\) points in the direction of steepest <em>ascent</em>. To minimize
+                \(f\), each update moves opposite to the gradient:
+            </p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    \mathbf{x}_{k+1} = \mathbf{x}_k - \eta \,\nabla f(\mathbf{x}_k),
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                where \(\eta > 0\) is the <em>learning rate</em> (step size). Iterating this rule produces
+                a sequence that, under mild conditions, converges to a local minimum.
+            </p>
+        </section>
+
+        <section class="artwork-shell">
+            <div id="gd-sketch" aria-label="Animated gradient descent on a 2D loss surface"></div>
+            <p class="sketch-caption">
+                Gradient descent on the surface \(f(x,y) = (x-0.3)^2 + 2(y+0.2)^2\).
+                The particle follows the negative-gradient direction at each step, spiraling to the minimum.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">1. Why the Negative Gradient?</h2>
+            <p>
+                A first-order Taylor expansion around \(\mathbf{x}_k\) gives the local linear approximation:
+            </p>
+            <div class="equation">
+                \[
+                f(\mathbf{x}_k + \mathbf{d})
+                \approx
+                f(\mathbf{x}_k) + \nabla f(\mathbf{x}_k)^\top \mathbf{d}.
+                \]
+            </div>
+            <p>
+                To decrease \(f\) most rapidly, choose \(\mathbf{d}\) with unit norm so that
+                \(\nabla f^\top \mathbf{d}\) is as negative as possible. The minimum of
+                \(\nabla f^\top \mathbf{d}\) over \(\|\mathbf{d}\|=1\) is \(-\|\nabla f\|\),
+                achieved at \(\mathbf{d} = -\nabla f / \|\nabla f\|\). Scaling by step size \(\eta\) gives
+                the gradient-descent update.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">2. Choosing the Learning Rate</h2>
+            <p>
+                The learning rate \(\eta\) controls the trade-off between speed and stability.
+            </p>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Too small</h3>
+                    <p style="margin: 0;">Convergence is safe but very slow; many iterations are needed to
+                    move a meaningful distance.</p>
+                </div>
+                <div class="equation-card">
+                    <h3>Too large</h3>
+                    <p style="margin: 0;">Updates overshoot the minimum; the loss can oscillate or diverge.</p>
+                </div>
+            </div>
+            <p>
+                For a quadratic \(f(\mathbf{x}) = \frac{1}{2}\mathbf{x}^\top A \mathbf{x}\) with symmetric
+                positive-definite \(A\), gradient descent converges provided
+            </p>
+            <div class="equation">
+                \[
+                0 < \eta < \frac{2}{\lambda_{\max}(A)},
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                where \(\lambda_{\max}(A)\) is the largest eigenvalue of \(A\). The optimal (fastest)
+                fixed step size is \(\eta^* = 2/(\lambda_{\min} + \lambda_{\max})\).
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">3. Variants: Batch, Stochastic, and Mini-batch</h2>
+            <p>
+                In machine learning, the objective is typically an average over a training set:
+            </p>
+            <div class="equation">
+                \[
+                f(\theta) = \frac{1}{m} \sum_{i=1}^{m} \ell(\theta;\, x_i, y_i).
+            \]
+            </div>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Batch GD</h3>
+                    <p style="margin: 0;">
+                        Uses the full dataset to compute an exact gradient each step. Stable but expensive
+                        for large \(m\).
+                    </p>
+                </div>
+                <div class="equation-card">
+                    <h3>Stochastic GD (SGD)</h3>
+                    <p style="margin: 0;">
+                        Updates with a single randomly chosen sample at each step. Fast per iteration but noisy.
+                    </p>
+                </div>
+                <div class="equation-card">
+                    <h3>Mini-batch GD</h3>
+                    <p style="margin: 0;">
+                        A batch of \(b \ll m\) samples; balances speed and gradient accuracy. Standard in
+                        deep learning.
+                    </p>
+                </div>
+                <div class="equation-card">
+                    <h3>Adam / Momentum</h3>
+                    <p style="margin: 0;">
+                        Adaptive methods maintain a running average of gradients and squared gradients,
+                        accelerating convergence on ill-conditioned surfaces.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">4. Worked Example — Minimizing a Quadratic</h2>
+            <p>
+                Let \(f(x,y) = (x-1)^2 + 5(y-2)^2\). The gradient is
+            </p>
+            <div class="equation">
+                \[
+                \nabla f(x,y) = \bigl(2(x-1),\; 10(y-2)\bigr).
+                \]
+            </div>
+            <p>
+                Starting from \((x_0, y_0) = (4, 5)\) with \(\eta = 0.1\), the first update is
+            </p>
+            <div class="equation">
+                \[
+                \begin{pmatrix}x_1\\y_1\end{pmatrix}
+                =
+                \begin{pmatrix}4\\5\end{pmatrix}
+                - 0.1
+                \begin{pmatrix}6\\30\end{pmatrix}
+                =
+                \begin{pmatrix}3.4\\2\end{pmatrix}.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                After each step the iterates move toward the true minimum \((1,2)\).
+                The \(y\)-component converges faster because the curvature (5 vs 1) is higher.
+            </p>
+        </section>
+
+        <!-- ───── PART II: LAGRANGE MULTIPLIERS ───── -->
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Part II — Lagrange Multipliers</h2>
+            <p>
+                Many real optimization problems constrain the search space. The method of Lagrange
+                multipliers solves
+            </p>
+            <div class="equation">
+                \[
+                \min_{\mathbf{x}} f(\mathbf{x})
+                \quad \text{subject to} \quad
+                g_i(\mathbf{x}) = 0, \quad i = 1, \ldots, k.
+                \]
+            </div>
+            <p>
+                At a constrained extremum, the gradient of \(f\) must be a linear combination of the
+                constraint gradients:
+            </p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    \nabla f(\mathbf{x}^*)
+                    = \sum_{i=1}^k \lambda_i \,\nabla g_i(\mathbf{x}^*).
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                The scalars \(\lambda_i\) are the <em>Lagrange multipliers</em>. Together with
+                the constraint equations, these conditions form a system that can be solved for both
+                \(\mathbf{x}^*\) and the multipliers.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">5. Geometric Intuition</h2>
+            <p>
+                Consider a single constraint \(g(\mathbf{x}) = 0\) defining a curve in \(\mathbb{R}^2\).
+                Level curves of \(f\) are the sets where \(f\) is constant. An extremum on the constraint
+                occurs where a level curve of \(f\) is <em>tangent</em> to the constraint curve.
+            </p>
+            <p>
+                At a tangency point, the normals to both curves are parallel, meaning their gradients
+                are parallel:
+            </p>
+            <div class="equation">
+                \[
+                \nabla f(\mathbf{x}^*) = \lambda \,\nabla g(\mathbf{x}^*).
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                If the gradients were <em>not</em> parallel, one could move along the constraint to a
+                point with a lower value of \(f\), contradicting the assumption of a constrained minimum.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">6. The Lagrangian and the System of Equations</h2>
+            <p>
+                The standard procedure encodes both the objective and constraints into a single function
+                called the <em>Lagrangian</em>:
+            </p>
+            <div class="equation">
+                \[
+                \mathcal{L}(\mathbf{x}, \boldsymbol{\lambda})
+                =
+                f(\mathbf{x}) - \sum_{i=1}^k \lambda_i \, g_i(\mathbf{x}).
+                \]
+            </div>
+            <p>
+                Setting all partial derivatives of \(\mathcal{L}\) to zero gives the necessary conditions:
+            </p>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Stationarity in \(\mathbf{x}\)</h3>
+                    \[
+                    \frac{\partial \mathcal{L}}{\partial \mathbf{x}} = 0
+                    \;\Longleftrightarrow\;
+                    \nabla f = \lambda \nabla g
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Primal feasibility</h3>
+                    \[
+                    \frac{\partial \mathcal{L}}{\partial \lambda_i} = 0
+                    \;\Longleftrightarrow\;
+                    g_i(\mathbf{x}) = 0
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                This is a system of \(n + k\) equations in the unknowns \((\mathbf{x}, \boldsymbol{\lambda})\).
+                The Lagrange multiplier \(\lambda_i\) measures how much the optimal objective value would
+                change if the \(i\)-th constraint were relaxed slightly.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">7. Worked Example — Maximize Area with Fixed Perimeter</h2>
+            <p>
+                Among all rectangles with perimeter \(2s\), which has the largest area?
+                Let the sides be \(x\) and \(y\). We maximize \(f(x,y) = xy\) subject to
+                \(g(x,y) = x + y - s = 0\).
+            </p>
+            <p>
+                Form the Lagrangian \(\mathcal{L} = xy - \lambda(x + y - s)\). Setting partial
+                derivatives to zero:
+            </p>
+            <div class="equation">
+                \[
+                \frac{\partial \mathcal{L}}{\partial x} = y - \lambda = 0,
+                \qquad
+                \frac{\partial \mathcal{L}}{\partial y} = x - \lambda = 0,
+                \qquad
+                x + y = s.
+                \]
+            </div>
+            <p>
+                The first two equations give \(y = \lambda = x\), so \(x = y = s/2\). The optimal
+                rectangle is a square with side \(s/2\) and area \(s^2/4\).
+            </p>
+            <div class="note-panel">
+                <p style="margin-top: 0; margin-bottom: 0;">
+                    <strong>Interpretation of \(\lambda\).</strong> Here \(\lambda = s/2\). The objective
+                    \(xy\) evaluated at the optimum equals \(s^2/4\). If the perimeter constraint is
+                    relaxed by \(\varepsilon\) (replacing \(s\) with \(s+\varepsilon\)), the new optimal
+                    area changes by approximately \(\lambda \cdot \varepsilon = (s/2)\varepsilon\),
+                    which matches the derivative of \((s+\varepsilon)^2/4\) with respect to \(\varepsilon\).
+                </p>
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">8. Inequality Constraints — KKT Conditions</h2>
+            <p>
+                When constraints are inequalities \(g_i(\mathbf{x}) \le 0\), the necessary conditions
+                for optimality are the <em>Karush–Kuhn–Tucker (KKT) conditions</em>:
+            </p>
+            <div class="equation">
+                \[
+                \nabla f(\mathbf{x}^*)
+                + \sum_i \mu_i \nabla g_i(\mathbf{x}^*) = 0,
+                \qquad
+                \mu_i \ge 0,
+                \qquad
+                \mu_i \, g_i(\mathbf{x}^*) = 0.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                The complementary slackness condition \(\mu_i g_i = 0\) says that a multiplier is
+                positive only when its constraint is <em>active</em> (binding). KKT conditions reduce
+                to Lagrange conditions when all constraints are equalities. They underpin support-vector
+                machines, constrained neural network training, and convex programming duality.
+            </p>
+        </section>
+
+        <!-- ───── CONNECTION ───── -->
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Connection Between the Two Methods</h2>
+            <p>
+                Gradient descent and Lagrange multipliers attack the same fundamental question —
+                where does a function stop decreasing? — but in different regimes.
+            </p>
+            <ul>
+                <li>
+                    <strong>Unconstrained minimization</strong> (gradient descent): iterate
+                    \(\mathbf{x} \leftarrow \mathbf{x} - \eta \nabla f(\mathbf{x})\) until
+                    \(\nabla f = 0\).
+                </li>
+                <li>
+                    <strong>Constrained minimization</strong> (Lagrange): find the point where
+                    \(\nabla f = \lambda \nabla g\) and \(g = 0\) simultaneously.
+                </li>
+            </ul>
+            <p>
+                The two are unified in the <em>augmented Lagrangian method</em> and <em>projected
+                gradient descent</em>. In projected gradient descent, each gradient step is followed
+                by a projection back onto the feasible set \(\{g = 0\}\). In the augmented Lagrangian
+                method, gradient descent is applied to
+            </p>
+            <div class="equation">
+                \[
+                \mathcal{L}_\rho(\mathbf{x}, \lambda)
+                = f(\mathbf{x}) - \lambda g(\mathbf{x}) + \frac{\rho}{2}g(\mathbf{x})^2,
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                alternating between updating \(\mathbf{x}\) by gradient steps and updating
+                \(\lambda\) by dual ascent. This is the basis of the ADMM algorithm used
+                throughout large-scale optimization.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">9. Real-World Applications</h2>
+            <ul>
+                <li>
+                    <strong>Deep Learning.</strong> SGD and its variants (Adam, RMSProp) minimize
+                    cross-entropy or mean-squared-error loss over neural-network parameters.
+                    Lagrange-inspired regularization (weight decay) can be viewed as a soft constraint
+                    on parameter norms.
+                </li>
+                <li>
+                    <strong>Support Vector Machines.</strong> The SVM margin maximization is a
+                    quadratic program solved exactly via KKT conditions. The support vectors are
+                    the points where inequality constraints are active (\(\mu_i > 0\)).
+                </li>
+                <li>
+                    <strong>Portfolio Optimization.</strong> Markowitz mean-variance optimization
+                    minimizes portfolio variance subject to a target return constraint, solved by
+                    Lagrange multipliers. The multiplier equals the marginal cost of achieving
+                    a higher return.
+                </li>
+                <li>
+                    <strong>Physics.</strong> Constrained mechanical systems (pendulums, rigid bodies)
+                    use Lagrange multipliers as constraint forces. In thermodynamics, entropy
+                    maximization subject to energy and particle-number constraints yields the
+                    Boltzmann distribution, with \(\beta = 1/k_BT\) as the multiplier.
+                </li>
+                <li>
+                    <strong>Economics.</strong> Utility maximization subject to a budget constraint
+                    is solved by Lagrange multipliers. The multiplier is the marginal utility of
+                    income — how much additional utility one unit of currency buys at the optimum.
+                </li>
+            </ul>
+        </section>
+
+        <footer>
+            Built as a compact reference page on gradient descent and Lagrange multipliers,
+            their geometric meaning, worked examples, and real-world applications.
+            <br>
+            <a href="index.html">Back to Suugaku Notes</a>
+        </footer>
+    </div>
+
+    <script>
+    new p5(function(p) {
+        let holder;
+        let px, py;
+        let trail = [];
+        const lr = 0.08;
+
+        function f(x, y)  { return (x - 0.3) * (x - 0.3) + 2 * (y + 0.2) * (y + 0.2); }
+        function gx(x, y) { return 2 * (x - 0.3); }
+        function gy(x, y) { return 4 * (y + 0.2); }
+
+        function worldToScreen(wx, wy, w, h) {
+            return {
+                x: p.map(wx, -2, 2, w * 0.08, w * 0.92),
+                y: p.map(wy, -2, 2, h * 0.9, h * 0.1)
+            };
+        }
+
+        p.setup = function() {
+            holder = document.getElementById('gd-sketch');
+            const w = Math.max(280, holder.offsetWidth);
+            const h = Math.max(280, Math.round(w * 0.55));
+            const canvas = p.createCanvas(w, h);
+            canvas.parent('gd-sketch');
+            p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+            p.textFont('Parkinsans, Helvetica, Arial, sans-serif');
+            px = -1.6; py = 1.5;
+            trail = [];
+        };
+
+        p.windowResized = function() {
+            if (!holder) return;
+            const w = Math.max(280, holder.offsetWidth);
+            const h = Math.max(280, Math.round(w * 0.55));
+            p.resizeCanvas(w, h);
+        };
+
+        p.draw = function() {
+            const w = p.width, h = p.height;
+            p.background(248, 252, 255);
+
+            const levels = [0.05, 0.2, 0.5, 1.0, 1.8, 3.0];
+            const res = 3;
+            for (let sx = 0; sx < w; sx += res) {
+                for (let sy = 0; sy < h; sy += res) {
+                    const wx = p.map(sx, w * 0.08, w * 0.92, -2, 2);
+                    const wy = p.map(sy, h * 0.9, h * 0.1, -2, 2);
+                    const val = f(wx, wy);
+                    const t = p.constrain(val / 3.5, 0, 1);
+                    p.noStroke();
+                    p.fill(
+                        p.lerp(220, 248, 1 - t),
+                        p.lerp(235, 252, 1 - t),
+                        p.lerp(255, 255, 1 - t)
+                    );
+                    p.rect(sx, sy, res, res);
+                }
+            }
+
+            p.noFill();
+            for (const lv of levels) {
+                p.stroke(180, 200, 220, 180);
+                p.strokeWeight(1);
+                p.beginShape();
+                for (let a = 0; a <= 360; a += 2) {
+                    const ra = a * Math.PI / 180;
+                    const r = Math.sqrt(lv);
+                    const ex = 0.3 + r * Math.cos(ra);
+                    const ey = -0.2 + r * 0.707 * Math.sin(ra);
+                    const sp = worldToScreen(ex, ey, w, h);
+                    p.vertex(sp.x, sp.y);
+                }
+                p.endShape(p.CLOSE);
+            }
+
+            const dist2min = (px - 0.3) * (px - 0.3) + (py + 0.2) * (py + 0.2);
+            if (dist2min > 0.001) {
+                const dx = gx(px, py), dy = gy(px, py);
+                px -= lr * dx;
+                py -= lr * dy;
+                trail.push({ x: px, y: py });
+                if (trail.length > 200) trail.shift();
+            } else {
+                px = -1.6; py = 1.5; trail = [];
+            }
+
+            if (trail.length > 1) {
+                p.noFill();
+                for (let i = 1; i < trail.length; i++) {
+                    const a = worldToScreen(trail[i-1].x, trail[i-1].y, w, h);
+                    const b = worldToScreen(trail[i].x, trail[i].y, w, h);
+                    const alpha = p.map(i, 0, trail.length, 40, 220);
+                    p.stroke(221, 90, 77, alpha);
+                    p.strokeWeight(2);
+                    p.line(a.x, a.y, b.x, b.y);
+                }
+            }
+
+            const sp = worldToScreen(px, py, w, h);
+            p.noStroke();
+            p.fill(221, 90, 77);
+            p.circle(sp.x, sp.y, 12);
+
+            const minPt = worldToScreen(0.3, -0.2, w, h);
+            p.fill(24, 139, 118);
+            p.circle(minPt.x, minPt.y, 12);
+            p.fill(43, 54, 68);
+            p.noStroke();
+            p.textSize(12);
+            p.textAlign(p.LEFT, p.CENTER);
+            p.text('minimum', minPt.x + 10, minPt.y);
+
+            p.fill(92, 108, 124);
+            p.textSize(12);
+            p.textAlign(p.LEFT, p.TOP);
+            p.text('f(x,y) = (x-0.3)² + 2(y+0.2)²   lr = ' + lr, 10, 10);
+        };
+    });
+    </script>
+</body>
+</html>

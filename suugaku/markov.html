@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markov Chains</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                inlineMath: [['\\(', '\\)']],
+                tags: 'ams'
+            },
+            chtml: {
+                linebreaks: { automatic: true, width: 'container' }
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .page-kicker {
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2364a0;
+            font-weight: 700;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            max-width: 72ch;
+            margin: 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: min(1000px, calc(100vw - 40px));
+        }
+
+        h1, h2, p, li {
+            overflow-wrap: break-word;
+        }
+
+        .definition-box,
+        .example-box,
+        .equation,
+        .equation-card,
+        .boxed-equation,
+        #markov-sketch {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .artwork-shell {
+            margin: 2rem 0 2.5rem;
+        }
+
+        #markov-sketch {
+            min-height: 310px;
+            border: 1px solid #c9dce8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fcff;
+            box-shadow: 0 8px 24px rgba(37, 68, 96, 0.13);
+        }
+
+        #markov-sketch canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #65758a;
+            margin: 0.75rem auto 0;
+            max-width: 72ch;
+        }
+
+        .equation {
+            background: #fbfdff;
+            border-left: 5px solid #2364a0;
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 18px 0;
+            overflow-x: auto;
+        }
+
+        .equation mjx-container {
+            margin: 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .equation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 18px 0;
+        }
+
+        .equation-card {
+            background: #fbfdff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .equation-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: #2364a0;
+        }
+
+        .boxed-equation {
+            background: #eef7fb;
+            border: 1px solid #bdd8e8;
+            border-radius: 8px;
+            padding: 4px 14px;
+            margin: 22px 0;
+        }
+
+        .note-panel {
+            background: #f7fbf8;
+            border: 1px solid #cfe2d4;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                box-sizing: border-box;
+                padding: 12px;
+            }
+
+            .container {
+                padding: 2rem 1.25rem;
+                width: calc(100vw - 24px);
+                margin: 28px auto;
+            }
+
+            .equation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #markov-sketch {
+                min-height: 250px;
+            }
+
+            header h1 {
+                font-size: 2.3rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <p class="page-kicker">Stochastic Processes</p>
+            <h1 style="margin: 0 0 1rem; line-height: 1.1; font-size: 3.4rem;">
+                Markov Chains
+            </h1>
+            <p class="lead">
+                A Markov chain is a stochastic process whose future depends only on the present state,
+                not on how it got there. That single assumption — the Markov property — makes an enormous
+                class of real-world systems tractable.
+            </p>
+        </header>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Overview</h2>
+            <p>
+                A discrete-time Markov chain is a sequence of random variables \(X_0, X_1, X_2, \ldots\)
+                taking values in a countable state space \(\mathcal{S}\) and satisfying
+            </p>
+            <div class="equation">
+                \[
+                P(X_{n+1} = j \mid X_n = i,\, X_{n-1}, \ldots, X_0)
+                = P(X_{n+1} = j \mid X_n = i).
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                The right-hand side, called the <em>transition probability</em> from state \(i\) to state \(j\),
+                is denoted \(p_{ij}\). When these probabilities do not depend on time \(n\) the chain is
+                <em>time-homogeneous</em>, which is the standard case.
+            </p>
+        </section>
+
+        <section class="artwork-shell">
+            <div id="markov-sketch" aria-label="Animated diagram of a three-state Markov chain"></div>
+            <p class="sketch-caption">
+                A three-state Markov chain animating the random walk of a particle between states.
+                Arrow thickness reflects transition probability; the highlighted state is the current one.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">1. Transition Matrix</h2>
+            <p>
+                For a finite state space with \(N\) states, all transition probabilities are collected into
+                the <em>transition matrix</em> \(P\):
+            </p>
+            <div class="equation">
+                \[
+                P = (p_{ij})_{i,j \in \mathcal{S}},
+                \qquad
+                p_{ij} \ge 0,
+                \qquad
+                \sum_{j \in \mathcal{S}} p_{ij} = 1 \text{ for all } i.
+                \]
+            </div>
+            <p>
+                Each row sums to 1 because the chain must move <em>somewhere</em>. The probability of
+                being in state \(j\) at time \(n\) given the initial distribution \(\pi^{(0)}\) is
+            </p>
+            <div class="equation">
+                \[
+                \pi^{(n)} = \pi^{(0)} P^n.
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                Higher powers \(P^n\) describe multi-step transitions: the \((i,j)\) entry of \(P^n\) is
+                the probability of reaching \(j\) from \(i\) in exactly \(n\) steps.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">2. A Worked Example — Weather Model</h2>
+            <p>
+                Suppose weather is either Sunny (S) or Rainy (R). Historical data gives the transition matrix
+            </p>
+            <div class="equation">
+                \[
+                P =
+                \begin{pmatrix}
+                0.8 & 0.2 \\
+                0.4 & 0.6
+                \end{pmatrix},
+                \]
+            </div>
+            <p>
+                where rows are today's state and columns are tomorrow's. If today is Sunny, then
+                \(P(\text{Sunny tomorrow}) = 0.8\) and \(P(\text{Rainy tomorrow}) = 0.2\).
+            </p>
+            <p>
+                Starting from the distribution \(\pi^{(0)} = (1, 0)\) (definitely Sunny today),
+                after two days:
+            </p>
+            <div class="equation">
+                \[
+                \pi^{(2)} = \pi^{(0)} P^2
+                =
+                (1,0)
+                \begin{pmatrix}
+                0.68 & 0.32 \\
+                0.56 & 0.44
+                \end{pmatrix}
+                = (0.68,\; 0.32).
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                There is a 68 % chance of sunshine two days from now.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">3. Stationary Distribution</h2>
+            <p>
+                A probability vector \(\pi\) is a <em>stationary distribution</em> if it is unchanged by
+                one step of the chain:
+            </p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    \pi P = \pi,
+                    \qquad
+                    \sum_{i} \pi_i = 1,
+                    \qquad
+                    \pi_i \ge 0.
+                    \]
+                </div>
+            </div>
+            <p>
+                For the weather model above, solving \(\pi P = \pi\) gives
+                \(\pi = (2/3,\; 1/3)\): in the long run it is sunny two-thirds of the time.
+            </p>
+            <p style="margin-bottom: 0;">
+                The <em>Perron–Frobenius theorem</em> guarantees that an irreducible, aperiodic chain on a
+                finite state space has a unique stationary distribution, and the chain converges to it from
+                any starting point.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">4. Key Structural Properties</h2>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Irreducibility</h3>
+                    <p style="margin: 0;">
+                        Every state can be reached from every other state. Guarantees a unique stationary
+                        distribution.
+                    </p>
+                </div>
+                <div class="equation-card">
+                    <h3>Aperiodicity</h3>
+                    <p style="margin: 0;">
+                        The GCD of return times to any state is 1. Prevents oscillatory behavior and ensures
+                        convergence.
+                    </p>
+                </div>
+                <div class="equation-card">
+                    <h3>Recurrence</h3>
+                    <p style="margin: 0;">
+                        The chain returns to every state with probability 1. Positive recurrence additionally
+                        requires a finite mean return time.
+                    </p>
+                </div>
+                <div class="equation-card">
+                    <h3>Absorbing States</h3>
+                    <p style="margin: 0;">
+                        State \(i\) is absorbing if \(p_{ii}=1\). Once entered, the chain never leaves.
+                        Relevant in gambler's ruin and reliability models.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Detailed Balance and Reversibility</h2>
+            <p>
+                A chain satisfies <em>detailed balance</em> with respect to \(\pi\) when
+            </p>
+            <div class="equation">
+                \[
+                \pi_i \, p_{ij} = \pi_j \, p_{ji}
+                \quad \text{for all } i, j.
+                \]
+            </div>
+            <p>
+                This condition is stronger than stationarity but easier to verify. It says the probability
+                flux from \(i\) to \(j\) equals the flux from \(j\) to \(i\) in steady state.
+                Chains satisfying detailed balance are called <em>reversible</em>.
+            </p>
+            <div class="note-panel">
+                <p style="margin-top: 0; margin-bottom: 0;">
+                    <strong>Why this matters for MCMC.</strong> The Metropolis–Hastings algorithm
+                    constructs a Markov chain whose stationary distribution is an arbitrary target
+                    distribution \(\pi\). It does so by designing transition probabilities that
+                    satisfy detailed balance — guaranteeing convergence to the correct distribution
+                    even when direct sampling is intractable.
+                </p>
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">5. Real-World Applications</h2>
+            <p>
+                The simplicity of the Markov property makes it surprisingly powerful across many fields.
+            </p>
+            <ul>
+                <li>
+                    <strong>PageRank.</strong> Google's original algorithm models web surfing as a Markov chain
+                    on the graph of web pages. The stationary distribution assigns each page a rank proportional
+                    to how often a random surfer visits it.
+                </li>
+                <li>
+                    <strong>Natural Language Processing.</strong> A bigram language model is a Markov chain on
+                    words: the next word depends only on the current word. Text generation, spelling correction,
+                    and speech recognition all use Markov models.
+                </li>
+                <li>
+                    <strong>Queueing Theory.</strong> Arrivals and service completions in a queue form a Markov
+                    chain on the number of customers. The M/M/1 queue is a classic example whose stationary
+                    distribution is geometric.
+                </li>
+                <li>
+                    <strong>Finance.</strong> Credit-rating transitions (AAA → AA, etc.) are modeled as Markov
+                    chains. Default risk over a multi-year horizon is computed from the matrix power \(P^n\).
+                </li>
+                <li>
+                    <strong>Biology.</strong> DNA sequence evolution is modeled as a continuous-time Markov
+                    chain on the four nucleotides. Phylogenetic trees are inferred by fitting transition rates
+                    to observed sequences.
+                </li>
+                <li>
+                    <strong>Reinforcement Learning.</strong> An agent's interaction with an environment is
+                    formalized as a Markov Decision Process (MDP), an extension of Markov chains where the
+                    transition probabilities depend on the agent's action.
+                </li>
+            </ul>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Continuous Time and Beyond</h2>
+            <p>
+                The continuous-time analog replaces the transition matrix with a <em>generator matrix</em>
+                \(Q\), where off-diagonal entries are non-negative transition rates and each row sums to zero:
+            </p>
+            <div class="equation">
+                \[
+                P(t) = e^{Qt},
+                \qquad
+                \frac{d}{dt}P(t) = P(t)Q.
+                \]
+            </div>
+            <p>
+                The stationary distribution satisfies \(\pi Q = 0\). Continuous-time chains underlie
+                chemical reaction networks, queueing models (Poisson arrivals), and the Gillespie algorithm
+                used in computational biology.
+            </p>
+            <p style="margin-bottom: 0;">
+                Hidden Markov Models (HMMs) extend the framework further: the state is not observed directly;
+                only noisy emissions from each state are seen. HMMs are the backbone of speech recognition,
+                biological sequence analysis, and gesture detection.
+            </p>
+        </section>
+
+        <footer>
+            Built as a compact reference page on Markov chains, transition matrices, stationary distributions,
+            and real-world applications.
+            <br>
+            <a href="index.html">Back to Suugaku Notes</a>
+        </footer>
+    </div>
+
+    <script>
+    new p5(function(p) {
+        let holder;
+        const states = ['A', 'B', 'C'];
+        const trans = [
+            [0.1, 0.6, 0.3],
+            [0.4, 0.2, 0.4],
+            [0.5, 0.2, 0.3]
+        ];
+        let current = 0;
+        let next = 0;
+        let animT = 0;
+        let stepTimer = 0;
+        const STEP_INTERVAL = 90;
+
+        function statePos(w, h, i) {
+            const cx = w / 2, cy = h / 2;
+            const r = Math.min(w, h) * 0.32;
+            const angle = (i / 3) * Math.PI * 2 - Math.PI / 2;
+            return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+        }
+
+        function chooseNext(from) {
+            let r = Math.random(), acc = 0;
+            for (let j = 0; j < 3; j++) {
+                acc += trans[from][j];
+                if (r < acc) return j;
+            }
+            return 2;
+        }
+
+        p.setup = function() {
+            holder = document.getElementById('markov-sketch');
+            const w = Math.max(280, holder.offsetWidth);
+            const h = Math.max(280, Math.round(w * 0.55));
+            const canvas = p.createCanvas(w, h);
+            canvas.parent('markov-sketch');
+            p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+            p.textFont('Parkinsans, Helvetica, Arial, sans-serif');
+            next = chooseNext(current);
+        };
+
+        p.windowResized = function() {
+            if (!holder) return;
+            const w = Math.max(280, holder.offsetWidth);
+            const h = Math.max(280, Math.round(w * 0.55));
+            p.resizeCanvas(w, h);
+        };
+
+        function drawArrow(x1, y1, x2, y2, weight, col) {
+            const dx = x2 - x1, dy = y2 - y1;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            const nx = dx / len, ny = dy / len;
+            const nodeR = Math.min(p.width, p.height) * 0.095;
+            const sx = x1 + nx * nodeR, sy = y1 + ny * nodeR;
+            const ex = x2 - nx * (nodeR + 6), ey = y2 - ny * (nodeR + 6);
+            p.stroke(col);
+            p.strokeWeight(weight);
+            p.line(sx, sy, ex, ey);
+            p.push();
+            p.translate(ex, ey);
+            p.rotate(Math.atan2(ny, nx));
+            p.fill(col);
+            p.noStroke();
+            p.triangle(0, 0, -10, 5, -10, -5);
+            p.pop();
+        }
+
+        p.draw = function() {
+            p.background(248, 252, 255);
+
+            stepTimer++;
+            if (stepTimer >= STEP_INTERVAL) {
+                stepTimer = 0;
+                animT = 0;
+                current = next;
+                next = chooseNext(current);
+            }
+            animT = stepTimer / STEP_INTERVAL;
+
+            const w = p.width, h = p.height;
+            const pos = [statePos(w, h, 0), statePos(w, h, 1), statePos(w, h, 2)];
+            const nodeR = Math.min(w, h) * 0.095;
+
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (i === j) continue;
+                    const prob = trans[i][j];
+                    const weight = 1 + prob * 4;
+                    const isActive = (i === current && j === next);
+                    const baseAlpha = isActive ? 220 : 80;
+                    const col = p.color(36, 100, 160, baseAlpha);
+                    drawArrow(pos[i].x, pos[i].y, pos[j].x, pos[j].y, weight, col);
+                    const mx = (pos[i].x + pos[j].x) / 2 + (pos[j].y - pos[i].y) * 0.12;
+                    const my = (pos[i].y + pos[j].y) / 2 - (pos[j].x - pos[i].x) * 0.12;
+                    p.noStroke();
+                    p.fill(36, 100, 160, baseAlpha);
+                    p.textSize(11);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.text(prob.toFixed(1), mx, my);
+                }
+            }
+
+            const px = p.lerp(pos[current].x, pos[next].x, animT);
+            const py = p.lerp(pos[current].y, pos[next].y, animT);
+
+            for (let i = 0; i < 3; i++) {
+                const isActive = (i === current);
+                p.stroke(isActive ? p.color(24, 139, 118) : p.color(180, 200, 215));
+                p.strokeWeight(isActive ? 3 : 1.5);
+                p.fill(isActive ? p.color(220, 248, 242) : p.color(248, 252, 255));
+                p.circle(pos[i].x, pos[i].y, nodeR * 2);
+                p.noStroke();
+                p.fill(36, 54, 72);
+                p.textSize(Math.max(14, nodeR * 0.7));
+                p.textAlign(p.CENTER, p.CENTER);
+                p.text(states[i], pos[i].x, pos[i].y);
+            }
+
+            p.noStroke();
+            p.fill(221, 90, 77);
+            p.circle(px, py, 14);
+
+            p.textAlign(p.LEFT, p.TOP);
+            p.fill(92, 108, 124);
+            p.textSize(12);
+            p.text('Current: ' + states[current] + '  →  Next: ' + states[next], 14, 12);
+        };
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green's Function</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                displayMath: [['\\[', '\\]'], ['$$', '$$']],
+                inlineMath: [['\\(', '\\)']],
+                tags: 'ams'
+            },
+            chtml: {
+                linebreaks: { automatic: true, width: 'container' }
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .page-kicker {
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2364a0;
+            font-weight: 700;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            max-width: 72ch;
+            margin: 0;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: min(1000px, calc(100vw - 40px));
+        }
+
+        h1, h2, p, li {
+            overflow-wrap: break-word;
+        }
+
+        .definition-box,
+        .example-box,
+        .equation,
+        .equation-card,
+        .boxed-equation,
+        #gf-sketch {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .artwork-shell {
+            margin: 2rem 0 2.5rem;
+        }
+
+        #gf-sketch {
+            min-height: 310px;
+            border: 1px solid #c9dce8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fcff;
+            box-shadow: 0 8px 24px rgba(37, 68, 96, 0.13);
+        }
+
+        #gf-sketch canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .sketch-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #65758a;
+            margin: 0.75rem auto 0;
+            max-width: 72ch;
+        }
+
+        .equation {
+            background: #fbfdff;
+            border-left: 5px solid #2364a0;
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 18px 0;
+            overflow-x: auto;
+        }
+
+        .equation mjx-container {
+            margin: 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .equation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 18px 0;
+        }
+
+        .equation-card {
+            background: #fbfdff;
+            border: 1px solid #d7e4f2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .equation-card h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: #2364a0;
+        }
+
+        .boxed-equation {
+            background: #eef7fb;
+            border: 1px solid #bdd8e8;
+            border-radius: 8px;
+            padding: 4px 14px;
+            margin: 22px 0;
+        }
+
+        .note-panel {
+            background: #f7fbf8;
+            border: 1px solid #cfe2d4;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                box-sizing: border-box;
+                padding: 12px;
+            }
+
+            .container {
+                padding: 2rem 1.25rem;
+                width: calc(100vw - 24px);
+                margin: 28px auto;
+            }
+
+            .equation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #gf-sketch {
+                min-height: 250px;
+            }
+
+            header h1 {
+                font-size: 2.3rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <p class="page-kicker">Differential Equations</p>
+            <h1 style="margin: 0 0 1rem; line-height: 1.1; font-size: 3.4rem;">
+                Green's Function
+            </h1>
+            <p class="lead">
+                A Green's function is the response of a linear operator to a point source. Once it is known,
+                the solution to the same operator driven by any source is an integral over the source,
+                weighted by the Green's function.
+            </p>
+        </header>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Overview</h2>
+            <p>
+                Let \(\mathcal{L}\) be a linear differential operator acting on functions of \(x\)
+                on a domain \(\Omega\) with prescribed boundary conditions. The Green's function
+                \(G(x, x')\) satisfies
+            </p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    \mathcal{L}_x \, G(x, x') = \delta(x - x'),
+                    \]
+                </div>
+            </div>
+            <p>
+                subject to the same homogeneous boundary conditions. Here \(\delta(x-x')\) is the
+                Dirac delta — a unit impulse concentrated at the source point \(x'\).
+            </p>
+            <p style="margin-bottom: 0;">
+                The key result is that the solution \(u(x)\) to \(\mathcal{L} u = f(x)\) is then
+                obtained by superposition:
+            </p>
+            <div class="equation" style="margin-bottom: 0;">
+                \[
+                u(x) = \int_\Omega G(x, x')\, f(x')\, dx'.
+                \]
+            </div>
+        </section>
+
+        <section class="artwork-shell">
+            <div id="gf-sketch" aria-label="Animated Green's function visualization — impulse responses and superposition"></div>
+            <p class="sketch-caption">
+                Each colored curve is the Green's function \(G(x, x')\) for a different source location \(x'\).
+                The white curve is their superposition \(u(x) = \int G(x,x') f(x')\, dx'\) for a smooth source \(f\).
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">1. Why Point Sources?</h2>
+            <p>
+                The Dirac delta \(\delta(x - x')\) is the identity element of convolution:
+            </p>
+            <div class="equation">
+                \[
+                \int \delta(x - x') f(x')\, dx' = f(x).
+                \]
+            </div>
+            <p>
+                Because \(\mathcal{L}\) is linear, we can think of any source \(f(x)\) as a
+                continuous superposition of point sources. The solution to each point-source problem
+                is \(G(x, x')\). Linearity then guarantees that the solution to the original problem
+                is the same superposition of Green's functions:
+            </p>
+            <div class="equation">
+                \[
+                \mathcal{L}\, u
+                =
+                \mathcal{L} \int G(x,x') f(x')\, dx'
+                =
+                \int \underbrace{\mathcal{L}_x G(x,x')}_{\delta(x-x')} f(x')\, dx'
+                =
+                f(x).
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                The method therefore converts an ODE (or PDE) boundary-value problem into an
+                explicit integral — no shooting method or iteration required.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">2. Worked Example — The Simple Boundary-Value Problem</h2>
+            <p>
+                We solve the ODE
+            </p>
+            <div class="equation">
+                \[
+                -u''(x) = f(x),
+                \qquad
+                x \in (0,1),
+                \qquad
+                u(0) = u(1) = 0.
+                \]
+            </div>
+            <p>
+                The Green's function \(G(x,x')\) for the operator \(\mathcal{L} = -d^2/dx^2\)
+                on \([0,1]\) with Dirichlet conditions satisfies
+            </p>
+            <div class="equation">
+                \[
+                -G_{xx}(x, x') = \delta(x - x'),
+                \qquad
+                G(0, x') = G(1, x') = 0.
+                \]
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">3. Deriving \(G(x, x')\) Step by Step</h2>
+            <p><strong>Step 1 — Solve in each subinterval.</strong>
+                Away from the source point \(x'\), the equation becomes \(-G_{xx} = 0\), so
+                \(G\) is piecewise linear:
+            </p>
+            <div class="equation">
+                \[
+                G(x, x') =
+                \begin{cases}
+                A\, x & 0 \le x < x', \\
+                B\,(1 - x) & x' < x \le 1.
+                \end{cases}
+                \]
+            </div>
+            <p>
+                The boundary conditions \(G(0,x')=0\) and \(G(1,x')=0\) are already satisfied.
+            </p>
+            <p><strong>Step 2 — Continuity at \(x'\).</strong>
+                \(G\) must be continuous:
+            </p>
+            <div class="equation">
+                \[
+                A\, x' = B\,(1 - x').
+                \]
+            </div>
+            <p><strong>Step 3 — Jump condition on the derivative.</strong>
+                Integrating \(-G_{xx} = \delta(x-x')\) over a tiny interval around \(x'\) gives
+                a unit jump in the derivative:
+            </p>
+            <div class="equation">
+                \[
+                G_x(x'^+, x') - G_x(x'^-, x') = -1,
+                \qquad
+                \text{i.e.}\quad
+                -B - A = -1,
+                \quad\text{so}\quad A + B = 1.
+                \]
+            </div>
+            <p><strong>Step 4 — Solve for \(A\) and \(B\).</strong>
+                From \(Ax' = B(1-x')\) and \(A + B = 1\):
+            </p>
+            <div class="equation">
+                \[
+                B = \frac{x'}{1} = x',
+                \qquad
+                A = 1 - x'.
+                \]
+            </div>
+            <p><strong>Result.</strong></p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    G(x, x')
+                    =
+                    \begin{cases}
+                    x\,(1-x') & 0 \le x \le x', \\
+                    x'\,(1-x) & x' \le x \le 1.
+                    \end{cases}
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                Notice that \(G(x,x') = G(x',x)\) — the Green's function is symmetric (the operator
+                is self-adjoint). The kink at \(x = x'\) is the signature of the delta-function source.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">4. Applying the Formula — A Specific Source</h2>
+            <p>
+                Let \(f(x) = 1\) (uniform distributed load). The solution is
+            </p>
+            <div class="equation">
+                \[
+                u(x)
+                =
+                \int_0^1 G(x,x')\cdot 1 \; dx'
+                =
+                \int_0^x x'(1-x)\,dx'
+                +
+                \int_x^1 x(1-x')\,dx'.
+                \]
+            </div>
+            <p>
+                Evaluating each integral:
+            </p>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Left piece</h3>
+                    \[
+                    (1-x)\int_0^x x'\,dx'
+                    = (1-x)\frac{x^2}{2}
+                    \]
+                </div>
+                <div class="equation-card">
+                    <h3>Right piece</h3>
+                    \[
+                    x\int_x^1 (1-x')\,dx'
+                    = x\,\frac{(1-x)^2}{2}
+                    \]
+                </div>
+            </div>
+            <p>Adding both:</p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    u(x)
+                    =
+                    \frac{x(1-x)}{2}\bigl(x + (1-x)\bigr)
+                    =
+                    \frac{x(1-x)}{2}.
+                    \]
+                </div>
+            </div>
+            <p style="margin-bottom: 0;">
+                We can verify: \(-u''(x) = -(- 1) = 1 = f(x)\) ✓, and \(u(0)=u(1)=0\) ✓.
+                The parabola \(x(1-x)/2\) is the familiar deflection of a simply supported beam
+                under a uniform load.
+            </p>
+        </section>
+
+        <section class="definition-box">
+            <h2 style="margin-top: 0;">Symmetry and Self-Adjointness</h2>
+            <p>
+                For a self-adjoint operator (one that satisfies \(\langle u, \mathcal{L}v \rangle =
+                \langle \mathcal{L}u, v \rangle\)), the Green's function is symmetric:
+            </p>
+            <div class="equation">
+                \[
+                G(x, x') = G(x', x).
+                \]
+            </div>
+            <p>
+                Physically this is reciprocity: the displacement at \(x\) due to a unit force at \(x'\)
+                equals the displacement at \(x'\) due to a unit force at \(x\). This is Betti's
+                reciprocal theorem in structural mechanics.
+            </p>
+            <div class="note-panel">
+                <p style="margin-top: 0; margin-bottom: 0;">
+                    <strong>Spectral representation.</strong> For a self-adjoint operator with
+                    eigenfunctions \(\phi_n\) satisfying \(\mathcal{L}\phi_n = \lambda_n \phi_n\),
+                    the Green's function can be expanded as
+                    \[
+                    G(x, x') = \sum_n \frac{\phi_n(x)\,\phi_n(x')}{\lambda_n}.
+                    \]
+                    Each eigenmode contributes independently; the Green's function inverts the operator
+                    by dividing by each eigenvalue. This is the spectral analogue of
+                    \(A^{-1} = \sum_n \mathbf{v}_n \mathbf{v}_n^\top / \lambda_n\) for matrices.
+                </p>
+            </div>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">5. Green's Functions in Higher Dimensions and Physics</h2>
+            <p>
+                The concept generalizes naturally to PDEs. For the Laplacian in \(\mathbb{R}^3\),
+                the free-space Green's function satisfies
+            </p>
+            <div class="equation">
+                \[
+                -\nabla^2 G(\mathbf{r}, \mathbf{r}') = \delta^{(3)}(\mathbf{r} - \mathbf{r}'),
+                \qquad
+                G(\mathbf{r}, \mathbf{r}') = \frac{1}{4\pi|\mathbf{r}-\mathbf{r}'|}.
+                \]
+            </div>
+            <p>
+                This is the electrostatic potential at \(\mathbf{r}\) due to a unit point charge
+                at \(\mathbf{r}'\). The solution to Poisson's equation \(-\nabla^2 \phi = \rho/\varepsilon_0\)
+                is then
+            </p>
+            <div class="equation">
+                \[
+                \phi(\mathbf{r})
+                =
+                \frac{1}{4\pi\varepsilon_0}
+                \int \frac{\rho(\mathbf{r}')}{|\mathbf{r}-\mathbf{r}'|}\, d^3r',
+                \]
+            </div>
+            <p style="margin-bottom: 0;">
+                exactly Coulomb's law for a charge distribution. The same construction applies to
+                the heat equation, the wave equation, and the Schrödinger equation.
+            </p>
+        </section>
+
+        <section class="example-box">
+            <h2 style="margin-top: 0;">6. Real-World Applications</h2>
+            <ul>
+                <li>
+                    <strong>Electrostatics and Magnetostatics.</strong> Computing the electric field
+                    or magnetic vector potential due to an arbitrary charge or current distribution
+                    via Coulomb/Biot-Savart integrals.
+                </li>
+                <li>
+                    <strong>Structural Mechanics.</strong> The deflection of a beam or plate under
+                    a distributed load is the Green's function convolution. Finite element methods
+                    approximate the Green's function on complex geometries.
+                </li>
+                <li>
+                    <strong>Quantum Mechanics.</strong> The retarded Green's function (propagator)
+                    describes how a quantum state evolves. The Born series for scattering amplitudes
+                    is a perturbative expansion of the full propagator.
+                </li>
+                <li>
+                    <strong>Seismology.</strong> The seismic response of the Earth to an earthquake
+                    is modeled using the Green's function of the elastic wave equation. Observed
+                    waveforms are deconvolved with the Green's function to infer source properties.
+                </li>
+                <li>
+                    <strong>Heat Conduction.</strong> Temperature at a point due to a heat source
+                    or initial condition. The heat kernel \(G(x,t;x',t') = e^{-(x-x')^2/4(t-t')} / \sqrt{4\pi(t-t')}\)
+                    is the Green's function of the diffusion equation.
+                </li>
+                <li>
+                    <strong>Image Processing.</strong> Gaussian blur is convolution with the
+                    heat-equation Green's function. Edge detection uses Green's functions of
+                    differential operators in disguise.
+                </li>
+            </ul>
+        </section>
+
+        <footer>
+            Built as a compact reference page on Green's functions, their derivation,
+            a worked boundary-value example, and physical applications.
+            <br>
+            <a href="index.html">Back to Suugaku Notes</a>
+        </footer>
+    </div>
+
+    <script>
+    new p5(function(p) {
+        let holder;
+        let sourcePhase = 0;
+
+        function greenFunc(x, xp) {
+            if (x <= xp) return x * (1 - xp);
+            return xp * (1 - x);
+        }
+
+        function screenX(t, w) { return p.map(t, 0, 1, w * 0.08, w * 0.92); }
+        function screenY(v, h) { return p.map(v, -0.05, 0.3, h * 0.92, h * 0.1); }
+
+        const sourcePositions = [0.15, 0.3, 0.5, 0.7, 0.85];
+        const colors = [
+            [220, 120, 70],
+            [170, 100, 210],
+            [36, 139, 118],
+            [200, 160, 40],
+            [80, 130, 200]
+        ];
+
+        p.setup = function() {
+            holder = document.getElementById('gf-sketch');
+            const w = Math.max(280, holder.offsetWidth);
+            const h = Math.max(280, Math.round(w * 0.52));
+            const canvas = p.createCanvas(w, h);
+            canvas.parent('gf-sketch');
+            p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+            p.textFont('Parkinsans, Helvetica, Arial, sans-serif');
+        };
+
+        p.windowResized = function() {
+            if (!holder) return;
+            const w = Math.max(280, holder.offsetWidth);
+            const h = Math.max(280, Math.round(w * 0.52));
+            p.resizeCanvas(w, h);
+        };
+
+        p.draw = function() {
+            const w = p.width, h = p.height;
+            p.background(248, 252, 255);
+
+            sourcePhase += 0.008;
+            const activeIdx = Math.floor((sourcePhase / (Math.PI * 2)) * sourcePositions.length) % sourcePositions.length;
+
+            p.stroke(210, 220, 230);
+            p.strokeWeight(1);
+            for (let i = 0; i <= 5; i++) {
+                const v = i * 0.05;
+                const sy = screenY(v, h);
+                p.line(w * 0.06, sy, w * 0.94, sy);
+            }
+
+            const N = 200;
+            const weights = [0.2, 0.3, 0.5, 0.3, 0.2];
+
+            for (let si = 0; si < sourcePositions.length; si++) {
+                const xp = sourcePositions[si];
+                const col = colors[si];
+                const isActive = (si === activeIdx);
+                const alpha = isActive ? 220 : 55;
+
+                p.noFill();
+                p.stroke(col[0], col[1], col[2], alpha);
+                p.strokeWeight(isActive ? 2.5 : 1.2);
+                p.beginShape();
+                for (let i = 0; i <= N; i++) {
+                    const x = i / N;
+                    const g = greenFunc(x, xp);
+                    p.vertex(screenX(x, w), screenY(g * weights[si], h));
+                }
+                p.endShape();
+
+                const kinkX = screenX(xp, w);
+                const kinkY = screenY(greenFunc(xp, xp) * weights[si], h);
+                p.noStroke();
+                p.fill(col[0], col[1], col[2], alpha);
+                p.circle(kinkX, kinkY, isActive ? 9 : 5);
+            }
+
+            p.noFill();
+            p.stroke(255, 255, 255);
+            p.strokeWeight(3.5);
+            p.beginShape();
+            for (let i = 0; i <= N; i++) {
+                const x = i / N;
+                let u = 0;
+                for (let si = 0; si < sourcePositions.length; si++) {
+                    u += greenFunc(x, sourcePositions[si]) * weights[si];
+                }
+                p.vertex(screenX(x, w), screenY(u, h));
+            }
+            p.endShape();
+
+            p.stroke(43, 100, 160);
+            p.strokeWeight(2.5);
+            p.beginShape();
+            for (let i = 0; i <= N; i++) {
+                const x = i / N;
+                let u = 0;
+                for (let si = 0; si < sourcePositions.length; si++) {
+                    u += greenFunc(x, sourcePositions[si]) * weights[si];
+                }
+                p.vertex(screenX(x, w), screenY(u, h));
+            }
+            p.endShape();
+
+            p.stroke(120, 140, 160);
+            p.strokeWeight(1.5);
+            p.line(screenX(0, w), screenY(0, h), screenX(1, w), screenY(0, h));
+
+            p.noStroke();
+            p.fill(92, 108, 124);
+            p.textSize(11);
+            p.textAlign(p.LEFT, p.TOP);
+            p.text('G(x, x\') for source at x\' (colored)   u(x) = ∫ G(x,x\') f(x\') dx\' (blue)', 10, 10);
+
+            p.textAlign(p.LEFT, p.BOTTOM);
+            p.text('x = 0', screenX(0, w), screenY(-0.02, h));
+            p.text('x = 1', screenX(1, w) - 32, screenY(-0.02, h));
+        };
+    });
+    </script>
+</body>
+</html>
