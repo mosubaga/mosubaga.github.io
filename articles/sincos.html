@@ -18,6 +18,15 @@
 
         <title>Personal reference page</title>
 
+        <!-- MathJax for equation rendering -->
+        <script>
+            MathJax = {
+                tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+                svg: { fontCache: 'global' }
+            };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
         <!-- Bootstrap core CSS -->
         <link href="../css/bootstrap.min.css" rel="stylesheet" />
         <link href="../css/style.css" rel="stylesheet" />
@@ -53,6 +62,109 @@
         </main>
         <script src="../js/sketch.js"></script>
         <p>Code was used from <a href="https://p5js.org">p5.js website</a></p>
+
+        <hr>
+        <h2>Sine and Cosine in Sturm-Liouville Theory</h2>
+
+        <h3>The Sturm-Liouville Problem</h3>
+        <p>
+            Sturm-Liouville theory provides a general framework for a large class of second-order
+            linear ordinary differential equations (ODEs). The standard form is:
+        </p>
+        <p>
+            $$-\frac{d}{dx}\!\left[p(x)\,\frac{dy}{dx}\right] + q(x)\,y = \lambda\,w(x)\,y, \quad a \le x \le b$$
+        </p>
+        <p>
+            Here $p(x)$, $q(x)$, and the weight function $w(x)$ are given real-valued functions
+            on $[a, b]$, and $\lambda$ is the eigenvalue to be determined. Boundary conditions
+            (Dirichlet, Neumann, or mixed) are imposed at $x = a$ and $x = b$.
+        </p>
+
+        <h3>Sine and Cosine as Eigenfunctions</h3>
+        <p>
+            The simplest and most instructive Sturm-Liouville problem is the one with
+            $p(x) = 1$, $q(x) = 0$, $w(x) = 1$ on $[0, L]$:
+        </p>
+        <p>
+            $$-\frac{d^2 y}{dx^2} = \lambda\, y$$
+        </p>
+        <p>
+            With <strong>Dirichlet boundary conditions</strong> $y(0) = y(L) = 0$, the
+            eigenvalues and eigenfunctions are:
+        </p>
+        <p>
+            $$\lambda_n = \left(\frac{n\pi}{L}\right)^{\!2}, \quad
+              y_n(x) = \sin\!\left(\frac{n\pi x}{L}\right), \quad n = 1, 2, 3, \ldots$$
+        </p>
+        <p>
+            With <strong>Neumann boundary conditions</strong> $y'(0) = y'(L) = 0$, the
+            eigenfunctions are instead cosines:
+        </p>
+        <p>
+            $$\lambda_n = \left(\frac{n\pi}{L}\right)^{\!2}, \quad
+              y_n(x) = \cos\!\left(\frac{n\pi x}{L}\right), \quad n = 0, 1, 2, \ldots$$
+        </p>
+        <p>
+            With <strong>periodic boundary conditions</strong> $y(0) = y(L)$ and
+            $y'(0) = y'(L)$, both families appear together, giving the full Fourier basis
+            $\{1,\, \sin(2\pi n x / L),\, \cos(2\pi n x / L)\}$.
+        </p>
+
+        <h3>Orthogonality</h3>
+        <p>
+            A central result of Sturm-Liouville theory is that eigenfunctions belonging to
+            different eigenvalues are orthogonal with respect to the weight $w(x)$:
+        </p>
+        <p>
+            $$\int_a^b y_m(x)\, y_n(x)\, w(x)\, dx = 0 \quad \text{for } m \ne n$$
+        </p>
+        <p>
+            For the sine eigenfunctions on $[0, L]$ with $w = 1$ this becomes the familiar result:
+        </p>
+        <p>
+            $$\int_0^L \sin\!\left(\frac{m\pi x}{L}\right)\sin\!\left(\frac{n\pi x}{L}\right)dx
+              = \frac{L}{2}\,\delta_{mn}$$
+        </p>
+        <p>
+            Orthogonality is what makes it possible to expand an arbitrary square-integrable
+            function as a series of eigenfunctions — the basis of Fourier series.
+        </p>
+
+        <h3>Completeness and Function Expansion</h3>
+        <p>
+            Sturm-Liouville theory guarantees that the set of eigenfunctions is <em>complete</em>:
+            any sufficiently well-behaved function $f(x)$ on $[a, b]$ can be written as
+        </p>
+        <p>
+            $$f(x) = \sum_{n=1}^{\infty} c_n\, y_n(x), \qquad
+              c_n = \frac{\displaystyle\int_a^b f(x)\, y_n(x)\, w(x)\, dx}
+                         {\displaystyle\int_a^b [y_n(x)]^2\, w(x)\, dx}$$
+        </p>
+        <p>
+            For the sine basis this is exactly the Fourier sine series; for the cosine basis
+            it is the Fourier cosine series. The Sturm-Liouville framework thus explains
+            <em>why</em> these expansions work and extends them to a much wider family of
+            special functions (Legendre polynomials, Bessel functions, Hermite functions, etc.)
+            that arise from physically relevant choices of $p$, $q$, and $w$.
+        </p>
+
+        <h3>Connection to Partial Differential Equations</h3>
+        <p>
+            Sine and cosine eigenfunctions obtained from Sturm-Liouville problems appear
+            naturally when solving PDEs by separation of variables. For example, the heat
+            equation $u_t = \alpha\, u_{xx}$ on $[0, L]$ with $u(0,t)=u(L,t)=0$ separates into
+            the Sturm-Liouville problem above in $x$, yielding the solution
+        </p>
+        <p>
+            $$u(x,t) = \sum_{n=1}^{\infty} c_n\, \sin\!\left(\frac{n\pi x}{L}\right)
+                        e^{-\alpha(n\pi/L)^2 t}$$
+        </p>
+        <p>
+            The coefficients $c_n$ are determined by the initial condition $u(x,0) = f(x)$
+            using the orthogonality integral above. The same logic applies to the wave equation,
+            Laplace's equation, and Schrödinger's equation.
+        </p>
+
         </div>
         <!-- /.container -->
         <!-- Bootstrap core JavaScript
