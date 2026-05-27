@@ -243,7 +243,7 @@ function getstrikeouts(){
 
 }
 
-/* function getUsdToJpyRate() {
+function getUsdToJpyRate() {
     fetch("https://api.frankfurter.dev/v2/rates?base=USD&quotes=JPY")
         .then((response) => {
             return response.json();
@@ -262,7 +262,7 @@ function getstrikeouts(){
         .catch((error) => {
             console.error("Failed to fetch USD/JPY rate:", error);
         });
-}*/
+}
 
 function plotPoints() {
     const input = document.getElementById('inputArea').value.trim();
