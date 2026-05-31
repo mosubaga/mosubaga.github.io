@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Connect AI Agents to Obsidian</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist/styles/webawesome.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist-cdn/webawesome.loader.js"></script>
+    <link rel="stylesheet" href="css/styles.css?v=2" />
+  </head>
+  <body>
+    <header class="site-header"><div class="nav-wrap"><a class="brand" href="index.html"><span class="brand-mark"><wa-icon name="gem"></wa-icon></span><span>Obsidian Starter Guide</span></a><wa-button class="nav-toggle" data-nav-toggle appearance="plain" aria-expanded="false"><wa-icon name="bars" label="Menu"></wa-icon></wa-button><nav class="site-nav" data-site-nav><a href="index.html">Start</a><a href="organize.html">Organize</a><a href="study.html">Study</a><a href="acquire.html">Capture</a><a class="active" href="ai-agents.html">AI agents</a><a href="starter-vault.html">Starter vault</a><a href="resources.html">Resources</a></nav></div></header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container page-intro">
+          <p class="eyebrow"><wa-icon name="robot"></wa-icon> AI-assisted notes</p>
+          <h1>Use AI agents to improve your vault, while keeping the vault yours.</h1>
+          <p class="lead">Because an Obsidian vault is just files, tools like Codex or Claude Code can read and edit notes when you point them at the vault folder. The trick is to give them narrow tasks and review their changes.</p>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head"><h2>Good AI Agent Tasks</h2><p>AI is strongest when the source material is already in your vault and the output format is clear.</p></div>
+          <div class="grid three">
+            <div class="card"><h3>Summarize and link</h3><p>Ask an agent to summarize a folder of lecture notes and suggest links between repeated ideas.</p></div>
+            <div class="card"><h3>Generate study questions</h3><p>Turn notes into practice questions, flashcard prompts, or problem sets with answers hidden below.</p></div>
+            <div class="card"><h3>Clean structure</h3><p>Rename notes, add properties, build index pages, and find orphan notes that need links.</p></div>
+            <div class="card"><h3>Build project docs</h3><p>Convert meeting notes into status updates, decision logs, or business plan sections.</p></div>
+            <div class="card"><h3>Extract action items</h3><p>Scan meeting notes for owners, due dates, and unresolved questions.</p></div>
+            <div class="card"><h3>Write from your notes</h3><p>Draft essays, reports, documentation, or outlines using only vault notes as source material.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container grid two">
+          <div>
+            <h2>A Safe Agent Workflow</h2>
+            <div class="steps">
+              <div class="step"><h3>Back up first</h3><p>Use Git, Time Machine, Obsidian Sync version history, or another backup before large edits.</p></div>
+              <div class="step"><h3>Give a small scope</h3><p>Point the agent to one folder or a short list of notes, not your entire life archive.</p></div>
+              <div class="step"><h3>Ask for a diff or summary</h3><p>Before accepting edits, review changed files and check that citations or links are real.</p></div>
+              <div class="step"><h3>Keep human judgment</h3><p>Let AI suggest structure and questions. You decide what is true, important, and worth keeping.</p></div>
+            </div>
+          </div>
+          <div class="callout ai">
+            <h3>Privacy check</h3>
+            <p>Local files can still be sent to an AI service if your tool uses a cloud model. Do not include private, confidential, student, patient, client, or company-sensitive information unless your tool and policy allow it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head"><h2>Prompt Patterns</h2><p>These prompts work well because they tell the agent where to look, what to produce, and what to avoid.</p></div>
+          <div class="grid two">
+            <div class="card">
+              <h3>Link suggester</h3>
+              <pre class="syntax" id="ai-link-prompt">Review the notes in 30 Resources/Physics.
+Suggest internal links between related notes.
+Do not rewrite notes yet.
+Return a list with:
+- source note
+- suggested link target
+- reason for the link</pre>
+              <div class="button-row"><wa-button data-copy="#ai-link-prompt" appearance="outlined">Copy</wa-button></div>
+            </div>
+            <div class="card">
+              <h3>Study question generator</h3>
+              <pre class="syntax" id="ai-study-prompt">Using only the notes in 10 Projects/Calculus Exam,
+create 20 active-recall questions.
+Group them by topic.
+Include short answers after each question.
+Flag any answer that is uncertain or missing from the notes.</pre>
+              <div class="button-row"><wa-button data-copy="#ai-study-prompt" appearance="outlined">Copy</wa-button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-inner"><span>Next: copy a starter vault structure.</span><a href="starter-vault.html">Starter vault</a></div></footer>
+    <script src="js/main.js"></script>
+  </body>
+</html>

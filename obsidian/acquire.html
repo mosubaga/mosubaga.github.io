@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Acquire Information in Obsidian</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist/styles/webawesome.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist-cdn/webawesome.loader.js"></script>
+    <link rel="stylesheet" href="css/styles.css?v=2" />
+  </head>
+  <body>
+    <header class="site-header"><div class="nav-wrap"><a class="brand" href="index.html"><span class="brand-mark"><wa-icon name="gem"></wa-icon></span><span>Obsidian Starter Guide</span></a><wa-button class="nav-toggle" data-nav-toggle appearance="plain" aria-expanded="false"><wa-icon name="bars" label="Menu"></wa-icon></wa-button><nav class="site-nav" data-site-nav><a href="index.html">Start</a><a href="organize.html">Organize</a><a href="study.html">Study</a><a class="active" href="acquire.html">Capture</a><a href="ai-agents.html">AI agents</a><a href="starter-vault.html">Starter vault</a><a href="resources.html">Resources</a></nav></div></header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container page-intro">
+          <p class="eyebrow"><wa-icon name="download"></wa-icon> Capture and process</p>
+          <h1>Acquire information without turning your vault into a junk drawer.</h1>
+          <p class="lead">Capture is only step one. The useful move is to add context: why you saved it, what it connects to, and what you may do with it later.</p>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head"><h2>Common Capture Paths</h2><p>Use the lightest method that preserves enough context.</p></div>
+          <div class="grid four">
+            <div class="card"><h3 class="icon-title"><wa-icon name="calendar-day"></wa-icon> Daily notes</h3><p>Fastest place for thoughts, tasks, class notes, and meeting notes when you do not know where they belong yet.</p></div>
+            <div class="card"><h3 class="icon-title"><wa-icon name="globe"></wa-icon> Web Clipper</h3><p>Save web pages, highlights, and page data directly to your vault using Obsidian's free browser extension.</p></div>
+            <div class="card"><h3 class="icon-title"><wa-icon name="file-pdf"></wa-icon> PDFs and files</h3><p>Attach readings, screenshots, diagrams, and slides, then link notes to the exact source they came from.</p></div>
+            <div class="card"><h3 class="icon-title"><wa-icon name="microphone-lines"></wa-icon> Meetings</h3><p>Capture agenda, decisions, owners, dates, and links to projects or people while the context is fresh.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container grid two">
+          <div>
+            <h2>The Capture Triage</h2>
+            <p>Use this three-question test every time you save something.</p>
+            <div class="steps">
+              <div class="step"><h3>Why did I save this?</h3><p>Add one sentence. If you cannot explain why it matters, archive or delete it.</p></div>
+              <div class="step"><h3>Where will I need it?</h3><p>Link it to a project, course, topic, person, or future deliverable.</p></div>
+              <div class="step"><h3>What is the next action?</h3><p>Summarize, cite, practice, reply, decide, or convert it into a permanent reference note.</p></div>
+            </div>
+          </div>
+          <div class="callout warning">
+            <h3>Do not confuse collecting with learning</h3>
+            <p>A vault full of clipped articles can feel productive but still be hard to use. Your own summary, links, and questions are the parts that make captured information useful.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head"><h2>Capture Templates</h2><p>Templates keep your notes consistent without making them stiff.</p></div>
+          <div class="grid two">
+            <div class="card">
+              <h3>Source note</h3>
+              <pre class="syntax" id="source-template">---
+type: source
+source_type: article
+url:
+status: unread
+---
+
+# Why I saved this
+
+# Key points
+
+# Quotes or evidence
+
+# My take
+
+# Links
+- Related project:
+- Related topic:</pre>
+              <div class="button-row"><wa-button data-copy="#source-template" appearance="outlined">Copy</wa-button></div>
+            </div>
+            <div class="card">
+              <h3>Meeting note</h3>
+              <pre class="syntax" id="meeting-template">---
+type: meeting
+date: 2026-05-31
+project:
+people:
+---
+
+# Agenda
+
+# Decisions
+
+# Action items
+- [ ] Owner - task - due date
+
+# Open questions
+
+# Links</pre>
+              <div class="button-row"><wa-button data-copy="#meeting-template" appearance="outlined">Copy</wa-button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-inner"><span>Next: connect AI tools to your vault responsibly.</span><a href="ai-agents.html">AI agents</a></div></footer>
+    <script src="js/main.js"></script>
+  </body>
+</html>

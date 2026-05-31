@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How to Use Obsidian</title>
+    <meta name="description" content="A beginner-friendly guide to using Obsidian for school, work, research, and AI-assisted knowledge building." />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist/styles/webawesome.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist-cdn/webawesome.loader.js"></script>
+    <link rel="stylesheet" href="css/styles.css?v=2" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="nav-wrap">
+        <a class="brand" href="index.html" aria-label="Obsidian guide home">
+          <span class="brand-mark"><wa-icon name="gem"></wa-icon></span>
+          <span>Obsidian Starter Guide</span>
+        </a>
+        <wa-button class="nav-toggle" data-nav-toggle appearance="plain" aria-expanded="false">
+          <wa-icon name="bars" label="Menu"></wa-icon>
+        </wa-button>
+        <nav class="site-nav" data-site-nav>
+          <a class="active" href="index.html">Start</a>
+          <a href="organize.html">Organize</a>
+          <a href="study.html">Study</a>
+          <a href="acquire.html">Capture</a>
+          <a href="ai-agents.html">AI agents</a>
+          <a href="starter-vault.html">Starter vault</a>
+          <a href="resources.html">Resources</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow"><wa-icon name="sparkles"></wa-icon> Plain notes, connected thinking</p>
+            <h1>How to use Obsidian for learning, work, and ideas that keep growing.</h1>
+            <p class="lead">Obsidian is a note app built around local Markdown files. That sounds simple, but it lets you build a personal knowledge base where class notes, meeting notes, research, code snippets, and project plans connect to each other.</p>
+            <div class="hero-actions">
+              <wa-button href="organize.html" variant="brand">
+                <wa-icon slot="start" name="folder-tree"></wa-icon>
+                Build your system
+              </wa-button>
+              <wa-button href="starter-vault.html" variant="neutral" appearance="outlined">
+                <wa-icon slot="start" name="diagram-project"></wa-icon>
+                See a starter vault
+              </wa-button>
+            </div>
+          </div>
+          <div class="hero-visual hero-diagram" aria-label="Obsidian workflow diagram">
+            <div class="diagram-node main-node"><wa-icon name="gem"></wa-icon><span>Vault</span></div>
+            <div class="diagram-grid">
+              <div><wa-icon name="inbox"></wa-icon><strong>Capture</strong><span>notes, links, ideas</span></div>
+              <div><wa-icon name="link"></wa-icon><strong>Connect</strong><span>wikilinks, backlinks</span></div>
+              <div><wa-icon name="folder-tree"></wa-icon><strong>Organize</strong><span>folders, tags, properties</span></div>
+              <div><wa-icon name="diagram-project"></wa-icon><strong>Map</strong><span>graph view, Canvas</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head">
+            <h2>What Obsidian Is</h2>
+            <p>Think of Obsidian as a private folder of notes that becomes more useful as you link ideas together. Your notes live on your device as Markdown files, so you can read and edit them outside the app too.</p>
+          </div>
+          <div class="grid four">
+            <div class="card">
+              <h3 class="icon-title"><wa-icon name="lock"></wa-icon> Local first</h3>
+              <p>Your vault is a folder on your computer or phone. Obsidian does not require an account for basic use, and your notes stay local unless you choose a sync or publishing setup.</p>
+            </div>
+            <div class="card">
+              <h3 class="icon-title"><wa-icon name="link"></wa-icon> Link based</h3>
+              <p>Type <strong>[[Note name]]</strong> to connect notes. Over time, those links create a map of your thinking instead of a pile of disconnected files.</p>
+            </div>
+            <div class="card">
+              <h3 class="icon-title"><wa-icon name="magnifying-glass-chart"></wa-icon> Searchable</h3>
+              <p>Search, tags, backlinks, properties, and graph view help you find patterns across classes, projects, papers, and meetings.</p>
+            </div>
+            <div class="card">
+              <h3 class="icon-title"><wa-icon name="puzzle-piece"></wa-icon> Extendable</h3>
+              <p>Core plugins cover daily notes, graph view, templates, Canvas, and more. Community plugins can add calendars, diagrams, dashboards, and specialized workflows.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <h2>What It Can Help You Do</h2>
+            <p>The main win is not taking prettier notes. The win is being able to reuse what you learned last week, last semester, or during a meeting three projects ago.</p>
+          </div>
+          <wa-tab-group active="school">
+            <wa-tab panel="school">School</wa-tab>
+            <wa-tab panel="work">Work</wa-tab>
+            <wa-tab panel="personal">Personal research</wa-tab>
+            <wa-tab-panel name="school">
+              <div class="grid three">
+                <div class="card compact"><h3>Study subjects</h3><p>Build notes for formulas, definitions, examples, proofs, bugs, and solved problems.</p></div>
+                <div class="card compact"><h3>Make connections</h3><p>Connect a physics idea to a math method, or a programming concept to a project you built.</p></div>
+                <div class="card compact"><h3>Review actively</h3><p>Use daily notes, question notes, and spaced review plugins to turn notes into practice.</p></div>
+              </div>
+            </wa-tab-panel>
+            <wa-tab-panel name="work">
+              <div class="grid three">
+                <div class="card compact"><h3>Meeting memory</h3><p>Keep agenda, decisions, owners, dates, and follow-ups in one place.</p></div>
+                <div class="card compact"><h3>Project context</h3><p>Link plans, research, people, constraints, and status notes so handoffs are easier.</p></div>
+                <div class="card compact"><h3>Reusable knowledge</h3><p>Turn repeated questions into reference notes, checklists, templates, and playbooks.</p></div>
+              </div>
+            </wa-tab-panel>
+            <wa-tab-panel name="personal">
+              <div class="grid three">
+                <div class="card compact"><h3>Collect sources</h3><p>Clip articles, store links, and summarize what matters in your own words.</p></div>
+                <div class="card compact"><h3>Develop ideas</h3><p>Use Canvas and links to move from scattered thoughts to an outline or plan.</p></div>
+                <div class="card compact"><h3>Own your archive</h3><p>Because the notes are files, you can back them up, version them, and move them later.</p></div>
+              </div>
+            </wa-tab-panel>
+          </wa-tab-group>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head">
+            <h2>A Beginner Workflow</h2>
+            <p>Use this loop before trying dozens of plugins. It is enough for the first month.</p>
+          </div>
+          <div class="steps">
+            <div class="step"><h3>Capture</h3><p>Put raw notes, ideas, links, meeting notes, and class notes into an Inbox or Daily Notes.</p></div>
+            <div class="step"><h3>Connect</h3><p>Add links while the idea is fresh. A good link says, "this reminds me of that."</p></div>
+            <div class="step"><h3>Organize</h3><p>Move notes into broad folders, add useful tags, and give important notes properties like status or topic.</p></div>
+            <div class="step"><h3>Review</h3><p>Use backlinks, graph view, search, and your weekly review to clean up rough notes and find patterns.</p></div>
+            <div class="step"><h3>Reuse</h3><p>Turn notes into essays, study sheets, plans, documentation, or AI prompts grounded in your own material.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container grid two">
+          <div class="card">
+            <h2>Quick Feature Map</h2>
+            <p>These are the Obsidian features this guide keeps returning to. You do not need all of them on day one, but knowing what each one is for makes the app much less mysterious.</p>
+            <ul class="plain-list">
+              <li><strong>Links and backlinks:</strong> connect notes and see what points back to the current idea.</li>
+              <li><strong>Properties and tags:</strong> add structured labels for status, topic, source, or course.</li>
+              <li><strong>Graph view and Canvas:</strong> inspect relationships visually when a topic gets crowded.</li>
+              <li><strong>Templates and daily notes:</strong> make repeated capture faster and more consistent.</li>
+            </ul>
+          </div>
+          <div>
+            <h2>Start With These Pages</h2>
+            <div class="grid">
+              <wa-card class="guide-card" with-header>
+                <h3 slot="header">1. Organize information</h3>
+                <p>Folders, tags, links, properties, and a simple structure that works for school and work.</p>
+                <wa-button slot="footer-actions" href="organize.html" appearance="outlined">Open</wa-button>
+              </wa-card>
+              <wa-card class="guide-card" with-header>
+                <h3 slot="header">2. Study any subject</h3>
+                <p>How to make notes useful for math, physics, programming, exams, and long-term learning.</p>
+                <wa-button slot="footer-actions" href="study.html" appearance="outlined">Open</wa-button>
+              </wa-card>
+              <wa-card class="guide-card" with-header>
+                <h3 slot="header">3. Capture sources and use AI</h3>
+                <p>Bring in web sources, PDFs, meetings, and use coding or writing agents without losing control of your notes.</p>
+                <wa-button slot="footer-actions" href="acquire.html" appearance="outlined">Open</wa-button>
+              </wa-card>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <span>Built as a static guide for new Obsidian users.</span>
+        <a href="resources.html">Sources and next steps</a>
+      </div>
+    </footer>
+    <script src="js/main.js"></script>
+  </body>
+</html>

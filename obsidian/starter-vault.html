@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Obsidian Starter Vault</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist/styles/webawesome.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist-cdn/webawesome.loader.js"></script>
+    <link rel="stylesheet" href="css/styles.css?v=2" />
+  </head>
+  <body>
+    <header class="site-header"><div class="nav-wrap"><a class="brand" href="index.html"><span class="brand-mark"><wa-icon name="gem"></wa-icon></span><span>Obsidian Starter Guide</span></a><wa-button class="nav-toggle" data-nav-toggle appearance="plain" aria-expanded="false"><wa-icon name="bars" label="Menu"></wa-icon></wa-button><nav class="site-nav" data-site-nav><a href="index.html">Start</a><a href="organize.html">Organize</a><a href="study.html">Study</a><a href="acquire.html">Capture</a><a href="ai-agents.html">AI agents</a><a class="active" href="starter-vault.html">Starter vault</a><a href="resources.html">Resources</a></nav></div></header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container page-intro">
+          <p class="eyebrow"><wa-icon name="diagram-project"></wa-icon> Starter vault</p>
+          <h1>A practical first vault for school, work, and personal projects.</h1>
+          <p class="lead">This is one useful example, not the only correct structure. Start here, then change folders when your real notes prove you need something different.</p>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container grid two">
+          <div>
+            <h2>Folder Layout</h2>
+            <pre class="syntax" id="vault-layout">00 Inbox/
+01 Daily/
+10 Projects/
+  Calculus Exam/
+  Website Redesign/
+20 Areas/
+  School/
+  Work/
+  Health/
+30 Resources/
+  Math/
+  Physics/
+  Programming/
+  Business/
+40 People/
+50 Templates/
+90 Archive/</pre>
+            <div class="button-row"><wa-button data-copy="#vault-layout" appearance="outlined">Copy</wa-button></div>
+          </div>
+          <div class="card">
+            <h2>Why This Layout Works</h2>
+            <p>It gives every note a temporary place and a long-term place. You can capture quickly during class or meetings, then organize later when you have more context.</p>
+            <ul class="plain-list">
+              <li><strong>Inbox</strong> keeps unfinished thoughts from blocking you.</li>
+              <li><strong>Projects</strong> keeps outcome-based work visible.</li>
+              <li><strong>Areas</strong> holds responsibilities that do not really end.</li>
+              <li><strong>Resources</strong> stores reusable knowledge by topic.</li>
+              <li><strong>Archive</strong> gets old material out of the way without deleting it.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head"><h2>What Goes Where</h2><p>When in doubt, put it in Inbox first. You can organize during review.</p></div>
+          <div class="grid three">
+            <div class="card"><h3>Projects</h3><p>Anything with a finish line: an exam, paper, job search, app, business plan, trip, or client deliverable.</p></div>
+            <div class="card"><h3>Areas</h3><p>Ongoing responsibilities: school, work, finance, health, club leadership, research lab, or personal learning.</p></div>
+            <div class="card"><h3>Resources</h3><p>Reference material you want to reuse: concepts, book notes, tutorials, formulas, snippets, frameworks, and checklists.</p></div>
+            <div class="card"><h3>People</h3><p>Notes about classmates, coworkers, professors, mentors, stakeholders, and recurring meetings.</p></div>
+            <div class="card"><h3>Templates</h3><p>Reusable note shapes for meetings, sources, concepts, projects, weekly reviews, and study questions.</p></div>
+            <div class="card"><h3>Archive</h3><p>Finished or inactive material. Archive beats delete when you might need the context later.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container grid two">
+          <div class="card">
+            <h3>Project hub template</h3>
+            <pre class="syntax" id="project-template">---
+type: project
+status: active
+deadline:
+---
+
+# Goal
+
+# Current next actions
+- [ ]
+
+# Key links
+- Meetings:
+- Research:
+- Decisions:
+- Deliverables:
+
+# Questions</pre>
+            <div class="button-row"><wa-button data-copy="#project-template" appearance="outlined">Copy</wa-button></div>
+          </div>
+          <div class="card">
+            <h3>Weekly review template</h3>
+            <pre class="syntax" id="weekly-template"># Weekly Review
+
+## Inbox to process
+
+## Projects to update
+
+## Notes that need links
+
+## What I learned
+
+## Next week</pre>
+            <div class="button-row"><wa-button data-copy="#weekly-template" appearance="outlined">Copy</wa-button></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-inner"><span>Finish with official docs and extra resources.</span><a href="resources.html">Resources</a></div></footer>
+    <script src="js/main.js"></script>
+  </body>
+</html>

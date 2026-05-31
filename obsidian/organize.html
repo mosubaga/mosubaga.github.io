@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Organize Information in Obsidian</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist/styles/webawesome.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist-cdn/webawesome.loader.js"></script>
+    <link rel="stylesheet" href="css/styles.css?v=2" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="nav-wrap">
+        <a class="brand" href="index.html"><span class="brand-mark"><wa-icon name="gem"></wa-icon></span><span>Obsidian Starter Guide</span></a>
+        <wa-button class="nav-toggle" data-nav-toggle appearance="plain" aria-expanded="false"><wa-icon name="bars" label="Menu"></wa-icon></wa-button>
+        <nav class="site-nav" data-site-nav>
+          <a href="index.html">Start</a><a class="active" href="organize.html">Organize</a><a href="study.html">Study</a><a href="acquire.html">Capture</a><a href="ai-agents.html">AI agents</a><a href="starter-vault.html">Starter vault</a><a href="resources.html">Resources</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container page-intro">
+          <p class="eyebrow"><wa-icon name="folder-tree"></wa-icon> Organization</p>
+          <h1>Make your vault easy to add to, easy to search, and easy to trust.</h1>
+          <p class="lead">The best beginner setup is not complicated. Use folders for broad places, links for relationships, tags for loose themes, and properties for structured facts you may want to filter later.</p>
+          <div class="mini-nav">
+            <a href="#four-tools">Four tools</a>
+            <a href="#starter-system">Starter system</a>
+            <a href="#work-notes">Work notes</a>
+            <a href="#syntax">Syntax</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="four-tools">
+        <div class="container">
+          <div class="section-head">
+            <h2>The Four Organization Tools</h2>
+            <p>Each tool has a different job. Do not make one tool do everything.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tool</th><th>Use it for</th><th>Good example</th><th>Avoid</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Folders</strong></td><td>Broad location and ownership.</td><td><code>Projects</code>, <code>Areas</code>, <code>Resources</code>, <code>Archive</code></td><td>Deep nesting where notes disappear.</td></tr>
+                <tr><td><strong>Tags</strong></td><td>Loose themes, status, and temporary grouping.</td><td><code>#draft</code>, <code>#meeting</code>, <code>#exam-review</code></td><td>Tagging every noun in every note.</td></tr>
+                <tr><td><strong>Links</strong></td><td>Relationships between ideas.</td><td><code>[[Bayes theorem]]</code> linked from statistics, AI, and decision-making notes.</td><td>Orphan notes that never point anywhere.</td></tr>
+                <tr><td><strong>Properties</strong></td><td>Structured fields for sorting and filtering.</td><td><code>status</code>, <code>course</code>, <code>date</code>, <code>owner</code>, <code>source</code></td><td>Adding fields you never search or filter.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="starter-system">
+        <div class="container grid two">
+          <div>
+            <h2>A Simple Starter System</h2>
+            <p>This structure works because it separates fast capture from long-term reference.</p>
+            <div class="vault-map" aria-label="Starter vault folder map">
+              <span>Obsidian Vault/</span>
+              00 Inbox/        quick notes before sorting<br />
+              10 Projects/     active work with outcomes<br />
+              20 Areas/        ongoing responsibilities<br />
+              30 Resources/    reusable references and topic notes<br />
+              40 People/       classmates, teammates, stakeholders<br />
+              90 Archive/      inactive material you may need later
+            </div>
+          </div>
+          <div class="card">
+            <h3>Weekly cleanup rhythm</h3>
+            <ul class="plain-list">
+              <li>Empty your Inbox into the right project, area, or resource folder.</li>
+              <li>Add two or three links to notes that should know about each other.</li>
+              <li>Rename vague notes like <code>Lecture 5</code> into useful names like <code>Newton's second law examples</code>.</li>
+              <li>Archive finished projects instead of deleting them.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="work-notes">
+        <div class="container">
+          <div class="section-head">
+            <h2>For Work: Meeting Notes and Plans</h2>
+            <p>For work notes, make the note useful to your future self. A meeting note should show what happened, what changed, and what someone must do next.</p>
+          </div>
+          <div class="grid three">
+            <div class="card"><h3>Meeting note</h3><p>Use sections for agenda, decisions, action items, open questions, and linked people or projects.</p></div>
+            <div class="card"><h3>Business plan</h3><p>Break big plans into linked notes: customer, problem, solution, risks, budget, timeline, and assumptions.</p></div>
+            <div class="card"><h3>Project hub</h3><p>Create one project page that links to research, meetings, decisions, deliverables, and next actions.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="syntax">
+        <div class="container grid two">
+          <div>
+            <h2>Syntax You Will Actually Use</h2>
+            <p>Keep this small at first. You can do a lot with just links, tags, embeds, and properties.</p>
+            <pre class="syntax" id="organize-syntax">[[Note name]]
+[[Note name#Heading]]
+[[Note name|Custom display text]]
+![[Embedded note or image]]
+#meeting #exam-review
+
+---
+status: draft
+topic: "Physics"
+date: 2026-05-31
+---</pre>
+            <div class="button-row"><wa-button data-copy="#organize-syntax" appearance="outlined">Copy</wa-button></div>
+          </div>
+          <div class="callout">
+            <h3>Rule of thumb</h3>
+            <p>If a note answers a question, name it as the answer. If a note is a place to collect related notes, name it as a topic hub. Example: <code>Limits and continuity</code> can be a hub; <code>Why epsilon-delta definitions matter</code> is an idea note.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-inner"><span>Next: turn notes into study material.</span><a href="study.html">Study with Obsidian</a></div></footer>
+    <script src="js/main.js"></script>
+  </body>
+</html>

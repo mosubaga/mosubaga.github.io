@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" class="wa-theme-default">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Study Any Subject with Obsidian</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist/styles/webawesome.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.7.0/dist-cdn/webawesome.loader.js"></script>
+    <link rel="stylesheet" href="css/styles.css?v=2" />
+  </head>
+  <body>
+    <header class="site-header"><div class="nav-wrap"><a class="brand" href="index.html"><span class="brand-mark"><wa-icon name="gem"></wa-icon></span><span>Obsidian Starter Guide</span></a><wa-button class="nav-toggle" data-nav-toggle appearance="plain" aria-expanded="false"><wa-icon name="bars" label="Menu"></wa-icon></wa-button><nav class="site-nav" data-site-nav><a href="index.html">Start</a><a href="organize.html">Organize</a><a class="active" href="study.html">Study</a><a href="acquire.html">Capture</a><a href="ai-agents.html">AI agents</a><a href="starter-vault.html">Starter vault</a><a href="resources.html">Resources</a></nav></div></header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container page-intro">
+          <p class="eyebrow"><wa-icon name="graduation-cap"></wa-icon> Study workflows</p>
+          <h1>Use Obsidian to learn ideas, not just store notes.</h1>
+          <p class="lead">For school, the goal is active recall, problem solving, and transfer. Obsidian helps when each note becomes a reusable explanation, example, question, or connection.</p>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head"><h2>Subject Patterns</h2><p>Different subjects need different note shapes. Pick the pattern that matches the work you actually do.</p></div>
+          <div class="grid three">
+            <div class="card">
+              <h3 class="icon-title"><wa-icon name="square-root-variable"></wa-icon> Math</h3>
+              <ul class="plain-list">
+                <li>Definition notes: one concept, precise wording, examples and non-examples.</li>
+                <li>Proof notes: claim, strategy, key trick, common mistake.</li>
+                <li>Problem notes: problem type, method, solved example, variations.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="icon-title"><wa-icon name="atom"></wa-icon> Physics</h3>
+              <ul class="plain-list">
+                <li>Concept notes: intuition, equation, units, assumptions.</li>
+                <li>Lab notes: setup, measurement, uncertainty, conclusion.</li>
+                <li>Model links: connect equations to physical situations.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="icon-title"><wa-icon name="code"></wa-icon> Programming</h3>
+              <ul class="plain-list">
+                <li>Snippet notes: code, explanation, when to use, edge cases.</li>
+                <li>Error notes: symptom, cause, fix, prevention.</li>
+                <li>Project notes: design decisions, bugs, commands, references.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container grid two">
+          <div>
+            <h2>Make Notes That Quiz You</h2>
+            <p>After class or reading, convert passive notes into questions. This makes review faster and more honest.</p>
+            <div class="steps">
+              <div class="step"><h3>Write the question first</h3><p>Example: "When should I use integration by parts?"</p></div>
+              <div class="step"><h3>Answer in your own words</h3><p>Use the textbook only after you try the answer from memory.</p></div>
+              <div class="step"><h3>Add links</h3><p>Connect to prerequisite ideas, examples, and common mistakes.</p></div>
+              <div class="step"><h3>Review from links</h3><p>Open backlinks and local graph to see what else depends on this idea.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Note template: concept</h3>
+            <pre class="syntax" id="study-template">---
+type: concept
+course: ""
+status: learning
+---
+
+# Question
+What problem does this idea solve?
+
+# Short answer
+
+# Example
+
+# Common mistake
+
+# Links
+- Prerequisite:
+- Related:
+- Practice:</pre>
+            <div class="button-row"><wa-button data-copy="#study-template" appearance="outlined">Copy</wa-button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="container">
+          <div class="section-head"><h2>Use Graph View Carefully</h2><p>Graph view is exciting, but it is most useful when you ask specific questions.</p></div>
+          <div class="grid three">
+            <div class="card"><h3>Before an exam</h3><p>Filter by course tag and look for isolated topics. Orphan notes often mean you memorized details without connecting them.</p></div>
+            <div class="card"><h3>When stuck</h3><p>Open local graph from the note you do not understand. Look one or two levels out for missing prerequisites.</p></div>
+            <div class="card"><h3>For essays</h3><p>Start from a thesis note, then follow backlinks to evidence, examples, and counterarguments.</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="container footer-inner"><span>Next: bring useful information into your vault.</span><a href="acquire.html">Capture information</a></div></footer>
+    <script src="js/main.js"></script>
+  </body>
+</html>
