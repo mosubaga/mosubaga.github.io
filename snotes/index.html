@@ -7,13 +7,9 @@
 </head>
 <body>
 
-<div class="hero-image">
-  <div class="hero-text">
-    <h1 style="font-size:70px">Introduction to scripting</h1>
-  </div>
-</div>
-
 <main>
+<h1>Gentle Intro to Scripting</h1>
+<div id="sketch-container" style="border-radius:12px;overflow:hidden;margin:0.5rem 0 1.5rem;box-shadow:0 4px 20px rgba(184,220,212,0.35);"></div>
 <div class="container">
     Are you looking to automate everyday tasks, manage your servers more efficiently, 
     or customize your workflow? Whether you're a beginner eager to write your first script, 
@@ -55,5 +51,75 @@
 </div>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+<script>
+new p5(function(p) {
+  var KEYWORDS = [
+    'def greet():', 'print("hello")', 'for i in range(n):', 'while True:',
+    'import os', 'return result', 'if err != nil {', 'class Script:',
+    '#!/bin/bash', 'echo "$USER"', 'chmod +x script.sh', 'export PATH',
+    'my $x = 42;', 'sub handler {', 'use strict;', 'push @array, $val;',
+    "awk '{print $1}'", 'sed -i "s/a/b/"', 'grep -rn "pattern"',
+    'func main() {', 'fmt.Println()', 'go run main.go', 'defer wg.Done()',
+    'julia> using Pkg', 'SELECT * FROM t', 'WHERE id = ?', 'JOIN ON id',
+    'git commit -m', 'docker run -it', 'curl -s url | jq',
+    'async def fetch():', 'await response.json()', 'lambda x: x + 1',
+    '| xargs', '&&', '||', '=>', '->'
+  ];
+
+  var drops = [];
+  var W, H;
+
+  p.setup = function() {
+    var el = document.getElementById('sketch-container');
+    W = el.offsetWidth;
+    H = 260;
+    p.createCanvas(W, H);
+    p.textFont('monospace');
+    p.textAlign(p.LEFT, p.TOP);
+    for (var i = 0; i < 32; i++) { spawnDrop(true); }
+  };
+
+  function spawnDrop(initial) {
+    drops.push({
+      x:     p.random(20, W - 130),
+      y:     initial ? p.random(-H, H) : p.random(-80, -10),
+      speed: p.random(0.5, 2.0),
+      word:  p.random(KEYWORDS),
+      size:  p.floor(p.random(10, 14)),
+      tier:  p.floor(p.random(3))
+    });
+  }
+
+  p.draw = function() {
+    // Dark terminal bg with fade trail
+    p.fill(10, 28, 24, 25);
+    p.noStroke();
+    p.rect(0, 0, W, H);
+
+    for (var i = drops.length - 1; i >= 0; i--) {
+      var d = drops[i];
+      if      (d.tier === 2) { p.fill(232, 244, 241, 210); }  // mint-frost near-white
+      else if (d.tier === 1) { p.fill(184, 220, 212, 185); }  // mint-base
+      else                   { p.fill(122, 181, 168, 145); }  // text-mint-light
+
+      p.textSize(d.size);
+      p.text(d.word, d.x, d.y);
+      d.y += d.speed;
+
+      if (d.y > H + 20) {
+        drops.splice(i, 1);
+        spawnDrop(false);
+      }
+    }
+  };
+
+  p.windowResized = function() {
+    var el = document.getElementById('sketch-container');
+    W = el.offsetWidth;
+    p.resizeCanvas(W, H);
+  };
+}, 'sketch-container');
+</script>
 </body>
 </html>
