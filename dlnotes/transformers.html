@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transformer Networks — Deep Learning Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Transformer neural networks explained: self-attention, multi-head attention, positional encoding, and working implementations in TensorFlow and PyTorch.">
+  <meta property="og:title" content="Transformer Networks">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <ul>
+      <li><a href="index.html">Deep Learning Overview</a></li>
+      <li><a href="timeseries.html">Time Series Forecasting</a></li>
+      <li><a href="nlp.html">Natural Language Processing</a></li>
+      <li><a href="dljs.html">Deep Learning in JS</a></li>
+      <li><a href="mljs.html">ml5.js in the Browser</a></li>
+      <li><a href="tensorflow.html">TensorFlow</a></li>
+      <li><a href="pytorch.html">PyTorch</a></li>
+      <li><a href="transformers.html" class="active">Transformers</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <header class="page-header">
+    <h1>Transformer Networks</h1>
+    <p class="lead">
+      Introduced in the 2017 paper <em>"Attention Is All You Need"</em>, the Transformer architecture
+      replaced recurrent models with a pure attention mechanism, enabling parallelised training and
+      capturing long-range dependencies that RNNs struggle with. It now underpins virtually every
+      state-of-the-art model in NLP and beyond.
+    </p>
+  </header>
+
+  <main>
+
+    <!-- 1. Why Transformers -->
+    <section class="page-section">
+      <h2>1. Why Transformers?</h2>
+      <p>
+        Before Transformers, sequence models (RNNs, LSTMs) processed tokens one at a time.
+        This made training slow and made it hard to relate tokens that are far apart in a sequence.
+        Transformers solve both problems by processing all tokens simultaneously through attention.
+      </p>
+      <div class="article-grid" style="margin-top: var(--space-5);">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">RNNs &amp; LSTMs</h3>
+            <p class="card-subtitle">Before Transformers</p>
+          </div>
+          <ul>
+            <li>Process tokens sequentially — slow to train</li>
+            <li>Hidden state is a bottleneck for long sequences</li>
+            <li>Gradient vanishing limits long-range memory</li>
+            <li>Hard to parallelise across GPUs/TPUs</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Transformers</h3>
+            <p class="card-subtitle">Attention-based</p>
+          </div>
+          <ul>
+            <li>Process all tokens in parallel — fast training</li>
+            <li>Attention directly connects any two positions</li>
+            <li>Scale efficiently to billions of parameters</li>
+            <li>Generalisable to vision, audio, and multimodal tasks</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Key Concepts -->
+    <section class="page-section">
+      <h2>2. Key Concepts</h2>
+      <div class="article-grid">
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Self-Attention</h3>
+          </div>
+          <p>Each token attends to every other token in the sequence to compute a context-aware representation.
+          Given queries <strong>Q</strong>, keys <strong>K</strong>, and values <strong>V</strong>:</p>
+          <pre style="margin-top: var(--space-3); font-size: var(--text-sm);"><code>Attention(Q, K, V) = softmax(QKᵀ / √dₖ) · V</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Multi-Head Attention</h3>
+          </div>
+          <p>Runs <em>h</em> attention heads in parallel, each learning different relationships
+          (syntax, coreference, proximity). Their outputs are concatenated and projected.</p>
+          <ul class="mt-4">
+            <li>Each head sees a different linear projection of Q, K, V</li>
+            <li>Captures diverse patterns simultaneously</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Positional Encoding</h3>
+          </div>
+          <p>Since attention has no built-in notion of order, positional information is injected
+          by adding sinusoidal (or learned) encodings to the token embeddings before the first layer.</p>
+          <ul class="mt-4">
+            <li>Sinusoidal: fixed, generalises to longer sequences</li>
+            <li>Learned: trained as embedding parameters</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Feed-Forward Sub-layer</h3>
+          </div>
+          <p>After each attention sub-layer, a two-layer fully connected network is applied
+          to each position independently, expanding and compressing the representation.</p>
+          <pre style="margin-top: var(--space-3); font-size: var(--text-sm);"><code>FFN(x) = ReLU(xW₁ + b₁)W₂ + b₂</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Residual Connections &amp; Layer Norm</h3>
+          </div>
+          <p>Each sub-layer (attention and FFN) wraps its output in a residual connection followed
+          by layer normalisation, which stabilises training and enables very deep stacks.</p>
+          <pre style="margin-top: var(--space-3); font-size: var(--text-sm);"><code>output = LayerNorm(x + SubLayer(x))</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Encoder &amp; Decoder</h3>
+          </div>
+          <p>The original Transformer has two stacks. Encoder-only models (BERT) are good for understanding;
+          decoder-only models (GPT) for generation; encoder-decoder (T5, Whisper) for translation and summarisation.</p>
+          <ul class="mt-4">
+            <li><strong>Encoder:</strong> bidirectional self-attention</li>
+            <li><strong>Decoder:</strong> masked (causal) self-attention + cross-attention</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. Architecture Overview -->
+    <section class="page-section">
+      <h2>3. Architecture Overview</h2>
+      <p>One Transformer encoder layer stacks these components in order:</p>
+      <div class="card mt-4" style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr><th>Step</th><th>Component</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Token Embedding + Positional Encoding</td><td>Convert token IDs to dense vectors with position information</td></tr>
+            <tr><td>2</td><td>Multi-Head Self-Attention</td><td>Let every token attend to every other token</td></tr>
+            <tr><td>3</td><td>Add &amp; Norm (residual)</td><td>Stabilise gradients and preserve input signal</td></tr>
+            <tr><td>4</td><td>Position-wise Feed-Forward Network</td><td>Transform each position independently</td></tr>
+            <tr><td>5</td><td>Add &amp; Norm (residual)</td><td>Stabilise gradients</td></tr>
+            <tr><td>6</td><td>Repeat N times</td><td>Stack N encoder layers for richer representations</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. TensorFlow Example -->
+    <section class="page-section">
+      <h2>4. TensorFlow (Keras) Example</h2>
+      <p>A Transformer encoder for text classification built from scratch with custom Keras layers.</p>
+
+      <h3 style="margin-top: var(--space-5);">Multi-Head Self-Attention Layer</h3>
+      <pre><code>import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+class MultiHeadSelfAttention(layers.Layer):
+    def __init__(self, embed_dim, num_heads):
+        super().__init__()
+        assert embed_dim % num_heads == 0
+        self.num_heads = num_heads
+        self.depth = embed_dim // num_heads
+        self.embed_dim = embed_dim
+        self.wq = layers.Dense(embed_dim)
+        self.wk = layers.Dense(embed_dim)
+        self.wv = layers.Dense(embed_dim)
+        self.out = layers.Dense(embed_dim)
+
+    def split_heads(self, x, batch_size):
+        x = tf.reshape(x, (batch_size, -1, self.num_heads, self.depth))
+        return tf.transpose(x, perm=[0, 2, 1, 3])
+
+    def call(self, x):
+        batch_size = tf.shape(x)[0]
+        q = self.split_heads(self.wq(x), batch_size)
+        k = self.split_heads(self.wk(x), batch_size)
+        v = self.split_heads(self.wv(x), batch_size)
+
+        # Scaled dot-product attention
+        scores = tf.matmul(q, k, transpose_b=True) / tf.math.sqrt(
+            tf.cast(self.depth, tf.float32)
+        )
+        weights = tf.nn.softmax(scores, axis=-1)
+        context = tf.matmul(weights, v)
+
+        context = tf.transpose(context, perm=[0, 2, 1, 3])
+        context = tf.reshape(context, (batch_size, -1, self.embed_dim))
+        return self.out(context)
+</code></pre>
+
+      <h3 style="margin-top: var(--space-6);">Transformer Encoder Block</h3>
+      <pre><code>class TransformerBlock(layers.Layer):
+    def __init__(self, embed_dim, num_heads, ff_dim, dropout=0.1):
+        super().__init__()
+        self.attention = MultiHeadSelfAttention(embed_dim, num_heads)
+        self.ffn = keras.Sequential([
+            layers.Dense(ff_dim, activation='relu'),
+            layers.Dense(embed_dim),
+        ])
+        self.norm1 = layers.LayerNormalization(epsilon=1e-6)
+        self.norm2 = layers.LayerNormalization(epsilon=1e-6)
+        self.drop1 = layers.Dropout(dropout)
+        self.drop2 = layers.Dropout(dropout)
+
+    def call(self, x, training=False):
+        attn = self.drop1(self.attention(x), training=training)
+        x = self.norm1(x + attn)                  # residual + norm
+        ffn = self.drop2(self.ffn(x), training=training)
+        return self.norm2(x + ffn)                 # residual + norm
+</code></pre>
+
+      <h3 style="margin-top: var(--space-6);">Token + Positional Embedding</h3>
+      <pre><code>class TokenAndPositionEmbedding(layers.Layer):
+    def __init__(self, maxlen, vocab_size, embed_dim):
+        super().__init__()
+        self.token_emb = layers.Embedding(vocab_size, embed_dim)
+        self.pos_emb   = layers.Embedding(maxlen,      embed_dim)
+
+    def call(self, x):
+        positions = tf.range(tf.shape(x)[-1])
+        return self.token_emb(x) + self.pos_emb(positions)
+</code></pre>
+
+      <h3 style="margin-top: var(--space-6);">Full Classification Model</h3>
+      <pre><code># Hyperparameters
+VOCAB_SIZE = 20000
+MAXLEN     = 200
+EMBED_DIM  = 64
+NUM_HEADS  = 4
+FF_DIM     = 128
+NUM_CLASSES = 2
+
+inputs = layers.Input(shape=(MAXLEN,))
+x = TokenAndPositionEmbedding(MAXLEN, VOCAB_SIZE, EMBED_DIM)(inputs)
+x = TransformerBlock(EMBED_DIM, NUM_HEADS, FF_DIM)(x)
+x = layers.GlobalAveragePooling1D()(x)
+x = layers.Dropout(0.1)(x)
+x = layers.Dense(32, activation='relu')(x)
+x = layers.Dropout(0.1)(x)
+outputs = layers.Dense(NUM_CLASSES, activation='softmax')(x)
+
+model = keras.Model(inputs=inputs, outputs=outputs)
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+model.summary()
+
+# model.fit(x_train, y_train, batch_size=32, epochs=10, validation_split=0.2)
+</code></pre>
+    </section>
+
+    <!-- 5. PyTorch Example -->
+    <section class="page-section">
+      <h2>5. PyTorch Example</h2>
+      <p>A Transformer encoder classifier using PyTorch's built-in <code>nn.TransformerEncoderLayer</code>
+      with sinusoidal positional encoding.</p>
+
+      <h3 style="margin-top: var(--space-5);">Sinusoidal Positional Encoding</h3>
+      <pre><code>import torch
+import torch.nn as nn
+import math
+
+class PositionalEncoding(nn.Module):
+    def __init__(self, d_model, max_len=5000, dropout=0.1):
+        super().__init__()
+        self.dropout = nn.Dropout(p=dropout)
+
+        pe = torch.zeros(max_len, d_model)
+        position  = torch.arange(0, max_len).unsqueeze(1).float()
+        div_term  = torch.exp(
+            torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
+        )
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        self.register_buffer('pe', pe.unsqueeze(0))  # (1, max_len, d_model)
+
+    def forward(self, x):
+        # x: (batch, seq_len, d_model)
+        x = x + self.pe[:, :x.size(1)]
+        return self.dropout(x)
+</code></pre>
+
+      <h3 style="margin-top: var(--space-6);">Transformer Classifier Module</h3>
+      <pre><code>class TransformerClassifier(nn.Module):
+    def __init__(self, vocab_size, d_model, nhead, num_layers,
+                 dim_ff, num_classes, max_len=512, dropout=0.1):
+        super().__init__()
+        self.embedding    = nn.Embedding(vocab_size, d_model, padding_idx=0)
+        self.pos_encoding = PositionalEncoding(d_model, max_len, dropout)
+
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=d_model, nhead=nhead,
+            dim_feedforward=dim_ff, dropout=dropout,
+            batch_first=True, norm_first=True   # Pre-LN for stable training
+        )
+        self.encoder = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
+
+        self.classifier = nn.Sequential(
+            nn.Linear(d_model, d_model // 2),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(d_model // 2, num_classes),
+        )
+        self.d_model = d_model
+        self._init_weights()
+
+    def _init_weights(self):
+        for p in self.parameters():
+            if p.dim() > 1:
+                nn.init.xavier_uniform_(p)
+
+    def forward(self, x, padding_mask=None):
+        # Scale embeddings (standard Transformer practice)
+        x = self.embedding(x) * math.sqrt(self.d_model)
+        x = self.pos_encoding(x)
+        x = self.encoder(x, src_key_padding_mask=padding_mask)
+        x = x.mean(dim=1)          # global average pooling over sequence
+        return self.classifier(x)
+</code></pre>
+
+      <h3 style="margin-top: var(--space-6);">Training Setup &amp; Forward Pass</h3>
+      <pre><code># Model hyperparameters
+VOCAB_SIZE  = 20000
+D_MODEL     = 128
+NHEAD       = 4
+NUM_LAYERS  = 2
+DIM_FF      = 256
+NUM_CLASSES = 2
+MAX_LEN     = 200
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model  = TransformerClassifier(
+    VOCAB_SIZE, D_MODEL, NHEAD, NUM_LAYERS, DIM_FF, NUM_CLASSES, MAX_LEN
+).to(device)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(
+    model.parameters(), lr=1e-4, betas=(0.9, 0.98), eps=1e-9
+)
+
+# Example forward pass
+batch_size, seq_len = 8, 50
+tokens = torch.randint(1, VOCAB_SIZE, (batch_size, seq_len)).to(device)
+logits = model(tokens)
+print(f"Output shape: {logits.shape}")  # (8, 2)
+
+# Training step
+def train_step(tokens, labels):
+    model.train()
+    optimizer.zero_grad()
+    logits = model(tokens)
+    loss = criterion(logits, labels)
+    loss.backward()
+    # Gradient clipping is standard practice for Transformers
+    nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+    optimizer.step()
+    return loss.item()
+</code></pre>
+    </section>
+
+    <!-- 6. Pre-trained Models -->
+    <section class="page-section">
+      <h2>6. Notable Pre-trained Transformer Models</h2>
+      <p>In practice, training a Transformer from scratch requires large datasets and significant compute.
+      Pre-trained models are almost always fine-tuned instead.</p>
+      <div class="card mt-4" style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr><th>Model</th><th>Type</th><th>Best For</th><th>Source</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>BERT</td><td>Encoder-only</td><td>Classification, NER, question answering</td><td>Google</td></tr>
+            <tr><td>GPT-4</td><td>Decoder-only</td><td>Text generation, chat, reasoning</td><td>OpenAI</td></tr>
+            <tr><td>T5</td><td>Encoder-Decoder</td><td>Translation, summarisation, generation</td><td>Google</td></tr>
+            <tr><td>RoBERTa</td><td>Encoder-only</td><td>Classification, improved BERT training</td><td>Meta AI</td></tr>
+            <tr><td>ViT</td><td>Encoder-only</td><td>Image classification (vision Transformer)</td><td>Google</td></tr>
+            <tr><td>Whisper</td><td>Encoder-Decoder</td><td>Speech recognition &amp; translation</td><td>OpenAI</td></tr>
+            <tr><td>CLIP</td><td>Dual Encoder</td><td>Image–text matching, zero-shot vision</td><td>OpenAI</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. Further Reading -->
+    <section class="page-section">
+      <h2>7. Further Reading</h2>
+      <ul>
+        <li><a href="https://arxiv.org/abs/1706.03762" target="_blank">Vaswani et al. (2017) — "Attention Is All You Need" (original paper)</a></li>
+        <li><a href="https://www.tensorflow.org/text/tutorials/transformer" target="_blank">TensorFlow Transformer Tutorial</a></li>
+        <li><a href="https://pytorch.org/tutorials/beginner/transformer_tutorial.html" target="_blank">PyTorch Transformer Tutorial</a></li>
+        <li><a href="https://huggingface.co/docs/transformers/index" target="_blank">Hugging Face Transformers Library</a></li>
+        <li><a href="https://jalammar.github.io/illustrated-transformer/" target="_blank">The Illustrated Transformer (Jay Alammar)</a></li>
+      </ul>
+    </section>
+
+    <section class="page-section">
+      <div class="alert alert-mint">
+        <b>Tip:</b> For most real-world NLP tasks, fine-tuning a pre-trained model from
+        <a href="https://huggingface.co/models" target="_blank">Hugging Face Hub</a> will outperform training
+        a Transformer from scratch. Use the custom implementations above to learn the mechanics, then leverage
+        <code>transformers</code> and <code>datasets</code> libraries for production work.
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
+  </footer>
+</div>
+
+<script>hljs.highlightAll();</script>
+<script src="js/copy.js"></script>
+</body>
+</html>

@@ -2,68 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PyTorch for Neural Networks</title>
+  <title>PyTorch for Neural Networks — Deep Learning Notes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
   <meta name="description" content="PyTorch essentials for neural networks, covering tensors, autograd, nn.Module, training loops, optimization, and deployment workflows.">
+  <meta property="og:title" content="PyTorch for Neural Networks">
+  <meta property="og:type" content="website">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 </head>
 <body>
-<nav>
-  <ul>
-    <li><a href="index.html">Deep Learning Overview</a></li>
-    <li><a href="timeseries.html">Time Series Forecasting</a></li>
-    <li><a href="nlp.html">Natural Language Processing</a></li>
-    <li><a href="dljs.html">Deep Learning in JS</a></li>
-    <li><a href="mljs.html">ml5.js in the Browser</a></li>
-    <li><a href="tensorflow.html">TensorFlow</a></li>
-    <li><a href="pytorch.html" class="active">PyTorch</a></li>
-  </ul>
+
+<nav class="site-nav">
+  <div class="container">
+    <ul>
+      <li><a href="index.html">Deep Learning Overview</a></li>
+      <li><a href="timeseries.html">Time Series Forecasting</a></li>
+      <li><a href="nlp.html">Natural Language Processing</a></li>
+      <li><a href="dljs.html">Deep Learning in JS</a></li>
+      <li><a href="mljs.html">ml5.js in the Browser</a></li>
+      <li><a href="tensorflow.html">TensorFlow</a></li>
+      <li><a href="pytorch.html" class="active">PyTorch</a></li>
+      <li><a href="transformers.html">Transformers</a></li>
+    </ul>
+  </div>
 </nav>
-<div class="main-content">
-  <header>
+
+<div class="container">
+  <header class="page-header">
     <h1>PyTorch for Neural Networks</h1>
-    <p>PyTorch is an open-source machine learning framework from Meta AI with dynamic computation graphs, a Pythonic API, and strong GPU acceleration, making it popular for research and production alike.</p>
+    <p class="lead">PyTorch is an open-source machine learning framework from Meta AI with dynamic computation graphs, a Pythonic API, and strong GPU acceleration, making it popular for research and production alike.</p>
   </header>
 
   <main>
-    <section>
-      <article>
-        <h2>1. What Is PyTorch?</h2>
-        <p>PyTorch provides a flexible and intuitive platform for building and training deep learning models with define-by-run execution.</p>
-        <h3>Key Features</h3>
-        <ul>
-          <li><b>Dynamic Computation Graphs:</b> Define-by-run for flexible model architectures.</li>
-          <li><b>Pythonic API:</b> Natural Python code with minimal abstraction.</li>
-          <li><b>Eager Execution:</b> Operations run immediately for easier debugging.</li>
-          <li><b>Strong GPU Acceleration:</b> First-class CUDA support.</li>
-          <li><b>Research-Friendly:</b> Popular in academia and rapid experimentation.</li>
-          <li><b>TorchScript:</b> Compile models for production deployment.</li>
-        </ul>
-      </article>
+
+    <section class="page-section">
+      <h2>1. What Is PyTorch?</h2>
+      <p>PyTorch provides a flexible and intuitive platform for building and training deep learning models with define-by-run execution.</p>
+      <h3 style="margin-top: var(--space-5);">Key Features</h3>
+      <ul>
+        <li><b>Dynamic Computation Graphs:</b> Define-by-run for flexible model architectures.</li>
+        <li><b>Pythonic API:</b> Natural Python code with minimal abstraction.</li>
+        <li><b>Eager Execution:</b> Operations run immediately for easier debugging.</li>
+        <li><b>Strong GPU Acceleration:</b> First-class CUDA support.</li>
+        <li><b>Research-Friendly:</b> Popular in academia and rapid experimentation.</li>
+        <li><b>TorchScript:</b> Compile models for production deployment.</li>
+      </ul>
     </section>
 
-    <section>
-      <article>
-        <h2>2. How PyTorch Is Used</h2>
-        <ul>
-          <li>Computer vision: detection, segmentation, style transfer</li>
-          <li>Natural language processing: transformers and translation</li>
-          <li>Reinforcement learning: policy networks and actor-critic methods</li>
-          <li>Generative models: GANs, VAEs, diffusion models</li>
-          <li>Research prototyping and rapid iteration</li>
-          <li>Production deployment with TorchServe and TorchScript</li>
-        </ul>
-      </article>
+    <section class="page-section">
+      <h2>2. How PyTorch Is Used</h2>
+      <ul>
+        <li>Computer vision: detection, segmentation, style transfer</li>
+        <li>Natural language processing: transformers and translation</li>
+        <li>Reinforcement learning: policy networks and actor-critic methods</li>
+        <li>Generative models: GANs, VAEs, diffusion models</li>
+        <li>Research prototyping and rapid iteration</li>
+        <li>Production deployment with TorchServe and TorchScript</li>
+      </ul>
     </section>
 
-    <section>
-      <article>
-        <h2>3. Main Components for Neural Networks</h2>
-        <h3>3.1 Tensors</h3>
-        <p>Tensors are the core data structure, similar to NumPy arrays but with GPU support and automatic differentiation.</p>
-        <div class="code-example"><pre><code>import torch
+    <section class="page-section">
+      <h2>3. Main Components for Neural Networks</h2>
+      <h3>3.1 Tensors</h3>
+      <p>Tensors are the core data structure, similar to NumPy arrays but with GPU support and automatic differentiation.</p>
+      <pre><code>import torch
 import numpy as np
 
 # Creating tensors
@@ -87,10 +90,9 @@ if torch.cuda.is_available():
   device = torch.device('cuda')
   tensor_gpu = vector.to(device)
   print(f"Tensor on GPU: {tensor_gpu.device}")
-</code></pre></div>
-
-        <h3>3.2 Autograd (Automatic Differentiation)</h3>
-        <div class="code-example"><pre><code># Enable gradient tracking
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">3.2 Autograd (Automatic Differentiation)</h3>
+      <pre><code># Enable gradient tracking
 x = torch.tensor(2.0, requires_grad=True)
 y = torch.tensor(3.0, requires_grad=True)
 
@@ -101,11 +103,10 @@ z = x ** 2 + y ** 3
 z.backward()
 print(f"dz/dx: {x.grad}")  # 2*x = 4.0
 print(f"dz/dy: {y.grad}")  # 3*y^2 = 27.0
-</code></pre></div>
-
-        <h3>3.3 nn.Module</h3>
-        <p><code>nn.Module</code> is the base class for neural network modules.</p>
-        <div class="code-example"><pre><code>import torch.nn as nn
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">3.3 nn.Module</h3>
+      <p><code>nn.Module</code> is the base class for neural network modules.</p>
+      <pre><code>import torch.nn as nn
 
 class SimpleNet(nn.Module):
   def __init__(self):
@@ -122,16 +123,14 @@ class SimpleNet(nn.Module):
 
 model = SimpleNet()
 print(model)
-</code></pre></div>
-      </article>
+</code></pre>
     </section>
 
-    <section>
-      <article>
-        <h2>4. Essential Methods for Building Neural Networks</h2>
-        <h3>Sequential Container</h3>
-        <p>Use <code>nn.Sequential</code> to define a simple chain of layers.</p>
-        <div class="code-example"><pre><code>import torch.nn as nn
+    <section class="page-section">
+      <h2>4. Essential Methods for Building Neural Networks</h2>
+      <h3>Sequential Container</h3>
+      <p>Use <code>nn.Sequential</code> to define a simple chain of layers.</p>
+      <pre><code>import torch.nn as nn
 
 # Using Sequential
 model = nn.Sequential(
@@ -154,10 +153,9 @@ model = nn.Sequential(
     ('fc2', nn.Linear(128, 10))
   ])
 )
-</code></pre></div>
-
-        <h3>Custom nn.Module (Recommended)</h3>
-        <div class="code-example"><pre><code>class CustomNet(nn.Module):
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">Custom nn.Module (Recommended)</h3>
+      <pre><code>class CustomNet(nn.Module):
   def __init__(self, input_size, hidden_size, num_classes):
     super(CustomNet, self).__init__()
     self.fc1 = nn.Linear(input_size, hidden_size)
@@ -175,24 +173,21 @@ model = nn.Sequential(
     return x
 
 model = CustomNet(input_size=784, hidden_size=128, num_classes=10)
-</code></pre></div>
-      </article>
+</code></pre>
     </section>
 
-    <section>
-      <article>
-        <h2>5. Common Layer Types</h2>
-        <h3>Linear Layers (Fully Connected)</h3>
-        <div class="code-example"><pre><code># Linear layer: y = xW^T + b
+    <section class="page-section">
+      <h2>5. Common Layer Types</h2>
+      <h3>Linear Layers (Fully Connected)</h3>
+      <pre><code># Linear layer: y = xW^T + b
 layer = nn.Linear(
   in_features=128,
   out_features=64,
   bias=True
 )
-</code></pre></div>
-
-        <h3>Convolutional Layers (for Image Data)</h3>
-        <div class="code-example"><pre><code>class ConvNet(nn.Module):
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">Convolutional Layers (for Image Data)</h3>
+      <pre><code>class ConvNet(nn.Module):
   def __init__(self):
     super(ConvNet, self).__init__()
     self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
@@ -208,10 +203,9 @@ layer = nn.Linear(
     x = torch.relu(self.fc1(x))
     x = self.fc2(x)
     return x
-</code></pre></div>
-
-        <h3>Recurrent Layers (for Sequential Data)</h3>
-        <div class="code-example"><pre><code>class RNNNet(nn.Module):
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">Recurrent Layers (for Sequential Data)</h3>
+      <pre><code>class RNNNet(nn.Module):
   def __init__(self, input_size, hidden_size, num_layers, num_classes):
     super(RNNNet, self).__init__()
     self.lstm = nn.LSTM(
@@ -239,15 +233,13 @@ class GRUNet(nn.Module):
     out, hn = self.gru(x)
     out = self.fc(out[:, -1, :])
     return out
-</code></pre></div>
-      </article>
+</code></pre>
     </section>
 
-    <section>
-      <article>
-        <h2>6. Complete Neural Network Example</h2>
-        <p>End-to-end training workflow using MNIST.</p>
-        <div class="code-example"><pre><code>import torch
+    <section class="page-section">
+      <h2>6. Complete Neural Network Example</h2>
+      <p>End-to-end training workflow using MNIST.</p>
+      <pre><code>import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -381,136 +373,165 @@ loaded_model = NeuralNet().to(device)
 loaded_model.load_state_dict(torch.load('mnist_model.pth'))
 loaded_model.eval()
 print("Model loaded successfully")
-</code></pre></div>
-      </article>
+</code></pre>
     </section>
 
-    <section>
-      <article>
-        <h2>7. Key Methods Reference</h2>
-        <h3>Model Definition</h3>
-        <table>
-          <thead>
-            <tr><th>Method/Class</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>nn.Module</td><td>Base class for neural network modules.</td></tr>
-            <tr><td>nn.Sequential()</td><td>Container for sequential layer stack.</td></tr>
-            <tr><td>super().__init__()</td><td>Initialize parent class in custom modules.</td></tr>
-            <tr><td>forward()</td><td>Define the forward pass computation.</td></tr>
-          </tbody>
-        </table>
+    <section class="page-section">
+      <h2>7. Key Methods Reference</h2>
 
-        <h3>Common Layers</h3>
-        <table>
-          <thead>
-            <tr><th>Layer</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>nn.Linear(in, out)</td><td>Fully connected layer.</td></tr>
-            <tr><td>nn.Conv2d(in, out, kernel)</td><td>2D convolutional layer.</td></tr>
-            <tr><td>nn.LSTM(in, hidden)</td><td>LSTM recurrent layer.</td></tr>
-            <tr><td>nn.GRU(in, hidden)</td><td>GRU recurrent layer.</td></tr>
-            <tr><td>nn.BatchNorm1d(features)</td><td>Batch normalization for 1D data.</td></tr>
-            <tr><td>nn.Dropout(p)</td><td>Dropout regularization.</td></tr>
-            <tr><td>nn.MaxPool2d(kernel)</td><td>Max pooling layer.</td></tr>
-          </tbody>
-        </table>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Model Definition</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Method/Class</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>nn.Module</code></td><td>Base class for neural network modules.</td></tr>
+              <tr><td><code>nn.Sequential()</code></td><td>Container for sequential layer stack.</td></tr>
+              <tr><td><code>super().__init__()</code></td><td>Initialize parent class in custom modules.</td></tr>
+              <tr><td><code>forward()</code></td><td>Define the forward pass computation.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <h3>Activation Functions</h3>
-        <table>
-          <thead>
-            <tr><th>Activation</th><th>Usage</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>nn.ReLU()</td><td>Rectified Linear Unit.</td></tr>
-            <tr><td>nn.LeakyReLU()</td><td>Leaky ReLU.</td></tr>
-            <tr><td>nn.Sigmoid()</td><td>Sigmoid activation.</td></tr>
-            <tr><td>nn.Tanh()</td><td>Hyperbolic tangent.</td></tr>
-            <tr><td>nn.Softmax(dim)</td><td>Softmax for multi-class.</td></tr>
-            <tr><td>torch.relu(x)</td><td>Functional ReLU.</td></tr>
-          </tbody>
-        </table>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Common Layers</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Layer</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>nn.Linear(in, out)</code></td><td>Fully connected layer.</td></tr>
+              <tr><td><code>nn.Conv2d(in, out, kernel)</code></td><td>2D convolutional layer.</td></tr>
+              <tr><td><code>nn.LSTM(in, hidden)</code></td><td>LSTM recurrent layer.</td></tr>
+              <tr><td><code>nn.GRU(in, hidden)</code></td><td>GRU recurrent layer.</td></tr>
+              <tr><td><code>nn.BatchNorm1d(features)</code></td><td>Batch normalization for 1D data.</td></tr>
+              <tr><td><code>nn.Dropout(p)</code></td><td>Dropout regularization.</td></tr>
+              <tr><td><code>nn.MaxPool2d(kernel)</code></td><td>Max pooling layer.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <h3>Loss Functions</h3>
-        <table>
-          <thead>
-            <tr><th>Loss Function</th><th>Use Case</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>nn.CrossEntropyLoss()</td><td>Multi-class classification.</td></tr>
-            <tr><td>nn.BCELoss()</td><td>Binary classification.</td></tr>
-            <tr><td>nn.BCEWithLogitsLoss()</td><td>Binary classification with logits.</td></tr>
-            <tr><td>nn.MSELoss()</td><td>Mean squared error (regression).</td></tr>
-            <tr><td>nn.L1Loss()</td><td>Mean absolute error (regression).</td></tr>
-            <tr><td>nn.NLLLoss()</td><td>Negative log likelihood.</td></tr>
-          </tbody>
-        </table>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Activation Functions</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Activation</th><th>Usage</th></tr></thead>
+            <tbody>
+              <tr><td><code>nn.ReLU()</code></td><td>Rectified Linear Unit.</td></tr>
+              <tr><td><code>nn.LeakyReLU()</code></td><td>Leaky ReLU.</td></tr>
+              <tr><td><code>nn.Sigmoid()</code></td><td>Sigmoid activation.</td></tr>
+              <tr><td><code>nn.Tanh()</code></td><td>Hyperbolic tangent.</td></tr>
+              <tr><td><code>nn.Softmax(dim)</code></td><td>Softmax for multi-class.</td></tr>
+              <tr><td><code>torch.relu(x)</code></td><td>Functional ReLU.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <h3>Optimizers</h3>
-        <table>
-          <thead>
-            <tr><th>Optimizer</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>optim.Adam(params, lr)</td><td>Adaptive Moment Estimation.</td></tr>
-            <tr><td>optim.SGD(params, lr)</td><td>Stochastic Gradient Descent.</td></tr>
-            <tr><td>optim.AdamW(params, lr)</td><td>Adam with weight decay.</td></tr>
-            <tr><td>optim.RMSprop(params, lr)</td><td>Root Mean Square Propagation.</td></tr>
-            <tr><td>optim.Adagrad(params, lr)</td><td>Adaptive Gradient Algorithm.</td></tr>
-          </tbody>
-        </table>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Loss Functions</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Loss Function</th><th>Use Case</th></tr></thead>
+            <tbody>
+              <tr><td><code>nn.CrossEntropyLoss()</code></td><td>Multi-class classification.</td></tr>
+              <tr><td><code>nn.BCELoss()</code></td><td>Binary classification.</td></tr>
+              <tr><td><code>nn.BCEWithLogitsLoss()</code></td><td>Binary classification with logits.</td></tr>
+              <tr><td><code>nn.MSELoss()</code></td><td>Mean squared error (regression).</td></tr>
+              <tr><td><code>nn.L1Loss()</code></td><td>Mean absolute error (regression).</td></tr>
+              <tr><td><code>nn.NLLLoss()</code></td><td>Negative log likelihood.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <h3>Training Operations</h3>
-        <table>
-          <thead>
-            <tr><th>Method</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>optimizer.zero_grad()</td><td>Clear gradients from previous step.</td></tr>
-            <tr><td>loss.backward()</td><td>Compute gradients via backpropagation.</td></tr>
-            <tr><td>optimizer.step()</td><td>Update model parameters.</td></tr>
-            <tr><td>model.train()</td><td>Set model to training mode.</td></tr>
-            <tr><td>model.eval()</td><td>Set model to evaluation mode.</td></tr>
-            <tr><td>torch.no_grad()</td><td>Disable gradient computation.</td></tr>
-          </tbody>
-        </table>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Optimizers</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Optimizer</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>optim.Adam(params, lr)</code></td><td>Adaptive Moment Estimation.</td></tr>
+              <tr><td><code>optim.SGD(params, lr)</code></td><td>Stochastic Gradient Descent.</td></tr>
+              <tr><td><code>optim.AdamW(params, lr)</code></td><td>Adam with weight decay.</td></tr>
+              <tr><td><code>optim.RMSprop(params, lr)</code></td><td>Root Mean Square Propagation.</td></tr>
+              <tr><td><code>optim.Adagrad(params, lr)</code></td><td>Adaptive Gradient Algorithm.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <h3>Model Persistence</h3>
-        <table>
-          <thead>
-            <tr><th>Method</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>torch.save(model.state_dict(), path)</td><td>Save model parameters.</td></tr>
-            <tr><td>model.load_state_dict(torch.load(path))</td><td>Load model parameters.</td></tr>
-            <tr><td>torch.save(model, path)</td><td>Save entire model.</td></tr>
-            <tr><td>torch.load(path)</td><td>Load entire model.</td></tr>
-          </tbody>
-        </table>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Training Operations</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>optimizer.zero_grad()</code></td><td>Clear gradients from previous step.</td></tr>
+              <tr><td><code>loss.backward()</code></td><td>Compute gradients via backpropagation.</td></tr>
+              <tr><td><code>optimizer.step()</code></td><td>Update model parameters.</td></tr>
+              <tr><td><code>model.train()</code></td><td>Set model to training mode.</td></tr>
+              <tr><td><code>model.eval()</code></td><td>Set model to evaluation mode.</td></tr>
+              <tr><td><code>torch.no_grad()</code></td><td>Disable gradient computation.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        <h3>Tensor Operations</h3>
-        <table>
-          <thead>
-            <tr><th>Method</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>tensor.to(device)</td><td>Move tensor to device (CPU/GPU).</td></tr>
-            <tr><td>tensor.view(shape)</td><td>Reshape tensor.</td></tr>
-            <tr><td>tensor.reshape(shape)</td><td>Reshape tensor (more flexible).</td></tr>
-            <tr><td>tensor.flatten()</td><td>Flatten to 1D.</td></tr>
-            <tr><td>tensor.unsqueeze(dim)</td><td>Add dimension.</td></tr>
-            <tr><td>tensor.squeeze(dim)</td><td>Remove dimension.</td></tr>
-          </tbody>
-        </table>
-      </article>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Model Persistence</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>torch.save(model.state_dict(), path)</code></td><td>Save model parameters.</td></tr>
+              <tr><td><code>model.load_state_dict(torch.load(path))</code></td><td>Load model parameters.</td></tr>
+              <tr><td><code>torch.save(model, path)</code></td><td>Save entire model.</td></tr>
+              <tr><td><code>torch.load(path)</code></td><td>Load entire model.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Tensor Operations</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>tensor.to(device)</code></td><td>Move tensor to device (CPU/GPU).</td></tr>
+              <tr><td><code>tensor.view(shape)</code></td><td>Reshape tensor.</td></tr>
+              <tr><td><code>tensor.reshape(shape)</code></td><td>Reshape tensor (more flexible).</td></tr>
+              <tr><td><code>tensor.flatten()</code></td><td>Flatten to 1D.</td></tr>
+              <tr><td><code>tensor.unsqueeze(dim)</code></td><td>Add dimension.</td></tr>
+              <tr><td><code>tensor.squeeze(dim)</code></td><td>Remove dimension.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
-    <section>
-      <article>
-        <h2>8. Advanced Features</h2>
-        <h3>Learning Rate Scheduling</h3>
-        <div class="code-example"><pre><code>from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau, CosineAnnealingLR
+    <section class="page-section">
+      <h2>8. Advanced Features</h2>
+      <h3>Learning Rate Scheduling</h3>
+      <pre><code>from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau, CosineAnnealingLR
 
 # Step decay
 scheduler = StepLR(optimizer, step_size=5, gamma=0.1)
@@ -526,10 +547,9 @@ for epoch in range(num_epochs):
   train(...)
   val_loss = validate(...)
   scheduler.step()  # or scheduler.step(val_loss) for ReduceLROnPlateau
-</code></pre></div>
-
-        <h3>Data Augmentation</h3>
-        <div class="code-example"><pre><code>from torchvision import transforms
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">Data Augmentation</h3>
+      <pre><code>from torchvision import transforms
 
 transform = transforms.Compose([
   transforms.RandomHorizontalFlip(p=0.5),
@@ -539,10 +559,9 @@ transform = transforms.Compose([
   transforms.ToTensor(),
   transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
-</code></pre></div>
-
-        <h3>Mixed Precision Training</h3>
-        <div class="code-example"><pre><code>from torch.cuda.amp import autocast, GradScaler
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">Mixed Precision Training</h3>
+      <pre><code>from torch.cuda.amp import autocast, GradScaler
 
 scaler = GradScaler()
 for data, target in train_loader:
@@ -553,10 +572,9 @@ for data, target in train_loader:
   scaler.scale(loss).backward()
   scaler.step(optimizer)
   scaler.update()
-</code></pre></div>
-
-        <h3>Model Checkpointing</h3>
-        <div class="code-example"><pre><code># Save checkpoint
+</code></pre>
+      <h3 style="margin-top: var(--space-6);">Model Checkpointing</h3>
+      <pre><code># Save checkpoint
 checkpoint = {
   'epoch': epoch,
   'model_state_dict': model.state_dict(),
@@ -572,13 +590,12 @@ model.load_state_dict(checkpoint['model_state_dict'])
 optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 epoch = checkpoint['epoch']
 loss = checkpoint['loss']
-</code></pre></div>
-      </article>
+</code></pre>
     </section>
 
-    <section>
-      <article>
-        <h2>9. PyTorch vs TensorFlow</h2>
+    <section class="page-section">
+      <h2>9. PyTorch vs TensorFlow</h2>
+      <div style="overflow-x: auto;">
         <table>
           <thead>
             <tr><th>Feature</th><th>PyTorch</th><th>TensorFlow</th></tr>
@@ -592,59 +609,56 @@ loss = checkpoint['loss']
             <tr><td>Learning Curve</td><td>Gentler</td><td>Steeper</td></tr>
           </tbody>
         </table>
-      </article>
+      </div>
     </section>
 
-    <section>
-      <article>
-        <h2>10. Best Practices</h2>
-        <ul>
-          <li>Use GPU when available and move models and data to the same device.</li>
-          <li>Use <code>model.train()</code> for training and <code>model.eval()</code> for evaluation.</li>
-          <li>Call <code>optimizer.zero_grad()</code> before backpropagation.</li>
-          <li>Disable gradients for inference with <code>torch.no_grad()</code>.</li>
-          <li>Normalize input data for faster convergence.</li>
-          <li>Use <code>DataLoader</code> for efficient batch processing.</li>
-          <li>Monitor GPU memory and clear cache when needed.</li>
-          <li>Prefer <code>state_dict()</code> for saving models.</li>
-        </ul>
-      </article>
+    <section class="page-section">
+      <h2>10. Best Practices</h2>
+      <ul>
+        <li>Use GPU when available and move models and data to the same device.</li>
+        <li>Use <code>model.train()</code> for training and <code>model.eval()</code> for evaluation.</li>
+        <li>Call <code>optimizer.zero_grad()</code> before backpropagation.</li>
+        <li>Disable gradients for inference with <code>torch.no_grad()</code>.</li>
+        <li>Normalize input data for faster convergence.</li>
+        <li>Use <code>DataLoader</code> for efficient batch processing.</li>
+        <li>Monitor GPU memory and clear cache when needed.</li>
+        <li>Prefer <code>state_dict()</code> for saving models.</li>
+      </ul>
     </section>
 
-    <section>
-      <article>
-        <h2>11. Common Pitfalls</h2>
-        <ul>
-          <li>Forgetting <code>optimizer.zero_grad()</code> leads to gradient accumulation.</li>
-          <li>Not setting model mode makes Dropout and BatchNorm behave incorrectly.</li>
-          <li>Shape mismatches in CNNs and RNNs cause runtime errors.</li>
-          <li>CPU and GPU tensors must be on the same device.</li>
-          <li>In-place tensor operations can break autograd.</li>
-          <li>Memory leaks from storing tensors without detaching.</li>
-        </ul>
-      </article>
+    <section class="page-section">
+      <h2>11. Common Pitfalls</h2>
+      <ul>
+        <li>Forgetting <code>optimizer.zero_grad()</code> leads to gradient accumulation.</li>
+        <li>Not setting model mode makes Dropout and BatchNorm behave incorrectly.</li>
+        <li>Shape mismatches in CNNs and RNNs cause runtime errors.</li>
+        <li>CPU and GPU tensors must be on the same device.</li>
+        <li>In-place tensor operations can break autograd.</li>
+        <li>Memory leaks from storing tensors without detaching.</li>
+      </ul>
     </section>
 
-    <section>
-      <article>
-        <h2>12. Resources</h2>
-        <ul>
-          <li><a href="https://pytorch.org/docs">Official Documentation</a></li>
-          <li><a href="https://pytorch.org/tutorials">PyTorch Tutorials</a></li>
-          <li><a href="https://github.com/pytorch/examples">PyTorch Examples</a></li>
-          <li><a href="https://discuss.pytorch.org">PyTorch Forums</a></li>
-          <li><a href="https://pytorch.org/vision">TorchVision (Computer Vision)</a></li>
-          <li><a href="https://pytorch.org/text">TorchText (NLP)</a></li>
-          <li><a href="https://lightning.ai">PyTorch Lightning</a></li>
-        </ul>
-      </article>
+    <section class="page-section">
+      <h2>12. Resources</h2>
+      <ul>
+        <li><a href="https://pytorch.org/docs">Official Documentation</a></li>
+        <li><a href="https://pytorch.org/tutorials">PyTorch Tutorials</a></li>
+        <li><a href="https://github.com/pytorch/examples">PyTorch Examples</a></li>
+        <li><a href="https://discuss.pytorch.org">PyTorch Forums</a></li>
+        <li><a href="https://pytorch.org/vision">TorchVision (Computer Vision)</a></li>
+        <li><a href="https://pytorch.org/text">TorchText (NLP)</a></li>
+        <li><a href="https://lightning.ai">PyTorch Lightning</a></li>
+      </ul>
     </section>
+
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
   </footer>
 </div>
+
 <script>hljs.highlightAll();</script>
+<script src="js/copy.js"></script>
 </body>
 </html>

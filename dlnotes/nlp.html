@@ -2,60 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Natural Language Processing with Deep Learning</title>
+  <title>Natural Language Processing — Deep Learning Notes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
   <meta name="description" content="Introduction to Natural Language Processing (NLP) using Deep Learning in Python. Covers architectures, data prep, and code examples.">
+  <meta property="og:title" content="Natural Language Processing with Deep Learning">
+  <meta property="og:type" content="website">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-light.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-
 </head>
 <body>
-<nav>
-  <ul>
-    <li><a href="index.html">Deep Learning Overview</a></li>
-    <li><a href="timeseries.html">Time Series Forecasting</a></li>
-    <li><a href="nlp.html" class="active">Natural Language Processing</a></li>
-    <li><a href="dljs.html">Deep Learning in JS</a></li>
-    <li><a href="mljs.html">ml5.js in the Browser</a></li>
-    <li><a href="tensorflow.html">TensorFlow</a></li>
-    <li><a href="pytorch.html">PyTorch</a></li>
-  </ul>
+
+<nav class="site-nav">
+  <div class="container">
+    <ul>
+      <li><a href="index.html">Deep Learning Overview</a></li>
+      <li><a href="timeseries.html">Time Series Forecasting</a></li>
+      <li><a href="nlp.html" class="active">Natural Language Processing</a></li>
+      <li><a href="dljs.html">Deep Learning in JS</a></li>
+      <li><a href="mljs.html">ml5.js in the Browser</a></li>
+      <li><a href="tensorflow.html">TensorFlow</a></li>
+      <li><a href="pytorch.html">PyTorch</a></li>
+      <li><a href="transformers.html">Transformers</a></li>
+    </ul>
+  </div>
 </nav>
-<div class="main-content">
-  <header>
+
+<div class="container">
+  <header class="page-header">
     <h1>Natural Language Processing (NLP) with Deep Learning</h1>
-    <p>NLP sits at the intersection of computer science, artificial intelligence, and linguistics. Deep Learning has revolutionized NLP, enabling models to perform tasks like translation, sentiment analysis, and text generation with near-human accuracy.</p>
+    <p class="lead">NLP sits at the intersection of computer science, artificial intelligence, and linguistics. Deep Learning has revolutionized NLP, enabling models to perform tasks like translation, sentiment analysis, and text generation with near-human accuracy.</p>
   </header>
 
   <main>
-    <section>
-      <article>
-        <h2>1. Why Deep Learning for NLP?</h2>
-        <p>
-          Traditional NLP relied heavily on manual feature engineering (e.g., n-grams, TF-IDF). Deep learning models learn representations of text automatically. Key advantages include:
-        </p>
-        <ul>
-          <li><b>Word Embeddings:</b> Representing words as dense vectors where similar words are close in space.</li>
-          <li><b>Context Awareness:</b> Understanding the meaning of a word based on its surrounding words.</li>
-          <li><b>End-to-End Learning:</b> Mapping raw text directly to outputs (e.g., classification labels) without complex pipeline steps.</li>
-        </ul>
-      </article>
+
+    <section class="page-section">
+      <h2>1. Why Deep Learning for NLP?</h2>
+      <p>
+        Traditional NLP relied heavily on manual feature engineering (e.g., n-grams, TF-IDF). Deep learning models learn representations of text automatically. Key advantages include:
+      </p>
+      <ul>
+        <li><b>Word Embeddings:</b> Representing words as dense vectors where similar words are close in space.</li>
+        <li><b>Context Awareness:</b> Understanding the meaning of a word based on its surrounding words.</li>
+        <li><b>End-to-End Learning:</b> Mapping raw text directly to outputs (e.g., classification labels) without complex pipeline steps.</li>
+      </ul>
     </section>
 
-    <section>
-      <article>
-        <h2>2. Key Architectures</h2>
-        <p><strong>Common neural network structures used in NLP:</strong></p>
-        <ul>
-          <li><b>RNNs & LSTMs:</b> Process text sequentially; excellent for understanding order and dependencies.</li>
-          <li><b>Transformers:</b> Use "Attention" mechanisms to weigh the importance of different words simultaneously. The basis for models like BERT and GPT.</li>
-          <li><b>CNNs:</b> Sometimes used for text classification to detect local patterns (like key phrases).</li>
-        </ul>
-      </article>
+    <section class="page-section">
+      <h2>2. Key Architectures</h2>
+      <p><strong>Common neural network structures used in NLP:</strong></p>
+      <ul>
+        <li><b>RNNs &amp; LSTMs:</b> Process text sequentially; excellent for understanding order and dependencies.</li>
+        <li><b>Transformers:</b> Use "Attention" mechanisms to weigh the importance of different words simultaneously. The basis for models like BERT and GPT.</li>
+        <li><b>CNNs:</b> Sometimes used for text classification to detect local patterns (like key phrases).</li>
+      </ul>
     </section>
 
-    <section>
+    <section class="page-section">
       <h2>3. Common Tasks</h2>
       <p>Deep learning excels at various NLP tasks, such as:</p>
       <ul>
@@ -66,10 +69,10 @@
       </ul>
     </section>
 
-    <section>
+    <section class="page-section">
       <h2>4. Data Preparation</h2>
       <p>Text must be converted into numbers before feeding it into a neural network. This usually involves tokenization, indexing, and padding.</p>
-      <div class="code-example"><pre><code># Example: Basic Tokenization and Padding with Keras
+      <pre><code># Example: Basic Tokenization and Padding with Keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -92,13 +95,13 @@ padded = pad_sequences(sequences, padding='post', maxlen=6)
 print(padded)
 # Output: [[ 2  3  4  5  0  0]
 #          [ 6  7  8  9 10  0]]
-</code></pre></div>
+</code></pre>
     </section>
 
-    <section>
+    <section class="page-section">
       <h2>5. TensorFlow (Keras) Example</h2>
       <p>Here is a simple Sentiment Analysis model using an Embedding layer and Global Average Pooling.</p>
-      <div class="code-example"><pre><code>import tensorflow as tf
+      <pre><code>import tensorflow as tf
 from tensorflow import keras
 
 vocab_size = 10000
@@ -121,13 +124,13 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 model.summary()
 
 # model.fit(padded_train, training_labels, epochs=10, ...)
-</code></pre></div>
+</code></pre>
     </section>
 
-    <section>
+    <section class="page-section">
       <h2>6. PyTorch Example</h2>
       <p>A similar text classification architecture implemented in PyTorch.</p>
-      <div class="code-example"><pre><code>import torch
+      <pre><code>import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -154,35 +157,32 @@ NUM_CLASSES = 2 # e.g., Positive / Negative
 
 model = TextClassifier(VOCAB_SIZE, EMBED_DIM, NUM_CLASSES)
 print(model)
-      </code></pre></div>
+</code></pre>
     </section>
 
-    <section>
-      <article>
-        <h2>7. Further Reading</h2>
-        <ul>
-          <li>
-            <a href="https://www.tensorflow.org/text/tutorials/text_classification_rnn" target="_blank">TensorFlow Text Classification with RNN</a>
-          </li>
-          <li>
-            <a href="https://huggingface.co/docs/transformers/index" target="_blank">Hugging Face Transformers Library</a>
-          </li>
-          <li>
-            <a href="https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.html" target="_blank">PyTorch NLP Tutorial</a>
-          </li>
-        </ul>
-      </article>
+    <section class="page-section">
+      <h2>7. Further Reading</h2>
+      <ul>
+        <li><a href="https://www.tensorflow.org/text/tutorials/text_classification_rnn" target="_blank">TensorFlow Text Classification with RNN</a></li>
+        <li><a href="https://huggingface.co/docs/transformers/index" target="_blank">Hugging Face Transformers Library</a></li>
+        <li><a href="https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.html" target="_blank">PyTorch NLP Tutorial</a></li>
+      </ul>
     </section>
-    <section>
-      <div class="note">
+
+    <section class="page-section">
+      <div class="alert alert-mint">
         <b>Note:</b> Modern NLP has largely shifted towards Transformer-based models (like BERT, RoBERTa, GPT) for complex tasks. While simple models (Embedding + Dense/LSTM) are great for learning, Transformers provide state-of-the-art results on large datasets.
       </div>
     </section>
+
   </main>
-  <footer>
+
+  <footer class="site-footer">
     <p>&copy; 2025 Deep Learning Notes. All rights reserved.</p>
   </footer>
 </div>
+
 <script>hljs.highlightAll();</script>
+<script src="js/copy.js"></script>
 </body>
 </html>

@@ -41,10 +41,10 @@ function initNodes() {
 }
 
 function draw() {
-  clear(); // Use transparent background to blend with site theme
+  clear(); // Transparent background — blends with the --primary container
 
-  // Draw connections (Synapses)
-  stroke(143, 211, 255, 100); // --accent-blue with opacity
+  // Draw connections (Synapses) — --accent-soft tint
+  stroke(194, 93, 123, 50);
   strokeWeight(1);
 
   for (let i = 0; i < nodes.length; i++) {
@@ -70,9 +70,9 @@ function draw() {
     }
   }
 
-  // Update and draw signals (Data Flow)
+  // Update and draw signals (Data Flow) — --accent rose
   noStroke();
-  fill(255, 142, 199); // --accent-pink
+  fill(194, 93, 123);
   for (let i = signals.length - 1; i >= 0; i--) {
     const s = signals[i];
     s.progress += s.speed;
@@ -90,15 +90,14 @@ function draw() {
 
   // Draw Neurons
   for (let n of nodes) {
-    stroke(124, 115, 136); // --text-muted (approx)
+    stroke(107, 85, 96); // --ink-soft
     strokeWeight(1);
-    fill(255);
+    fill(248, 232, 232); // --primary pale rose
     ellipse(n.x, n.y, 14, 14);
 
-    // Inner core
+    // Inner core — --lavender
     noStroke();
-    fill(143, 211, 255); // --accent-blue
+    fill(142, 127, 160);
     ellipse(n.x, n.y, 8, 8);
   }
 }
-
