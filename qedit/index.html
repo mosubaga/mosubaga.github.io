@@ -1,27 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Quick Web Editor</title>
-<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <title>QEdit — Quick Web Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<div class="center"><h1>Quick Web Text Editor</h1></div>
+<!-- Floating wisps background -->
+<div class="ff-wisp-field" id="wispField"></div>
 
-<div class="card">
-  <div class="controls">
-    <input id="fileInput" type="file" />
-    <button id="saveBtn" class="btn btn-strawberry" type="button">Save As</button>
-    <button id="copyBtn" class="btn btn-mint" type="button" disabled>Copy Text</button>
-    <button id="harInsepector" class="btn" type="button" onclick="window.open('https://mosubaga.github.io/parsehar', '_blank')">HAR Inspector</button>
-    <button id="formatter" class="btn" type="button" onclick="window.open('https://mosubaga.github.io/qformat', '_blank')">Formatter</button>
-    <button id="csvEditor" class="btn" type="button" onclick="window.open('https://mosubaga.github.io/qcsv', '_blank')">CSV Editor</button>
-    <span id="fileMeta" class="muted"></span>
+<!-- Hidden file input -->
+<input id="fileInput" type="file" style="display:none">
+
+<div class="app-shell">
+
+  <!-- ── Tool bar ── -->
+  <div class="tool-bar">
+    <span class="toolbar-brand">✦ QEdit</span>
+    <div class="toolbar-divider"></div>
+    <button id="openBtn" type="button">📂 Open</button>
+    <button id="newFileBtn" type="button">✦ New File</button>
+    <button id="saveBtn" type="button">💾 Save As</button>
+    <button id="copyBtn" type="button" disabled>📋 Copy</button>
+    <button id="clearBtn" type="button" disabled>🗑 Clear</button>
+    <div class="toolbar-spacer"></div>
+    <button class="btn-ext" type="button" onclick="window.open('https://mosubaga.github.io/parsehar','_blank')">HAR Inspector</button>
+    <button class="btn-ext" type="button" onclick="window.open('https://mosubaga.github.io/qformat','_blank')">Formatter</button>
+    <button class="btn-ext" type="button" onclick="window.open('https://mosubaga.github.io/qcsv','_blank')">CSV Editor</button>
   </div>
-  <div id="dropzone" class="dropzone" tabindex="0">Drag the file in</div>
-  <div id="editorWrap" class="editor-wrap" aria-hidden="true">
-    <div id="editor" class="editor"></div>
+
+  <!-- ── Workspace ── -->
+  <div class="workspace">
+
+    <!-- File explorer / info pane -->
+    <div class="explorer">
+      <div class="pane-title">Files</div>
+      <div class="explorer-tree" id="explorerTree">
+        <div class="explorer-empty" id="explorerEmpty">
+          Open or drop<br>a file to begin ✦
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor panel -->
+    <div class="editor-panel">
+      <div class="tabs" id="tabBar"></div>
+      <div class="editor-row">
+        <div id="editor"></div>
+      </div>
+    </div>
+
   </div>
+
+  <!-- ── Status bar ── -->
+  <div class="status-bar">
+    <span id="fileMeta">No file open — drag a file anywhere or click Open ✦</span>
+    <span id="langMeta"></span>
+  </div>
+
+</div>
+
+<!-- Full-page drop overlay -->
+<div class="drop-overlay" id="dropOverlay" style="display:none">
+  ✦ Drop to open ✦
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
