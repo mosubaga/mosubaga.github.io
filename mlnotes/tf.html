@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TensorFlow for Classical Machine Learning</title>
     <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 </head>
 <body>
     <nav>
@@ -62,7 +63,7 @@
 
             <div class="algorithm-card">
                 <h3>Example: House Price Regression</h3>
-                <pre><code># X_train, y_train are NumPy arrays
+                <pre><code class="language-python"># X_train, y_train are NumPy arrays
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(1, input_shape=(num_features,))
 ])
@@ -91,7 +92,7 @@ loss, mae = model.evaluate(X_test, y_test)</code></pre>
 
             <div class="algorithm-card">
                 <h3>Binary Classification Example</h3>
-                <pre><code>model = tf.keras.Sequential([
+                <pre><code class="language-python">model = tf.keras.Sequential([
     tf.keras.layers.Dense(1, activation="sigmoid", input_shape=(num_features,))
 ])
 
@@ -118,7 +119,7 @@ probs = model.predict(X_test)</code></pre>
 
             <div class="algorithm-card">
                 <h3>Simple K-Means Loop</h3>
-                <pre><code>k = 3
+                <pre><code class="language-python">k = 3
 centers = tf.Variable(tf.random.normal([k, num_features]))
 
 for step in range(20):
@@ -179,5 +180,7 @@ for step in range(20):
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
 </body>
 </html>

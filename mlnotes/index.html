@@ -25,11 +25,29 @@
             <p>Machine Learning is a powerful subset of artificial intelligence that enables computers to learn from data and make predictions or decisions without being explicitly programmed. Choosing the right algorithm for your specific problem is crucial for achieving optimal results. This guide will help you understand which algorithms to use for different scenarios.</p>
 
             <h2>Understanding Problem Types</h2>
-            <p>Machine learning problems are generally categorized into three main types: supervised learning, unsupervised learning, and reinforcement learning. The choice of algorithm depends on the nature of your data and the problem you're trying to solve.</p>
+            <p>Machine learning problems fall into three main categories. The right choice depends on whether you have labeled data, what kind of output you need, and how the learning signal is provided.</p>
+
+            <div class="highlight-box">
+                <h3>Supervised Learning</h3>
+                <p>The model learns from a labeled dataset — every training example comes with the correct answer. The goal is to learn a mapping from inputs to outputs so the model can generalize to new, unseen data.</p>
+                <p><strong>Use cases:</strong> Email spam detection, house price prediction, medical diagnosis, image classification, sentiment analysis.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Unsupervised Learning</h3>
+                <p>The model is given data without labels and must find hidden structure on its own. There is no "right answer" to optimize for — instead the algorithm discovers patterns, groupings, or compact representations.</p>
+                <p><strong>Use cases:</strong> Customer segmentation, anomaly detection, topic modeling, data compression, recommendation systems (collaborative filtering).</p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Reinforcement Learning</h3>
+                <p>An agent interacts with an environment, takes actions, and receives rewards or penalties. It learns a policy — a strategy for choosing actions — to maximize cumulative reward over time. Unlike the other two paradigms there is no static dataset; experience is collected as the agent explores.</p>
+                <p><strong>Use cases:</strong> Game-playing AI (Chess, Go, video games), robotics control, autonomous vehicles, personalized content recommendations, algorithmic trading.</p>
+            </div>
 
             <h2>Algorithm Selection Guide</h2>
 
-            <div class="algorithm-grid">
+            <div class="algorithm-grid stacked-grid">
                 <div class="algorithm-card">
                     <h3>Linear Regression</h3>
                     <p><strong>Problem Type:</strong> Supervised Learning - Regression</p>

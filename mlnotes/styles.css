@@ -138,6 +138,12 @@ code {
     color: #d63384;
 }
 
+pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
 .highlight-box {
     background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
     padding: 1.5rem;
