@@ -14,13 +14,15 @@
 </head>
 
 <body>
-    <nav class="navbar">
+  <nav class="navbar">
     <a href="index.html">Home</a>
     <a href="arrays.html">Arrays</a>
     <a href="objects.html">Objects</a>
     <a href="everyday.html">Everyday</a>
     <a href="debug.html" class="active">Debug</a>
     <a href="async.html">Async</a>
+    <a href="fp.html">FP</a>
+    <a href="dom.html">DOM</a>
   </nav>
 
 
@@ -104,6 +106,77 @@ fetch('/api/orders')
   })
   .then((data) => console.log(data))
   .catch((error) => console.error('Orders error', error));
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>More Console Methods</h3>
+      <p>Beyond <code>console.log</code> — tools that organize and highlight output.</p>
+      <pre><code class="language-javascript">
+// Group related logs
+console.group('User Details');
+console.log('Name:', user.name);
+console.log('Email:', user.email);
+console.groupEnd();
+
+// Conditional logging
+console.assert(age > 0, 'Age must be positive');
+
+// Count how many times code runs
+function handleClick() {
+  console.count('click');
+}
+
+// Styled console output
+console.log('%cWarning!', 'color: orange; font-size: 20px;');
+
+// Quick object snapshot
+console.dir(document.body);
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Common Error Types</h3>
+      <p>Recognizing error types helps you debug faster.</p>
+      <pre><code class="language-javascript">
+// ReferenceError: variable doesn't exist
+console.log(foo); // ReferenceError: foo is not defined
+
+// TypeError: wrong type or calling non-function
+null.toString();  // TypeError: Cannot read properties of null
+const x = 5; x(); // TypeError: x is not a function
+
+// SyntaxError: invalid code (caught at parse time)
+// JSON.parse('{bad}'); // SyntaxError
+
+// RangeError: value out of allowed range
+new Array(-1); // RangeError: Invalid array length
+
+// URIError: bad URI handling
+decodeURI('%'); // URIError
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Debugging in the Browser</h3>
+      <p>Chrome DevTools shortcuts and techniques for faster debugging.</p>
+      <pre><code class="language-javascript">
+// Set breakpoints in Sources tab (click line number)
+
+// Conditional breakpoint: only pause when condition is true
+// Right-click line number → "Add conditional breakpoint"
+
+// Log points: log without modifying code
+// Right-click line number → "Add logpoint"
+
+// Monitor network requests in Network tab
+// Watch for failed requests (red), slow responses, CORS errors
+
+// Quick element inspection
+// Right-click any element → Inspect
+// Use $0 in console to reference selected element
+console.log($0);       // currently selected element
+console.log($0.style); // its styles
       </code></pre>
     </div>
   </div>

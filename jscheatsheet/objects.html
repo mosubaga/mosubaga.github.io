@@ -14,13 +14,15 @@
 </head>
 
 <body>
-      <nav class="navbar">
+  <nav class="navbar">
     <a href="index.html">Home</a>
     <a href="arrays.html">Arrays</a>
     <a href="objects.html" class="active">Objects</a>
     <a href="everyday.html">Everyday</a>
     <a href="debug.html">Debug</a>
     <a href="async.html">Async</a>
+    <a href="fp.html">FP</a>
+    <a href="dom.html">DOM</a>
   </nav>
 
 
@@ -96,6 +98,156 @@ candy.flavor = 'Sour Cherry';</code></pre>
         <p>Shallow copy & merging</p>
         <pre><code>const copiedCandy = { ...candy };
 const mergedCandy = { ...candy, brand: 'SweetCo' };</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Computed & Shorthand Properties</h3>
+      <div class="method-section">
+        <p>Computed property names: use an expression inside brackets as a key</p>
+        <pre><code class="language-javascript">const field = 'color';
+const candy = { [field]: 'Red', [`${field}Code`]: '#FF0000' };
+// { color: 'Red', colorCode: '#FF0000' }</code></pre>
+      </div>
+      <div class="method-section">
+        <p>Shorthand properties: variable name becomes the key</p>
+        <pre><code class="language-javascript">const name = 'Gummy Bear';
+const flavor = 'Cherry';
+
+// Instead of { name: name, flavor: flavor }
+const candy = { name, flavor };
+// { name: 'Gummy Bear', flavor: 'Cherry' }</code></pre>
+      </div>
+      <div class="method-section">
+        <p>Method shorthand: define methods without <code>function</code> keyword</p>
+        <pre><code class="language-javascript">// Instead of { describe: function() { ... } }
+const candy = {
+  name: 'Lollipop',
+  describe() {
+    return `This is a ${this.name}`;
+  }
+};</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Checking & Protecting</h3>
+      <div class="method-section">
+        <p><code>'key' in obj</code>: Check if a property exists (including inherited)</p>
+        <pre><code class="language-javascript">const candy = { name: 'Gummy Bear', flavor: 'Cherry' };
+console.log('name' in candy);    // true
+console.log('rating' in candy);  // false</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Object.hasOwn(obj, key)</code>: Modern way to check own properties (not inherited)</p>
+        <pre><code class="language-javascript">const candy = { name: 'Gummy Bear' };
+console.log(Object.hasOwn(candy, 'name'));     // true
+console.log(Object.hasOwn(candy, 'toString')); // false (inherited)</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Object.freeze(obj)</code>: Prevent any modifications (shallow freeze)</p>
+        <pre><code class="language-javascript">const candy = { name: 'Gummy Bear', flavor: 'Cherry' };
+Object.freeze(candy);
+candy.flavor = 'Grape'; // Silently fails (throws in strict mode)
+console.log(candy.flavor); // 'Cherry'</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Object.keys(obj).length</code>: Count the number of properties</p>
+        <pre><code class="language-javascript">const candy = { name: 'Gummy Bear', flavor: 'Cherry', color: 'Red' };
+console.log(Object.keys(candy).length); // 3</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Destructuring & Nesting</h3>
+      <div class="method-section">
+        <p>Nested destructuring: extract values from deeply nested objects</p>
+        <pre><code class="language-javascript">const candy = {
+  name: 'Gummy Bear',
+  details: { flavor: 'Cherry', color: 'Red' }
+};
+const { details: { flavor, color } } = candy;
+console.log(flavor); // 'Cherry'
+console.log(color);  // 'Red'</code></pre>
+      </div>
+      <div class="method-section">
+        <p>Default values: provide fallbacks for missing properties</p>
+        <pre><code class="language-javascript">const candy = { name: 'Gummy Bear' };
+const { name, flavor = 'Unknown', rating = 0 } = candy;
+console.log(flavor); // 'Unknown'
+console.log(rating); // 0</code></pre>
+      </div>
+      <div class="method-section">
+        <p>Renaming: assign to a different variable name</p>
+        <pre><code class="language-javascript">const candy = { name: 'Gummy Bear', flavor: 'Cherry' };
+const { name: candyName, flavor: candyFlavor } = candy;
+console.log(candyName);   // 'Gummy Bear'
+console.log(candyFlavor); // 'Cherry'</code></pre>
+      </div>
+      <div class="method-section">
+        <p>Destructuring function parameters: clean and readable signatures</p>
+        <pre><code class="language-javascript">function describeCandy({ name, flavor, rating = 'N/A' }) {
+  return `${name} (${flavor}) - Rating: ${rating}`;
+}
+describeCandy({ name: 'Gummy Bear', flavor: 'Cherry' });
+// 'Gummy Bear (Cherry) - Rating: N/A'</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Map & Set</h3>
+      <div class="method-section">
+        <p><code>new Map()</code>: Key-value pairs where keys can be any type (not just strings)</p>
+        <pre><code class="language-javascript">const inventory = new Map();
+inventory.set('Gummy Bear', 50);
+inventory.set('Lollipop', 30);
+
+console.log(inventory.get('Gummy Bear')); // 50
+console.log(inventory.has('Lollipop'));    // true
+console.log(inventory.size);              // 2
+
+inventory.delete('Lollipop');
+
+// Iterate over entries
+for (const [candy, count] of inventory) {
+  console.log(`${candy}: ${count}`);
+}</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>new Set()</code>: A collection of unique values (duplicates are ignored)</p>
+        <pre><code class="language-javascript">const flavors = new Set();
+flavors.add('Cherry');
+flavors.add('Grape');
+flavors.add('Cherry'); // Ignored, already exists
+
+console.log(flavors.has('Cherry')); // true
+console.log(flavors.size);          // 2
+
+flavors.delete('Grape');
+
+// Great for removing duplicates from an array
+const arr = [1, 2, 2, 3, 3, 3];
+const unique = [...new Set(arr)]; // [1, 2, 3]</code></pre>
+      </div>
+      <div class="method-section">
+        <p>When to use Map vs Object, Set vs Array</p>
+        <pre><code class="language-javascript">// Use Map when:
+// - Keys are not strings (objects, numbers, etc.)
+// - You need to know the size easily (.size)
+// - You add/remove keys frequently
+
+// Use Object when:
+// - Keys are strings and known at compile time
+// - You need JSON serialization
+// - You want destructuring or spread syntax
+
+// Use Set when:
+// - You need unique values only
+// - You check membership often (.has() is O(1))
+
+// Use Array when:
+// - Order matters and duplicates are allowed
+// - You need map/filter/reduce operations</code></pre>
       </div>
     </div>
   </div>

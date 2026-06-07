@@ -1,0 +1,136 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Functional Programming in JavaScript - Sweet TS & JS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="A sweet cheat sheet for applying functional programming in JavaScript.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="arrays.html">Arrays</a>
+    <a href="objects.html">Objects</a>
+    <a href="everyday.html">Everyday</a>
+    <a href="debug.html">Debug</a>
+    <a href="async.html">Async</a>
+    <a href="fp.html" class="active">FP</a>
+    <a href="dom.html">DOM</a>
+  </nav>
+
+  <div class="card">
+    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Functional Programming in JavaScript</h1>
+
+    <div class="subcard">
+      Functional programming in JavaScript is less about academic purity and more about writing code that is easier to read,
+      test, and change. The main idea is to build programs from small functions that transform data instead of mutating shared
+      state. In practice, that means preferring pure functions, immutable updates, array methods like <code>map</code> and
+      <code>filter</code>, and composition patterns that let simple steps snap together cleanly.
+    </div>
+
+    <div class="subcard">
+      <h3>Pure Functions</h3>
+      <p>A pure function returns the same output for the same input and does not change anything outside itself.</p>
+      <pre><code class="language-javascript">
+function addTax(price, taxRate) {
+  return price + price * taxRate;
+}
+
+const total = addTax(20, 0.08); // 21.6
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Immutable Updates</h3>
+      <p>Instead of changing arrays or objects in place, create new ones with the updated values.</p>
+      <pre><code class="language-javascript">
+const cart = [
+  { name: 'Mochi', price: 4 },
+  { name: 'Taiyaki', price: 6 }
+];
+
+const updatedCart = [...cart, { name: 'Matcha Cookie', price: 3 }];
+
+const order = { status: 'pending', total: 10 };
+const completedOrder = { ...order, status: 'complete' };
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Transform Data with map, filter, reduce</h3>
+      <p>These array methods are core tools for functional-style JavaScript.</p>
+      <pre><code class="language-javascript">
+const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map((n) => n * 2);
+const evens = numbers.filter((n) => n % 2 === 0);
+const sum = numbers.reduce((total, n) => total + n, 0);
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Function Composition</h3>
+      <p>Break a task into small functions and pipe values through them one step at a time.</p>
+      <pre><code class="language-javascript">
+const trim = (text) => text.trim();
+const toLower = (text) => text.toLowerCase();
+const slugify = (text) => text.replaceAll(' ', '-');
+
+const compose = (...fns) => (value) =>
+  fns.reduceRight((current, fn) => fn(current), value);
+
+const makeSlug = compose(slugify, toLower, trim);
+
+makeSlug('  Functional JavaScript Rocks  ');
+// 'functional-javascript-rocks'
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Higher-Order Functions</h3>
+      <p>Functions can receive other functions or return them, which makes logic reusable and configurable.</p>
+      <pre><code class="language-javascript">
+function withLogger(fn) {
+  return function (...args) {
+    console.log('Calling with', args);
+    return fn(...args);
+  };
+}
+
+const multiply = (a, b) => a * b;
+const loggedMultiply = withLogger(multiply);
+
+loggedMultiply(3, 4); // 12
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Practical FP Rules</h3>
+      <p>Use functional programming where it improves clarity, not as a rigid rulebook.</p>
+      <pre><code class="language-javascript">
+// Good habits:
+// 1. Prefer const by default
+// 2. Return new values instead of mutating inputs
+// 3. Keep functions focused on one job
+// 4. Push side effects to the edges of the app
+
+function checkout(items, discountRate) {
+  const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+  const discount = subtotal * discountRate;
+  return subtotal - discount;
+}
+      </code></pre>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,283 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DOM & Events - Sweet TS & JS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="A sweet cheat sheet for DOM manipulation and browser events in JavaScript.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="arrays.html">Arrays</a>
+    <a href="objects.html">Objects</a>
+    <a href="everyday.html">Everyday</a>
+    <a href="debug.html">Debug</a>
+    <a href="async.html">Async</a>
+    <a href="fp.html">FP</a>
+    <a href="dom.html" class="active">DOM</a>
+  </nav>
+
+  <div class="card">
+    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">DOM & Events Cheat Sheet</h1>
+
+    <div class="subcard">
+      The DOM (Document Object Model) is the browser's representation of your HTML page as a tree of objects. Every element, attribute, and piece of text becomes a node that JavaScript can read and modify. When you change the DOM, the browser immediately updates what the user sees on screen. Understanding DOM manipulation and events is the foundation of interactive web programming — it is how buttons respond to clicks, forms validate input, and content updates without a full page reload.
+    </div>
+
+    <div class="subcard">
+      <h3>Selecting Elements</h3>
+      <div class="method-section">
+        <p><code>querySelector(selector)</code>: Returns the first element matching a CSS selector</p>
+        <pre><code class="language-javascript">const btn = document.querySelector('.submit-btn');
+const header = document.querySelector('#main-header');
+const firstItem = document.querySelector('ul > li:first-child');</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>querySelectorAll(selector)</code>: Returns a NodeList of all matching elements</p>
+        <pre><code class="language-javascript">const items = document.querySelectorAll('.menu-item');
+
+// Loop through all matches
+items.forEach(item => {
+  item.style.color = 'darkblue';
+});</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>getElementById(id)</code>: Returns the element with the given id</p>
+        <pre><code class="language-javascript">const app = document.getElementById('app');
+// Equivalent to querySelector('#app'), but slightly faster</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>getElementsByClassName(name)</code>: Returns a live HTMLCollection</p>
+        <pre><code class="language-javascript">const cards = document.getElementsByClassName('card');
+// This is a live collection — it updates automatically
+// when elements are added or removed from the DOM</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Modifying Elements</h3>
+      <div class="method-section">
+        <p><code>textContent</code>: Get or set the text of an element (safe, no HTML parsing)</p>
+        <pre><code class="language-javascript">const title = document.querySelector('h1');
+title.textContent = 'Welcome!'; // Sets plain text</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>innerHTML</code>: Get or set the HTML content (be careful with user input)</p>
+        <pre><code class="language-javascript">const list = document.querySelector('.list');
+list.innerHTML = '&lt;li&gt;Item 1&lt;/li&gt;&lt;li&gt;Item 2&lt;/li&gt;';
+// Warning: never use innerHTML with untrusted user input</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>style</code>: Set inline CSS styles directly</p>
+        <pre><code class="language-javascript">const box = document.querySelector('.box');
+box.style.backgroundColor = '#fce4ec';
+box.style.padding = '1rem';
+box.style.borderRadius = '8px';</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>classList</code>: Add, remove, toggle, or check CSS classes</p>
+        <pre><code class="language-javascript">const nav = document.querySelector('.navbar');
+
+nav.classList.add('sticky');        // Add a class
+nav.classList.remove('hidden');     // Remove a class
+nav.classList.toggle('open');       // Toggle on/off
+nav.classList.contains('sticky');   // true</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>setAttribute / getAttribute</code>: Work with HTML attributes</p>
+        <pre><code class="language-javascript">const link = document.querySelector('a');
+link.setAttribute('href', 'https://example.com');
+link.setAttribute('target', '_blank');
+
+const url = link.getAttribute('href'); // 'https://example.com'</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Creating & Removing Elements</h3>
+      <div class="method-section">
+        <p><code>createElement / appendChild</code>: Create and add a new element</p>
+        <pre><code class="language-javascript">const ul = document.querySelector('.todo-list');
+const li = document.createElement('li');
+li.textContent = 'Buy milk';
+li.classList.add('todo-item');
+ul.appendChild(li); // Adds to the end of the list</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>prepend</code>: Insert as the first child</p>
+        <pre><code class="language-javascript">const container = document.querySelector('.messages');
+const notice = document.createElement('div');
+notice.textContent = 'New message!';
+container.prepend(notice); // Adds to the beginning</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>remove()</code>: Remove an element from the DOM</p>
+        <pre><code class="language-javascript">const popup = document.querySelector('.popup');
+popup.remove(); // Gone from the page</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>replaceWith(newElement)</code>: Replace an element with another</p>
+        <pre><code class="language-javascript">const oldBtn = document.querySelector('.old-button');
+const newBtn = document.createElement('button');
+newBtn.textContent = 'Click Me';
+oldBtn.replaceWith(newBtn);</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>cloneNode(deep)</code>: Clone an element (pass true to include children)</p>
+        <pre><code class="language-javascript">const template = document.querySelector('.card-template');
+const copy = template.cloneNode(true); // Deep clone
+copy.querySelector('h2').textContent = 'New Card';
+document.querySelector('.grid').appendChild(copy);</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Event Handling</h3>
+      <div class="method-section">
+        <p><code>addEventListener(event, handler)</code>: Attach an event listener</p>
+        <pre><code class="language-javascript">const btn = document.querySelector('.btn');
+btn.addEventListener('click', () => {
+  alert('Button clicked!');
+});</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Event object</code>: Access details about the event</p>
+        <pre><code class="language-javascript">document.addEventListener('click', (event) => {
+  console.log(event.target);    // The element that was clicked
+  console.log(event.type);      // 'click'
+  console.log(event.clientX);   // Mouse X position
+});</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Common events</code>: Frequently used event types</p>
+        <pre><code class="language-javascript">// Page loaded and DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM is ready');
+});
+
+// Keyboard events
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// Input event — fires on every keystroke
+searchInput.addEventListener('input', (e) => {
+  filterResults(e.target.value);
+});</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Event delegation</code>: Handle events on dynamic or many child elements</p>
+        <pre><code class="language-javascript">// Instead of adding listeners to each button,
+// listen on the parent and check event.target
+const list = document.querySelector('.todo-list');
+list.addEventListener('click', (e) => {
+  if (e.target.matches('.delete-btn')) {
+    e.target.closest('li').remove();
+  }
+  if (e.target.matches('.toggle-btn')) {
+    e.target.closest('li').classList.toggle('done');
+  }
+});</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Forms & User Input</h3>
+      <div class="method-section">
+        <p><code>Reading input values</code>: Get what the user typed</p>
+        <pre><code class="language-javascript">const nameInput = document.querySelector('#name');
+const email = document.querySelector('#email');
+
+console.log(nameInput.value);  // Current text in the input
+console.log(email.value);
+
+// For checkboxes and radio buttons
+const agree = document.querySelector('#agree');
+console.log(agree.checked); // true or false</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Handling form submission</code>: Prevent default and process data</p>
+        <pre><code class="language-javascript">const form = document.querySelector('#signup-form');
+form.addEventListener('submit', (e) => {
+  e.preventDefault(); // Stop the page from reloading
+
+  const formData = new FormData(form);
+  const name = formData.get('name');
+  const email = formData.get('email');
+
+  console.log({ name, email });
+  // Send to server with fetch()...
+});</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>Basic form validation</code>: Check input before submitting</p>
+        <pre><code class="language-javascript">form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const email = document.querySelector('#email');
+  const errorMsg = document.querySelector('.error');
+
+  if (!email.value.includes('@')) {
+    errorMsg.textContent = 'Please enter a valid email';
+    email.classList.add('input-error');
+    return;
+  }
+
+  errorMsg.textContent = '';
+  email.classList.remove('input-error');
+  form.submit();
+});</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Traversing the DOM</h3>
+      <div class="method-section">
+        <p><code>parentElement</code>: Get the parent of an element</p>
+        <pre><code class="language-javascript">const item = document.querySelector('.list-item');
+const list = item.parentElement; // The &lt;ul&gt; or &lt;ol&gt;</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>children</code>: Get all child elements</p>
+        <pre><code class="language-javascript">const nav = document.querySelector('nav');
+const links = nav.children; // HTMLCollection of child elements
+console.log(links.length);  // Number of direct children</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>nextElementSibling / previousElementSibling</code>: Navigate between siblings</p>
+        <pre><code class="language-javascript">const current = document.querySelector('.active');
+const next = current.nextElementSibling;
+const prev = current.previousElementSibling;
+
+// Move "active" class to the next sibling
+if (next) {
+  current.classList.remove('active');
+  next.classList.add('active');
+}</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>closest(selector)</code>: Find the nearest ancestor matching a selector</p>
+        <pre><code class="language-javascript">// Useful with event delegation
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('.card');
+  if (card) {
+    card.classList.toggle('selected');
+  }
+});</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>

@@ -14,13 +14,15 @@
 </head>
 
 <body>
-    <nav class="navbar">
+  <nav class="navbar">
     <a href="index.html">Home</a>
     <a href="arrays.html">Arrays</a>
     <a href="objects.html">Objects</a>
     <a href="everyday.html" class="active">Everyday</a>
     <a href="debug.html">Debug</a>
     <a href="async.html">Async</a>
+    <a href="fp.html">FP</a>
+    <a href="dom.html">DOM</a>
   </nav>
 
 
@@ -90,6 +92,48 @@ function buildSundae(flavor: string, ...toppings: string[]) {
 }
 
 const [head, ...tail] = extended; // head = 1, tail = [2,3,4,5]
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Template Literals</h3>
+      <p>Use backticks for strings with embedded expressions and multi-line support.</p>
+      <pre><code class="language-javascript">
+const name = 'Aiko';
+const greeting = `Hello, ${name}!`;
+
+const price = 9.99;
+const message = `Total: $${(price * 1.1).toFixed(2)}`;
+
+// Multi-line strings
+const html = `
+  &lt;div class="card"&gt;
+    &lt;h2&gt;${name}&lt;/h2&gt;
+    &lt;p&gt;Welcome back!&lt;/p&gt;
+  &lt;/div&gt;
+`;
+
+// Tagged template (advanced)
+const items = ['apple', 'banana'];
+console.log(`I bought ${items.length} items: ${items.join(', ')}`);
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Ternary & Short-Circuit</h3>
+      <p>Compact conditional expressions for assignments and inline logic.</p>
+      <pre><code class="language-javascript">
+// Ternary: condition ? ifTrue : ifFalse
+const status = age >= 18 ? 'adult' : 'minor';
+
+// Short-circuit AND: runs right side only if left is truthy
+isLoggedIn && showDashboard();
+
+// Short-circuit OR: returns first truthy value
+const display = username || 'Guest';
+
+// Combine with nullish coalescing for precision
+const label = user.nickname ?? user.name ?? 'Anonymous';
       </code></pre>
     </div>
   </div>

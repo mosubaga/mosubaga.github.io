@@ -14,13 +14,15 @@
 </head>
 
 <body>
-      <nav class="navbar">
+  <nav class="navbar">
     <a href="index.html">Home</a>
     <a href="arrays.html" class="active">Arrays</a>
     <a href="objects.html">Objects</a>
     <a href="everyday.html">Everyday</a>
     <a href="debug.html">Debug</a>
     <a href="async.html">Async</a>
+    <a href="fp.html">FP</a>
+    <a href="dom.html">DOM</a>
   </nav>
 
 
@@ -87,6 +89,106 @@ const numbers: Array&lt;number&gt; = [1, 2, 3];</code></pre>
       <div class="method-section">
         <p><code>includes(item)</code>: Returns true if item is in array</p>
         <pre><code>const hasApple = fruits.includes('Apple');</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Iterating</h3>
+      <div class="method-section">
+        <p><code>forEach(callback)</code>: Execute a function for each element (no return value, can't break)</p>
+        <pre><code>const nums = [1, 2, 3];
+nums.forEach((n, i) => console.log(`${i}: ${n}`));
+// 0: 1
+// 1: 2
+// 2: 3</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>for...of</code>: The modern way to loop with break/continue support</p>
+        <pre><code>for (const fruit of fruits) {
+  if (fruit === 'Banana') break;
+  console.log(fruit);
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Checking Conditions</h3>
+      <div class="method-section">
+        <p><code>some(callback)</code>: Returns true if ANY element passes the test</p>
+        <pre><code>const hasLong = fruits.some(f => f.length > 5); // true if any name > 5 chars</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>every(callback)</code>: Returns true if ALL elements pass the test</p>
+        <pre><code>const allShort = fruits.every(f => f.length &lt; 10); // true if all names &lt; 10 chars</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>findIndex(callback)</code>: Returns the index of first match (-1 if none)</p>
+        <pre><code>const idx = fruits.findIndex(f => f === 'Banana'); // 1</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>indexOf(item)</code>: Returns index of item (-1 if not found)</p>
+        <pre><code>const pos = fruits.indexOf('Apple'); // 0
+const missing = fruits.indexOf('Grape'); // -1</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Sorting &amp; Reversing</h3>
+      <div class="method-section">
+        <p><code>sort(compareFn)</code>: Sort in place (default sorts as strings!)</p>
+        <pre><code>const nums = [10, 1, 21, 2];
+nums.sort();            // [1, 10, 2, 21] — wrong! sorted as strings
+nums.sort((a, b) => a - b); // [1, 2, 10, 21] — correct numeric sort</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>reverse()</code>: Reverse in place</p>
+        <pre><code>const letters = ['a', 'b', 'c'];
+letters.reverse(); // ['c', 'b', 'a']</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>toSorted(compareFn)</code> / <code>toReversed()</code>: Non-mutating versions (ES2023)</p>
+        <pre><code>const original = [3, 1, 2];
+const sorted = original.toSorted((a, b) => a - b); // [1, 2, 3]
+const reversed = original.toReversed(); // [2, 1, 3]
+// original is still [3, 1, 2]</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Slicing &amp; Splicing</h3>
+      <div class="method-section">
+        <p><code>slice(start, end)</code>: Extract a portion (non-mutating)</p>
+        <pre><code>const arr = [1, 2, 3, 4, 5];
+const middle = arr.slice(1, 4); // [2, 3, 4]
+const last2 = arr.slice(-2);    // [4, 5]</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>splice(start, deleteCount, ...items)</code>: Add/remove elements in place (mutating)</p>
+        <pre><code>const colors = ['red', 'green', 'blue'];
+colors.splice(1, 1, 'yellow', 'purple');
+// colors is now ['red', 'yellow', 'purple', 'blue']</code></pre>
+      </div>
+    </div>
+
+    <div class="subcard">
+      <h3>Flattening &amp; Joining</h3>
+      <div class="method-section">
+        <p><code>flat(depth)</code>: Flatten nested arrays</p>
+        <pre><code>const nested = [1, [2, [3, [4]]]];
+nested.flat();    // [1, 2, [3, [4]]]
+nested.flat(Infinity); // [1, 2, 3, 4]</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>flatMap(callback)</code>: Map then flatten (depth 1)</p>
+        <pre><code>const sentences = ['hello world', 'foo bar'];
+const words = sentences.flatMap(s => s.split(' '));
+// ['hello', 'world', 'foo', 'bar']</code></pre>
+      </div>
+      <div class="method-section">
+        <p><code>join(separator)</code>: Join elements into a string</p>
+        <pre><code>const parts = ['2026', '06', '07'];
+parts.join('-'); // '2026-06-07'
+parts.join('');  // '20260607'</code></pre>
       </div>
     </div>
   </div>

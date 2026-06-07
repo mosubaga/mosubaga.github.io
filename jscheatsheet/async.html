@@ -20,6 +20,8 @@
   <a href="everyday.html">Everyday</a>
   <a href="debug.html">Debug</a>
   <a href="async.html" class="active">Async</a>
+  <a href="fp.html">FP</a>
+  <a href="dom.html">DOM</a>
 </nav>
 
 
@@ -88,6 +90,209 @@ async function serveCustomer() {
 
 serveCustomer();
       </code></pre>
+  </div>
+
+  <div class="subcard">
+    <h3>4. Fetch API</h3>
+    <p>The Fetch API is the modern way to make HTTP requests in the browser. It returns a Promise that resolves to a <code>Response</code> object.</p>
+
+    <p><strong>Basic GET request</strong></p>
+    <pre><code class="language-javascript">
+// Fetch user data from an API
+async function getUser(id) {
+  const res = await fetch(`https://api.example.com/users/${id}`);
+
+  // Always check if the request was successful
+  if (!res.ok) {
+    throw new Error(`HTTP error! Status: ${res.status}`);
+  }
+
+  const user = await res.json();
+  console.log(user.name);
+  return user;
+}
+
+getUser(1);
+    </code></pre>
+
+    <p><strong>POST request with JSON body</strong></p>
+    <pre><code class="language-javascript">
+// Create a new user
+async function createUser(userData) {
+  const res = await fetch('https://api.example.com/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer YOUR_TOKEN'
+    },
+    body: JSON.stringify(userData)
+  });
+
+  if (!res.ok) {
+    const errorBody = await res.text();
+    throw new Error(`Failed to create user: ${errorBody}`);
+  }
+
+  return await res.json();
+}
+
+createUser({ name: 'Alice', email: 'alice@example.com' });
+    </code></pre>
+
+    <p><strong>Reusable fetch wrapper with error handling</strong></p>
+    <pre><code class="language-javascript">
+// A handy wrapper you can reuse across your app
+async function api(endpoint, options = {}) {
+  const base = 'https://api.example.com';
+  const res = await fetch(`${base}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json', ...options.headers },
+    ...options
+  });
+
+  if (!res.ok) {
+    throw new Error(`API ${res.status}: ${res.statusText}`);
+  }
+
+  return res.json();
+}
+
+// Usage
+const users = await api('/users');
+const newPost = await api('/posts', {
+  method: 'POST',
+  body: JSON.stringify({ title: 'Hello World' })
+});
+    </code></pre>
+  </div>
+
+  <div class="subcard">
+    <h3>5. Running Promises in Parallel</h3>
+    <p>When you have multiple async operations that don't depend on each other, run them in parallel for better performance.</p>
+
+    <p><strong>Promise.all</strong> &mdash; waits for all promises; fails immediately if any one rejects.</p>
+    <pre><code class="language-javascript">
+// Fetch user profile and their posts at the same time
+async function loadDashboard(userId) {
+  try {
+    const [user, posts, notifications] = await Promise.all([
+      fetch(`/api/users/${userId}`).then(r => r.json()),
+      fetch(`/api/users/${userId}/posts`).then(r => r.json()),
+      fetch(`/api/users/${userId}/notifications`).then(r => r.json())
+    ]);
+
+    console.log(`${user.name} has ${posts.length} posts`);
+    console.log(`${notifications.length} unread notifications`);
+  } catch (err) {
+    console.error('One of the requests failed:', err);
+  }
+}
+    </code></pre>
+
+    <p><strong>Promise.allSettled</strong> &mdash; waits for all promises and reports the status of each, never short-circuits.</p>
+    <pre><code class="language-javascript">
+// Try to send notifications to multiple services
+const results = await Promise.allSettled([
+  fetch('/api/notify/email', { method: 'POST', body: data }),
+  fetch('/api/notify/sms',   { method: 'POST', body: data }),
+  fetch('/api/notify/slack', { method: 'POST', body: data })
+]);
+
+results.forEach((result, i) => {
+  if (result.status === 'fulfilled') {
+    console.log(`Service ${i}: sent successfully`);
+  } else {
+    console.warn(`Service ${i}: failed -`, result.reason);
+  }
+});
+    </code></pre>
+
+    <p><strong>Promise.race</strong> &mdash; resolves or rejects as soon as the first promise settles.</p>
+    <pre><code class="language-javascript">
+// Add a timeout to any fetch request
+function fetchWithTimeout(url, ms = 5000) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Request timed out')), ms)
+  );
+
+  return Promise.race([fetch(url), timeout]);
+}
+
+try {
+  const res = await fetchWithTimeout('/api/slow-endpoint', 3000);
+  const data = await res.json();
+} catch (err) {
+  console.error(err.message); // "Request timed out" if > 3s
+}
+    </code></pre>
+  </div>
+
+  <div class="subcard">
+    <h3>6. Common Async Patterns</h3>
+
+    <p><strong>Loading data on page load</strong></p>
+    <pre><code class="language-javascript">
+// Load and display data when the page is ready
+document.addEventListener('DOMContentLoaded', async () => {
+  const container = document.getElementById('user-list');
+
+  try {
+    container.textContent = 'Loading...';
+    const res = await fetch('/api/users');
+    const users = await res.json();
+
+    container.innerHTML = users
+      .map(u => `<li>${u.name} (${u.email})</li>`)
+      .join('');
+  } catch (err) {
+    container.textContent = 'Failed to load users.';
+    console.error(err);
+  }
+});
+    </code></pre>
+
+    <p><strong>Sequential vs Parallel fetching</strong></p>
+    <pre><code class="language-javascript">
+// SLOW: Sequential - each request waits for the previous one
+async function loadSequential() {
+  const user  = await fetch('/api/user').then(r => r.json());   // ~300ms
+  const posts = await fetch('/api/posts').then(r => r.json());  // ~300ms
+  const stats = await fetch('/api/stats').then(r => r.json());  // ~300ms
+  // Total: ~900ms
+  return { user, posts, stats };
+}
+
+// FAST: Parallel - all requests start at the same time
+async function loadParallel() {
+  const [user, posts, stats] = await Promise.all([
+    fetch('/api/user').then(r => r.json()),   // ~300ms
+    fetch('/api/posts').then(r => r.json()),  // ~300ms (runs at same time)
+    fetch('/api/stats').then(r => r.json())   // ~300ms (runs at same time)
+  ]);
+  // Total: ~300ms
+  return { user, posts, stats };
+}
+    </code></pre>
+
+    <p><strong>Simple retry pattern</strong></p>
+    <pre><code class="language-javascript">
+// Retry a fetch request up to N times before giving up
+async function fetchWithRetry(url, retries = 3, delay = 1000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.warn(`Attempt ${attempt} failed: ${err.message}`);
+      if (attempt === retries) throw err;
+      await new Promise(r => setTimeout(r, delay * attempt));
+    }
+  }
+}
+
+// Usage
+const data = await fetchWithRetry('/api/flaky-endpoint');
+    </code></pre>
   </div>
 </div>
 

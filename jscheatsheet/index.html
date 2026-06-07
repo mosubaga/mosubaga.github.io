@@ -52,13 +52,15 @@
 </head>
 
 <body>
-      <nav class="navbar">
+  <nav class="navbar">
     <a href="index.html" class="active">Home</a>
     <a href="arrays.html">Arrays</a>
     <a href="objects.html">Objects</a>
     <a href="everyday.html">Everyday</a>
     <a href="debug.html">Debug</a>
     <a href="async.html">Async</a>
+    <a href="fp.html">FP</a>
+    <a href="dom.html">DOM</a>
   </nav>
 
 
@@ -85,6 +87,18 @@
       <h2>Debugging & Errors</h2>
       <p>Sharpen your debugging instincts with console tricks, breakpoints, and clean error handling patterns.</p>
       <p><a href="debug.html">Go to Debugging & Errors →</a></p>
+    </div>
+
+    <div class="subcard">
+      <h2>DOM & Events</h2>
+      <p>Learn to select elements, handle user interactions, and dynamically update the page — the core of web programming with JavaScript.</p>
+      <p><a href="dom.html">Go to DOM & Events →</a></p>
+    </div>
+
+    <div class="subcard">
+      <h2>Functional Programming</h2>
+      <p>Write cleaner code with pure functions, immutable data, and composition patterns.</p>
+      <p><a href="fp.html">Go to Functional Programming →</a></p>
     </div>
 
     <div class="subcard">
@@ -135,6 +149,52 @@ const myOrder: Sundae = {
   hasSyrup: true
 };
         </code></pre>
+
+    <div class="subcard">
+      <h3>Variables & Types</h3>
+      <pre><code class="language-javascript">
+// const: can't reassign (use by default)
+const name = 'Alice';
+
+// let: can reassign (use when value changes)
+let score = 0;
+score = 10;
+
+// var: old style, function-scoped (avoid in modern code)
+
+// Common types
+const message = 'hello';      // string
+const count = 42;              // number
+const isActive = true;         // boolean
+const nothing = null;          // null
+const missing = undefined;     // undefined
+const items = [1, 2, 3];      // array
+const user = { name: 'Bob' }; // object
+      </code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Functions</h3>
+      <pre><code class="language-javascript">
+// Function declaration (hoisted)
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+
+// Arrow function (concise, no own 'this')
+const add = (a, b) => a + b;
+
+// Arrow with body
+const createUser = (name, age) => {
+  return { name, age };
+};
+
+// Default parameters
+function serve(flavor = 'Vanilla', scoops = 1) {
+  return `${scoops} scoop(s) of ${flavor}`;
+}
+      </code></pre>
+    </div>
     </div>
   </div>
 
