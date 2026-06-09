@@ -18,6 +18,7 @@
     <a href="index.html">Home</a>
     <a href="arrays.html">Arrays</a>
     <a href="objects.html">Objects</a>
+    <a href="oop.html">OOP</a>
     <a href="everyday.html">Everyday</a>
     <a href="debug.html" class="active">Debug</a>
     <a href="async.html">Async</a>
@@ -27,7 +28,7 @@
 
 
   <div class="card">
-    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Debugging & Error Handling</h1>
+    <h1 style="font-family: 'Comfortaa', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Debugging & Error Handling</h1>
 
     <div class="subcard">
       Debugging is about shrinking the search space: isolate the problem, inspect state, and verify assumptions. These tips
@@ -39,11 +40,23 @@
       <p>Use lightweight tools first, then step through when needed.</p>
       <pre><code class="language-typescript">
 // Console helpers
+const step = 'checkout';
+const userId = 42;
+const items = [
+  { id: 1, name: 'Vanilla Cone' },
+  { id: 2, name: 'Chocolate Shake' }
+];
+
 console.log('state', { step, userId });
 console.table(items);
-console.time('fetch');
-await fetch('/api/data');
-console.timeEnd('fetch');
+
+async function measureRequest() {
+  console.time('fetch');
+  await fetch('/api/data');
+  console.timeEnd('fetch');
+}
+
+measureRequest();
 
 // Pause execution in dev tools
 function calculateTotal(values: number[]) {
@@ -113,6 +126,9 @@ fetch('/api/orders')
       <h3>More Console Methods</h3>
       <p>Beyond <code>console.log</code> — tools that organize and highlight output.</p>
       <pre><code class="language-javascript">
+const user = { name: 'Aiko', email: 'aiko@example.com' };
+const age = 22;
+
 // Group related logs
 console.group('User Details');
 console.log('Name:', user.name);

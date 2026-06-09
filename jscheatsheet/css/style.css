@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&display=swap');
 
 :root {
   --strawberry-pink: #FFB3BA;
@@ -126,7 +126,7 @@ body::after {
 
 /* Headers */
 h1 {
-  font-family: 'Pacifico', cursive;
+  font-family: 'Comfortaa', cursive;
   font-size: 4rem;
   text-align: center;
   margin-bottom: 2rem;
@@ -193,7 +193,7 @@ h1::after {
 }
 
 h2 {
-  font-family: 'Pacifico', cursive;
+  font-family: 'Comfortaa', cursive;
   font-size: 2rem;
   color: var(--candy-red);
   margin-bottom: 1rem;
@@ -286,7 +286,7 @@ h2 {
 .navbar a {
   text-decoration: none;
   color: var(--chocolate-brown);
-  font-family: 'Pacifico', cursive;
+  font-family: 'Comfortaa', cursive;
   font-size: 1.2rem;
   transition: all 0.3s ease;
   padding: 0.5rem 1rem;
@@ -380,7 +380,7 @@ pre {
 }
 
 h3 {
-  font-family: 'Pacifico', cursive;
+  font-family: 'Comfortaa', cursive;
   color: #5d4037; /* Chocolate Brown placeholder */
   margin-top: 1.5rem;
 }
@@ -441,7 +441,7 @@ label {
   font-weight: 600;
   color: var(--chocolate-brown);
   font-size: 1.1rem;
-  font-family: 'Pacifico', cursive;
+  font-family: 'Comfortaa', cursive;
 }
 
 input[type="text"],

@@ -17,6 +17,7 @@
   <a href="index.html">Home</a>
   <a href="arrays.html">Arrays</a>
   <a href="objects.html">Objects</a>
+  <a href="oop.html">OOP</a>
   <a href="everyday.html">Everyday</a>
   <a href="debug.html">Debug</a>
   <a href="async.html" class="active">Async</a>
@@ -27,7 +28,7 @@
 
 
 <div class="card">
-  <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Asynchronous JavaScript</h1>
+  <h1 style="font-family: 'Comfortaa', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Asynchronous JavaScript</h1>
 
   <div class="subcard">
     <p style="text-align: left; font-size: 1.2rem;">
@@ -157,11 +158,17 @@ async function api(endpoint, options = {}) {
 }
 
 // Usage
-const users = await api('/users');
-const newPost = await api('/posts', {
-  method: 'POST',
-  body: JSON.stringify({ title: 'Hello World' })
-});
+async function loadData() {
+  const users = await api('/users');
+  const newPost = await api('/posts', {
+    method: 'POST',
+    body: JSON.stringify({ title: 'Hello World' })
+  });
+
+  console.log(users, newPost);
+}
+
+loadData();
     </code></pre>
   </div>
 
@@ -191,19 +198,23 @@ async function loadDashboard(userId) {
     <p><strong>Promise.allSettled</strong> &mdash; waits for all promises and reports the status of each, never short-circuits.</p>
     <pre><code class="language-javascript">
 // Try to send notifications to multiple services
-const results = await Promise.allSettled([
-  fetch('/api/notify/email', { method: 'POST', body: data }),
-  fetch('/api/notify/sms',   { method: 'POST', body: data }),
-  fetch('/api/notify/slack', { method: 'POST', body: data })
-]);
+async function notifyAll(data) {
+  const results = await Promise.allSettled([
+    fetch('/api/notify/email', { method: 'POST', body: data }),
+    fetch('/api/notify/sms',   { method: 'POST', body: data }),
+    fetch('/api/notify/slack', { method: 'POST', body: data })
+  ]);
 
-results.forEach((result, i) => {
-  if (result.status === 'fulfilled') {
-    console.log(`Service ${i}: sent successfully`);
-  } else {
-    console.warn(`Service ${i}: failed -`, result.reason);
-  }
-});
+  results.forEach((result, i) => {
+    if (result.status === 'fulfilled') {
+      console.log(`Service ${i}: sent successfully`);
+    } else {
+      console.warn(`Service ${i}: failed -`, result.reason);
+    }
+  });
+}
+
+notifyAll(JSON.stringify({ message: 'Hello team' }));
     </code></pre>
 
     <p><strong>Promise.race</strong> &mdash; resolves or rejects as soon as the first promise settles.</p>
@@ -217,12 +228,17 @@ function fetchWithTimeout(url, ms = 5000) {
   return Promise.race([fetch(url), timeout]);
 }
 
-try {
-  const res = await fetchWithTimeout('/api/slow-endpoint', 3000);
-  const data = await res.json();
-} catch (err) {
-  console.error(err.message); // "Request timed out" if > 3s
+async function loadWithTimeout() {
+  try {
+    const res = await fetchWithTimeout('/api/slow-endpoint', 3000);
+    const data = await res.json();
+    console.log(data);
+  } catch (err) {
+    console.error(err.message); // "Request timed out" if > 3s
+  }
 }
+
+loadWithTimeout();
     </code></pre>
   </div>
 
@@ -291,7 +307,12 @@ async function fetchWithRetry(url, retries = 3, delay = 1000) {
 }
 
 // Usage
-const data = await fetchWithRetry('/api/flaky-endpoint');
+async function loadFlakyData() {
+  const data = await fetchWithRetry('/api/flaky-endpoint');
+  console.log(data);
+}
+
+loadFlakyData();
     </code></pre>
   </div>
 </div>

@@ -1,0 +1,238 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Object-Oriented JavaScript - Sweet TS & JS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="How to approach object-oriented programming in JavaScript with prototypes, classes, encapsulation, inheritance, and composition.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="arrays.html">Arrays</a>
+    <a href="objects.html">Objects</a>
+    <a href="oop.html" class="active">OOP</a>
+    <a href="everyday.html">Everyday</a>
+    <a href="debug.html">Debug</a>
+    <a href="async.html">Async</a>
+    <a href="fp.html">FP</a>
+    <a href="dom.html">DOM</a>
+  </nav>
+
+  <div class="card">
+    <h1 style="font-family: 'Comfortaa', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Object-Oriented JavaScript</h1>
+
+    <div class="subcard">
+      JavaScript can absolutely be written in an object-oriented style, but it does not work exactly like Java or Python.
+      Under the hood, JavaScript is prototype-based: objects can inherit behavior directly from other objects, and the
+      modern <code>class</code> syntax is mostly a cleaner layer on top of prototypes. In practice, "doing OOP in JavaScript"
+      usually means creating objects that hold state, attaching methods that act on that state, hiding implementation details,
+      and composing behavior carefully instead of building deep inheritance trees.
+    </div>
+
+    <div class="subcard">
+      <h3>The Core Idea</h3>
+      <p>Think in terms of objects with data plus behavior, but remember that JavaScript favors flexibility over rigid class systems.</p>
+      <pre><code class="language-javascript">const account = {
+  owner: 'Mina',
+  balance: 0,
+  deposit(amount) {
+    this.balance += amount;
+  },
+  withdraw(amount) {
+    if (amount > this.balance) {
+      throw new Error('Insufficient funds');
+    }
+    this.balance -= amount;
+  }
+};
+
+account.deposit(50);
+account.withdraw(20);
+console.log(account.balance); // 30</code></pre>
+    </div>
+
+    <div class="subcard">
+      <h3>Classes: The Usual Starting Point</h3>
+      <p>If you want something that feels closest to OOP in Java or Python, use <code>class</code>. It is the most readable starting point for teams.</p>
+      <pre><code class="language-javascript">class User {
+  constructor(name, role = 'member') {
+    this.name = name;
+    this.role = role;
+  }
+
+  describe() {
+    return `${this.name} has role ${this.role}`;
+  }
+}
+
+const user = new User('Aiko');
+console.log(user.describe()); // 'Aiko has role member'
+
+const admin = new User('Ren', 'admin');
+console.log(admin.describe()); // 'Ren has role admin'</code></pre>
+      <p><code>constructor</code> creates the instance. Methods live on the prototype, so they are shared instead of copied onto every object, and the default role is used only when you do not pass a second argument.</p>
+    </div>
+
+    <div class="subcard">
+      <h3>What Classes Really Use: Prototypes</h3>
+      <p>JavaScript inheritance is based on prototype chains. Classes are syntax sugar over that mechanism.</p>
+      <pre><code class="language-javascript">function Animal(name) {
+  this.name = name;
+}
+
+Animal.prototype.speak = function () {
+  return `${this.name} makes a sound`;
+};
+
+const cat = new Animal('Mochi');
+console.log(cat.speak()); // 'Mochi makes a sound'</code></pre>
+      <p>You do not need to write code this way often anymore, but understanding prototypes explains how <code>class</code>, method lookup, and inheritance actually work.</p>
+    </div>
+
+    <div class="subcard">
+      <h3>Encapsulation</h3>
+      <p>JavaScript does not force strict access modifiers like Java, but you still have solid ways to hide internal details.</p>
+      <pre><code class="language-javascript">class Counter {
+  #count = 0;
+
+  increment() {
+    this.#count += 1;
+  }
+
+  get value() {
+    return this.#count;
+  }
+}
+
+const counter = new Counter();
+counter.increment();
+console.log(counter.value); // 1
+// counter.#count; // SyntaxError</code></pre>
+      <p>Use private fields like <code>#count</code> when you want hard encapsulation in modern JavaScript.</p>
+    </div>
+
+    <div class="subcard">
+      <h3>Inheritance: Use It, But Lightly</h3>
+      <p>Inheritance works, but deep hierarchies become brittle fast. Prefer it for clear "is-a" relationships.</p>
+      <pre><code class="language-javascript">class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    return `${this.name} makes a sound`;
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    return `${this.name} barks`;
+  }
+}
+
+const dog = new Dog('Cookie');
+console.log(dog.speak()); // 'Cookie barks'</code></pre>
+      <p><code>extends</code> sets up the prototype chain, and child classes can override parent behavior.</p>
+    </div>
+
+    <div class="subcard">
+      <h3>Composition: Usually the Better Default</h3>
+      <p>In JavaScript, composition is often cleaner than inheritance. Build objects by combining small behaviors.</p>
+      <pre><code class="language-javascript">const canDrive = (state) => ({
+  drive() {
+    return `${state.name} is driving`;
+  }
+});
+
+const canCharge = (state) => ({
+  charge() {
+    state.battery = 100;
+    return `${state.name} is fully charged`;
+  }
+});
+
+function createElectricCar(name) {
+  const state = { name, battery: 20 };
+  return {
+    ...canDrive(state),
+    ...canCharge(state),
+    getBattery() {
+      return state.battery;
+    }
+  };
+}
+
+const car = createElectricCar('Volt');
+console.log(car.drive());
+console.log(car.charge());</code></pre>
+      <p>This pattern is common in JavaScript because it avoids rigid inheritance trees and makes behavior easier to reuse.</p>
+    </div>
+
+    <div class="subcard">
+      <h3>Factories vs Classes</h3>
+      <p>You do not have to use <code>new</code>. Factory functions are a very JavaScript-native OOP approach.</p>
+      <pre><code class="language-javascript">function createTimer(label) {
+  let seconds = 0;
+
+  return {
+    tick() {
+      seconds += 1;
+    },
+    read() {
+      return `${label}: ${seconds}s`;
+    }
+  };
+}
+
+const timer = createTimer('Workout');
+timer.tick();
+console.log(timer.read()); // 'Workout: 1s'</code></pre>
+      <p>Factories pair nicely with closures when you want private state without classes.</p>
+    </div>
+
+    <div class="subcard">
+      <h3>TypeScript Makes OOP Safer</h3>
+      <p>JavaScript itself stays dynamic, but TypeScript helps document object shapes and method contracts.</p>
+      <pre><code class="language-typescript">interface Shape {
+  area(): number;
+}
+
+class Rectangle implements Shape {
+  constructor(private width: number, private height: number) {}
+
+  area(): number {
+    return this.width * this.height;
+  }
+}
+
+const shape: Shape = new Rectangle(4, 5);
+console.log(shape.area()); // 20</code></pre>
+      <p>TypeScript does not change the runtime model, but it does make OOP-heavy codebases easier to reason about.</p>
+    </div>
+
+    <div class="subcard">
+      <h3>Practical Advice</h3>
+      <p>How to "do OOP" in JavaScript in real projects:</p>
+      <pre><code class="language-javascript">// Good defaults
+// 1. Start with plain objects for simple data.
+// 2. Use classes when instances share a clear lifecycle and behavior.
+// 3. Prefer composition over deep inheritance.
+// 4. Use private fields or closures for hidden state.
+// 5. Keep methods small and focused on the object's responsibility.</code></pre>
+      <p>JavaScript is not missing OOP; it just offers a looser, more prototype-driven version of it. The best approach is usually lightweight objects, small classes where they help, and composition whenever inheritance starts to feel forced.</p>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>

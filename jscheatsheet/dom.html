@@ -18,6 +18,7 @@
     <a href="index.html">Home</a>
     <a href="arrays.html">Arrays</a>
     <a href="objects.html">Objects</a>
+    <a href="oop.html">OOP</a>
     <a href="everyday.html">Everyday</a>
     <a href="debug.html">Debug</a>
     <a href="async.html">Async</a>
@@ -26,7 +27,7 @@
   </nav>
 
   <div class="card">
-    <h1 style="font-family: 'Pacifico', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">DOM & Events Cheat Sheet</h1>
+    <h1 style="font-family: 'Comfortaa', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">DOM & Events Cheat Sheet</h1>
 
     <div class="subcard">
       The DOM (Document Object Model) is the browser's representation of your HTML page as a tree of objects. Every element, attribute, and piece of text becomes a node that JavaScript can read and modify. When you change the DOM, the browser immediately updates what the user sees on screen. Understanding DOM manipulation and events is the foundation of interactive web programming — it is how buttons respond to clicks, forms validate input, and content updates without a full page reload.
@@ -169,6 +170,16 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Input event — fires on every keystroke
+const searchInput = document.querySelector('#search');
+
+function closeModal() {
+  console.log('Closing modal');
+}
+
+function filterResults(query) {
+  console.log('Filtering for:', query);
+}
+
 searchInput.addEventListener('input', (e) => {
   filterResults(e.target.value);
 });</code></pre>
@@ -219,7 +230,9 @@ form.addEventListener('submit', (e) => {
       </div>
       <div class="method-section">
         <p><code>Basic form validation</code>: Check input before submitting</p>
-        <pre><code class="language-javascript">form.addEventListener('submit', (e) => {
+        <pre><code class="language-javascript">const form = document.querySelector('#signup-form');
+
+form.addEventListener('submit', (e) => {
   e.preventDefault();
 
   const email = document.querySelector('#email');
