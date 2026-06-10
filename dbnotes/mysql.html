@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MySQL on Linux — DB Notes</title>
+  <meta name="description" content="Install, secure and manage MySQL on Ubuntu/Debian and Fedora/RHEL: systemctl service control, mysql_secure_installation, connecting and basic commands.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1><span class="db-chip mysql">MySQL</span>MySQL on Linux</h1>
+        <p class="page-intro">
+          Install MySQL from your distribution's packages, secure the fresh installation,
+          control the service with systemd, and run your first commands in the
+          <code>mysql</code> client.
+        </p>
+
+        <section id="install-debian">
+          <h2>1. Installing MySQL on Ubuntu / Debian</h2>
+          <p>
+            <strong>What it does:</strong> downloads and installs the MySQL server package and
+            registers it as a systemd service. <strong>When to use it:</strong> on any
+            Debian-family distribution (Ubuntu, Debian, Linux Mint, Pop!_OS).
+          </p>
+          <pre data-lang="bash"><code>sudo apt update
+sudo apt install mysql-server</code></pre>
+          <p>
+            <code>apt update</code> refreshes the package index so you get the current version;
+            <code>apt install mysql-server</code> installs the server, the client tools and the
+            systemd unit. On Ubuntu the service usually starts automatically after installation.
+          </p>
+          <div class="callout callout-note">
+            <span class="callout-title">Note — Debian and MariaDB</span>
+            On plain Debian, the <code>mysql-server</code> package may be provided by
+            <strong>MariaDB</strong>, a community fork of MySQL. For learning purposes the
+            commands on this site work the same way on both — see
+            <a href="#mariadb">MariaDB</a> below.
+          </div>
+        </section>
+
+        <section id="install-fedora">
+          <h2>2. Installing MySQL on Fedora / RHEL-based systems</h2>
+          <p>
+            <strong>When to use it:</strong> on Fedora, RHEL, CentOS Stream, Rocky Linux or
+            AlmaLinux, which use the <code>dnf</code> package manager.
+          </p>
+          <pre data-lang="bash"><code>sudo dnf install mysql-server</code></pre>
+          <p>
+            Unlike Ubuntu, Fedora-family systems usually do <em>not</em> start the service
+            automatically. Start it and enable it at boot:
+          </p>
+          <pre data-lang="bash"><code>sudo systemctl enable --now mysqld</code></pre>
+          <p>
+            <code>enable --now</code> does two things at once: starts the service immediately
+            and registers it to start on every boot.
+          </p>
+        </section>
+
+        <section id="service-status">
+          <h2>3. Checking the MySQL service status</h2>
+          <p>
+            <strong>What it does:</strong> shows whether the server process is running, when it
+            started, and the most recent log lines. <strong>When to use it:</strong> after
+            installing, and any time a connection fails — always check the service first.
+          </p>
+          <pre data-lang="bash"><code>sudo systemctl status mysql</code></pre>
+          <p>or:</p>
+          <pre data-lang="bash"><code>sudo systemctl status mysqld</code></pre>
+          <div class="callout callout-note">
+            <span class="callout-title">Note — the service name differs by distribution</span>
+            Ubuntu/Debian call the unit <code>mysql</code>; Fedora/RHEL call it
+            <code>mysqld</code> (the trailing <em>d</em> means "daemon"). If one name reports
+            "could not be found", simply try the other. <code>systemctl list-units | grep -i
+            mysql</code> will tell you which one exists on your machine.
+          </div>
+          <p>Look for <code>Active: active (running)</code> in the output. <code>inactive (dead)</code>
+            means the server is stopped; <code>failed</code> means it crashed at startup — see
+            <a href="troubleshooting.html">Troubleshooting</a>.</p>
+        </section>
+
+        <section id="service-control">
+          <h2>4. Starting, stopping and restarting MySQL</h2>
+          <p>
+            <strong>When to use them:</strong> <code>start</code> after a stop or fresh install,
+            <code>stop</code> before maintenance such as moving data files,
+            <code>restart</code> after changing configuration files.
+          </p>
+          <pre data-lang="bash"><code>sudo systemctl start mysql
+sudo systemctl stop mysql
+sudo systemctl restart mysql</code></pre>
+          <p>(Use <code>mysqld</code> instead of <code>mysql</code> on Fedora/RHEL.)</p>
+          <div class="callout callout-warning">
+            <span class="callout-title">Warning — stopping a production server</span>
+            <code>systemctl stop</code> disconnects every application using the database.
+            On a real system, schedule it and announce it. On your learning machine,
+            stop and start as much as you like.
+          </div>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — start at boot</span>
+            <code>sudo systemctl enable mysql</code> makes the service start automatically on
+            boot; <code>disable</code> reverses it.
+          </div>
+        </section>
+
+        <section id="secure-installation">
+          <h2>5. Securing the MySQL installation</h2>
+          <p>
+            <strong>What it does:</strong> runs an interactive script that locks down the
+            defaults of a fresh installation. <strong>When to use it:</strong> once, right after
+            installing — before you create any databases.
+          </p>
+          <pre data-lang="bash"><code>sudo mysql_secure_installation</code></pre>
+          <p>The script walks you through a series of yes/no questions. It typically asks you to:</p>
+          <ul>
+            <li><strong>Set a root password</strong> (and optionally enable a password-strength policy).</li>
+            <li><strong>Remove anonymous users</strong> — accounts that allow logging in with no username.</li>
+            <li><strong>Disable remote root login</strong> — root should only connect from the local machine.</li>
+            <li><strong>Remove the test database</strong> — a world-accessible demo database.</li>
+            <li><strong>Reload privilege tables</strong> — applies all the changes immediately.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — answer "yes" to everything</span>
+            On a learning or development machine there is no downside to accepting every
+            hardening option. Use a placeholder like <code>strong_password</code> in notes and
+            scripts — never write a real password into a file you might commit to Git.
+          </div>
+        </section>
+
+        <section id="connect">
+          <h2>6. Connecting to MySQL</h2>
+          <p>
+            On Ubuntu, the root database account authenticates via <em>auth_socket</em> by
+            default: any process owned by the Linux root user may connect without a password.
+            That is why the simplest first connection is:
+          </p>
+          <pre data-lang="bash"><code>sudo mysql</code></pre>
+          <p>
+            Once a root password is set (for example by <code>mysql_secure_installation</code>),
+            or for any password-based account, connect with:
+          </p>
+          <pre data-lang="bash"><code>mysql -u root -p</code></pre>
+          <p>
+            <code>-u root</code> selects the user, and <code>-p</code> makes the client prompt
+            for the password interactively. A successful login lands you at the
+            <code>mysql&gt;</code> prompt. Type <code>exit</code> or press
+            <kbd>Ctrl</kbd>+<kbd>D</kbd> to leave.
+          </p>
+          <div class="callout callout-warning">
+            <span class="callout-title">Warning — never put the password on the command line</span>
+            <code>mysql -u root -pMyPassword</code> works, but the password ends up in your
+            shell history and in the process list where other users can see it. Always use a
+            bare <code>-p</code> and type the password at the prompt.
+          </div>
+        </section>
+
+        <section id="common-commands">
+          <h2>7. Common MySQL commands</h2>
+          <p>Run these at the <code>mysql&gt;</code> prompt. Every statement ends with a semicolon.</p>
+
+          <h3>List all databases</h3>
+          <pre data-lang="sql"><code>SHOW DATABASES;</code></pre>
+          <p>You'll see system databases such as <code>mysql</code>, <code>information_schema</code>
+            and <code>performance_schema</code> — leave those alone.</p>
+
+          <h3>Create a database</h3>
+          <pre data-lang="sql"><code>CREATE DATABASE sample_db;</code></pre>
+
+          <h3>Switch to a database</h3>
+          <pre data-lang="sql"><code>USE sample_db;</code></pre>
+          <p>After <code>USE</code>, table commands apply to <code>sample_db</code> without
+            needing a prefix.</p>
+
+          <h3>List tables in the current database</h3>
+          <pre data-lang="sql"><code>SHOW TABLES;</code></pre>
+          <p>A fresh database returns <code>Empty set</code> — you haven't created any tables yet.
+            See <a href="sql-files.html">Running SQL files</a> to load a schema.</p>
+
+          <h3>Delete a database</h3>
+          <pre data-lang="sql"><code>DROP DATABASE sample_db;</code></pre>
+          <div class="callout callout-warning">
+            <span class="callout-title">Danger — DROP DATABASE is permanent</span>
+            <code>DROP DATABASE</code> deletes the database and <strong>every table and row in
+            it, immediately and without confirmation</strong>. There is no undo and no recycle
+            bin. On anything but a throwaway database, take a
+            <a href="backup-restore.html">backup</a> first and double-check the name you typed.
+          </div>
+        </section>
+
+        <section id="mariadb">
+          <h2>8. MariaDB — the other MySQL</h2>
+          <p>
+            <strong>MariaDB</strong> is a community fork of MySQL, created in 2009 by MySQL's
+            original developers after Oracle acquired MySQL. It started as a drop-in
+            replacement, and for everything taught on this site the two behave the same:
+            same SQL, same <code>mysql</code> client, same port 3306, same
+            <code>mysqldump</code>-style tooling.
+          </p>
+          <p>
+            You will meet MariaDB whether you choose it or not, because <strong>many Linux
+            distributions ship it as their default "MySQL"</strong>: plain Debian's
+            <code>default-mysql-server</code> package installs MariaDB, and RHEL-family
+            distributions (RHEL, Rocky, AlmaLinux) carry MariaDB in their standard
+            repositories. Installing it explicitly looks like this:
+          </p>
+          <pre data-lang="bash"><code># Ubuntu / Debian
+sudo apt install mariadb-server
+
+# Fedora / RHEL-based
+sudo dnf install mariadb-server</code></pre>
+          <p>The systemd service is named <code>mariadb</code>:</p>
+          <pre data-lang="bash"><code>sudo systemctl status mariadb
+sudo systemctl enable --now mariadb</code></pre>
+          <p>Not sure which one a machine is actually running? Ask the server:</p>
+          <pre data-lang="sql"><code>SELECT VERSION();</code></pre>
+          <p>
+            A MariaDB result contains the word <code>MariaDB</code> (for example
+            <code>11.4.2-MariaDB</code>); a MySQL result is just a version number like
+            <code>8.0.39</code>. From the shell, <code>mysql --version</code> tells you the
+            same about the client.
+          </p>
+          <div class="callout callout-note">
+            <span class="callout-title">Note — they are slowly drifting apart</span>
+            Since the fork, the two projects have developed independently: recent MySQL and
+            MariaDB versions differ in newer features (JSON handling, authentication plugins,
+            replication options), and MariaDB versions its releases differently (10.x/11.x
+            rather than 8.x). Everything on this site sticks to the shared, compatible core —
+            but if you use advanced features, check the documentation of the one you actually
+            run.
+          </div>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — securing MariaDB</span>
+            MariaDB ships the same hardening script, named
+            <code>mariadb-secure-installation</code> (the old
+            <code>mysql_secure_installation</code> name still works as an alias). The questions
+            are the same as in <a href="#secure-installation">section 5</a>.
+          </div>
+        </section>
+
+        <section id="next">
+          <h2>Next steps</h2>
+          <ul>
+            <li>Install <a href="postgresql.html">PostgreSQL</a> alongside and compare.</li>
+            <li>Load a schema from a script — <a href="sql-files.html">Running SQL files</a>.</li>
+            <li>Stop using root: create an application user — <a href="user-management.html">Users &amp; permissions</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — MySQL on Linux. Service names vary by distribution: <code>mysql</code>
+          (Debian-family) vs <code>mysqld</code> (Fedora-family).
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+/* ============================================================
+   DB Notes — site layout & components
+   Builds on the Sakura design system (style.css).
+   Layout: sticky top bar, left sidebar on desktop,
+   slide-in sidebar on mobile.
+   ============================================================ */
+
+:root {
+  /* Database accent tones, derived to sit inside the pastel palette */
+  --mysql-soft: #DEEBF6;   /* light blue surface  */
+  --mysql:      #4A7BA6;   /* light blue ink      */
+  --mysql-deep: #38618A;
+
+  --pg-soft:    #EAE2F2;   /* light velvet surface */
+  --pg:         #8A6FAE;   /* light velvet ink     */
+  --pg-deep:    #6F5694;
+
+  --danger-soft: #F8E2E2;  /* warning box surface  */
+
+  --header-h: 58px;
+}
+
+/* ------------------------------------------------------------
+   Dark mode — overrides the Sakura tokens
+   ------------------------------------------------------------ */
+[data-theme="dark"] {
+  --background: #211A1F;
+  --primary:    #2B2229;
+  --secondary:  #322631;
+  --sub1:       #322B3C;
+  --sub2:       #243230;
+
+  --ink:        #F1E7EC;
+  --ink-soft:   #C9B6C0;
+  --ink-faint:  #95818D;
+
+  --accent:        #D8809C;
+  --accent-hover:  #E59AB2;
+  --accent-soft:   #573A47;
+
+  --lavender:   #B4A4CA;
+  --mint:       #7FBFB8;
+
+  --line:        #3E3039;
+  --line-strong: #564450;
+
+  --mysql-soft: #283845;
+  --mysql:      #8FB8DC;
+  --mysql-deep: #A9CCE8;
+
+  --pg-soft:    #352C45;
+  --pg:         #B5A0DC;
+  --pg-deep:    #C8B6E8;
+
+  --danger-soft: #452A30;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow:    0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .input,
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--primary);
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------
+   Top bar
+   ------------------------------------------------------------ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--header-h);
+  padding-inline: var(--space-4);
+  background: var(--background);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  font-weight: var(--fw-black);
+  font-size: var(--text-lg);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.brand:hover { text-decoration: none; color: var(--ink); }
+.brand span { color: var(--accent); }
+
+.header-tag {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  display: none;
+}
+@media (min-width: 720px) { .header-tag { display: inline; } }
+
+.header-spacer { flex: 1; }
+
+.theme-toggle {
+  font-size: 1.1rem;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  line-height: 1;
+  transition: background var(--dur) var(--ease);
+}
+.theme-toggle:hover { background: var(--secondary); }
+
+/* Hamburger — hidden on desktop */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 8px;
+}
+.menu-toggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+body.nav-open .menu-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+body.nav-open .menu-toggle span:nth-child(2) { opacity: 0; }
+body.nav-open .menu-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ------------------------------------------------------------
+   Layout: sidebar + content
+   ------------------------------------------------------------ */
+.layout {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  max-width: 1240px;
+  margin-inline: auto;
+}
+
+/* The mobile-menu backdrop must never occupy a grid cell */
+.nav-backdrop { display: none; }
+
+.sidebar {
+  position: sticky;
+  top: var(--header-h);
+  height: calc(100vh - var(--header-h));
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-4) var(--space-8);
+  border-right: 1px solid var(--line);
+}
+
+.nav-label {
+  font-size: var(--text-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: var(--space-5) 0 var(--space-2);
+}
+.nav-label:first-child { margin-top: 0; }
+
+.sidebar a {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-medium);
+}
+.sidebar a:hover {
+  background: var(--secondary);
+  color: var(--ink);
+  text-decoration: none;
+}
+.sidebar a.active {
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: var(--fw-bold);
+}
+.sidebar a.nav-mysql.active { background: var(--mysql-soft); color: var(--mysql-deep); }
+.sidebar a.nav-pg.active    { background: var(--pg-soft);    color: var(--pg-deep); }
+
+.content {
+  padding: var(--space-6) var(--space-5) var(--space-10);
+  max-width: 880px;
+  width: 100%;
+  justify-self: start;
+}
+
+.content section { margin-top: var(--space-8); }
+
+/* Documentation-scale headings — the display sizes in style.css
+   are too large for long-form reference pages */
+.content h1 { font-size: var(--text-3xl); margin-bottom: 1em; }
+.content h2 { font-size: var(--text-xl); padding-bottom: var(--space-2); border-bottom: 1px solid var(--line); margin-bottom: 1em; }
+.content h3 { font-size: var(--text-lg); margin-top: var(--space-5); margin-bottom: 1em; }
+.content section > p, .content section > ul, .content section > ol { margin-top: var(--space-3); }
+.content .db-section > p, .content .db-section > ul { margin-top: var(--space-3); }
+
+.page-intro {
+  font-size: var(--text-lg);
+  font-weight: var(--fw-light);
+  color: var(--ink-soft);
+  line-height: 1.7;
+  margin-top: var(--space-4);
+  max-width: 60ch;
+}
+
+.site-footer {
+  margin-top: var(--space-10);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+}
+
+/* Mobile layout */
+@media (max-width: 880px) {
+  .layout { grid-template-columns: 1fr; }
+
+  .menu-toggle { display: flex; }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--header-h);
+    bottom: 0;
+    width: min(290px, 84vw);
+    height: auto;
+    background: var(--background);
+    transform: translateX(-100%);
+    transition: transform var(--dur) var(--ease);
+    z-index: 90;
+    box-shadow: none;
+  }
+  body.nav-open .sidebar {
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 80;
+    border: none;
+    padding: 0;
+  }
+  body.nav-open .nav-backdrop { display: block; }
+
+  .content { padding-inline: var(--space-4); }
+}
+
+/* ------------------------------------------------------------
+   Code blocks with copy button (wrapper built by main.js)
+   ------------------------------------------------------------ */
+.code-block {
+  margin: var(--space-4) 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.code-block pre {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+.code-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--secondary);
+  border-bottom: 1px solid var(--line);
+}
+.code-lang {
+  font-size: var(--text-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.copy-btn {
+  font-family: var(--font);
+  font-size: var(--text-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.copy-btn:hover { background: var(--accent-soft); color: var(--ink); }
+.copy-btn.copied {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: #fff;
+}
+
+/* ------------------------------------------------------------
+   Callout boxes
+   ------------------------------------------------------------ */
+.callout {
+  border-radius: var(--radius);
+  border-left: 4px solid;
+  padding: var(--space-4) var(--space-5);
+  margin: var(--space-5) 0;
+  font-size: var(--text-sm);
+  line-height: 1.65;
+}
+.callout-title {
+  display: block;
+  font-weight: var(--fw-bold);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-1);
+}
+.callout p { font-size: inherit; }
+
+.callout-warning { background: var(--danger-soft); border-color: var(--danger); }
+.callout-warning .callout-title { color: var(--danger); }
+
+.callout-tip { background: var(--sub2); border-color: var(--mint); }
+.callout-tip .callout-title { color: var(--mint); }
+
+.callout-note { background: var(--sub1); border-color: var(--lavender); }
+.callout-note .callout-title { color: var(--lavender); }
+
+/* ------------------------------------------------------------
+   MySQL / PostgreSQL accents
+   ------------------------------------------------------------ */
+.db-chip {
+  display: inline-block;
+  font-size: var(--text-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.7rem;
+  border-radius: var(--radius-full);
+  vertical-align: 0.25em;
+  margin-right: var(--space-2);
+}
+.db-chip.mysql { background: var(--mysql-soft); color: var(--mysql-deep); }
+.db-chip.pg    { background: var(--pg-soft);    color: var(--pg-deep); }
+
+.db-section {
+  border-left: 4px solid var(--line-strong);
+  padding-left: var(--space-5);
+  margin: var(--space-6) 0;
+}
+.db-section.mysql { border-color: var(--mysql); }
+.db-section.pg    { border-color: var(--pg); }
+
+.db-card {
+  background: var(--primary);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+.db-card.mysql { border-top-color: var(--mysql); }
+.db-card.pg    { border-top-color: var(--pg); }
+.db-card h3 { font-size: var(--text-lg); }
+
+/* ------------------------------------------------------------
+   Tables & misc
+   ------------------------------------------------------------ */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin: var(--space-4) 0;
+}
+.table-wrap table { min-width: 560px; }
+.table-wrap th { white-space: nowrap; }
+
+.filter-box { max-width: 360px; margin: var(--space-4) 0; }
+
+.steps { counter-reset: step; list-style: none; padding: 0; }
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 var(--space-4) var(--space-8);
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: var(--radius-full);
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.steps li::after {
+  content: "";
+  position: absolute;
+  left: calc(0.95rem - 1px);
+  top: 2.1rem;
+  bottom: 0.2rem;
+  width: 2px;
+  background: var(--line);
+}
+.steps li:last-child::after { display: none; }
+.steps strong { display: block; }
+.steps p { font-size: var(--text-sm); color: var(--ink-soft); }
+
+article ul, article ol { padding-left: 1.4rem; }
+article li + li { margin-top: var(--space-1); }
+article ul, article ol { color: var(--ink); }
+
+/* p5.js artwork holder on the home page */
+.art-holder {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--primary);
+  margin-top: var(--space-5);
+}
+.art-holder canvas { display: block; width: 100% !important; }
+.art-caption {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--line);
+}

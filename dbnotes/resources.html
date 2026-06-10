@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources &amp; Next Steps — DB Notes</title>
+  <meta name="description" content="Official MySQL and PostgreSQL documentation, a basic SQL crash course, a sample database project, connection strings, Docker notes and suggested next topics.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1>Resources &amp; Next Steps</h1>
+        <p class="page-intro">
+          Where to go after this site: the official documentation, a crash course in the
+          SQL you'll use daily, a sample project to practise on, and a roadmap of topics
+          worth learning next.
+        </p>
+
+        <section id="official-docs">
+          <h2>1. Official documentation</h2>
+          <div class="grid grid-2 mt-4">
+            <div class="db-card mysql">
+              <h3>MySQL</h3>
+              <ul class="mt-4">
+                <li><a href="https://dev.mysql.com/doc/" target="_blank" rel="noopener">MySQL Reference Manual</a> — the authoritative reference.</li>
+                <li><a href="https://dev.mysql.com/doc/refman/en/tutorial.html" target="_blank" rel="noopener">MySQL Tutorial chapter</a> — official getting-started guide.</li>
+                <li><a href="https://mariadb.com/kb/" target="_blank" rel="noopener">MariaDB Knowledge Base</a> — useful when your "MySQL" is actually MariaDB.</li>
+              </ul>
+            </div>
+            <div class="db-card pg">
+              <h3>PostgreSQL</h3>
+              <ul class="mt-4">
+                <li><a href="https://www.postgresql.org/docs/" target="_blank" rel="noopener">PostgreSQL Documentation</a> — famously well written.</li>
+                <li><a href="https://www.postgresql.org/docs/current/tutorial.html" target="_blank" rel="noopener">Official tutorial</a> — part I of the manual.</li>
+                <li><a href="https://wiki.postgresql.org/" target="_blank" rel="noopener">PostgreSQL Wiki</a> — community guides and FAQs.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="tutorials">
+          <h2>2. SQL tutorials &amp; practice</h2>
+          <ul>
+            <li><a href="https://sqlbolt.com/" target="_blank" rel="noopener">SQLBolt</a> — interactive lessons in the browser, ideal first stop.</li>
+            <li><a href="https://www.postgresqltutorial.com/" target="_blank" rel="noopener">PostgreSQL Tutorial</a> and <a href="https://www.mysqltutorial.org/" target="_blank" rel="noopener">MySQL Tutorial</a> — task-oriented guides per database.</li>
+            <li><a href="https://sqlzoo.net/" target="_blank" rel="noopener">SQLZoo</a> — practice problems with instant feedback.</li>
+            <li><a href="https://www.w3schools.com/sql/" target="_blank" rel="noopener">W3Schools SQL</a> — quick syntax reference with try-it editors.</li>
+          </ul>
+        </section>
+
+        <section id="linux-systemd">
+          <h2>3. Linux &amp; systemd basics</h2>
+          <p>
+            Everything on this site leans on <code>systemctl</code> and
+            <code>journalctl</code>. If they still feel like incantations:
+          </p>
+          <ul>
+            <li><a href="https://www.freedesktop.org/software/systemd/man/latest/systemctl.html" target="_blank" rel="noopener">systemctl man page</a> — the full command reference.</li>
+            <li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units" target="_blank" rel="noopener">DigitalOcean: managing systemd services</a> — a gentle practical guide.</li>
+            <li><a href="https://linuxjourney.com/" target="_blank" rel="noopener">Linux Journey</a> — free, structured Linux fundamentals.</li>
+          </ul>
+        </section>
+
+        <section id="security-reading">
+          <h2>4. Database security basics</h2>
+          <p>Start with the <a href="user-management.html#security">security checklist</a> on this site, then go deeper:</p>
+          <ul>
+            <li><a href="https://dev.mysql.com/doc/refman/en/security.html" target="_blank" rel="noopener">MySQL security guidelines</a> — official hardening chapter.</li>
+            <li><a href="https://www.postgresql.org/docs/current/auth-pg-hba-conf.html" target="_blank" rel="noopener">pg_hba.conf documentation</a> — understand PostgreSQL authentication properly.</li>
+            <li><a href="https://owasp.org/www-community/attacks/SQL_Injection" target="_blank" rel="noopener">OWASP on SQL injection</a> — why least-privilege users matter.</li>
+          </ul>
+        </section>
+
+        <section id="sql-crash-course">
+          <h2>5. Basic SQL crash course</h2>
+          <p>
+            The statements below work identically in MySQL and PostgreSQL — this is the
+            portable core of SQL. Run them in either client against a test database.
+          </p>
+
+          <h3>CREATE TABLE — define structure</h3>
+          <pre data-lang="sql"><code>CREATE TABLE products (
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2),
+    stock INT DEFAULT 0
+);</code></pre>
+
+          <h3>INSERT — add rows</h3>
+          <pre data-lang="sql"><code>INSERT INTO products (id, name, price, stock)
+VALUES (1, 'Keyboard', 49.90, 12),
+       (2, 'Mouse', 19.90, 30),
+       (3, 'Monitor', 199.00, 5);</code></pre>
+
+          <h3>SELECT + WHERE — read rows with conditions</h3>
+          <pre data-lang="sql"><code>SELECT name, price FROM products
+WHERE price &lt; 100;</code></pre>
+
+          <h3>ORDER BY — sort results</h3>
+          <pre data-lang="sql"><code>SELECT name, price FROM products
+ORDER BY price DESC;</code></pre>
+
+          <h3>UPDATE — change rows</h3>
+          <pre data-lang="sql"><code>UPDATE products
+SET stock = stock - 1
+WHERE id = 2;</code></pre>
+
+          <h3>DELETE — remove rows</h3>
+          <pre data-lang="sql"><code>DELETE FROM products
+WHERE id = 3;</code></pre>
+          <div class="callout callout-warning">
+            <span class="callout-title">Warning — UPDATE and DELETE without WHERE</span>
+            Leaving off the <code>WHERE</code> clause applies the change to <strong>every row
+            in the table</strong>. Habit worth building: write the <code>WHERE</code> first as
+            a <code>SELECT</code>, check what comes back, then turn it into the UPDATE/DELETE.
+          </div>
+
+          <h3>JOIN — combine tables</h3>
+          <pre data-lang="sql"><code>SELECT orders.id, customers.name
+FROM orders
+JOIN customers ON orders.customer_id = customers.id;</code></pre>
+
+          <h3>GROUP BY — aggregate</h3>
+          <pre data-lang="sql"><code>SELECT customer_id, COUNT(*) AS order_count
+FROM orders
+GROUP BY customer_id;</code></pre>
+        </section>
+
+        <section id="sample-project">
+          <h2>6. Sample database project</h2>
+          <p>
+            A small web-shop schema to practise everything on this site: save it as
+            <code>shop.sql</code>, create a database, and <a href="sql-files.html">run the
+            file</a> in either system. Only the primary-key line differs between the two —
+            pick the right variant for your database.
+          </p>
+          <pre data-lang="sql"><code>-- shop.sql — works in MySQL and PostgreSQL
+-- For auto-generated ids, replace "INT PRIMARY KEY" with:
+--   MySQL:       INT AUTO_INCREMENT PRIMARY KEY
+--   PostgreSQL:  SERIAL PRIMARY KEY
+
+CREATE TABLE customers (
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE products (
+    id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE orders (
+    id INT PRIMARY KEY,
+    customer_id INT NOT NULL REFERENCES customers(id),
+    order_date DATE NOT NULL
+);
+
+CREATE TABLE order_items (
+    id INT PRIMARY KEY,
+    order_id INT NOT NULL REFERENCES orders(id),
+    product_id INT NOT NULL REFERENCES products(id),
+    quantity INT NOT NULL DEFAULT 1
+);
+
+INSERT INTO customers VALUES (1, 'Alice', 'alice@example.com'),
+                             (2, 'Bob', 'bob@example.com');
+INSERT INTO products  VALUES (1, 'Keyboard', 49.90),
+                             (2, 'Mouse', 19.90),
+                             (3, 'Monitor', 199.00);
+INSERT INTO orders    VALUES (1, 1, '2026-06-01'),
+                             (2, 2, '2026-06-03');
+INSERT INTO order_items VALUES (1, 1, 1, 1),
+                               (2, 1, 2, 2),
+                               (3, 2, 3, 1);</code></pre>
+          <p>Then try a query that touches every table:</p>
+          <pre data-lang="sql"><code>SELECT customers.name,
+       products.name AS product,
+       order_items.quantity
+FROM order_items
+JOIN orders    ON order_items.order_id = orders.id
+JOIN customers ON orders.customer_id = customers.id
+JOIN products  ON order_items.product_id = products.id
+ORDER BY customers.name;</code></pre>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — practise the full cycle</span>
+            With this schema you can practise the whole learning path: create a database,
+            run the file, create an <code>appuser</code> with access to it, back it up,
+            drop it, and restore it.
+          </div>
+        </section>
+
+        <section id="connection-strings">
+          <h2>7. Connecting applications to databases</h2>
+          <p>
+            Applications usually connect with a <strong>connection string</strong> (or URL)
+            that packs user, password, host, port and database into one line:
+          </p>
+          <pre data-lang="text"><code>mysql://appuser:password@localhost:3306/sample_db</code></pre>
+          <pre data-lang="text"><code>postgresql://appuser:password@localhost:5432/sample_db</code></pre>
+          <p>
+            The exact format depends on the language and library — some take a URL like the
+            above, others take separate host/user/password parameters. Whatever the format:
+            use your limited <a href="user-management.html">application user</a> (never
+            root/postgres), and keep the string out of source code — load it from an
+            environment variable such as <code>DATABASE_URL</code>.
+          </p>
+          <p>Common client libraries to look up for your language:</p>
+          <ul>
+            <li><strong>Python</strong> — <code>mysql-connector-python</code> / <code>psycopg</code> (or SQLAlchemy on top).</li>
+            <li><strong>Go</strong> — <code>go-sql-driver/mysql</code> / <code>jackc/pgx</code>.</li>
+            <li><strong>JavaScript (Node.js)</strong> — <code>mysql2</code> / <code>pg</code> (or Prisma, Drizzle).</li>
+            <li><strong>Java</strong> — JDBC drivers: MySQL Connector/J / PostgreSQL JDBC.</li>
+          </ul>
+        </section>
+
+        <section id="docker">
+          <h2>8. The Docker option</h2>
+          <p>
+            Both databases also run as Docker containers — handy for throwaway test instances
+            (<code>docker run -e POSTGRES_PASSWORD=strong_password -p 5432:5432 postgres</code>).
+            Everything you learned here still applies inside the container: same clients, same
+            SQL, same users and dumps. This site focuses on direct Linux installation because
+            understanding the service, its files and its authentication makes the Docker
+            variant trivial later — not the other way around.
+          </p>
+        </section>
+
+        <section id="next-topics">
+          <h2>9. Suggested next topics</h2>
+          <p>Roughly in the order they pay off:</p>
+          <ul>
+            <li><strong>Indexes</strong> — the single biggest lever for query speed; learn <code>CREATE INDEX</code> and when it helps.</li>
+            <li><strong>Joins</strong> — go beyond INNER JOIN: LEFT/RIGHT joins and when each returns NULLs.</li>
+            <li><strong>Transactions</strong> — <code>BEGIN</code>/<code>COMMIT</code>/<code>ROLLBACK</code> and why "all or nothing" matters.</li>
+            <li><strong>Views</strong> — save complex queries as virtual tables.</li>
+            <li><strong>Stored procedures</strong> — logic that runs inside the database.</li>
+            <li><strong>Triggers</strong> — automatic actions on INSERT/UPDATE/DELETE.</li>
+            <li><strong>Database normalization</strong> — designing tables that avoid duplicated data.</li>
+            <li><strong>Query performance</strong> — reading <code>EXPLAIN</code> output to see what the database actually does.</li>
+            <li><strong>Docker-based database setup</strong> — reproducible test databases in CI pipelines.</li>
+            <li><strong>Connecting from code</strong> — Python, Go, JavaScript, Java… see the libraries above.</li>
+          </ul>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — resources &amp; next steps. External links open the official sites;
+          none of them are affiliated with this tutorial.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

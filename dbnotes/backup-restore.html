@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backup &amp; Restore — DB Notes</title>
+  <meta name="description" content="Back up and restore MySQL and PostgreSQL databases with mysqldump, pg_dump and psql, plus backup best practices.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1>Backup &amp; Restore</h1>
+        <p class="page-intro">
+          Both databases ship a "dump" tool that writes a database out as a plain SQL
+          script — which means a backup is just a file, and a restore is just
+          <a href="sql-files.html">running a SQL file</a>.
+        </p>
+
+        <section id="mysql-backup">
+          <div class="db-section mysql">
+            <h2><span class="db-chip mysql">MySQL</span>1. MySQL backup with mysqldump</h2>
+            <p>
+              <strong>What it does:</strong> <code>mysqldump</code> connects to the server,
+              reads the database, and prints SQL statements that would recreate it
+              (<code>CREATE TABLE</code> + <code>INSERT</code> rows). The <code>&gt;</code>
+              redirects that output into a file. <strong>When to use it:</strong> before any
+              risky change, before upgrades, and on a regular schedule.
+            </p>
+            <pre data-lang="bash"><code>mysqldump -u username -p database_name &gt; backup.sql</code></pre>
+            <p>Concrete example:</p>
+            <pre data-lang="bash"><code>mysqldump -u root -p sample_db &gt; sample_db_backup.sql</code></pre>
+            <p>
+              The result is a readable text file — open it with <code>less backup.sql</code>
+              to see exactly what was saved. To dump every database at once, use
+              <code>--all-databases</code> instead of a database name.
+            </p>
+          </div>
+        </section>
+
+        <section id="mysql-restore">
+          <div class="db-section mysql">
+            <h2><span class="db-chip mysql">MySQL</span>2. MySQL restore</h2>
+            <p>
+              <strong>What it does:</strong> replays the dump file against a database —
+              identical to running any SQL file. The target database must already exist.
+            </p>
+            <pre data-lang="bash"><code>mysql -u username -p database_name &lt; backup.sql</code></pre>
+            <p>Restoring into a fresh database:</p>
+            <pre data-lang="bash"><code>mysql -u root -p -e "CREATE DATABASE sample_db;"
+mysql -u root -p sample_db &lt; sample_db_backup.sql</code></pre>
+            <div class="callout callout-warning">
+              <span class="callout-title">Warning — restoring overwrites data</span>
+              Dump files usually contain <code>DROP TABLE IF EXISTS</code> statements: restoring
+              into a database <strong>replaces its tables with the backup's contents</strong>.
+              Triple-check the target database name before pressing Enter.
+            </div>
+          </div>
+        </section>
+
+        <section id="pg-backup">
+          <div class="db-section pg">
+            <h2><span class="db-chip pg">PostgreSQL</span>3. PostgreSQL backup with pg_dump</h2>
+            <p>
+              <strong>What it does:</strong> the same idea as mysqldump — writes the database
+              out as SQL text.
+            </p>
+            <pre data-lang="bash"><code>pg_dump -U username database_name &gt; backup.sql</code></pre>
+            <p>On a default peer-auth setup, run it as the <code>postgres</code> user:</p>
+            <pre data-lang="bash"><code>sudo -u postgres pg_dump sample_db &gt; /tmp/sample_db_backup.sql</code></pre>
+            <div class="callout callout-tip">
+              <span class="callout-title">Tip — other formats and whole-cluster dumps</span>
+              <code>pg_dump -Fc</code> produces a compressed custom-format archive restored with
+              <code>pg_restore</code> (supports parallel and selective restore).
+              <code>pg_dumpall</code> dumps every database <em>plus roles</em> — useful before
+              server migrations.
+            </div>
+          </div>
+        </section>
+
+        <section id="pg-restore">
+          <div class="db-section pg">
+            <h2><span class="db-chip pg">PostgreSQL</span>4. PostgreSQL restore</h2>
+            <p>
+              <strong>What it does:</strong> a plain-text dump is restored by running it with
+              psql, like any SQL file.
+            </p>
+            <pre data-lang="bash"><code>psql -U username -d database_name -f backup.sql</code></pre>
+            <p>Restoring into a fresh database as the postgres user:</p>
+            <pre data-lang="bash"><code>sudo -u postgres psql -c "CREATE DATABASE sample_db;"
+sudo -u postgres psql -d sample_db -f /tmp/sample_db_backup.sql</code></pre>
+            <p>
+              Add <code>-v ON_ERROR_STOP=1</code> to abort on the first error instead of
+              ploughing on through a half-broken restore.
+            </p>
+          </div>
+        </section>
+
+        <section id="best-practices">
+          <h2>5. Best practices</h2>
+          <ul>
+            <li>
+              <strong>Test restores, not just backups.</strong> A backup you have never
+              restored is a hope, not a backup. Periodically restore into a scratch database
+              and check the row counts:
+              <code>sudo -u postgres psql -c "CREATE DATABASE restore_test;"</code> then
+              restore into <code>restore_test</code> and inspect it.
+            </li>
+            <li>
+              <strong>Keep backups off the server.</strong> If the disk dies, backups stored on
+              the same machine die with the data. Copy dumps to another machine or object
+              storage, e.g. <code>scp backup.sql you@backuphost:/backups/</code>.
+            </li>
+            <li>
+              <strong>Never commit backups with real data to GitHub.</strong> A dump is your
+              entire database in plain text — customer emails included. Add
+              <code>*.sql.gz</code> and <code>*backup*</code> patterns for dump files to
+              <code>.gitignore</code> (schema-only scripts you wrote by hand are fine to commit).
+            </li>
+            <li>
+              <strong>Protect files containing passwords or sensitive data.</strong> Restrict
+              dump files (<code>chmod 600 backup.sql</code>) and encrypt them before they leave
+              the machine. The same goes for config files like <code>~/.my.cnf</code> or
+              <code>~/.pgpass</code> that store credentials.
+            </li>
+            <li>
+              <strong>Automate with cron only after testing manually.</strong> First make the
+              dump command work by hand, including the password handling. Then schedule it,
+              e.g. nightly at 02:00:
+              <pre data-lang="bash"><code># crontab -e  (illustrative; test the command manually first)
+0 2 * * * pg_dump -U appuser sample_db | gzip &gt; /backups/sample_db_$(date +\%F).sql.gz</code></pre>
+              Check for a fresh file the next morning — a silently failing cron backup is worse
+              than no backup, because you stop worrying.
+            </li>
+          </ul>
+        </section>
+
+        <section id="next">
+          <h2>Next steps</h2>
+          <ul>
+            <li>A restore is just a SQL file run — review <a href="sql-files.html">Running SQL files</a>.</li>
+            <li>Backups failing with auth errors? — <a href="troubleshooting.html">Troubleshooting</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — backup &amp; restore. The only backup that counts is one you've restored.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

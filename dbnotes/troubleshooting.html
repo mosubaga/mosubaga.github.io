@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troubleshooting — DB Notes</title>
+  <meta name="description" content="Fix common MySQL and PostgreSQL problems on Linux: services that won't start, access denied, peer authentication failures, port conflicts and firewalls.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1>Troubleshooting</h1>
+        <p class="page-intro">
+          Most database problems on Linux fall into five buckets: the service isn't
+          running, authentication is rejecting you, the port is taken, or a firewall is
+          in the way. Work through them in that order.
+        </p>
+
+        <section id="service-wont-start">
+          <h2>1. Service will not start</h2>
+          <p>
+            <strong>First rule of debugging:</strong> read what the system is actually telling
+            you. Start with the service status — it shows the state <em>and</em> the last few
+            log lines:
+          </p>
+          <pre data-lang="bash"><code>sudo systemctl status mysql
+sudo systemctl status postgresql</code></pre>
+          <p>If the status output isn't enough, ask the journal for recent errors with full detail:</p>
+          <pre data-lang="bash"><code>journalctl -xe</code></pre>
+          <p>Or follow one service's log specifically:</p>
+          <pre data-lang="bash"><code>sudo journalctl -u mysql --since "10 minutes ago"
+sudo journalctl -u postgresql --since "10 minutes ago"</code></pre>
+          <p>Typical causes, in rough order of likelihood:</p>
+          <ul>
+            <li><strong>Wrong service name</strong> — <code>mysql</code> vs <code>mysqld</code> (see <a href="mysql.html#service-status">MySQL page</a>).</li>
+            <li><strong>PostgreSQL data directory not initialised</strong> on Fedora/RHEL — run <code>sudo postgresql-setup --initdb</code> (see <a href="postgresql.html#install-fedora">PostgreSQL page</a>).</li>
+            <li><strong>Config file typo</strong> — a single bad line in <code>my.cnf</code> or <code>postgresql.conf</code> stops startup; the log names the line.</li>
+            <li><strong>Disk full</strong> — check with <code>df -h</code>; databases refuse to start without space.</li>
+            <li><strong>Port already in use</strong> — see <a href="#ports">port conflicts</a> below.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — copy the exact error into a search engine</span>
+            Database error messages are precise and well indexed. The full line from the log
+            almost always leads to the answer faster than guessing.
+          </div>
+        </section>
+
+        <section id="mysql-access-denied">
+          <h2><span class="db-chip mysql">MySQL</span>2. Access denied in MySQL</h2>
+          <p>The classic error:</p>
+          <pre data-lang="text"><code>ERROR 1045 (28000): Access denied for user 'appuser'@'localhost' (using password: YES)</code></pre>
+          <p>
+            Note that the message tells you <em>which account</em> MySQL resolved you to —
+            the name <strong>and</strong> the host. The usual causes:
+          </p>
+          <ul>
+            <li>
+              <strong>Wrong password.</strong> The boring one — check for typos and stray
+              whitespace, and remember passwords are case-sensitive.
+            </li>
+            <li>
+              <strong>Wrong host.</strong> MySQL accounts are
+              <code>'user'@'host'</code> pairs. If the user exists as
+              <code>'appuser'@'localhost'</code> but you connect over the network (even from
+              the same machine via its IP), there is no matching account. Check what exists:
+              <pre data-lang="sql"><code>SELECT user, host FROM mysql.user;</code></pre>
+            </li>
+            <li>
+              <strong>Privileges never granted.</strong> The user can log in but gets
+              "Access denied" on a specific database — verify with
+              <code>SHOW GRANTS FOR 'appuser'@'localhost';</code> and grant what is missing.
+            </li>
+            <li>
+              <strong>Forgot <code>FLUSH PRIVILEGES</code>.</strong> Only relevant if grant
+              tables were edited directly with INSERT/UPDATE — but if you suspect stale
+              privileges, running <code>FLUSH PRIVILEGES;</code> is harmless.
+            </li>
+            <li>
+              <strong>Trying <code>mysql -u root -p</code> on a fresh Ubuntu install.</strong>
+              Root may use socket authentication with no password — use
+              <code>sudo mysql</code> instead (see <a href="mysql.html#connect">connecting</a>).
+            </li>
+          </ul>
+        </section>
+
+        <section id="peer-auth">
+          <h2><span class="db-chip pg">PostgreSQL</span>3. PostgreSQL: peer authentication failed</h2>
+          <p>The most-searched PostgreSQL error on Linux:</p>
+          <pre data-lang="text"><code>FATAL: Peer authentication failed for user "postgres"</code></pre>
+          <p>
+            <strong>What it means:</strong> for local connections PostgreSQL defaults to
+            <em>peer authentication</em> — instead of asking for a password, it checks that
+            your <strong>Linux username</strong> matches the database role you are asking for.
+            Running <code>psql -U postgres</code> as your own user fails, because you are not
+            the Linux user <code>postgres</code>.
+          </p>
+
+          <h3>Fix 1 — work with peer auth (recommended)</h3>
+          <p>Become the matching Linux user for admin work; no configuration changes needed:</p>
+          <pre data-lang="bash"><code>sudo -u postgres psql</code></pre>
+
+          <h3>Fix 2 — connect over TCP with a password</h3>
+          <p>
+            Password-based rules usually apply to TCP connections, so forcing a network
+            connection to localhost prompts for a password instead:
+          </p>
+          <pre data-lang="bash"><code>psql -h 127.0.0.1 -U appuser -d sample_db</code></pre>
+          <p>(The role needs a password set: <code>ALTER USER appuser WITH PASSWORD 'strong_password';</code>)</p>
+
+          <h3>Fix 3 — change the authentication rules</h3>
+          <p>
+            Authentication behaviour lives in <code>pg_hba.conf</code> ("host-based
+            authentication"); the data directory location and other server settings live in
+            <code>postgresql.conf</code>. Find them with:
+          </p>
+          <pre data-lang="bash"><code>sudo -u postgres psql -c "SHOW hba_file;"
+sudo -u postgres psql -c "SHOW config_file;"</code></pre>
+          <p>
+            Changing the local rule from <code>peer</code> to <code>scram-sha-256</code> makes
+            local connections ask for a password. After editing, apply with
+            <code>sudo systemctl reload postgresql</code>.
+          </p>
+          <div class="callout callout-warning">
+            <span class="callout-title">Warning — edit pg_hba.conf carefully</span>
+            A wrong line here can lock <em>everyone</em> out, including you, or accidentally
+            open the server to passwordless logins (<code>trust</code>). Before editing:
+            make a copy (<code>sudo cp pg_hba.conf pg_hba.conf.bak</code>), change one line at
+            a time, keep a working <code>sudo -u postgres psql</code> session open while you
+            test, and never use <code>trust</code> outside a disposable lab machine.
+          </div>
+        </section>
+
+        <section id="ports">
+          <h2>4. Port conflicts</h2>
+          <p>The default ports:</p>
+          <pre data-lang="text"><code>MySQL:      3306
+PostgreSQL: 5432</code></pre>
+          <p>
+            <strong>When to check:</strong> the service fails to start with an "address already
+            in use" error, or you suspect another instance (a Docker container is the usual
+            suspect) is occupying the port. <code>ss</code> shows who is listening:
+          </p>
+          <pre data-lang="bash"><code>ss -tulpn | grep 3306
+ss -tulpn | grep 5432</code></pre>
+          <p>
+            The flags: <strong>t</strong>cp, <strong>u</strong>dp, <strong>l</strong>istening,
+            <strong>p</strong>rocesses, <strong>n</strong>umeric. The last column names the
+            process that owns the port (run with <code>sudo</code> to see processes you don't
+            own). If something else is on the port, either stop it or move one of the two to a
+            different port in its config file.
+          </p>
+        </section>
+
+        <section id="firewall">
+          <h2>5. Firewall issues</h2>
+          <p>
+            <strong>Symptom:</strong> local connections work, but a remote client hangs or
+            times out. On Ubuntu, check the firewall state:
+          </p>
+          <pre data-lang="bash"><code>sudo ufw status</code></pre>
+          <p>
+            (Fedora/RHEL use <code>firewalld</code>:
+            <code>sudo firewall-cmd --list-all</code>.) If the database port isn't allowed,
+            remote packets are dropped silently — which is exactly the timeout you're seeing.
+          </p>
+          <div class="callout callout-warning">
+            <span class="callout-title">Warning — do not open database ports to the internet</span>
+            Publicly reachable MySQL/PostgreSQL ports are scanned and attacked within minutes
+            of going online. If a remote machine needs access, allow <em>only its IP</em>
+            (e.g. <code>sudo ufw allow from 192.168.1.50 to any port 5432</code>) — and prefer
+            an SSH tunnel or VPN instead, as described in the
+            <a href="user-management.html#security">security checklist</a>. Also remember the
+            server must be configured to listen beyond localhost at all
+            (<code>bind-address</code> in MySQL, <code>listen_addresses</code> in PostgreSQL) —
+            the safe default is local-only.
+          </div>
+        </section>
+
+        <section id="next">
+          <h2>Next steps</h2>
+          <ul>
+            <li>Avoid most auth problems by setting up users properly — <a href="user-management.html">Users &amp; permissions</a>.</li>
+            <li>Before experimenting with fixes, take a <a href="backup-restore.html">backup</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — troubleshooting. Check the service, read the log, then fix the auth.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

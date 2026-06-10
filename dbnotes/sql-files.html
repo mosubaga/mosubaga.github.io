@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Running SQL Files — DB Notes</title>
+  <meta name="description" content="How to run .sql files in MySQL and PostgreSQL: shell redirection, psql -f, SOURCE, \i, and the most common errors when scripts fail.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1>Running SQL Files</h1>
+        <p class="page-intro">
+          A <code>.sql</code> file lets you build a schema or load data with one command
+          instead of typing statements by hand. Here is how to run scripts in both
+          databases — from the shell and from inside the client.
+        </p>
+
+        <section id="what-is">
+          <h2>1. What is a SQL file?</h2>
+          <p>
+            A SQL file is a plain text file (conventionally ending in <code>.sql</code>)
+            containing one or more SQL statements, each terminated by a semicolon.
+            The database executes them top to bottom, exactly as if you had typed them
+            at the prompt. A typical small script:
+          </p>
+          <pre data-lang="sql"><code>CREATE TABLE users (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+
+INSERT INTO users VALUES (1, 'Alice', 'alice@example.com');</code></pre>
+          <p>
+            SQL files are how teams share schemas, seed test data, apply migrations and
+            restore backups — so being able to run one reliably is a core skill.
+          </p>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — keep schema files in version control</span>
+            Schema scripts belong in Git next to your code. Backup dumps with real data do
+            <strong>not</strong> — see <a href="backup-restore.html">Backup &amp; restore</a>.
+          </div>
+        </section>
+
+        <section id="mysql-file">
+          <div class="db-section mysql">
+            <h2><span class="db-chip mysql">MySQL</span>2. Running a SQL file in MySQL</h2>
+            <p>
+              <strong>What it does:</strong> feeds the file to the <code>mysql</code> client via
+              shell input redirection (<code>&lt;</code>). The client runs every statement
+              against the named database, then exits.
+            </p>
+            <pre data-lang="bash"><code>mysql -u username -p database_name &lt; file.sql</code></pre>
+            <p>Concrete example — load <code>schema.sql</code> into <code>sample_db</code> as root:</p>
+            <pre data-lang="bash"><code>mysql -u root -p sample_db &lt; schema.sql</code></pre>
+            <p>
+              You are prompted for the password, the script runs, and you get your shell prompt
+              back. <strong>No output means success</strong> — MySQL only prints errors.
+              The database (<code>sample_db</code> here) must already exist; the script runs
+              <em>inside</em> it.
+            </p>
+          </div>
+        </section>
+
+        <section id="pg-file">
+          <div class="db-section pg">
+            <h2><span class="db-chip pg">PostgreSQL</span>3. Running a SQL file in PostgreSQL</h2>
+            <p>
+              <strong>What it does:</strong> <code>psql</code> has a dedicated flag,
+              <code>-f</code>, that reads and executes a file. <code>-d</code> names the target
+              database.
+            </p>
+            <pre data-lang="bash"><code>psql -U username -d database_name -f file.sql</code></pre>
+            <p>
+              On a default Linux setup with peer authentication, run it as the
+              <code>postgres</code> system user:
+            </p>
+            <pre data-lang="bash"><code>sudo -u postgres psql -d sample_db -f schema.sql</code></pre>
+            <p>
+              Unlike MySQL, psql prints a confirmation tag for every statement
+              (<code>CREATE TABLE</code>, <code>INSERT 0 1</code>, …), so you can see exactly
+              how far the script got.
+            </p>
+            <div class="callout callout-tip">
+              <span class="callout-title">Tip — stop on the first error</span>
+              By default psql keeps going after an error. Add
+              <code>-v ON_ERROR_STOP=1</code> to abort at the first failure — almost always
+              what you want for schema scripts.
+            </div>
+          </div>
+        </section>
+
+        <section id="interactive">
+          <h2>4. Running SQL files interactively</h2>
+          <p>
+            <strong>When to use it:</strong> when you are already inside the client — exploring,
+            then deciding to load a script without leaving your session.
+          </p>
+
+          <h3><span class="db-chip mysql">MySQL</span>With SOURCE</h3>
+          <p>Connect first:</p>
+          <pre data-lang="bash"><code>mysql -u root -p</code></pre>
+          <p>Then, at the <code>mysql&gt;</code> prompt:</p>
+          <pre data-lang="sql"><code>USE sample_db;
+SOURCE schema.sql;</code></pre>
+
+          <h3><span class="db-chip pg">PostgreSQL</span>With \i</h3>
+          <p>Connect first:</p>
+          <pre data-lang="bash"><code>psql -U username -d database_name</code></pre>
+          <p>Then, at the <code>psql</code> prompt:</p>
+          <pre data-lang="psql"><code>\i schema.sql</code></pre>
+          <div class="callout callout-note">
+            <span class="callout-title">Note — relative paths</span>
+            In both clients, a relative filename like <code>schema.sql</code> is resolved
+            against the directory you launched the client from — not your home directory.
+            When in doubt, use an absolute path such as <code>/home/you/sql/schema.sql</code>.
+          </div>
+        </section>
+
+        <section id="problems">
+          <h2>5. Common problems when running SQL files</h2>
+
+          <h3>File not found</h3>
+          <p>
+            The path is wrong or relative to a different directory than you think.
+            Check with <code>ls -l file.sql</code> from the same shell, or use an absolute path.
+            With <code>sudo -u postgres</code>, remember the command runs as another user —
+            but the path is still resolved from your current directory, so a file in a
+            directory the <code>postgres</code> user cannot enter leads to the next problem.
+          </p>
+
+          <h3>Permission denied</h3>
+          <p>
+            The user running the client cannot read the file. Classic case:
+            <code>sudo -u postgres psql -f /home/you/schema.sql</code> fails because the
+            <code>postgres</code> user cannot read your home directory. Fix it by copying the
+            file to a shared location first:
+          </p>
+          <pre data-lang="bash"><code>cp schema.sql /tmp/
+sudo -u postgres psql -d sample_db -f /tmp/schema.sql</code></pre>
+
+          <h3>Database does not exist</h3>
+          <p>
+            Running a file does not create the target database. Create it first
+            (<code>CREATE DATABASE sample_db;</code>), then run the script against it.
+            The error looks like <code>ERROR 1049 (42000): Unknown database</code> in MySQL or
+            <code>FATAL: database "sample_db" does not exist</code> in PostgreSQL.
+          </p>
+
+          <h3>Syntax differences between MySQL and PostgreSQL</h3>
+          <p>
+            A script written for one database often fails on the other. The usual culprits:
+            <code>AUTO_INCREMENT</code> (MySQL) vs <code>SERIAL</code>/identity columns
+            (PostgreSQL), backtick-quoted identifiers (<code>`name`</code>, MySQL-only) vs
+            double quotes (standard), and engine clauses like <code>ENGINE=InnoDB</code>.
+            See <a href="comparison.html#syntax">syntax differences</a> for the full list.
+          </p>
+
+          <h3>Character encoding issues</h3>
+          <p>
+            If accented characters or emoji come out garbled, the file's encoding doesn't match
+            what the server expects. Save files as UTF-8 (check with <code>file file.sql</code>)
+            and prefer UTF-8 databases: <code>utf8mb4</code> in MySQL, <code>UTF8</code> in
+            PostgreSQL.
+          </p>
+
+          <h3>Running the file against the wrong database</h3>
+          <div class="callout callout-warning">
+            <span class="callout-title">Warning — the quiet disaster</span>
+            The most dangerous failure is the one with no error message: the script runs
+            perfectly, but against the wrong database (for example, production instead of
+            test). Before running any script that drops or modifies tables, confirm the target:
+            <code>SELECT DATABASE();</code> in MySQL, <code>SELECT current_database();</code>
+            or <code>\conninfo</code> in psql.
+          </div>
+        </section>
+
+        <section id="next">
+          <h2>Next steps</h2>
+          <ul>
+            <li>Try the <a href="resources.html#sample-project">sample database project</a> — a small schema that runs in both systems.</li>
+            <li>Stop running scripts as root/postgres — <a href="user-management.html">create an application user</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — running SQL files. MySQL: <code>mysql db &lt; file.sql</code> ·
+          PostgreSQL: <code>psql -d db -f file.sql</code>.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

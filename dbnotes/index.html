@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DB Notes — Learn MySQL &amp; PostgreSQL on Linux</title>
+  <meta name="description" content="A practical, copy-and-run guide to installing, configuring and using MySQL and PostgreSQL on Linux.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <span class="badge badge-rose">Hands-on tutorial &amp; command reference</span>
+        <h1 class="mt-4">Learn MySQL &amp; PostgreSQL<br>on Linux</h1>
+        <p class="page-intro">
+          A practical guide to installing, configuring and using the two most popular
+          open-source relational databases — with commands you can copy and run in
+          your own terminal.
+        </p>
+
+        <div class="art-holder">
+          <div id="rdbms-art"></div>
+          <p class="art-caption">
+            A relational database stores data in <strong>tables</strong>. Keys link rows in one table
+            to rows in another — that's the "relational" part. The moving dots are queries
+            following those relationships.
+          </p>
+        </div>
+
+        <section id="what-is-mysql">
+          <h2><span class="db-chip mysql">MySQL</span>What is MySQL?</h2>
+          <p>
+            MySQL is an open-source relational database management system (RDBMS) first
+            released in 1995. It is famous for powering a huge share of the web — WordPress,
+            many PHP applications, and large platforms such as YouTube and Facebook started
+            on it. It is known for being easy to set up, fast for read-heavy web workloads,
+            and extremely well documented because so many people use it.
+          </p>
+          <p>
+            On Linux you install it from your distribution's package manager, manage it with
+            <code>systemctl</code>, and talk to it with the <code>mysql</code> command-line client.
+          </p>
+        </section>
+
+        <section id="what-is-postgresql">
+          <h2><span class="db-chip pg">PostgreSQL</span>What is PostgreSQL?</h2>
+          <p>
+            PostgreSQL (often shortened to "Postgres") is an open-source RDBMS with roots going
+            back to the 1980s at UC Berkeley. It has a reputation for correctness, strict
+            adherence to the SQL standard, and advanced features: rich data types, powerful
+            JSON support, full-text search, and an extension system (PostGIS for geographic
+            data is a famous example).
+          </p>
+          <p>
+            On Linux it installs the same way — through the package manager — but it has a few
+            of its own conventions, such as a dedicated <code>postgres</code> Linux user and the
+            <code>psql</code> client with its backslash "meta-commands".
+          </p>
+        </section>
+
+        <section id="why-both">
+          <h2>Why learn both?</h2>
+          <p>
+            In real jobs you rarely get to choose: one project uses MySQL, the next uses
+            PostgreSQL. The core SQL is almost identical, but day-to-day administration —
+            connecting, creating users, granting permissions, backing up — differs in small,
+            annoying ways. Knowing both means:
+          </p>
+          <ul>
+            <li>You can move between projects and teams without friction.</li>
+            <li>You understand which differences are SQL-standard and which are vendor quirks.</li>
+            <li>You can make an informed choice when you <em>do</em> get to pick.</li>
+            <li>As a QA or automation engineer, you can set up test databases on any stack.</li>
+          </ul>
+          <p>
+            This site teaches the two side by side, so every task you learn for one database
+            comes with the equivalent command for the other.
+          </p>
+        </section>
+
+        <section id="coverage">
+          <h2>What this website covers</h2>
+          <div class="grid grid-2 mt-4">
+            <div class="db-card mysql">
+              <h3>Installation &amp; service management</h3>
+              <p class="text-muted text-sm mt-4">
+                Install MySQL and PostgreSQL on Ubuntu/Debian and Fedora/RHEL, then start,
+                stop and check the services with systemd.
+              </p>
+            </div>
+            <div class="db-card pg">
+              <h3>Running SQL files</h3>
+              <p class="text-muted text-sm mt-4">
+                Execute <code>.sql</code> scripts from the shell or from inside the client,
+                and fix the most common errors when a script fails.
+              </p>
+            </div>
+            <div class="db-card mysql">
+              <h3>Users, roles &amp; permissions</h3>
+              <p class="text-muted text-sm mt-4">
+                Create application users, grant only the privileges they need, and keep
+                root/postgres accounts out of your apps.
+              </p>
+            </div>
+            <div class="db-card pg">
+              <h3>Backup, restore &amp; troubleshooting</h3>
+              <p class="text-muted text-sm mt-4">
+                Dump and restore databases with <code>mysqldump</code> and <code>pg_dump</code>,
+                and diagnose services that won't start, auth failures and port conflicts.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="learning-path">
+          <h2>Recommended learning path</h2>
+          <p>Work through the steps in order — each page builds on the previous one.</p>
+          <ol class="steps mt-6">
+            <li>
+              <strong>Install the database server</strong>
+              <p>Use your package manager to install <a href="mysql.html">MySQL</a> or <a href="postgresql.html">PostgreSQL</a> (or both — they coexist happily).</p>
+            </li>
+            <li>
+              <strong>Start and stop the service</strong>
+              <p>Learn the <code>systemctl</code> commands to control and inspect the server process.</p>
+            </li>
+            <li>
+              <strong>Connect using the command line</strong>
+              <p>Open a session with the <code>mysql</code> or <code>psql</code> client.</p>
+            </li>
+            <li>
+              <strong>Create databases</strong>
+              <p>Use <code>CREATE DATABASE</code> and learn how to list and switch between databases.</p>
+            </li>
+            <li>
+              <strong>Run SQL files</strong>
+              <p>Execute schema and data scripts — see <a href="sql-files.html">Running SQL files</a>.</p>
+            </li>
+            <li>
+              <strong>Create users and manage permissions</strong>
+              <p>Set up least-privilege application users — see <a href="user-management.html">Users &amp; permissions</a>.</p>
+            </li>
+            <li>
+              <strong>Backup and restore databases</strong>
+              <p>Practise dumping and restoring before you need it — see <a href="backup-restore.html">Backup &amp; restore</a>.</p>
+            </li>
+            <li>
+              <strong>Troubleshoot common problems</strong>
+              <p>Learn to read service logs and fix auth errors — see <a href="troubleshooting.html">Troubleshooting</a>.</p>
+            </li>
+          </ol>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — practise on a throwaway machine</span>
+            The best way to learn is a virtual machine or a cloud VM you can break without
+            consequences. Every command on this site is safe to run on a fresh test system.
+          </div>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — a static tutorial site. No backend, no real database connection;
+          everything runs in your own terminal.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <script src="js/rdbms-sketch.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

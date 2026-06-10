@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostgreSQL on Linux — DB Notes</title>
+  <meta name="description" content="Install and manage PostgreSQL on Ubuntu/Debian and Fedora/RHEL: initdb, systemctl service control, the postgres user, psql and meta-commands.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1><span class="db-chip pg">PostgreSQL</span>PostgreSQL on Linux</h1>
+        <p class="page-intro">
+          Install PostgreSQL from your distribution's packages, initialise the data
+          directory where needed, control the service with systemd, and learn
+          <code>psql</code> and its meta-commands.
+        </p>
+
+        <section id="install-debian">
+          <h2>1. Installing PostgreSQL on Ubuntu / Debian</h2>
+          <p>
+            <strong>What it does:</strong> installs the PostgreSQL server, client tools, and the
+            <code>postgresql-contrib</code> package of useful extensions.
+            <strong>When to use it:</strong> on any Debian-family distribution.
+          </p>
+          <pre data-lang="bash"><code>sudo apt update
+sudo apt install postgresql postgresql-contrib</code></pre>
+          <p>
+            On Ubuntu/Debian the installer automatically creates the database cluster
+            (the on-disk data directory) and starts the service, so PostgreSQL is ready
+            to use immediately after this command finishes.
+          </p>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — what is "contrib"?</span>
+            <code>postgresql-contrib</code> adds officially maintained extensions such as
+            <code>pgcrypto</code> and <code>hstore</code>. It is small and worth installing
+            from the start.
+          </div>
+        </section>
+
+        <section id="install-fedora">
+          <h2>2. Installing PostgreSQL on Fedora / RHEL-based systems</h2>
+          <p>
+            <strong>When to use it:</strong> on Fedora, RHEL, CentOS Stream, Rocky Linux or
+            AlmaLinux. Note the extra step: on these systems you must initialise the database
+            cluster yourself before the server can start.
+          </p>
+          <pre data-lang="bash"><code>sudo dnf install postgresql-server postgresql-contrib
+sudo postgresql-setup --initdb</code></pre>
+          <p>
+            <code>postgresql-setup --initdb</code> creates the data directory (usually
+            <code>/var/lib/pgsql/data</code>) with the system files PostgreSQL needs.
+            Then start and enable the service:
+          </p>
+          <pre data-lang="bash"><code>sudo systemctl enable --now postgresql</code></pre>
+          <div class="callout callout-note">
+            <span class="callout-title">Note — skipping initdb is the #1 first-run error</span>
+            If you forget <code>--initdb</code>, <code>systemctl start postgresql</code> fails
+            with an error about a missing or invalid data directory. Ubuntu users never see
+            this because their packages run it automatically.
+          </div>
+        </section>
+
+        <section id="service-status">
+          <h2>3. Checking the PostgreSQL service status</h2>
+          <p>
+            <strong>When to use it:</strong> after installation and whenever a connection is
+            refused — confirm the server is actually running before debugging anything else.
+          </p>
+          <pre data-lang="bash"><code>sudo systemctl status postgresql</code></pre>
+          <p>
+            Look for <code>Active: active (running)</code>. Unlike MySQL, the unit is called
+            <code>postgresql</code> on virtually every distribution, so there is no service-name
+            guessing game here.
+          </p>
+        </section>
+
+        <section id="service-control">
+          <h2>4. Starting, stopping and restarting PostgreSQL</h2>
+          <p>
+            <strong>When to use them:</strong> the same as for any systemd service —
+            <code>restart</code> after editing <code>postgresql.conf</code> or
+            <code>pg_hba.conf</code>, <code>stop</code> before file-level maintenance.
+          </p>
+          <pre data-lang="bash"><code>sudo systemctl start postgresql
+sudo systemctl stop postgresql
+sudo systemctl restart postgresql</code></pre>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — reload instead of restart</span>
+            Many configuration changes (including most <code>pg_hba.conf</code> edits) only
+            need <code>sudo systemctl reload postgresql</code>, which re-reads the config
+            without dropping client connections.
+          </div>
+        </section>
+
+        <section id="connect">
+          <h2>5. Connecting to PostgreSQL</h2>
+          <p>
+            The PostgreSQL packages create a <strong>Linux system user named
+            <code>postgres</code></strong>, and inside the database a superuser role with the
+            same name. By default, local connections use <em>peer authentication</em>: you are
+            allowed in as database user <code>postgres</code> only if you <em>are</em> the Linux
+            user <code>postgres</code>. That is why the standard first connection looks like this:
+          </p>
+          <pre data-lang="bash"><code>sudo -u postgres psql</code></pre>
+          <p>
+            <code>sudo -u postgres</code> runs the command as the <code>postgres</code> Linux
+            user, and <code>psql</code> opens an interactive session. You will land at the
+            <code>postgres=#</code> prompt. Leave with <code>\q</code>.
+          </p>
+          <div class="callout callout-note">
+            <span class="callout-title">Note — why <code>psql -U postgres</code> alone often fails</span>
+            Running <code>psql -U postgres</code> as your own Linux user typically produces
+            <code>FATAL: Peer authentication failed</code> — peer auth checks your Linux
+            username, not a password. See
+            <a href="troubleshooting.html#peer-auth">Troubleshooting</a> for the full
+            explanation and fixes.
+          </div>
+        </section>
+
+        <section id="common-commands">
+          <h2>6. Common PostgreSQL commands</h2>
+          <p>
+            <code>psql</code> understands two different kinds of input, and telling them apart
+            is the key to feeling at home:
+          </p>
+          <ul>
+            <li>
+              <strong>Meta-commands</strong> start with a backslash (<code>\l</code>,
+              <code>\dt</code>, …). They are shortcuts <em>built into the psql client</em>,
+              not SQL. They need no semicolon and will not work from any other tool.
+            </li>
+            <li>
+              <strong>SQL statements</strong> (<code>CREATE DATABASE …;</code>) are sent to the
+              server, end with a semicolon, and work from any client or programming language.
+            </li>
+          </ul>
+
+          <h3>Essential meta-commands</h3>
+          <pre data-lang="psql"><code>\l            -- list all databases
+\c sample_db  -- connect (switch) to database sample_db
+\dt           -- list tables in the current database
+\du           -- list users/roles
+\q            -- quit psql</code></pre>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — get help inside psql</span>
+            <code>\?</code> lists every meta-command, and <code>\h CREATE TABLE</code> shows
+            the SQL syntax for any statement.
+          </div>
+
+          <h3>Creating and dropping databases (regular SQL)</h3>
+          <pre data-lang="sql"><code>CREATE DATABASE sample_db;</code></pre>
+          <pre data-lang="sql"><code>DROP DATABASE sample_db;</code></pre>
+          <div class="callout callout-warning">
+            <span class="callout-title">Danger — DROP DATABASE is permanent</span>
+            Exactly as in MySQL, <code>DROP DATABASE</code> destroys every table and row
+            instantly and irreversibly. PostgreSQL also refuses to drop the database you are
+            currently connected to — switch away with <code>\c postgres</code> first. Back up
+            anything you care about before dropping.
+          </div>
+
+          <h3>MySQL ↔ psql cheat row</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Task</th><th>MySQL</th><th>PostgreSQL (psql)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>List databases</td><td><code>SHOW DATABASES;</code></td><td><code>\l</code></td></tr>
+                <tr><td>Switch database</td><td><code>USE sample_db;</code></td><td><code>\c sample_db</code></td></tr>
+                <tr><td>List tables</td><td><code>SHOW TABLES;</code></td><td><code>\dt</code></td></tr>
+                <tr><td>Quit client</td><td><code>exit</code></td><td><code>\q</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The full side-by-side list lives on the <a href="comparison.html">comparison page</a>.</p>
+        </section>
+
+        <section id="next">
+          <h2>Next steps</h2>
+          <ul>
+            <li>Load a schema from a script — <a href="sql-files.html">Running SQL files</a>.</li>
+            <li>Create a role for your application — <a href="user-management.html">Users &amp; permissions</a>.</li>
+            <li>Hit a peer-authentication error? — <a href="troubleshooting.html#peer-auth">Troubleshooting</a>.</li>
+          </ul>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — PostgreSQL on Linux. Remember: backslash commands belong to
+          <code>psql</code>; SQL belongs to the server.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

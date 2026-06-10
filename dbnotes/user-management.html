@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users &amp; Permissions — DB Notes</title>
+  <meta name="description" content="User and role management in MySQL and PostgreSQL: CREATE USER, GRANT, roles, ownership, least privilege, and a database security checklist.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1>User Management &amp; Permissions</h1>
+        <p class="page-intro">
+          Applications should never connect as <code>root</code> or <code>postgres</code>.
+          This page shows how to create limited users in both databases, grant only the
+          privileges they need, and clean up users you no longer want.
+        </p>
+
+        <div class="callout callout-note">
+          <span class="callout-title">Placeholder passwords</span>
+          Every example uses <code>strong_password</code> as a stand-in. Replace it with a
+          long, randomly generated password — and never commit a real one to a Git repository.
+        </div>
+
+        <section id="mysql-users">
+          <div class="db-section mysql">
+            <h2><span class="db-chip mysql">MySQL</span>1. MySQL user management</h2>
+
+            <h3>Create a user</h3>
+            <p>
+              <strong>What it does:</strong> creates an account that may connect from a specific
+              host. <strong>When to use it:</strong> one user per application or service.
+            </p>
+            <pre data-lang="sql"><code>CREATE USER 'appuser'@'localhost' IDENTIFIED BY 'strong_password';</code></pre>
+
+            <h3>Understanding <code>'user'@'host'</code></h3>
+            <p>
+              A MySQL account is the <em>combination</em> of a name and the host it may connect
+              from — <code>'appuser'@'localhost'</code> and <code>'appuser'@'%'</code> are two
+              different accounts with separate passwords and privileges.
+            </p>
+            <ul>
+              <li><code>'appuser'@'localhost'</code> — may connect only from the same machine.</li>
+              <li><code>'appuser'@'192.168.1.50'</code> — may connect only from that IP address.</li>
+              <li><code>'appuser'@'%'</code> — may connect from <strong>anywhere</strong>.</li>
+            </ul>
+            <div class="callout callout-warning">
+              <span class="callout-title">Warning — avoid <code>'%'</code> unless you need it</span>
+              A <code>'%'</code> account is reachable from any machine that can see the port.
+              Prefer <code>localhost</code>, or the specific IP of your application server.
+              This is also why mysterious "Access denied" errors happen: the user exists for
+              <code>localhost</code> but the connection comes from elsewhere — see
+              <a href="troubleshooting.html#mysql-access-denied">Troubleshooting</a>.
+            </div>
+
+            <h3>Grant privileges</h3>
+            <p>
+              <strong>What it does:</strong> gives the user rights on a scope —
+              here, everything inside <code>sample_db</code> (the <code>.*</code> means
+              "all tables in that database").
+            </p>
+            <pre data-lang="sql"><code>GRANT ALL PRIVILEGES ON sample_db.* TO 'appuser'@'localhost';
+FLUSH PRIVILEGES;</code></pre>
+            <p>
+              <code>FLUSH PRIVILEGES;</code> reloads the grant tables. Strictly speaking, modern
+              MySQL applies <code>GRANT</code> statements immediately and the flush is only
+              required after editing grant tables directly — but including it costs nothing and
+              is a widespread habit.
+            </p>
+            <div class="callout callout-tip">
+              <span class="callout-title">Tip — grant less than ALL</span>
+              A typical web application only needs row access, not the right to drop tables:
+              <code>GRANT SELECT, INSERT, UPDATE, DELETE ON sample_db.* TO
+              'appuser'@'localhost';</code>
+            </div>
+
+            <h3>List users</h3>
+            <pre data-lang="sql"><code>SELECT user, host FROM mysql.user;</code></pre>
+            <p>To inspect one account's rights:</p>
+            <pre data-lang="sql"><code>SHOW GRANTS FOR 'appuser'@'localhost';</code></pre>
+
+            <h3>Remove a user</h3>
+            <pre data-lang="sql"><code>DROP USER 'appuser'@'localhost';</code></pre>
+            <div class="callout callout-warning">
+              <span class="callout-title">Danger — DROP USER is immediate</span>
+              The account and its grants are removed permanently. Any application still using
+              those credentials starts failing on its next connection. Existing open sessions,
+              however, stay alive until they disconnect.
+            </div>
+
+            <h3>Why applications must not use root</h3>
+            <p>
+              <code>root</code> can read and drop <em>every</em> database on the server. If an
+              attacker exploits your application (for example via SQL injection), they inherit
+              the application's database privileges. With a limited <code>appuser</code> the
+              damage is contained to one database; with <code>root</code> it is total. The same
+              logic says remote root login should stay disabled — administer locally or over SSH.
+            </p>
+          </div>
+        </section>
+
+        <section id="pg-users">
+          <div class="db-section pg">
+            <h2><span class="db-chip pg">PostgreSQL</span>2. PostgreSQL user and role management</h2>
+
+            <h3>Roles: the one concept to understand</h3>
+            <p>
+              PostgreSQL has a single concept, the <strong>role</strong>, which covers what
+              other systems split into "users" and "groups". A role with the
+              <code>LOGIN</code> attribute can connect — that's what we informally call a user.
+              A role <em>without</em> <code>LOGIN</code> acts as a group: you grant privileges
+              to it once, then grant the group role to individual login roles.
+              <code>CREATE USER</code> is simply shorthand for
+              <code>CREATE ROLE … LOGIN</code>.
+            </p>
+
+            <h3>Create a user (login role)</h3>
+            <pre data-lang="sql"><code>CREATE USER appuser WITH PASSWORD 'strong_password';</code></pre>
+            <p>
+              Note the difference from MySQL: no <code>@host</code> part. In PostgreSQL,
+              <em>where</em> connections may come from is controlled separately, in the
+              <code>pg_hba.conf</code> file — roles themselves are host-independent.
+            </p>
+
+            <h3>Create a database owned by the user</h3>
+            <p>
+              <strong>What it does:</strong> creates the database and makes <code>appuser</code>
+              its owner. <strong>When to use it:</strong> the cleanest setup for a dedicated
+              application database — the owner automatically has full rights inside it,
+              including creating tables.
+            </p>
+            <pre data-lang="sql"><code>CREATE DATABASE sample_db OWNER appuser;</code></pre>
+
+            <h3>Grant privileges on an existing database</h3>
+            <pre data-lang="sql"><code>GRANT ALL PRIVILEGES ON DATABASE sample_db TO appuser;</code></pre>
+            <div class="callout callout-note">
+              <span class="callout-title">Note — database privileges ≠ table privileges</span>
+              This grant covers database-level rights (connecting, creating schemas). It does
+              <strong>not</strong> grant access to tables owned by someone else — a frequent
+              surprise. Tables live inside <em>schemas</em> (the default one is
+              <code>public</code>), and table access is granted separately, e.g.:
+              <code>GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO
+              appuser;</code> Making <code>appuser</code> the database owner (above) sidesteps
+              the whole issue for simple projects.
+            </div>
+
+            <h3>List roles</h3>
+            <p>Inside psql:</p>
+            <pre data-lang="psql"><code>\du</code></pre>
+            <p>The output shows each role's attributes (Superuser, Create DB, …) — login roles
+              and group roles side by side.</p>
+
+            <h3>Remove a user</h3>
+            <pre data-lang="sql"><code>DROP USER appuser;</code></pre>
+            <div class="callout callout-warning">
+              <span class="callout-title">Danger — DROP USER and owned objects</span>
+              The removal is permanent, and PostgreSQL refuses to drop a role that still owns
+              objects (databases, tables). Reassign them first with
+              <code>REASSIGN OWNED BY appuser TO postgres;</code> — and make sure nothing in
+              production still connects as that role.
+            </div>
+
+            <h3>Why limited users matter (again)</h3>
+            <p>
+              The <code>postgres</code> role is a superuser: it bypasses every permission check.
+              Applications should connect as a role that owns (or has limited rights on) exactly
+              one database — nothing else. Group roles make this scalable: create a
+              <code>readonly</code> role once, grant it <code>SELECT</code> everywhere it needs,
+              then grant <code>readonly</code> to each analyst's login role.
+            </p>
+          </div>
+        </section>
+
+        <section id="security">
+          <h2>3. Database security checklist</h2>
+          <p>
+            These rules apply equally to MySQL and PostgreSQL — most real-world database
+            breaches violate one of them.
+          </p>
+          <ul>
+            <li>
+              <strong>Never use admin accounts in applications.</strong> <code>root</code> and
+              <code>postgres</code> are for administration only. Every app gets its own
+              limited user.
+            </li>
+            <li>
+              <strong>Use strong, unique passwords.</strong> Long and randomly generated, one
+              per account, stored in a password manager or secret store — not reused from
+              other systems.
+            </li>
+            <li>
+              <strong>Grant only what is needed (least privilege).</strong> Most applications
+              need <code>SELECT, INSERT, UPDATE, DELETE</code> on one database. Grant
+              <code>ALL</code> only when you can say why.
+            </li>
+            <li>
+              <strong>Do not expose database ports publicly.</strong> MySQL (3306) and
+              PostgreSQL (5432) should listen on localhost or a private network. Both default
+              to local-only listening — think twice before changing that.
+            </li>
+            <li>
+              <strong>Use a firewall.</strong> Even on a private network, restrict the port to
+              the hosts that need it (<code>ufw</code>, <code>firewalld</code> — see
+              <a href="troubleshooting.html#firewall">Troubleshooting</a>).
+            </li>
+            <li>
+              <strong>Remote administration: SSH tunnels or VPN.</strong> Instead of opening the
+              port, tunnel it:
+              <code>ssh -L 3306:localhost:3306 you@dbserver</code> then connect to
+              <code>localhost:3306</code> on your machine. Same pattern for 5432.
+            </li>
+            <li>
+              <strong>Keep real passwords out of Git.</strong> Use environment variables or a
+              secrets manager for connection credentials. If a password ever lands in a public
+              repository, treat it as compromised and rotate it immediately — deleting the
+              commit is not enough.
+            </li>
+            <li>
+              <strong>Treat backup files as sensitive.</strong> A dump file contains all your
+              data, including user tables. Encrypt backups, restrict file permissions, and
+              never commit dumps with real data — see
+              <a href="backup-restore.html">Backup &amp; restore</a>.
+            </li>
+          </ul>
+        </section>
+
+        <section id="next">
+          <h2>Next steps</h2>
+          <ul>
+            <li>Practise backups with your new user — <a href="backup-restore.html">Backup &amp; restore</a>.</li>
+            <li>Locked yourself out? — <a href="troubleshooting.html">Troubleshooting</a> covers auth errors in both systems.</li>
+          </ul>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — users &amp; permissions. One app, one user, least privilege.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

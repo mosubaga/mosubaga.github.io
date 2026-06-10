@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MySQL vs PostgreSQL — DB Notes</title>
+  <meta name="description" content="Practical MySQL vs PostgreSQL comparison: command equivalents, syntax and data type differences, auto-increment, JSON support, and when to choose which.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>(function(){if(localStorage.getItem("dbnotes-theme")==="dark")document.documentElement.setAttribute("data-theme","dark");})();</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="brand">DB<span>Notes</span></a>
+    <span class="header-tag">MySQL &amp; PostgreSQL on Linux</span>
+    <span class="header-spacer"></span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  </header>
+
+  <div class="layout">
+    <button class="nav-backdrop" id="navBackdrop" aria-label="Close navigation" tabindex="-1"></button>
+    <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+      <p class="nav-label">Getting started</p>
+      <a href="index.html">Home</a>
+      <p class="nav-label">Install &amp; manage</p>
+      <a href="mysql.html" class="nav-mysql">MySQL on Linux</a>
+      <a href="postgresql.html" class="nav-pg">PostgreSQL on Linux</a>
+      <p class="nav-label">Working with data</p>
+      <a href="sql-files.html">Running SQL files</a>
+      <a href="user-management.html">Users &amp; permissions</a>
+      <a href="backup-restore.html">Backup &amp; restore</a>
+      <p class="nav-label">Reference</p>
+      <a href="comparison.html">MySQL vs PostgreSQL</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="resources.html">Resources &amp; next steps</a>
+    </nav>
+
+    <main class="content">
+      <article>
+        <h1>MySQL vs PostgreSQL</h1>
+        <p class="page-intro">
+          The two databases solve the same problem with different personalities.
+          Use this page as a translation table when switching between them, and as a
+          decision aid when you get to choose.
+        </p>
+
+        <section id="quick-table">
+          <h2>1. Side-by-side quick reference</h2>
+          <p>Type to filter the table — e.g. <em>tables</em>, <em>backup</em>, <em>user</em>.</p>
+          <input type="search" class="input filter-box" data-filter="#cmp-table"
+                 placeholder="Filter commands…" aria-label="Filter comparison table">
+          <div class="table-wrap" id="cmp-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th><span class="db-chip mysql">MySQL</span></th>
+                  <th><span class="db-chip pg">PostgreSQL</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Command-line client</td><td><code>mysql</code></td><td><code>psql</code></td></tr>
+                <tr><td>Default admin user</td><td><code>root</code></td><td><code>postgres</code></td></tr>
+                <tr><td>Default port</td><td><code>3306</code></td><td><code>5432</code></td></tr>
+                <tr><td>First connection</td><td><code>sudo mysql</code></td><td><code>sudo -u postgres psql</code></td></tr>
+                <tr><td>Show databases</td><td><code>SHOW DATABASES;</code></td><td><code>\l</code></td></tr>
+                <tr><td>Use / switch database</td><td><code>USE db_name;</code></td><td><code>\c db_name</code></td></tr>
+                <tr><td>Show tables</td><td><code>SHOW TABLES;</code></td><td><code>\dt</code></td></tr>
+                <tr><td>Describe a table</td><td><code>DESCRIBE table_name;</code></td><td><code>\d table_name</code></td></tr>
+                <tr><td>List users</td><td><code>SELECT user, host FROM mysql.user;</code></td><td><code>\du</code></td></tr>
+                <tr><td>Quit the client</td><td><code>exit</code></td><td><code>\q</code></td></tr>
+                <tr><td>Run a SQL file (shell)</td><td><code>mysql db &lt; file.sql</code></td><td><code>psql -d db -f file.sql</code></td></tr>
+                <tr><td>Run a SQL file (inside client)</td><td><code>SOURCE file.sql;</code></td><td><code>\i file.sql</code></td></tr>
+                <tr><td>Backup tool</td><td><code>mysqldump</code></td><td><code>pg_dump</code></td></tr>
+                <tr><td>User concept</td><td>Users with host restrictions (<code>'user'@'host'</code>)</td><td>Roles (users and groups unified)</td></tr>
+                <tr><td>Auto-increment column</td><td><code>AUTO_INCREMENT</code></td><td><code>SERIAL</code> / <code>GENERATED … AS IDENTITY</code></td></tr>
+                <tr><td>Identifier quoting</td><td>Backticks: <code>`name`</code></td><td>Double quotes: <code>"name"</code></td></tr>
+                <tr><td>Service name (systemd)</td><td><code>mysql</code> or <code>mysqld</code></td><td><code>postgresql</code></td></tr>
+                <tr><td>Strengths</td><td>Simplicity, web apps, popularity</td><td>SQL standards, advanced features, extensibility</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="choose-mysql">
+          <h2><span class="db-chip mysql">MySQL</span>2. When to choose MySQL</h2>
+          <ul>
+            <li><strong>Classic web stacks.</strong> LAMP-style apps, WordPress and most PHP CMSes assume MySQL; hosting support is universal.</li>
+            <li><strong>Read-heavy workloads.</strong> Mature, simple replication makes scaling reads with replicas straightforward.</li>
+            <li><strong>Team familiarity.</strong> If your team and tooling already know MySQL, the operational knowledge is worth a lot.</li>
+            <li><strong>Simple requirements.</strong> Plain CRUD with no exotic data types — MySQL is easy to run and hard to misconfigure.</li>
+          </ul>
+        </section>
+
+        <section id="choose-pg">
+          <h2><span class="db-chip pg">PostgreSQL</span>3. When to choose PostgreSQL</h2>
+          <ul>
+            <li><strong>Complex queries and analytics.</strong> Strong optimizer, window functions, CTEs and full-text search out of the box.</li>
+            <li><strong>Data integrity first.</strong> Strict typing and validation by default — bad data is rejected, not silently adjusted.</li>
+            <li><strong>Rich data types.</strong> Arrays, ranges, UUID, INET, and best-in-class JSONB for semi-structured data.</li>
+            <li><strong>Extensibility.</strong> PostGIS (geodata), TimescaleDB (time series), pgvector (embeddings) turn it into a platform.</li>
+            <li><strong>Standards compliance.</strong> Skills and SQL written for Postgres transfer most cleanly to other databases.</li>
+          </ul>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — you can't go badly wrong</span>
+            Both are excellent, actively developed and free. For a personal project, pick the
+            one your framework documents first — the experience transfers either way.
+          </div>
+        </section>
+
+        <section id="syntax">
+          <h2>4. Important syntax differences</h2>
+          <p>These are the differences most likely to break a script you move between systems.</p>
+
+          <h3>Identifier quoting and case</h3>
+          <p>
+            MySQL quotes table/column names with backticks; PostgreSQL uses standard double
+            quotes and folds unquoted identifiers to lowercase.
+          </p>
+          <pre data-lang="sql"><code>-- MySQL
+SELECT `name` FROM `users`;
+
+-- PostgreSQL
+SELECT "name" FROM "users";   -- or simply: SELECT name FROM users;</code></pre>
+
+          <h3>Strings vs double quotes</h3>
+          <p>
+            In PostgreSQL, double quotes are <em>only</em> for identifiers — string values must
+            use single quotes. MySQL historically tolerated <code>"text"</code> as a string,
+            which masks bugs. Use single quotes for strings everywhere.
+          </p>
+
+          <h3>Case-insensitive matching</h3>
+          <p>
+            MySQL's default collations compare strings case-insensitively
+            (<code>WHERE name = 'alice'</code> matches <code>Alice</code>); PostgreSQL is
+            case-sensitive and offers <code>ILIKE</code> for insensitive pattern matching.
+          </p>
+
+          <h3>Other frequent trip-ups</h3>
+          <ul>
+            <li><code>ENGINE=InnoDB</code> clauses are MySQL-only — delete them for PostgreSQL.</li>
+            <li>MySQL's <code>LIMIT 10, 20</code> offset shorthand isn't portable — use <code>LIMIT 20 OFFSET 10</code>, which both accept.</li>
+            <li>PostgreSQL supports <code>RETURNING *</code> on INSERT/UPDATE/DELETE; MySQL (mostly) does not.</li>
+            <li>Strictness: PostgreSQL rejects out-of-range or truncated values with an error; MySQL's behaviour depends on <code>sql_mode</code> (strict by default in modern versions).</li>
+          </ul>
+        </section>
+
+        <section id="data-types">
+          <h2>5. Data type differences</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Purpose</th><th><span class="db-chip mysql">MySQL</span></th><th><span class="db-chip pg">PostgreSQL</span></th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Integer</td><td><code>INT</code>, <code>BIGINT</code>, <code>TINYINT</code></td><td><code>INTEGER</code>, <code>BIGINT</code>, <code>SMALLINT</code> (no TINYINT)</td></tr>
+                <tr><td>Boolean</td><td><code>BOOLEAN</code> = alias for <code>TINYINT(1)</code></td><td>True <code>BOOLEAN</code> type (<code>TRUE</code>/<code>FALSE</code>)</td></tr>
+                <tr><td>Text</td><td><code>VARCHAR(n)</code>, <code>TEXT</code> family</td><td><code>VARCHAR(n)</code>, <code>TEXT</code> (no practical length limit)</td></tr>
+                <tr><td>Date &amp; time</td><td><code>DATETIME</code>, <code>TIMESTAMP</code></td><td><code>TIMESTAMP</code>, <code>TIMESTAMPTZ</code> (time-zone aware)</td></tr>
+                <tr><td>JSON</td><td><code>JSON</code></td><td><code>JSON</code> and binary <code>JSONB</code></td></tr>
+                <tr><td>UUID</td><td>store as <code>CHAR(36)</code> or <code>BINARY(16)</code></td><td>native <code>UUID</code> type</td></tr>
+                <tr><td>Arrays</td><td>—</td><td>native, e.g. <code>INTEGER[]</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout callout-tip">
+            <span class="callout-title">Tip — write portable types</span>
+            <code>INTEGER</code>, <code>VARCHAR(n)</code>, <code>TEXT</code>,
+            <code>DATE</code>, <code>TIMESTAMP</code> and <code>DECIMAL(p,s)</code> work in both
+            systems. Stick to these in shared schemas.
+          </div>
+        </section>
+
+        <section id="auto-increment">
+          <h2>6. Auto-increment differences</h2>
+          <p>The classic portability problem: generating sequential primary keys.</p>
+          <pre data-lang="sql"><code>-- MySQL
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+-- PostgreSQL (traditional)
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+-- PostgreSQL (modern, SQL standard)
+CREATE TABLE users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(100)
+);</code></pre>
+          <p>
+            Under the hood, PostgreSQL's <code>SERIAL</code> creates a separate
+            <em>sequence</em> object that feeds the column its next value; MySQL's
+            <code>AUTO_INCREMENT</code> is a property of the table itself. The effect is the
+            same: insert a row without an id, get the next number.
+          </p>
+        </section>
+
+        <section id="json">
+          <h2>7. JSON support overview</h2>
+          <p>
+            Both databases can store and query JSON documents inside a relational table —
+            handy for flexible attributes alongside structured columns.
+          </p>
+          <ul>
+            <li>
+              <span class="db-chip mysql">MySQL</span> has a <code>JSON</code> type that
+              validates documents on insert, with functions like
+              <code>JSON_EXTRACT()</code> (and the <code>-&gt;</code> / <code>-&gt;&gt;</code>
+              operators) for querying.
+            </li>
+            <li>
+              <span class="db-chip pg">PostgreSQL</span> has <code>JSON</code> (stored as text)
+              and <code>JSONB</code> (binary, the one you almost always want). JSONB supports
+              containment queries (<code>@&gt;</code>), rich path operators and — crucially —
+              <strong>GIN indexes</strong>, which make searching inside documents fast.
+            </li>
+          </ul>
+          <pre data-lang="sql"><code>-- PostgreSQL: find rows whose JSONB column contains a key/value
+SELECT * FROM events WHERE payload @&gt; '{"type": "login"}';
+
+-- MySQL: extract a value from a JSON column
+SELECT payload-&gt;&gt;'$.type' FROM events;</code></pre>
+          <p>
+            For JSON-heavy workloads PostgreSQL's JSONB is the stronger tool; for occasional
+            JSON columns either works fine.
+          </p>
+        </section>
+
+        <footer class="site-footer">
+          DB Notes — MySQL vs PostgreSQL. Same SQL core, different personalities.
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
