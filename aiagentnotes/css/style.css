@@ -1,0 +1,368 @@
+/* ==========================================================================
+   1. KAWAII COLOR PALETTE & VARIABLES
+   ========================================================================== */
+:root {
+  /* Pastel Palette Base */
+  --kawaii-pink: #ffdef2;       /* Soft blush */
+  --kawaii-purple: #f2e2ff;     /* Gentle lavender */
+  --kawaii-blue: #e2eeff;       /* Baby blue skies */
+  --kawaii-mint: #ddfffc;       /* Sweet seafoam */
+  --kawaii-yellow: #ffffe3;     /* Creamy sunshine */
+  
+  /* Text & UI Accents */
+  --kawaii-text: #5d536a;       /* Soft muted purple-gray (Avoid harsh blacks) */
+  --kawaii-border: #cbb3e0;     /* Pastel outline */
+  --kawaii-white: #ffffff;
+  
+  /* Layout Mechanics */
+  --kawaii-radius-round: 30px;  /* Pill shape */
+  --kawaii-radius-soft: 18px;   /* Standard box containers */
+  --kawaii-shadow: 0 6px 0px rgba(203, 179, 224, 0.4);
+  --kawaii-transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ==========================================================================
+   2. GLOBAL BODY STYLES
+   ========================================================================== */
+body {
+  background-color: #ffffff;
+  color: var(--kawaii-text);
+  font-family: 'Fredoka', 'Quicksand', 'Nunito', sans-serif; /* Soft, rounded typography */
+  margin: 0;
+  padding: 0 20px 20px;
+  
+  position: relative;
+}
+
+a {
+  color: inherit;
+}
+
+/* ==========================================================================
+   3. SITE NAVIGATION & LAYOUT
+   ========================================================================== */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: min(1080px, calc(100% - 24px));
+  margin: 12px auto 24px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 3px solid var(--kawaii-border);
+  border-radius: var(--kawaii-radius-soft);
+  box-shadow: var(--kawaii-shadow);
+  backdrop-filter: blur(12px);
+}
+
+.site-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.site-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 8px;
+  color: var(--kawaii-text);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-nav__brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: var(--kawaii-pink);
+  border: 2px solid var(--kawaii-border);
+  border-radius: 50%;
+  box-shadow: 0 3px 0 rgba(203, 179, 224, 0.4);
+}
+
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.site-nav__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  color: var(--kawaii-text);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--kawaii-radius-round);
+  transition: var(--kawaii-transition);
+}
+
+.site-nav__links a:hover,
+.site-nav__links a[aria-current="page"] {
+  background: var(--kawaii-blue);
+  border-color: var(--kawaii-border);
+  transform: translateY(-1px);
+}
+
+.page-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.home-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px 20px 40px;
+}
+
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.88fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 56px);
+  min-height: calc(100vh - 140px);
+  padding: 8px 0 48px;
+}
+
+.home-hero__content {
+  max-width: 640px;
+}
+
+.home-hero__title {
+  margin: 0.85rem 0 1rem;
+  color: var(--kawaii-text);
+  font-size: clamp(2.7rem, 6vw, 5.7rem);
+  line-height: 0.96;
+}
+
+.home-hero__lead {
+  max-width: 62ch;
+  margin: 0 0 1.5rem;
+  color: var(--kawaii-text);
+  font-size: 1.12rem;
+  line-height: 1.75;
+}
+
+.home-hero__actions,
+.topic-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.home-hero__visual {
+  position: relative;
+}
+
+.home-hero__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 3px solid var(--kawaii-border);
+  border-radius: var(--kawaii-radius-soft);
+  box-shadow: 0 12px 0 rgba(203, 179, 224, 0.38);
+}
+
+.home-hero__note {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  max-width: 230px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid var(--kawaii-border);
+  border-radius: var(--kawaii-radius-soft);
+  box-shadow: 0 6px 0 rgba(203, 179, 224, 0.34);
+  padding: 14px 16px;
+  color: var(--kawaii-text);
+  font-weight: 700;
+}
+
+.home-section {
+  padding: 26px 0 0;
+}
+
+.home-section h2 {
+  margin: 0 0 1rem;
+  color: var(--kawaii-text);
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.topic-card {
+  min-height: 170px;
+  color: var(--kawaii-text);
+  text-decoration: none;
+}
+
+.topic-card h3 {
+  margin: 0.8rem 0 0.55rem;
+  font-size: 1.12rem;
+}
+
+.topic-card p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ==========================================================================
+   4. CONTAINERS & CARDS
+   ========================================================================== */
+.kawaii-card {
+  background: var(--kawaii-white);
+  border: 3px solid var(--kawaii-border);
+  border-radius: var(--kawaii-radius-soft);
+  box-shadow: var(--kawaii-shadow);
+  padding: 25px;
+  max-width: 400px;
+  transition: var(--kawaii-transition);
+}
+
+/* Squishy hover animation effect */
+.kawaii-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 0px rgba(203, 179, 224, 0.5);
+}
+
+/* ==========================================================================
+   5. INTERACTIVE BUTTONS
+   ========================================================================== */
+.kawaii-btn {
+  background-color: var(--kawaii-pink);
+  color: var(--kawaii-text);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 12px 28px;
+  border: 3px solid var(--kawaii-border);
+  border-radius: var(--kawaii-radius-round);
+  cursor: pointer;
+  box-shadow: 0 4px 0px var(--kawaii-border);
+  transition: var(--kawaii-transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+/* Bubbly button press effect */
+.kawaii-btn:hover {
+  background-color: var(--kawaii-purple);
+  transform: scale(1.05);
+}
+
+.kawaii-btn:active {
+  transform: translateY(4px) scale(0.98);
+  box-shadow: 0 0px 0px var(--kawaii-border);
+}
+
+/* Secondary alternative style */
+.kawaii-btn-alt {
+  background-color: var(--kawaii-mint);
+}
+.kawaii-btn-alt:hover {
+  background-color: var(--kawaii-blue);
+}
+
+/* ==========================================================================
+   6. FORM INPUTS & BADGES
+   ========================================================================== */
+.kawaii-input {
+  width: 100%;
+  padding: 12px 20px;
+  border: 3px solid var(--kawaii-border);
+  border-radius: var(--kawaii-radius-round);
+  color: var(--kawaii-text);
+  outline: none;
+  font-family: inherit;
+  transition: var(--kawaii-transition);
+  box-sizing: border-box;
+}
+
+.kawaii-input:focus {
+  border-color: #ffb7e2;
+  box-shadow: 0 0 0 4px rgba(255, 222, 242, 0.6);
+}
+
+/* Cute decorative badges */
+.kawaii-badge {
+  background-color: var(--kawaii-blue);
+  padding: 6px 14px;
+  border-radius: var(--kawaii-radius-round);
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid var(--kawaii-border);
+  display: inline-block;
+}
+
+@media (max-width: 860px) {
+  .site-nav__inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-nav__links {
+    justify-content: flex-start;
+  }
+
+  .home-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-bottom: 36px;
+  }
+
+  .home-hero__visual {
+    max-width: 560px;
+  }
+
+  .topic-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    padding-inline: 12px;
+  }
+
+  .site-nav {
+    width: auto;
+    margin-top: 10px;
+  }
+
+  .site-nav__links a {
+    padding-inline: 10px;
+  }
+
+  .page-shell,
+  .home-shell {
+    padding-inline: 4px;
+  }
+
+  .home-hero__note {
+    position: static;
+    margin-top: 12px;
+    max-width: none;
+  }
+
+  .topic-grid {
+    grid-template-columns: 1fr;
+  }
+}

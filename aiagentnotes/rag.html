@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding RAG: Definition and Python Implementation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark">AI</span>
+        <span>Pastel AI</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="aiagent.html">AI Agents</a>
+        <a href="buildanagent.html">Build an Agent</a>
+        <a href="contexteng.html">Context Engineering</a>
+        <a href="rag.html" aria-current="page">RAG</a>
+        <a href="mcp.html">MCP</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge">Developer Guide</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Retrieval-Augmented Generation (RAG)
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        A technique that gives an LLM access to <strong>external knowledge at inference time</strong> —
+        no retraining required. The model retrieves relevant facts, augments its context with them,
+        and generates a grounded, accurate response.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search concepts (vector search, chunking, reranking…)"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- What is RAG -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        What is RAG?
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Definition</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        LLMs only "know" what was in their training data. RAG bridges that gap by connecting them to live,
+        domain-specific sources at query time — no fine-tuning needed.
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: var(--kawaii-pink);">Latest Information</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-purple);">Private Documents</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-mint);">Technical Manuals</span>
+      </div>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        <strong>Key distinction:</strong> RAG is <em>referencing</em>, not learning. Instead of training
+        the model to memorise facts (fine-tuning), RAG hands the model a "book" to consult while answering.
+      </p>
+    </div>
+
+    <!-- 7-step Workflow -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">The Standard RAG Workflow</h2>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">1</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>User Input</strong> — The user asks a question.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-purple); flex-shrink: 0;">2</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Query Extraction</strong> — The LLM analyses the question to decide if external info is needed and generates search keywords.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-mint); flex-shrink: 0;">3</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Retrieval</strong> — The app searches an external database (Vector DB or full-text search) using those keywords.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-blue); flex-shrink: 0;">4</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Data Acquisition</strong> — Relevant text snippets are fetched from the database.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">5</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Augmentation</strong> — The retrieved snippets are injected into the LLM's context window as background information.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-purple); flex-shrink: 0;">6</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Request</strong> — A final prompt containing both the question and the retrieved evidence is sent to the LLM.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-mint); flex-shrink: 0;">7</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Generation</strong> — The LLM produces a grounded response based on the provided evidence.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Step 1 — Installation
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Shell</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        Install the OpenAI Python SDK and set your API key as an environment variable.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">terminal</span>
+      </div>
+      <pre><span class="fn">pip</span> install openai
+
+<span class="cm"># Set your key (bash / zsh)</span>
+<span class="kw">export</span> OPENAI_API_KEY=<span class="st">"sk-..."</span></pre>
+    </div>
+
+    <!-- Implementation -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Step 2 — Basic Implementation
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        This script simulates retrieval by scanning a local knowledge base, then passes the relevant
+        snippet to the LLM as context before generating the answer.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">simple_rag.py</span>
+      </div>
+      <pre><span class="kw">from</span> openai <span class="kw">import</span> <span class="fn">OpenAI</span>
+<span class="kw">import</span> os
+
+<span class="cm"># 1. Initialize the client — key is read from the environment</span>
+client = <span class="fn">OpenAI</span>(api_key=os.environ.<span class="fn">get</span>(<span class="st">"OPENAI_API_KEY"</span>))
+
+<span class="cm"># 2. In-memory knowledge base (use a Vector DB in production)</span>
+knowledge_base = {
+    <span class="st">"context_engineering"</span>: <span class="st">"Context Engineering is the art of deciding what info to give or discard in an LLM's context window."</span>,
+    <span class="st">"mcp"</span>: <span class="st">"MCP (Model Context Protocol) is an open standard by Anthropic for connecting AI apps to external tools."</span>
+}
+
+<span class="kw">def</span> <span class="fn">simple_rag_app</span>(user_query: <span class="ty">str</span>) -> <span class="ty">str</span>:
+    <span class="cm"># 3. Retrieval — keyword match (replace with Vector Search in production)</span>
+    retrieved_info = <span class="st">""</span>
+    <span class="kw">if</span> <span class="st">"context engineering"</span> <span class="kw">in</span> user_query.<span class="fn">lower</span>():
+        retrieved_info = knowledge_base[<span class="st">"context_engineering"</span>]
+    <span class="kw">elif</span> <span class="st">"mcp"</span> <span class="kw">in</span> user_query.<span class="fn">lower</span>():
+        retrieved_info = knowledge_base[<span class="st">"mcp"</span>]
+
+    <span class="cm"># 4. Augment: inject retrieved context into the system prompt</span>
+    messages = [
+        {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">f"Use this background info to answer accurately: {retrieved_info}"</span>},
+        {<span class="st">"role"</span>: <span class="st">"user"</span>,   <span class="st">"content"</span>: user_query}
+    ]
+
+    <span class="cm"># 5. Generate</span>
+    response = client.chat.completions.<span class="fn">create</span>(
+        model=<span class="st">"gpt-4o"</span>,
+        messages=messages
+    )
+    <span class="kw">return</span> response.choices[<span class="ty">0</span>].message.content  <span class="cm"># [0] — first (and only) choice</span>
+
+<span class="fn">print</span>(<span class="fn">simple_rag_app</span>(<span class="st">"What is Context Engineering?"</span>))</pre>
+    </div>
+
+    <!-- Advanced Improvements — 4 cards -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">Advanced Improvements for Production</h2>
+    <p style="max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+      The keyword match above is a starting point. Real-world RAG applies context engineering
+      techniques to improve accuracy and scale.
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Vector Search</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Convert text into numeric vectors to find <em>semantically</em> similar content — even when
+          the user's exact keywords don't appear in the document.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Reranking</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          After retrieval, use a cross-encoder model to re-score and re-order results so only the
+          most relevant snippets are injected into the context window.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Hybrid Search</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Combine keyword matching (BM25) with vector similarity to get the strengths of both —
+          exact term hits plus semantic relevance.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Chunking</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Split large PDFs or documents into smaller, meaningful pieces before indexing — so the
+          model receives focused context rather than entire files.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <button class="kawaii-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to Top ↑
+      </button>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.open('https://platform.openai.com/docs/guides/retrieval-augmented-generation', '_blank')">
+        OpenAI RAG Docs ✨
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      Based on "Context Engineering for LLM and RAG Development" and related technical sources.
+    </footer>
+
+  </main>
+
+  <script src="js/rain.js"></script>
+</body>
+</html>

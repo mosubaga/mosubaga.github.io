@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introduction to the Model Context Protocol (MCP)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }  /* keywords */
+    pre .fn  { color: #80e8ff; }                      /* function names */
+    pre .st  { color: #a8e6a3; }                      /* strings */
+    pre .cm  { color: #8a8098; font-style: italic; }  /* comments */
+    pre .de  { color: #ffcf75; }                      /* decorators */
+    pre .ty  { color: #ffc0cb; }                      /* types */
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark">AI</span>
+        <span>Pastel AI</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="aiagent.html">AI Agents</a>
+        <a href="buildanagent.html">Build an Agent</a>
+        <a href="contexteng.html">Context Engineering</a>
+        <a href="rag.html">RAG</a>
+        <a href="mcp.html" aria-current="page">MCP</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge">Protocol Guide</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Understanding the Model Context Protocol (MCP)
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        The <strong>Model Context Protocol (MCP)</strong>, introduced by Anthropic in late 2024, is an open standard
+        designed to provide a consistent, secure, and efficient way for AI systems to connect to external services,
+        tools, and data sources. It acts as a universal bridge between LLMs and the wider digital world.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search concepts (tools, resources, FastMCP…)"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- USB-C for AI -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        The "USB-C for AI"
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Open Standard</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        Before MCP, developers had to write bespoke "glue code" for every unique integration between an agent and
+        a tool. MCP standardizes this connection: you build a tool server once, and any compatible client —
+        like <strong>Claude Desktop</strong>, <strong>Cursor</strong>, or a custom AI agent — can automatically
+        discover and use those capabilities without any extra wiring.
+      </p>
+    </div>
+
+    <!-- Why MCP is Critical — 4 cards -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">Why MCP is Critical for AI Agents</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Interoperability</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Instead of building separate integrations for every platform, MCP provides a single client-server
+          contract that works across the entire AI ecosystem.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Dynamic Discovery</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Agents can programmatically "list" available tools on a server, letting them understand at runtime
+          what capabilities they have at their disposal — no hardcoding required.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Separation of Concerns</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          MCP separates the "brain" (model reasoning) from the "arms and legs" (tool execution), letting
+          developers focus on building capable agents rather than maintaining brittle connectors.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Scalability</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          MCP lets agents treat local documents and remote databases with the same standardized interface,
+          making it easy to swap or add new data sources as needs evolve.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Core Components — 3 cards -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">Core Components of a Server</h2>
+    <p style="max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+      Every MCP server exposes functionality through three primary components:
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Tools</span>
+          &nbsp;<small style="font-size: 0.8rem; opacity: 0.7;">(Verbs)</small>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Executable functions that perform actions — fetching weather, sending an email, or querying a database.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Resources</span>
+          &nbsp;<small style="font-size: 0.8rem; opacity: 0.7;">(Nouns)</small>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Read-only data sources that provide context to the model, such as static files, documentation,
+          or database schemas.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Prompts</span>
+          &nbsp;<small style="font-size: 0.8rem; opacity: 0.7;">(Templates)</small>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Predefined instructions that guide the LLM on how to interact with specialized capabilities
+          exposed by the server.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Code example -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Building a Simple MCP Service in Python
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">FastMCP</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Using the <code style="background: var(--kawaii-white); padding: 2px 8px; border-radius: 8px; border: 2px solid var(--kawaii-border);">FastMCP</code>
+        library, creating a service is straightforward. This example exposes a tool that returns a list of
+        verified research sources.
+      </p>
+      <pre><span class="kw">from</span> mcp.server.fastmcp <span class="kw">import</span> <span class="fn">FastMCP</span>
+
+<span class="cm"># Initialize the MCP server with a descriptive name</span>
+mcp = <span class="fn">FastMCP</span>(<span class="st">"Research Assistant Service"</span>)
+
+<span class="cm"># Use the @mcp.tool decorator to define actionable capabilities</span>
+<span class="de">@mcp.tool()</span>
+<span class="kw">def</span> <span class="fn">get_research_sources</span>() -> <span class="ty">list</span>[<span class="ty">str</span>]:
+    <span class="st">"""Provides a list of verified research sources for the agent."""</span>
+    <span class="kw">return</span> [
+        <span class="st">"Wikipedia"</span>,
+        <span class="st">"Google Scholar"</span>,
+        <span class="st">"ArXiv"</span>,
+        <span class="st">"PubMed"</span>
+    ]
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    <span class="cm"># Start the server using STDIO transport (standard for local agents)</span>
+    mcp.<span class="fn">run</span>(transport=<span class="st">'stdio'</span>)</pre>
+      <p style="color: var(--kawaii-text); margin: 1rem 0 0;">
+        Install this server into <strong>Claude Desktop</strong> or <strong>Cursor</strong> and the AI will
+        automatically see the <code style="background: var(--kawaii-white); padding: 2px 8px; border-radius: 8px; border: 2px solid var(--kawaii-border);">get_research_sources</code>
+        tool and know exactly when to call it.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <button class="kawaii-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to Top ↑
+      </button>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.open('https://modelcontextprotocol.io', '_blank')">
+        MCP Docs ✨
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      Sources: AI Agents and Applications, AI Agents in Action, and The Developer's Guide to AI.
+    </footer>
+
+  </main>
+  <script src="js/rain.js"></script>
+</body>
+</html>

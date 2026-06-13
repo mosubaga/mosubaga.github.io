@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pastel AI Learning Hub</title>
+  <meta name="description" content="A pastel learning hub for AI agents, context engineering, RAG, MCP, and hands-on agent building.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark">AI</span>
+        <span>Pastel AI</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="aiagent.html">AI Agents</a>
+        <a href="buildanagent.html">Build an Agent</a>
+        <a href="contexteng.html">Context Engineering</a>
+        <a href="rag.html">RAG</a>
+        <a href="mcp.html">MCP</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="home-shell">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-hero__content">
+        <span class="kawaii-badge">AI Learning Hub</span>
+        <h1 class="home-hero__title" id="home-title">Pastel AI Learning Hub</h1>
+        <p class="home-hero__lead">
+          A friendly guide to the building blocks behind modern AI applications:
+          agents, context engineering, retrieval-augmented generation, and the
+          protocols that connect models to useful tools.
+        </p>
+        <div class="home-hero__actions" aria-label="Featured links">
+          <a class="kawaii-btn" href="aiagent.html">Start with AI Agents</a>
+          <a class="kawaii-btn kawaii-btn-alt" href="buildanagent.html">Build One</a>
+        </div>
+      </div>
+      <div class="home-hero__visual" aria-label="Pastel AI knowledge illustration">
+        <img class="home-hero__image" src="assets/ai-knowledge-hero.png" alt="Pastel illustration of connected AI knowledge cards around a glowing neural network sphere">
+        <div class="home-hero__note">Learn the concepts, then follow the code.</div>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="topics-title">
+      <h2 id="topics-title">Explore the Pages</h2>
+      <div class="topic-grid">
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-pink);" href="aiagent.html">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Concept</span>
+          <h3>AI Agents</h3>
+          <p>Understand how agentic systems plan, act, and iterate beyond one-shot chat.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-mint);" href="buildanagent.html">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Guide</span>
+          <h3>Build an Agent</h3>
+          <p>Compare practical Python and TypeScript patterns for agent workflows.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-blue);" href="contexteng.html">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Practice</span>
+          <h3>Context Engineering</h3>
+          <p>Learn how to select, compress, cache, and manage model context.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-yellow);" href="rag.html">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Retrieval</span>
+          <h3>RAG</h3>
+          <p>Ground model responses with external knowledge and production retrieval patterns.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-purple);" href="mcp.html">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Protocol</span>
+          <h3>MCP</h3>
+          <p>See how a standard tool protocol gives agents reliable external capabilities.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/rain.js"></script>
+</body>
+</html>

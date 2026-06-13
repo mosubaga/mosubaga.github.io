@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building AI Agents: Python vs. TypeScript</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark">AI</span>
+        <span>Pastel AI</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="aiagent.html">AI Agents</a>
+        <a href="buildanagent.html" aria-current="page">Build an Agent</a>
+        <a href="contexteng.html">Context Engineering</a>
+        <a href="rag.html">RAG</a>
+        <a href="mcp.html">MCP</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge">Hands-On Guide</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Building Your First AI Agent
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        An <strong>AI Agent</strong> is more than just a chatbot — it uses an LLM as its "brain" to
+        autonomously plan, reason, and execute multi-step tasks. Unlike a standard chatbot, an agent runs a
+        <em>Sense-Plan-Act-Learn</em> loop and interacts with the real world through tools.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search examples (Python, TypeScript, smolagents…)"
+        style="max-width: 420px;"
+        aria-label="Search examples"
+      >
+    </header>
+
+    <!-- Core Formula -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        The Core Formula
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Key Concept</span>
+      </h2>
+      <p style="margin-bottom: 0; color: var(--kawaii-text); font-size: 1.05rem;">
+        <strong>Agent = LLM (Brain) + Tools (Action Space) + Loop (Execution Structure)</strong>
+      </p>
+    </div>
+
+    <!-- Example 1: Python -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Example 1: Research Agent
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-purple); margin-left: 6px;">Ollama · Qwen</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        This example uses <code>smolagents</code> with a local <code>Ollama</code> + <code>Qwen 2.5</code>
+        model — no cloud API key required. The agent searches the web for financial data and summarizes
+        it into a table.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
+          research_agent.py
+        </span>
+      </div>
+      <pre><span class="cm"># Requires: pip install smolagents litellm</span>
+<span class="cm"># Requires Ollama running locally — start with: ollama serve</span>
+<span class="cm"># Pull the model first:           ollama pull qwen2.5:7b</span>
+<span class="kw">from</span> smolagents <span class="kw">import</span> <span class="fn">CodeAgent</span>, <span class="fn">DuckDuckGoSearchTool</span>, <span class="fn">LiteLLMModel</span>
+
+<span class="cm"># 1. Point to the local Ollama + Qwen model (no cloud API key needed)</span>
+model = <span class="fn">LiteLLMModel</span>(
+    model_id=<span class="st">"ollama/qwen2.5:7b"</span>,
+    api_base=<span class="st">"http://localhost:11434"</span>
+)
+
+<span class="cm"># 2. Create the agent with a search tool</span>
+<span class="cm"># add_base_tools=True adds a web searcher and a code interpreter</span>
+agent = <span class="fn">CodeAgent</span>(
+    tools=[<span class="fn">DuckDuckGoSearchTool</span>()],
+    model=model,
+    add_base_tools=<span class="kw">True</span>
+)
+
+<span class="cm"># 3. Assign a realistic research task</span>
+message = <span class="st">"""
+Find the Q4 2024 revenue for Amazon, Google, and Apple.
+Compare them in a clear Markdown table.
+"""</span>
+
+<span class="cm"># The agent searches the web, finds the data, and generates the table autonomously.</span>
+agent.<span class="fn">run</span>(message)</pre>
+    </div>
+
+    <!-- Example 2: TypeScript -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Example 2: Browser-Based Assistant
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-blue); margin-left: 6px;">@openai/agents</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        TypeScript agents run on Node.js using the official <code>@openai/agents</code> package. The SDK reads
+        <code>OPENAI_API_KEY</code> automatically from the environment — no manual client setup needed.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
+          market_assistant.ts
+        </span>
+      </div>
+      <pre><span class="cm">// Requires: npm install @openai/agents</span>
+<span class="cm">// API key:  export OPENAI_API_KEY="sk-..."   (read automatically from environment)</span>
+<span class="kw">import</span> { <span class="fn">Agent</span>, <span class="fn">run</span>, <span class="fn">tool</span> } <span class="kw">from</span> <span class="st">"@openai/agents"</span>;
+
+<span class="cm">// 1. Define a tool the agent can call</span>
+<span class="kw">const</span> searchTool = <span class="fn">tool</span>({
+  name: <span class="st">"web_search"</span>,
+  description: <span class="st">"Searches for up-to-date market information"</span>,
+  parameters: {
+    type: <span class="st">"object"</span>,
+    properties: {
+      query: { type: <span class="st">"string"</span>, description: <span class="st">"The search query"</span> }
+    },
+    required: [<span class="st">"query"</span>]
+  },
+  execute: <span class="kw">async</span> ({ query }) =&gt; <span class="st">`Search results for: ${query}`</span>
+});
+
+<span class="cm">// 2. Initialize the agent — OPENAI_API_KEY is read from the environment</span>
+<span class="kw">const</span> agent = <span class="kw">new</span> <span class="fn">Agent</span>({
+  name: <span class="st">"MarketResearcher"</span>,
+  instructions: <span class="st">"You are a market analyst. Search for trends and summarize findings."</span>,
+  model: <span class="st">"gpt-4o-mini"</span>,
+  tools: [searchTool]
+});
+
+<span class="cm">// 3. Execute a multi-step workflow</span>
+<span class="kw">async function</span> <span class="fn">runResearch</span>() {
+  <span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">run</span>(agent, <span class="st">"What are the top 3 AI trends in 2025?"</span>);
+  console.<span class="fn">log</span>(<span class="st">"Research Result:"</span>, result.finalOutput);
+}
+
+<span class="fn">runResearch</span>();</pre>
+    </div>
+
+    <!-- Why These Examples Matter — 3 cards -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">Why These Examples Matter</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Autonomy</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          In both cases, the agent does not ask "Should I search?" — it understands the intent and executes
+          immediately without per-step confirmation.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Cross-Platform</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          The Python ecosystem excels at data-heavy research, while TypeScript enables high-performance,
+          real-time web UI agents — each ecosystem plays to its strengths.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Structured Data</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Modern agents avoid brittle text parsing by returning typed data models — Pydantic in Python
+          or JSON schemas in TypeScript — for reliable, machine-readable outputs.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Closing -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">What You Can Build Next</h2>
+      <p style="margin-bottom: 0; color: var(--kawaii-text);">
+        By moving beyond simple chat interfaces, you can build agents that serve as proactive "doers" —
+        handling complex tasks like SEO automation, financial analysis, or technical documentation updates
+        entirely on their own.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <button class="kawaii-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to Top ↑
+      </button>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.open('https://huggingface.co/docs/smolagents', '_blank')">
+        smolagents Docs ✨
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      Reference Material: AI Agents and Applications, Building Agentic Applications with CrewAI, and smolagents documentation.
+    </footer>
+
+  </main>
+  <script src="js/rain.js"></script>
+</body>
+</html>

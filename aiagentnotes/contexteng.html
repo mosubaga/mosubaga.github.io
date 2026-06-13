@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introduction to Context Engineering for AI Apps</title>
+  <meta name="description" content="A comprehensive guide to Context Engineering for AI applications, covering its definition, importance, key domains, and practical strategies for developers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark">AI</span>
+        <span>Pastel AI</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="aiagent.html">AI Agents</a>
+        <a href="buildanagent.html">Build an Agent</a>
+        <a href="contexteng.html" aria-current="page">Context Engineering</a>
+        <a href="rag.html">RAG</a>
+        <a href="mcp.html">MCP</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge">AI Engineering</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Context Engineering for AI Applications
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        The discipline of deciding <em>what information to provide, what to discard, and how to maintain state</em>
+        within a limited context window — so an LLM consistently generates the highest-quality responses.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search concepts (RAG, caching, context rot…)"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- What is Context Engineering -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        What is Context Engineering?
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Definition</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        Unlike <strong>prompt engineering</strong> — which focuses primarily on textual instructions —
+        context engineering manages the <em>entire scope</em> of input information fed to a model.
+      </p>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        This includes system prompts, conversation history, tool definitions, retrieval results from external
+        databases (RAG), and multimodal data such as images or audio — all orchestrated to fit within the
+        model's token budget while preserving the information that matters most.
+      </p>
+    </div>
+
+    <!-- Why It Matters — 3 cards -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">Why Context Engineering Matters</h2>
+    <p style="max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+      In modern AI development — especially when building complex agents — context engineering directly
+      determines the quality of the user experience.
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Physical Constraints</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          LLMs have a finite <strong>context window</strong> — the total tokens (input + output) they can
+          process at once. Exceeding it causes the model to forget earlier information, breaking multi-turn
+          dialogues and large-scale tasks like repository analysis.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Context Rot</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Even within the token limit, models suffer from <strong>Context Rot</strong> — a phenomenon where
+          comprehension degrades as input length grows. Performance in complex tasks can decline significantly
+          after only a few thousand tokens.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Cost & Latency</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          AI APIs are billed per token, and larger contexts increase latency. Techniques like
+          <strong>Context Caching</strong> store fixed parts of the context — such as system prompts or
+          RAG documents — drastically reducing both cost and response time on repeated calls.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Key Domains — 3 cards -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">Key Domains of Context Engineering</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Acquisition</span>
+          &nbsp;<small style="font-size: 0.8rem; opacity: 0.7;">&amp; Generation</small>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Designing system prompts, searching external knowledge bases (RAG), and dynamically assembling
+          context that is specific to each task and user.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Processing</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Handling long-context inputs efficiently and using self-reflection or correction loops to iteratively
+          improve output quality before returning results to the user.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Management</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Designing memory hierarchies (short-term vs. long-term), compressing information via summarization,
+          and orchestrating context windows across multiple specialized agents.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Practical Strategies — 3 cards -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">Practical Strategies for Developers</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Sub-agent Architecture</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Prevent "memory pollution" by delegating specific tasks to specialized sub-agents that each have
+          their own independent context window, keeping every agent's context lean and focused.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Progressive Disclosure</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Instead of front-loading all rules, use "Skills" to inject task-specific instructions and templates
+          only when the LLM determines they are needed — keeping the baseline context compact.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Structured Note-taking</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Maintain long-term memory by having the AI record important decisions and state to external files,
+          which are then re-read selectively in future sessions rather than kept in the live context.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Code Example: Context Caching -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Context Caching in Practice
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-purple); margin-left: 6px;">Anthropic SDK</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Cache a large knowledge base or system prompt so it is only tokenised once. Subsequent calls read from
+        cache at ~10% of the original input cost, directly reducing both spend and latency.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
+          context_cache.py
+        </span>
+      </div>
+      <pre><span class="cm"># Requires: pip install anthropic</span>
+<span class="cm"># Set your key: export ANTHROPIC_API_KEY="sk-ant-..."</span>
+<span class="kw">import</span> anthropic
+
+client = anthropic.<span class="fn">Anthropic</span>()
+
+<span class="cm"># The large knowledge base is cached after the first call.</span>
+<span class="cm"># Re-use is billed at ~10% of normal input token price.</span>
+response = client.messages.<span class="fn">create</span>(
+    model=<span class="st">"claude-opus-4-5"</span>,
+    max_tokens=<span class="ty">1024</span>,
+    system=[
+        {
+            <span class="st">"type"</span>: <span class="st">"text"</span>,
+            <span class="st">"text"</span>: <span class="fn">open</span>(<span class="st">"knowledge_base.txt"</span>).<span class="fn">read</span>(),
+            <span class="st">"cache_control"</span>: {<span class="st">"type"</span>: <span class="st">"ephemeral"</span>}  <span class="cm"># mark for caching</span>
+        }
+    ],
+    messages=[
+        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Summarize the key findings."</span>}
+    ]
+)
+
+<span class="fn">print</span>(response.content[<span class="ty">0</span>].text)
+
+<span class="cm"># Inspect token usage to verify cache hits</span>
+usage = response.usage
+<span class="fn">print</span>(<span class="st">f"Input tokens:       {usage.input_tokens}"</span>)
+<span class="fn">print</span>(<span class="st">f"Cache write tokens: {usage.cache_creation_input_tokens}"</span>)
+<span class="fn">print</span>(<span class="st">f"Cache read tokens:  {usage.cache_read_input_tokens}"</span>)</pre>
+      <p style="color: var(--kawaii-text); margin: 1rem 0 0;">
+        On the first call, <code>cache_creation_input_tokens</code> will be non-zero. On every subsequent
+        call with the same content, <code>cache_read_input_tokens</code> reflects the tokens served from
+        cache — the fastest way to validate your caching strategy is working.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <button class="kawaii-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to Top ↑
+      </button>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.open('https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching', '_blank')">
+        Prompt Caching Docs ✨
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      Based on the principles of Context Engineering for LLMs and AI Agents.
+    </footer>
+
+  </main>
+
+  <script src="js/rain.js"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding AI Agents: Beyond the Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark">AI</span>
+        <span>Pastel AI</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="aiagent.html" aria-current="page">AI Agents</a>
+        <a href="buildanagent.html">Build an Agent</a>
+        <a href="contexteng.html">Context Engineering</a>
+        <a href="rag.html">RAG</a>
+        <a href="mcp.html">MCP</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge">AI Explainer</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        What is an AI Agent?
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        An <strong>AI Agent</strong> is an autonomous or semi-autonomous system that uses a Large Language Model (LLM)
+        as its "brain" to perceive its environment, reason through complex problems, and execute multi-step plans to
+        achieve a specific goal. Unlike simple scripts that follow fixed paths, agents possess
+        <span class="kawaii-badge" style="background-color: var(--kawaii-pink); font-size: 0.75rem; vertical-align: middle;">agency</span>
+        — the ability to make decisions and adapt based on intermediate results.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search concepts (agent, MCP, LLM…)"
+        style="max-width: 400px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- Chatbot vs Agent comparison -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">How is an Agent Different from ChatGPT or Claude?</h2>
+    <p style="max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+      While we often interact with services like ChatGPT, Gemini, or Claude through a conversational interface,
+      there is a fundamental architectural shift between a <strong>Chatbot</strong> and an <strong>AI Agent</strong>:
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Reactive vs. Proactive</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          A standard chatbot is like an expert you ask questions — it provides a single, reactive response to your prompt.
+          An agent is like an autonomous assistant; you give it a high-level goal and it independently figures out
+          the necessary steps to accomplish it.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Linear vs. Iterative</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Traditional chat interfaces follow a "one-shot" pattern where the model generates text and stops. Agents
+          operate in a <strong>continuous loop</strong> — often called the <em>Sense-Plan-Act-Learn</em> cycle — where
+          they observe tool results and refine their strategy until the task is complete.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Axis of Autonomy</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          An <strong>assistant</strong> (like the standard ChatGPT interface) often requires per-step approval for
+          actions. A true <strong>agent</strong> operates with goal-level approval, autonomously navigating web
+          searches, database queries, and file manipulations to reach the finish line.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Anatomy -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">The Anatomy of an AI Agent</h2>
+    <p style="max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+      To transform a language model into an agent, developers typically integrate three core components:
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">The Brain</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          The <strong>Large Language Model (LLM)</strong> provides the reasoning and decision-making capabilities.
+          It interprets the goal, chooses which tools to invoke, and synthesizes results into coherent next steps.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">The Tools</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          External capabilities — web browsers, Python interpreters, database connectors — that allow the agent to
+          interact with the real world beyond just generating text.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">The Loop</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          An iterative execution framework that allows the agent to "think" before it "acts," evaluate the outcome,
+          and repeat the process until the goal is satisfied.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- MCP -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Universal Connectivity with MCP
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Open Standard</span>
+      </h2>
+      <p style="color: var(--kawaii-text);">
+        A major breakthrough in the agent ecosystem is the <strong>Model Context Protocol (MCP)</strong>. Developed as an
+        open standard, MCP acts as the <strong>"USB-C for AI,"</strong> allowing agents to connect to various data sources
+        and tools seamlessly.
+      </p>
+      <p style="margin-bottom: 0; color: var(--kawaii-text);">
+        Instead of writing custom code for every integration, developers can build an MCP server once, enabling any
+        compatible agent to discover and use those capabilities instantly.
+      </p>
+    </div>
+
+    <!-- Summary -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">In Summary</h2>
+      <p style="margin-bottom: 0; color: var(--kawaii-text);">
+        While ChatGPT and Claude are powerful "thinkers," AI Agents are the "doers" that leverage those models to
+        automate workflows, solve multi-step problems, and interact with our digital world independently.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <button class="kawaii-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to Top ↑
+      </button>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.open('https://modelcontextprotocol.io', '_blank')">
+        Explore MCP ✨
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      Source citations included in brackets refer to the project documentation.
+    </footer>
+
+  </main>
+  <script src="js/rain.js"></script>
+</body>
+</html>
