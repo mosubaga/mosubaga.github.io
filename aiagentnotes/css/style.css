@@ -312,6 +312,18 @@ a {
   display: inline-block;
 }
 
+/* Tablet: iPad landscape & larger tablets (up to 1024px) */
+@media (max-width: 1024px) {
+  .topic-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-hero {
+    gap: clamp(16px, 3vw, 32px);
+  }
+}
+
+/* Tablet: iPad portrait and below (up to 860px) */
 @media (max-width: 860px) {
   .site-nav__inner {
     align-items: flex-start;
@@ -335,8 +347,15 @@ a {
   .topic-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  /* Two cards per row in flex containers on iPad portrait */
+  .kawaii-card {
+    flex: 1 1 calc(50% - 12px);
+    max-width: none;
+  }
 }
 
+/* Phone (up to 560px) */
 @media (max-width: 560px) {
   body {
     padding-inline: 12px;
@@ -364,5 +383,11 @@ a {
 
   .topic-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* Single card per row on phones */
+  .kawaii-card {
+    flex: 1 1 100%;
+    max-width: none;
   }
 }
