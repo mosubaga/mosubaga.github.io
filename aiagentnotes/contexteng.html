@@ -209,6 +209,47 @@
 
     </div>
 
+    <!-- Context Budget Decisions -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Context Budget Decisions
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Practical Guide</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        Context engineering is not just "add more context" — it is deciding <em>what belongs in the model input right now</em>.
+        Every token in the context window competes for attention and budget:
+      </p>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem; font-style: italic;">
+        Instructions + user goal + selected memory + retrieved facts + tool definitions + output format = model input
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">1</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Stable instructions:</strong> system prompt, role, policy, output format.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-purple); flex-shrink: 0;">2</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>User-specific state:</strong> preferences, active task, recent decisions.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-mint); flex-shrink: 0;">3</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Retrieved facts:</strong> only the most relevant chunks, preferably with source IDs.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-blue); flex-shrink: 0;">4</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Tool definitions:</strong> only expose tools the agent may need for this task.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-yellow); flex-shrink: 0;">5</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Scratchpad or plan:</strong> keep it compact and remove stale steps.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">6</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Output budget:</strong> leave enough tokens for the final answer.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Code Example: Context Caching -->
     <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
       <h2 style="margin-top: 0; color: var(--kawaii-text);">
@@ -218,7 +259,9 @@
       </h2>
       <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
         Cache a large knowledge base or system prompt so it is only tokenised once. Subsequent calls read from
-        cache at ~10% of the original input cost, directly reducing both spend and latency.
+        cache at a significantly reduced input cost, directly lowering both spend and latency.
+        See <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener">Anthropic prompt caching docs</a>
+        for current pricing, which changes over time.
       </p>
       <div style="margin-bottom: 0.75rem;">
         <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
@@ -270,7 +313,9 @@ usage = response.usage
     </div>
 
     <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
-      Based on the principles of Context Engineering for LLMs and AI Agents.
+      Sources:
+      <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener">Anthropic prompt caching</a> &middot;
+      <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener">MCP docs</a>
     </footer>
 
   </main>

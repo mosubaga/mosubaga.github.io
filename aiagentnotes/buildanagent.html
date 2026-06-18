@@ -87,17 +87,19 @@
       </p>
     </div>
 
-    <!-- Example 1: Python -->
-    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-blue);">
+    <!-- Example 1: Python smolagents -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 1rem; background-color: var(--kawaii-blue);">
       <h2 style="margin-top: 0; color: var(--kawaii-text);">
         Example 1: Research Agent
         <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
-        <span class="kawaii-badge" style="background-color: var(--kawaii-purple); margin-left: 6px;">Ollama · Qwen</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-purple); margin-left: 6px;">smolagents · Ollama</span>
       </h2>
       <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
         This example uses <code>smolagents</code> with a local <code>Ollama</code> + <code>Qwen 2.5</code>
         model — no cloud API key required. The agent searches the web for financial data and summarizes
         it into a table.
+        Local models are useful for privacy and experimentation, but tool-calling behavior depends heavily
+        on the model size, quantization, prompt, and schema clarity.
       </p>
       <div style="margin-bottom: 0.75rem;">
         <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
@@ -116,7 +118,6 @@ model = <span class="fn">LiteLLMModel</span>(
 )
 
 <span class="cm"># 2. Create the agent with a search tool</span>
-<span class="cm"># add_base_tools=True adds a web searcher and a code interpreter</span>
 agent = <span class="fn">CodeAgent</span>(
     tools=[<span class="fn">DuckDuckGoSearchTool</span>()],
     model=model,
@@ -129,20 +130,113 @@ Find the Q4 2024 revenue for Amazon, Google, and Apple.
 Compare them in a clear Markdown table.
 """</span>
 
-<span class="cm"># The agent searches the web, finds the data, and generates the table autonomously.</span>
+<span class="cm"># The agent searches the web, finds the data, and generates the table.</span>
 agent.<span class="fn">run</span>(message)</pre>
     </div>
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-yellow);">
+      <h3 style="margin-top: 0; color: var(--kawaii-text);">What Makes This an Agent?</h3>
+      <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+        <li><strong>Goal:</strong> research Q4 revenue for three companies</li>
+        <li><strong>Model:</strong> local Qwen 2.5 via Ollama</li>
+        <li><strong>Tool:</strong> DuckDuckGo web search</li>
+        <li><strong>Loop:</strong> CodeAgent runs plan-act-observe until satisfied</li>
+        <li><strong>Final answer:</strong> a formatted Markdown table</li>
+      </ul>
+      <p style="color: var(--kawaii-text); margin: 0.75rem 0 0;">
+        If an example fails with a local model, try a stronger model, reduce the number of tools, or make
+        tool descriptions more explicit.
+      </p>
+    </div>
 
-    <!-- Example 2: TypeScript -->
-    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+    <!-- Example 2: Python minimal tool loop -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 1rem; background-color: var(--kawaii-purple);">
       <h2 style="margin-top: 0; color: var(--kawaii-text);">
-        Example 2: Browser-Based Assistant
+        Example 2: Minimal Local Tool-Using Agent
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-pink); margin-left: 6px;">Ollama · Raw Loop</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        This example avoids a heavy framework and shows the core agent loop explicitly: model picks a tool,
+        the program runs it, and the model receives the result before writing the final answer.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
+          local_agent.py
+        </span>
+      </div>
+      <pre><span class="cm"># Requires: ollama serve &amp;&amp; ollama pull qwen2.5:7b</span>
+<span class="cm"># pip install ollama</span>
+<span class="kw">import</span> json
+<span class="kw">import</span> ollama
+
+TOOLS = [
+    {
+        <span class="st">"type"</span>: <span class="st">"function"</span>,
+        <span class="st">"function"</span>: {
+            <span class="st">"name"</span>: <span class="st">"calculate"</span>,
+            <span class="st">"description"</span>: <span class="st">"Evaluate a simple arithmetic expression."</span>,
+            <span class="st">"parameters"</span>: {
+                <span class="st">"type"</span>: <span class="st">"object"</span>,
+                <span class="st">"properties"</span>: {
+                    <span class="st">"expression"</span>: {
+                        <span class="st">"type"</span>: <span class="st">"string"</span>,
+                        <span class="st">"description"</span>: <span class="st">"Arithmetic expression such as '12 * 7 + 3'."</span>,
+                    }
+                },
+                <span class="st">"required"</span>: [<span class="st">"expression"</span>],
+            },
+        },
+    }
+]
+
+<span class="kw">def</span> <span class="fn">calculate</span>(expression: <span class="ty">str</span>) -> <span class="ty">str</span>:
+    allowed = <span class="fn">set</span>(<span class="st">"0123456789+-*/(). "</span>)
+    <span class="kw">if not</span> <span class="fn">set</span>(expression) &lt;= allowed:
+        <span class="kw">return</span> <span class="st">"Rejected: expression contains unsupported characters."</span>
+    <span class="kw">return</span> <span class="fn">str</span>(<span class="fn">eval</span>(expression, {<span class="st">"__builtins__"</span>: {}}, {}))
+
+messages = [
+    {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"Use tools when calculation is needed."</span>},
+    {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is (42 * 19) + 17?"</span>},
+]
+
+response = ollama.<span class="fn">chat</span>(model=<span class="st">"qwen2.5:7b"</span>, messages=messages, tools=TOOLS)
+message = response[<span class="st">"message"</span>]
+messages.<span class="fn">append</span>(message)
+
+<span class="kw">for</span> call <span class="kw">in</span> message.<span class="fn">get</span>(<span class="st">"tool_calls"</span>, []):
+    <span class="kw">if</span> call[<span class="st">"function"</span>][<span class="st">"name"</span>] == <span class="st">"calculate"</span>:
+        args = call[<span class="st">"function"</span>][<span class="st">"arguments"</span>]
+        <span class="kw">if</span> <span class="fn">isinstance</span>(args, <span class="ty">str</span>):
+            args = json.<span class="fn">loads</span>(args)
+        result = <span class="fn">calculate</span>(args[<span class="st">"expression"</span>])
+        messages.<span class="fn">append</span>({<span class="st">"role"</span>: <span class="st">"tool"</span>, <span class="st">"name"</span>: <span class="st">"calculate"</span>, <span class="st">"content"</span>: result})
+
+final = ollama.<span class="fn">chat</span>(model=<span class="st">"qwen2.5:7b"</span>, messages=messages)
+<span class="fn">print</span>(final[<span class="st">"message"</span>][<span class="st">"content"</span>])</pre>
+    </div>
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-yellow);">
+      <h3 style="margin-top: 0; color: var(--kawaii-text);">What Makes This an Agent?</h3>
+      <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+        <li><strong>Goal:</strong> answer a calculation question</li>
+        <li><strong>Model:</strong> local Qwen 2.5 via Ollama</li>
+        <li><strong>Tool:</strong> sandboxed arithmetic evaluator</li>
+        <li><strong>Loop:</strong> explicit — model calls tool, program executes, model sees result</li>
+        <li><strong>Final answer:</strong> natural-language response with the computed value</li>
+      </ul>
+    </div>
+
+    <!-- Example 3: TypeScript -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 1rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Example 3: Browser-Based Assistant
         <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript</span>
         <span class="kawaii-badge" style="background-color: var(--kawaii-blue); margin-left: 6px;">@openai/agents</span>
       </h2>
       <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
         TypeScript agents run on Node.js using the official <code>@openai/agents</code> package. The SDK reads
-        <code>OPENAI_API_KEY</code> automatically from the environment — no manual client setup needed.
+        <code>OPENAI_API_KEY</code> automatically from the environment. Model names change; check provider docs
+        before publishing.
       </p>
       <div style="margin-bottom: 0.75rem;">
         <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
@@ -150,10 +244,9 @@ agent.<span class="fn">run</span>(message)</pre>
         </span>
       </div>
       <pre><span class="cm">// Requires: npm install @openai/agents</span>
-<span class="cm">// API key:  export OPENAI_API_KEY="sk-..."   (read automatically from environment)</span>
+<span class="cm">// API key:  export OPENAI_API_KEY="sk-..."</span>
 <span class="kw">import</span> { <span class="fn">Agent</span>, <span class="fn">run</span>, <span class="fn">tool</span> } <span class="kw">from</span> <span class="st">"@openai/agents"</span>;
 
-<span class="cm">// 1. Define a tool the agent can call</span>
 <span class="kw">const</span> searchTool = <span class="fn">tool</span>({
   name: <span class="st">"web_search"</span>,
   description: <span class="st">"Searches for up-to-date market information"</span>,
@@ -167,21 +260,132 @@ agent.<span class="fn">run</span>(message)</pre>
   execute: <span class="kw">async</span> ({ query }) =&gt; <span class="st">`Search results for: ${query}`</span>
 });
 
-<span class="cm">// 2. Initialize the agent — OPENAI_API_KEY is read from the environment</span>
 <span class="kw">const</span> agent = <span class="kw">new</span> <span class="fn">Agent</span>({
   name: <span class="st">"MarketResearcher"</span>,
   instructions: <span class="st">"You are a market analyst. Search for trends and summarize findings."</span>,
-  model: <span class="st">"gpt-4o-mini"</span>,
+  model: <span class="st">"choose a currently supported fast model"</span>,
   tools: [searchTool]
 });
 
-<span class="cm">// 3. Execute a multi-step workflow</span>
 <span class="kw">async function</span> <span class="fn">runResearch</span>() {
   <span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">run</span>(agent, <span class="st">"What are the top 3 AI trends in 2025?"</span>);
   console.<span class="fn">log</span>(<span class="st">"Research Result:"</span>, result.finalOutput);
 }
 
 <span class="fn">runResearch</span>();</pre>
+    </div>
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-yellow);">
+      <h3 style="margin-top: 0; color: var(--kawaii-text);">What Makes This an Agent?</h3>
+      <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+        <li><strong>Goal:</strong> identify top AI trends</li>
+        <li><strong>Model:</strong> hosted LLM via OpenAI</li>
+        <li><strong>Tool:</strong> web search function</li>
+        <li><strong>Loop:</strong> SDK handles plan-act-observe internally</li>
+        <li><strong>Final answer:</strong> structured summary in <code>finalOutput</code></li>
+      </ul>
+    </div>
+
+    <!-- Example 4: TypeScript local Ollama -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 1rem; background-color: var(--kawaii-pink);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Example 4: Local Tool Call (TypeScript)
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-purple); margin-left: 6px;">Ollama · Raw Loop</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        A fully local agent loop in Node.js — no cloud API required.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">
+          local_tool_agent.ts
+        </span>
+      </div>
+      <pre><span class="cm">// Requires: ollama serve &amp;&amp; ollama pull qwen2.5:7b</span>
+<span class="cm">// npm install ollama</span>
+<span class="kw">import</span> ollama <span class="kw">from</span> <span class="st">"ollama"</span>;
+
+<span class="kw">const</span> tools = [
+  {
+    type: <span class="st">"function"</span>,
+    function: {
+      name: <span class="st">"getProjectStatus"</span>,
+      description: <span class="st">"Returns the current project status for a project ID."</span>,
+      parameters: {
+        type: <span class="st">"object"</span>,
+        properties: { projectId: { type: <span class="st">"string"</span> } },
+        required: [<span class="st">"projectId"</span>],
+      },
+    },
+  },
+];
+
+<span class="kw">function</span> <span class="fn">getProjectStatus</span>(projectId: <span class="ty">string</span>) {
+  <span class="kw">const</span> data: <span class="ty">Record</span>&lt;<span class="ty">string</span>, <span class="ty">string</span>&gt; = {
+    <span class="st">"agent-notes"</span>: <span class="st">"Draft complete. Needs citations and local LLM examples."</span>,
+  };
+  <span class="kw">return</span> data[projectId] ?? <span class="st">"Unknown project."</span>;
+}
+
+<span class="kw">const</span> messages: <span class="ty">any</span>[] = [
+  { role: <span class="st">"system"</span>, content: <span class="st">"Use tools when project status is requested."</span> },
+  { role: <span class="st">"user"</span>, content: <span class="st">"What is the status of project agent-notes?"</span> },
+];
+
+<span class="kw">const</span> first = <span class="kw">await</span> ollama.<span class="fn">chat</span>({ model: <span class="st">"qwen2.5:7b"</span>, messages, tools });
+messages.<span class="fn">push</span>(first.message);
+
+<span class="kw">for</span> (<span class="kw">const</span> call <span class="kw">of</span> first.message.tool_calls ?? []) {
+  <span class="kw">if</span> (call.function.name === <span class="st">"getProjectStatus"</span>) {
+    <span class="kw">const</span> args =
+      <span class="kw">typeof</span> call.function.arguments === <span class="st">"string"</span>
+        ? <span class="fn">JSON.parse</span>(call.function.arguments)
+        : call.function.arguments;
+    messages.<span class="fn">push</span>({
+      role: <span class="st">"tool"</span>,
+      name: <span class="st">"getProjectStatus"</span>,
+      content: <span class="fn">getProjectStatus</span>(args.projectId),
+    });
+  }
+}
+
+<span class="kw">const</span> final = <span class="kw">await</span> ollama.<span class="fn">chat</span>({ model: <span class="st">"qwen2.5:7b"</span>, messages });
+console.<span class="fn">log</span>(final.message.content);</pre>
+    </div>
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-yellow);">
+      <h3 style="margin-top: 0; color: var(--kawaii-text);">What Makes This an Agent?</h3>
+      <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+        <li><strong>Goal:</strong> retrieve project status in natural language</li>
+        <li><strong>Model:</strong> local Qwen 2.5 via Ollama</li>
+        <li><strong>Tool:</strong> <code>getProjectStatus</code> data lookup</li>
+        <li><strong>Loop:</strong> explicit two-step — first call decides, second call answers</li>
+        <li><strong>Final answer:</strong> conversational reply with retrieved status</li>
+      </ul>
+    </div>
+
+    <!-- Local LLM Tradeoffs -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Local LLM Tradeoffs
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Decision Guide</span>
+      </h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+        <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">Advantages</h3>
+          <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+            <li>Privacy — data stays on your machine</li>
+            <li>Cost control — no per-token billing</li>
+            <li>Offline development</li>
+          </ul>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">Limitations</h3>
+          <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+            <li>Slower inference on small machines</li>
+            <li>Weaker tool-following on smaller models</li>
+            <li>Quality depends on quantization and prompt</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <!-- Why These Examples Matter — 3 cards -->
@@ -238,7 +442,11 @@ agent.<span class="fn">run</span>(message)</pre>
     </div>
 
     <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
-      Reference Material: AI Agents and Applications, Building Agentic Applications with CrewAI, and smolagents documentation.
+      Sources:
+      <a href="https://huggingface.co/docs/smolagents/en/index" target="_blank" rel="noopener">smolagents docs</a> &middot;
+      <a href="https://ollama.com/library/qwen2.5" target="_blank" rel="noopener">Ollama Qwen2.5</a> &middot;
+      <a href="https://openai.github.io/openai-agents-js/" target="_blank" rel="noopener">OpenAI Agents SDK</a> &middot;
+      AI tooling changes quickly. Before copying code into production, check the current SDK documentation and pin package versions in your project.
     </footer>
 
   </main>

@@ -87,9 +87,9 @@
           <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Axis of Autonomy</span>
         </h3>
         <p style="margin-bottom: 0; color: var(--kawaii-text);">
-          An <strong>assistant</strong> (like the standard ChatGPT interface) often requires per-step approval for
-          actions. A true <strong>agent</strong> operates with goal-level approval, autonomously navigating web
-          searches, database queries, and file manipulations to reach the finish line.
+          An AI agent is a system that uses a model to choose and execute steps toward a goal. Some agents run
+          autonomously, while production systems often keep humans in the loop for sensitive actions such as
+          sending messages, spending money, changing files, or accessing private data.
         </p>
       </div>
 
@@ -135,6 +135,75 @@
 
     </div>
 
+    <!-- Autonomy Spectrum -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Autonomy Is a Spectrum
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Key Concept</span>
+      </h2>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">1</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Chat response</strong> — the model answers once.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-purple); flex-shrink: 0;">2</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Tool-using assistant</strong> — the model may call a tool, then return control to the user.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-blue); flex-shrink: 0;">3</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Workflow agent</strong> — the system loops through plan, act, observe, and revise steps.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-yellow); flex-shrink: 0;">4</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Supervised agent</strong> — the agent can propose actions but needs approval for risky steps.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-mint); flex-shrink: 0;">5</span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Autonomous agent</strong> — the agent can complete bounded tasks without per-step approval.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-world task examples -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;">What Can Agents Actually Do?</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">Research &amp; Summarize</h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">Search multiple sources, extract key facts, and write a structured summary — all in a single run.</p>
+      </div>
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">Update Files with Approval</h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">Propose edits to a local file, show a diff to the user, and apply the change only after confirmation.</p>
+      </div>
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">Query a Database</h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">Translate a natural-language question into SQL, run it, and return a formatted table to the user.</p>
+      </div>
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">Schedule with Confirmation</h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">Find an available time slot and propose a meeting invite — but only send it after the user approves.</p>
+      </div>
+    </div>
+
+    <!-- Agent Safety Basics -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-pink);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        Agent Safety Basics
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Important</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        Production agents require more than a capable model. As autonomy increases, safety considerations become critical:
+      </p>
+      <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+        <li>Human-in-the-loop approval for irreversible or expensive actions</li>
+        <li>Budget and rate limits to prevent runaway tool use</li>
+        <li>Audit logs so agent behavior can be reviewed later</li>
+        <li>Tool permission scoping — least privilege per action</li>
+        <li>Input/output validation to catch hallucinated or malformed tool calls</li>
+      </ul>
+    </div>
+
     <!-- MCP -->
     <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-blue);">
       <h2 style="margin-top: 0; color: var(--kawaii-text);">
@@ -169,7 +238,10 @@
     </div>
 
     <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
-      Source citations included in brackets refer to the project documentation.
+      Sources:
+      <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener">MCP docs</a> &middot;
+      <a href="https://huggingface.co/docs/smolagents/en/index" target="_blank" rel="noopener">smolagents</a> &middot;
+      <a href="https://openai.github.io/openai-agents-js/" target="_blank" rel="noopener">OpenAI Agents SDK</a>
     </footer>
 
   </main>

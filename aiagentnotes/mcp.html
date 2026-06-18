@@ -170,6 +170,63 @@
 
     </div>
 
+    <!-- How MCP Connects -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        How MCP Connects
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Architecture</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        MCP has three roles: the AI application is the <strong>host</strong>, the connector inside it is the
+        <strong>client</strong>, and the external capability is exposed by the <strong>server</strong>.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">stdio</span>
+          <p style="margin: 0; color: var(--kawaii-text);">Local MCP servers commonly run over <code>stdio</code>, where the AI client starts the server process and communicates through stdin/stdout.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-blue); flex-shrink: 0;">HTTP</span>
+          <p style="margin: 0; color: var(--kawaii-text);">Remote MCP servers typically use HTTP-based transports, allowing agents to call tools hosted on external machines.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-purple); flex-shrink: 0;">Config</span>
+          <p style="margin: 0; color: var(--kawaii-text);">Clients discover servers from a configuration file. Example for a local Python server:</p>
+        </div>
+      </div>
+      <div style="margin: 0.75rem 0 0;">
+        <pre>{
+  <span class="st">"mcpServers"</span>: {
+    <span class="st">"research-assistant"</span>: {
+      <span class="st">"command"</span>: <span class="st">"python"</span>,
+      <span class="st">"args"</span>: [<span class="st">"research_server.py"</span>]
+    }
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- MCP Safety Checklist -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-pink);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        MCP Safety Checklist
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Important</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        MCP standardizes how clients discover and call tools, but it does not remove the need for authentication,
+        authorization, input validation, and user approval for sensitive actions.
+      </p>
+      <ul style="color: var(--kawaii-text); margin: 0; padding-left: 1.5rem;">
+        <li>Treat MCP servers as trusted software, not passive data files.</li>
+        <li>Use least-privilege credentials for each server.</li>
+        <li>Separate read-only tools from tools that modify files, databases, calendars, or money.</li>
+        <li>Show users what tool will run before sensitive actions.</li>
+        <li>Validate tool inputs and outputs with schemas.</li>
+        <li>Watch for prompt injection in tool descriptions, retrieved documents, and web pages.</li>
+        <li>Log tool calls so agent behavior can be audited later.</li>
+      </ul>
+    </div>
+
     <!-- Code example -->
     <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
       <h2 style="margin-top: 0; color: var(--kawaii-text);">
@@ -215,7 +272,9 @@ mcp = <span class="fn">FastMCP</span>(<span class="st">"Research Assistant Servi
     </div>
 
     <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
-      Sources: AI Agents and Applications, AI Agents in Action, and The Developer's Guide to AI.
+      Sources:
+      <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener">MCP official docs</a> &middot;
+      <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">MCP server SDK</a>
     </footer>
 
   </main>
