@@ -355,6 +355,47 @@ a {
   }
 }
 
+/* ==========================================================================
+   7. CODE BLOCK COPY BUTTON
+   ========================================================================== */
+.code-block {
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #f0e6ff;
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border: 2px solid rgba(201, 160, 255, 0.5);
+  border-radius: var(--kawaii-radius-round);
+  cursor: pointer;
+  transition: var(--kawaii-transition);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.copy-btn:hover {
+  background-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(201, 160, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.copy-btn:active {
+  transform: scale(0.97);
+}
+
+.copy-btn--done {
+  background-color: rgba(168, 230, 163, 0.3);
+  border-color: #a8e6a3;
+  color: #a8e6a3;
+}
+
 /* Phone (up to 560px) */
 @media (max-width: 560px) {
   body {
