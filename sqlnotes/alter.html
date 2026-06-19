@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ALTER TABLE | SQL Notes</title>
+  <meta name="description" content="Learn SQL with clear examples and explanations">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="cc-page"><header class="cc-panel cc-header"><h1 class="cc-title">ALTER TABLE</h1><nav class="cc-tabs cc-nav"><button type="button" class="cc-tab" onclick="window.location.href='index.html'">Introduction</button><button type="button" class="cc-tab" onclick="window.location.href='code.html'">Basic Command</button><button type="button" class="cc-tab" onclick="window.location.href='usermgmt.html'">User Management</button><button type="button" class="cc-tab is-active" aria-selected="true" onclick="window.location.href='alter.html'">ALTER TABLE</button><button type="button" class="cc-tab" onclick="window.location.href='optimize.html'">Optimizing Query</button><button type="button" class="cc-tab" onclick="window.location.href='mongodb.html'">MongoDB</button></nav></header><main class="cc-main"><section class="cc-panel cc-section"><h2 class="cc-section-title">ALTER TABLE Command</h2><p class="cc-text">The ALTER TABLE statement is used to modify an existing table structure in SQL. You can add, delete, or modify columns, change data types, add constraints, and more.</p><p class="cc-text"><strong>Basic Syntax:</strong></p><pre><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> table_name
+</span><span></span><span class="token">ACTION</span><span> column_name datatype</span><span class="token">;</span></pre></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Adding a Column</h2><p class="cc-text">Use the ADD keyword to add a new column to an existing table.</p><div class="cc-card cc-example"><h3 class="cc-example-title">Example: Add a Single Column</h3><pre><span class="token">-- Add an email column to the employees table</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> email </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">100</span><span class="token">)</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Example: Add Multiple Columns</h3><pre><span class="token">-- Add multiple columns at once</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> phone </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">20</span><span class="token">)</span><span class="token">,</span><span>
+</span><span></span><span class="token">ADD</span><span> address </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">200</span><span class="token">)</span><span class="token">,</span><span>
+</span><span></span><span class="token">ADD</span><span> hire_date </span><span class="token">DATE</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Example: Add Column with Default Value</h3><pre><span class="token">-- Add a column with a default value</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">status</span><span> </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">20</span><span class="token">)</span><span> </span><span class="token">DEFAULT</span><span> </span><span class="token">&#x27;active&#x27;</span><span class="token">;</span></pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Dropping (Removing) a Column</h2><p class="cc-text">Use the DROP COLUMN keyword to remove a column from a table. Be careful—this permanently deletes the column and all its data!</p><div class="cc-card cc-example"><h3 class="cc-example-title">Example: Drop a Single Column</h3><pre><span class="token">-- Remove the middle_name column</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">DROP</span><span> </span><span class="token">COLUMN</span><span> middle_name</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Example: Drop Multiple Columns</h3><pre><span class="token">-- Remove multiple columns</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">DROP</span><span> </span><span class="token">COLUMN</span><span> fax</span><span class="token">,</span><span>
+</span><span></span><span class="token">DROP</span><span> </span><span class="token">COLUMN</span><span> pager</span><span class="token">;</span></pre></div><div class="cc-alert warning"><h3 class="cc-alert-title">⚠️ Warning</h3><p class="cc-text">Dropping a column is irreversible. Always backup your data before performing destructive operations. Some databases may not allow dropping columns that are referenced by foreign keys or indexes.</p></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Modifying Column Data Types</h2><p class="cc-text">You can change the data type of an existing column. The syntax varies slightly between different database systems (MySQL uses MODIFY, PostgreSQL and SQL Server use ALTER COLUMN).</p><div class="cc-card cc-example"><h3 class="cc-example-title">MySQL Syntax</h3><pre><span class="token">-- Change the data type of a column in MySQL</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">MODIFY</span><span> </span><span class="token">COLUMN</span><span> phone </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">25</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Change with NOT NULL constraint</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">MODIFY</span><span> </span><span class="token">COLUMN</span><span> salary </span><span class="token">DECIMAL</span><span class="token">(</span><span class="token">12</span><span class="token">,</span><span> </span><span class="token">2</span><span class="token">)</span><span> </span><span class="token">NOT</span><span> </span><span class="token">NULL</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">PostgreSQL Syntax</h3><pre><span class="token">-- Change the data type in PostgreSQL</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">COLUMN</span><span> phone </span><span class="token">TYPE</span><span> </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">25</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- With USING clause for data conversion</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">COLUMN</span><span> age </span><span class="token">TYPE</span><span> </span><span class="token">INTEGER</span><span> </span><span class="token">USING</span><span> age::</span><span class="token">integer</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">SQL Server Syntax</h3><pre><span class="token">-- Change the data type in SQL Server</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">COLUMN</span><span> phone </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">25</span><span class="token">)</span><span class="token">;</span></pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Renaming Columns</h2><p class="cc-text">Rename existing columns to better reflect their purpose or follow naming conventions.</p><div class="cc-card cc-example"><h3 class="cc-example-title">MySQL Syntax</h3><pre><span class="token">-- Rename a column in MySQL</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span>CHANGE </span><span class="token">COLUMN</span><span> old_name new_name </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">100</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Or using RENAME COLUMN (MySQL 8.0+)</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">COLUMN</span><span> old_name </span><span class="token">TO</span><span> new_name</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">PostgreSQL / SQL Server Syntax</h3><pre><span class="token">-- Rename a column in PostgreSQL</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">COLUMN</span><span> old_name </span><span class="token">TO</span><span> new_name</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- SQL Server uses sp_rename</span><span>
+</span><span></span><span class="token">EXEC</span><span> sp_rename </span><span class="token">&#x27;employees.old_name&#x27;</span><span class="token">,</span><span> </span><span class="token">&#x27;new_name&#x27;</span><span class="token">,</span><span> </span><span class="token">&#x27;COLUMN&#x27;</span><span class="token">;</span></pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Adding and Dropping Constraints</h2><p class="cc-text">You can add or remove constraints like PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK, and NOT NULL.</p><div class="cc-card cc-example"><h3 class="cc-example-title">Add Constraints</h3><pre><span class="token">-- Add a primary key</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">PRIMARY</span><span> </span><span class="token">KEY</span><span> </span><span class="token">(</span><span>employee_id</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Add a foreign key</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> orders
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">FOREIGN</span><span> </span><span class="token">KEY</span><span> </span><span class="token">(</span><span>customer_id</span><span class="token">)</span><span> </span><span class="token">REFERENCES</span><span> customers</span><span class="token">(</span><span>id</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Add a unique constraint</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">UNIQUE</span><span> </span><span class="token">(</span><span>email</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Add a check constraint</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">CHECK</span><span> </span><span class="token">(</span><span>salary </span><span class="token">&gt;</span><span> </span><span class="token">0</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Add NOT NULL constraint (varies by database)</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">MODIFY</span><span> </span><span class="token">COLUMN</span><span> email </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">100</span><span class="token">)</span><span> </span><span class="token">NOT</span><span> </span><span class="token">NULL</span><span class="token">;</span><span>  </span><span class="token">-- MySQL</span><span>
+</span>
+<span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">COLUMN</span><span> email </span><span class="token">SET</span><span> </span><span class="token">NOT</span><span> </span><span class="token">NULL</span><span class="token">;</span><span>  </span><span class="token">-- PostgreSQL</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Drop Constraints</h3><pre><span class="token">-- Drop a primary key</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">DROP</span><span> </span><span class="token">PRIMARY</span><span> </span><span class="token">KEY</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Drop a foreign key (need constraint name)</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> orders
+</span><span></span><span class="token">DROP</span><span> </span><span class="token">FOREIGN</span><span> </span><span class="token">KEY</span><span> fk_customer_id</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Drop a check constraint</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">DROP</span><span> </span><span class="token">CHECK</span><span> check_salary</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Remove NOT NULL constraint</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">MODIFY</span><span> </span><span class="token">COLUMN</span><span> email </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">100</span><span class="token">)</span><span> </span><span class="token">NULL</span><span class="token">;</span><span>  </span><span class="token">-- MySQL</span><span>
+</span>
+<span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">COLUMN</span><span> email </span><span class="token">DROP</span><span> </span><span class="token">NOT</span><span> </span><span class="token">NULL</span><span class="token">;</span><span>  </span><span class="token">-- PostgreSQL</span></pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Renaming Tables</h2><p class="cc-text">You can rename an entire table using ALTER TABLE or RENAME TABLE.</p><div class="cc-card cc-example"><h3 class="cc-example-title">Example</h3><pre><span class="token">-- MySQL</span><span>
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">TABLE</span><span> old_table_name </span><span class="token">TO</span><span> new_table_name</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Or using ALTER TABLE</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> old_table_name
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">TO</span><span> new_table_name</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- PostgreSQL</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> old_table_name
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">TO</span><span> new_table_name</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- SQL Server</span><span>
+</span><span></span><span class="token">EXEC</span><span> sp_rename </span><span class="token">&#x27;old_table_name&#x27;</span><span class="token">,</span><span> </span><span class="token">&#x27;new_table_name&#x27;</span><span class="token">;</span></pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Practical Example: Complete Table Modification</h2><p class="cc-text">Let&#x27;s see a real-world scenario where we modify an existing employees table:</p><div class="cc-card cc-example"><h3 class="cc-example-title">Original Table Structure</h3><pre><span class="token">CREATE</span><span> </span><span class="token">TABLE</span><span> employees </span><span class="token">(</span><span>
+</span><span>    id </span><span class="token">INT</span><span class="token">,</span><span>
+</span><span>    name </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">50</span><span class="token">)</span><span class="token">,</span><span>
+</span><span>    dept </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">20</span><span class="token">)</span><span class="token">,</span><span>
+</span><span>    pay </span><span class="token">DECIMAL</span><span class="token">(</span><span class="token">8</span><span class="token">,</span><span> </span><span class="token">2</span><span class="token">)</span><span>
+</span><span></span><span class="token">)</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Modifications</h3><pre><span class="token">-- Add primary key</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">PRIMARY</span><span> </span><span class="token">KEY</span><span> </span><span class="token">(</span><span>id</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Rename columns for clarity</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">COLUMN</span><span> name </span><span class="token">TO</span><span> full_name</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">COLUMN</span><span> dept </span><span class="token">TO</span><span> department</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">RENAME</span><span> </span><span class="token">COLUMN</span><span> pay </span><span class="token">TO</span><span> salary</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Change data types</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">MODIFY</span><span> </span><span class="token">COLUMN</span><span> full_name </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">100</span><span class="token">)</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">MODIFY</span><span> </span><span class="token">COLUMN</span><span> salary </span><span class="token">DECIMAL</span><span class="token">(</span><span class="token">12</span><span class="token">,</span><span> </span><span class="token">2</span><span class="token">)</span><span> </span><span class="token">NOT</span><span> </span><span class="token">NULL</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Add new columns</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> email </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">100</span><span class="token">)</span><span> </span><span class="token">UNIQUE</span><span class="token">,</span><span>
+</span><span></span><span class="token">ADD</span><span> hire_date </span><span class="token">DATE</span><span class="token">,</span><span>
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">status</span><span> </span><span class="token">VARCHAR</span><span class="token">(</span><span class="token">20</span><span class="token">)</span><span> </span><span class="token">DEFAULT</span><span> </span><span class="token">&#x27;active&#x27;</span><span class="token">;</span><span>
+</span>
+<span></span><span class="token">-- Add check constraint</span><span>
+</span><span></span><span class="token">ALTER</span><span> </span><span class="token">TABLE</span><span> employees
+</span><span></span><span class="token">ADD</span><span> </span><span class="token">CHECK</span><span> </span><span class="token">(</span><span>salary </span><span class="token">&gt;=</span><span> </span><span class="token">0</span><span class="token">)</span><span class="token">;</span></pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Final Table Structure</h3><pre><span class="token">-- The table now looks like this:</span><span>
+</span><span></span><span class="token">-- employees (</span><span>
+</span><span></span><span class="token">--     id INT PRIMARY KEY,</span><span>
+</span><span></span><span class="token">--     full_name VARCHAR(100),</span><span>
+</span><span></span><span class="token">--     department VARCHAR(20),</span><span>
+</span><span></span><span class="token">--     salary DECIMAL(12, 2) NOT NULL CHECK(salary &gt;= 0),</span><span>
+</span><span></span><span class="token">--     email VARCHAR(100) UNIQUE,</span><span>
+</span><span></span><span class="token">--     hire_date DATE,</span><span>
+</span><span></span><span class="token">--     status VARCHAR(20) DEFAULT &#x27;active&#x27;</span><span>
+</span><span></span><span class="token">-- )</span></pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Best Practices</h2><ul class="cc-list"><li>Always backup your database before making structural changes</li><li>Test ALTER statements in a development environment first</li><li>Be aware that some operations may lock the table temporarily</li><li>Check for dependencies (foreign keys, views, stored procedures) before dropping columns</li><li>When changing data types, ensure existing data is compatible with the new type</li><li>Use transactions when making multiple changes to allow rollback if needed</li><li>Document all schema changes for team members and future reference</li></ul></section></main></div>
+<script src="js/sql-copy.js"></script>
+</body>
+</html>

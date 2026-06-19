@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MongoDB Query Cheatsheet | SQL Notes</title>
+  <meta name="description" content="MongoDB query cheatsheet with examples for finding, filtering, sorting, arrays, text search, and aggregation">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="cc-page"><header class="cc-panel cc-header"><h1 class="cc-title">MongoDB Query Cheatsheet</h1><nav class="cc-tabs cc-nav"><button type="button" class="cc-tab" onclick="window.location.href='index.html'">Introduction</button><button type="button" class="cc-tab" onclick="window.location.href='code.html'">Basic Command</button><button type="button" class="cc-tab" onclick="window.location.href='usermgmt.html'">User Management</button><button type="button" class="cc-tab" onclick="window.location.href='alter.html'">ALTER TABLE</button><button type="button" class="cc-tab" onclick="window.location.href='optimize.html'">Optimizing Query</button><button type="button" class="cc-tab is-active" aria-selected="true" onclick="window.location.href='mongodb.html'">MongoDB</button></nav></header><main class="cc-main"><section class="cc-panel cc-section"><h2 class="cc-section-title">Overview</h2><p class="cc-text">A quick reference guide for querying documents in MongoDB.</p></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Basic Query Operations</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Find Documents</h3><p class="cc-text"><strong>Find all documents in a collection:</strong></p><pre>db.collection.find()</pre><p class="cc-text"><strong>Find documents matching a condition:</strong></p><pre>db.collection.find({ status: "active" })</pre><p class="cc-text"><strong>Find one document:</strong></p><pre>db.collection.findOne({ _id: ObjectId("...") })</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Query Operators</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Comparison Operators</h3><pre>// Equal to
+db.collection.find({ age: 25 })
+
+// Greater than
+db.collection.find({ age: { $gt: 25 } })
+
+// Greater than or equal
+db.collection.find({ age: { $gte: 25 } })
+
+// Less than
+db.collection.find({ age: { $lt: 25 } })
+
+// Less than or equal
+db.collection.find({ age: { $lte: 25 } })
+
+// Not equal
+db.collection.find({ status: { $ne: "inactive" } })
+
+// In array
+db.collection.find({ status: { $in: ["active", "pending"] } })
+
+// Not in array
+db.collection.find({ status: { $nin: ["deleted", "archived"] } })</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Logical Operators</h3><pre>// AND (implicit)
+db.collection.find({ status: "active", age: { $gte: 18 } })
+
+// AND (explicit)
+db.collection.find({ $and: [
+  { status: "active" },
+  { age: { $gte: 18 } }
+]})
+
+// OR
+db.collection.find({ $or: [
+  { status: "active" },
+  { priority: "high" }
+]})
+
+// NOT
+db.collection.find({ age: { $not: { $gte: 18 } } })
+
+// NOR
+db.collection.find({ $nor: [
+  { status: "deleted" },
+  { archived: true }
+]})</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Field Projection</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Include Specific Fields</h3><pre>db.collection.find({ status: "active" }, { name: 1, email: 1 })</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Exclude Specific Fields</h3><pre>db.collection.find({}, { password: 0, internal_id: 0 })</pre></div><div class="cc-alert info"><p class="cc-text">You cannot mix inclusion and exclusion, except for the <code>_id</code> field.</p></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Querying Arrays</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Array Matching</h3><p class="cc-text"><strong>Match exact array:</strong></p><pre>db.collection.find({ tags: ["mongodb", "database"] })</pre><p class="cc-text"><strong>Match array containing element:</strong></p><pre>db.collection.find({ tags: "mongodb" })</pre><p class="cc-text"><strong>Match with <code>$all</code>:</strong></p><pre>db.collection.find({ tags: { $all: ["mongodb", "nosql"] } })</pre><p class="cc-text"><strong>Match by array size:</strong></p><pre>db.collection.find({ tags: { $size: 3 } })</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Array Element Queries</h3><p class="cc-text"><strong>Query array elements:</strong></p><pre>db.collection.find({ "tags.0": "mongodb" })</pre><p class="cc-text"><strong><code>$elemMatch</code> for complex conditions:</strong></p><pre>db.collection.find({
+  scores: { $elemMatch: { $gte: 80, $lt: 90 } }
+})</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Querying Nested Documents</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Dot Notation</h3><pre>db.collection.find({ "address.city": "New York" })</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Match Entire Nested Document</h3><pre>db.collection.find({
+  address: { street: "123 Main St", city: "NYC" }
+})</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Regular Expressions</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Regex Query Examples</h3><pre>// Case-sensitive match
+db.collection.find({ name: /^John/ })
+
+// Case-insensitive match
+db.collection.find({ name: { $regex: /john/i } })
+
+// Using $options
+db.collection.find({ name: { $regex: "^john", $options: "i" } })</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Existence and Type Checks</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Check if Field Exists</h3><pre>db.collection.find({ email: { $exists: true } })</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Check Field Type</h3><pre>db.collection.find({ age: { $type: "number" } })
+db.collection.find({ age: { $type: 16 } }) // 16 = 32-bit integer</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Sorting, Limiting &amp; Skipping</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Sort and Page Results</h3><p class="cc-text"><strong>Sort ascending:</strong></p><pre>db.collection.find().sort({ age: 1 })</pre><p class="cc-text"><strong>Sort descending:</strong></p><pre>db.collection.find().sort({ createdAt: -1 })</pre><p class="cc-text"><strong>Limit results:</strong></p><pre>db.collection.find().limit(10)</pre><p class="cc-text"><strong>Skip results for pagination:</strong></p><pre>db.collection.find().skip(20).limit(10)</pre><p class="cc-text"><strong>Combine operations:</strong></p><pre>db.collection.find({ status: "active" })
+  .sort({ createdAt: -1 })
+  .skip(10)
+  .limit(5)</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Counting and Distinct Values</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Counting Documents</h3><p class="cc-text"><strong>Count all documents:</strong></p><pre>db.collection.countDocuments()</pre><p class="cc-text"><strong>Count with filter:</strong></p><pre>db.collection.countDocuments({ status: "active" })</pre><p class="cc-text"><strong>Estimated count, faster but less accurate:</strong></p><pre>db.collection.estimatedDocumentCount()</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Distinct Values</h3><pre>db.collection.distinct("category")
+db.collection.distinct("city", { status: "active" })</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Text Search</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Create Text Index</h3><pre>db.collection.createIndex({ content: "text" })</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Perform Text Search</h3><pre>db.collection.find({ $text: { $search: "mongodb query" } })</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">Text Search with Score</h3><pre>db.collection.find(
+  { $text: { $search: "database" } },
+  { score: { $meta: "textScore" } }
+).sort({ score: { $meta: "textScore" } })</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Aggregation Pipeline Basics</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Pipeline Example</h3><pre>db.collection.aggregate([
+  // Match stage (filter)
+  { $match: { status: "active" } },
+
+  // Group stage
+  { $group: {
+    _id: "$category",
+    total: { $sum: 1 },
+    avgPrice: { $avg: "$price" }
+  }},
+
+  // Sort stage
+  { $sort: { total: -1 } },
+
+  // Limit stage
+  { $limit: 5 }
+])</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Common Query Patterns</h2><div class="cc-card cc-example"><h3 class="cc-example-title">Date Queries</h3><pre>// Documents from today
+db.collection.find({
+  createdAt: {
+    $gte: new Date(new Date().setHours(0,0,0,0))
+  }
+})
+
+// Documents from last 7 days
+db.collection.find({
+  createdAt: {
+    $gte: new Date(Date.now() - 7*24*60*60*1000)
+  }
+})
+
+// Date range
+db.collection.find({
+  createdAt: {
+    $gte: ISODate("2025-01-01"),
+    $lt: ISODate("2025-12-31")
+  }
+})</pre></div><div class="cc-card cc-example"><h3 class="cc-example-title">NULL and Missing Values</h3><pre>// Field is null
+db.collection.find({ field: null })
+
+// Field is null OR does not exist
+db.collection.find({ field: { $in: [null] } })
+
+// Field exists but is null
+db.collection.find({ field: { $type: "null" } })
+
+// Field does not exist
+db.collection.find({ field: { $exists: false } })</pre></div></section><section class="cc-panel cc-section"><h2 class="cc-section-title">Additional Resources</h2><ul class="cc-list"><li><a href="https://docs.mongodb.com/manual/tutorial/query-documents/">MongoDB Official Documentation</a></li><li><a href="https://docs.mongodb.com/manual/reference/operator/query/">Query and Projection Operators</a></li><li><a href="https://docs.mongodb.com/manual/core/aggregation-pipeline/">Aggregation Pipeline</a></li></ul></section></main></div>
+<script src="js/sql-copy.js"></script>
+</body>
+</html>
