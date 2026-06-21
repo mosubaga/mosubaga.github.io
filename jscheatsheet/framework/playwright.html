@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Playwright JS/TS Cheatsheet</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-size: 14px;
+    }
+
+    .sheet {
+      width: min(1400px, calc(100% - 24px));
+      padding: 18px 0;
+    }
+
+    .sheet-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) max-content;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 14px;
+      padding: 18px;
+      border: 1px solid var(--cc-border);
+      border-radius: var(--cc-radius-md);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: var(--cc-shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--cc-text-soft);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4.6vw, 4.3rem);
+      line-height: 0.95;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+      margin: 8px 0 0;
+      color: var(--cc-text-muted);
+      font-weight: 700;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .hero-badges .cc-badge {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .cheat-card {
+      grid-column: span 3;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--cc-border);
+      border-radius: var(--cc-radius-sm);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 10px 26px rgba(139, 90, 157, 0.1);
+    }
+
+    .cheat-card.wide {
+      grid-column: span 6;
+    }
+
+    .cheat-card.tall pre {
+      min-height: 230px;
+    }
+
+    .cheat-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      margin: 0;
+      padding: 8px 10px;
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 900;
+      line-height: 1.1;
+      background: var(--accent, var(--cc-text-strong));
+    }
+
+    .cheat-title span {
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: var(--accent, var(--cc-text-strong));
+      background: rgba(255, 255, 255, 0.92);
+      font-size: 0.76rem;
+      font-weight: 1000;
+    }
+
+    .cheat-card pre {
+      min-height: 150px;
+      margin: 0;
+      padding: 10px;
+      border: 0;
+      border-radius: 0;
+      color: #49315c;
+      background: rgba(255, 250, 253, 0.9);
+      font-size: clamp(0.68rem, 0.78vw, 0.82rem);
+      line-height: 1.42;
+      white-space: pre-wrap;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    .cheat-card code {
+      display: block;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: transparent;
+    }
+
+    .quick-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .quick-item {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--cc-border);
+      border-radius: var(--cc-radius-sm);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .quick-item strong {
+      color: var(--cc-text-strong);
+      font-size: 0.82rem;
+      line-height: 1.15;
+    }
+
+    .quick-item code {
+      padding: 0;
+      border: 0;
+      color: var(--cc-text-muted);
+      background: transparent;
+      font-size: 0.72rem;
+      overflow-wrap: anywhere;
+    }
+
+    .sources {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--cc-border);
+      border-radius: var(--cc-radius-sm);
+      color: var(--cc-text-muted);
+      background: rgba(255, 255, 255, 0.72);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .pink { --accent: #e94e91; }
+    .purple { --accent: #8d5ec2; }
+    .blue { --accent: #387fbd; }
+    .teal { --accent: #278f8b; }
+    .green { --accent: #35a16b; }
+    .orange { --accent: #dc7d25; }
+    .navy { --accent: #5968b5; }
+
+    .tok-comment { color: #8c7f98; font-style: italic; }
+    .tok-string { color: #c45178; }
+    .tok-keyword { color: #7b4db3; font-weight: 800; }
+    .tok-function { color: #236fa6; font-weight: 800; }
+    .tok-number { color: #b76920; }
+    .tok-operator { color: #a24d8c; }
+    .tok-command { color: #25845f; font-weight: 800; }
+    .tok-package { color: #4f69b0; font-weight: 700; }
+    .tok-punctuation { color: #75607f; }
+
+    @media (max-width: 1100px) {
+      .cheat-card,
+      .cheat-card.wide {
+        grid-column: span 6;
+      }
+    }
+
+    @media (min-width: 721px) and (max-width: 1180px) {
+      body {
+        font-size: 15px;
+      }
+
+      .sheet {
+        width: min(100% - 32px, 980px);
+        padding: 24px 0;
+      }
+
+      .sheet-hero {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .hero-badges {
+        justify-content: flex-start;
+      }
+
+      .quick-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .sheet-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .cheat-card,
+      .cheat-card.wide {
+        grid-column: auto;
+      }
+
+      .cheat-card.wide {
+        grid-column: 1 / -1;
+      }
+
+      .cheat-title {
+        min-height: 40px;
+        padding: 10px 12px;
+        font-size: 1rem;
+      }
+
+      .cheat-card pre,
+      .cheat-card.tall pre {
+        min-height: auto;
+        padding: 13px;
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .sheet {
+        width: min(100% - 18px, 1400px);
+      }
+
+      .sheet-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-badges {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+
+      .quick-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cheat-card,
+      .cheat-card.wide {
+        grid-column: 1 / -1;
+      }
+
+      .cheat-card pre,
+      .cheat-card.tall pre {
+        min-height: auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        font-size: 10px;
+      }
+
+      .sheet {
+        width: 100%;
+        padding: 0;
+      }
+
+      .sheet-hero,
+      .cheat-card,
+      .quick-item,
+      .sources {
+        box-shadow: none;
+      }
+
+      .sheet-grid {
+        gap: 6px;
+      }
+
+      .cheat-card {
+        break-inside: avoid;
+      }
+
+      .cheat-card pre {
+        font-size: 0.58rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cc-page sheet">
+    <div class="sheet-hero">
+      <div>
+        <p class="eyebrow">JavaScript and TypeScript quick reference</p>
+        <h1>Playwright Cheatsheet</h1>
+        <p class="hero-copy">Common commands, test patterns, locators, assertions, waits, browser context, files, API testing, tracing, and config in one compact page.</p>
+      </div>
+      <div class="hero-badges" aria-label="Cheatsheet highlights">
+        <span class="cc-badge">Auto waiting</span>
+        <span class="cc-badge">Chromium Firefox WebKit</span>
+        <span class="cc-badge">Trace + screenshots</span>
+        <span class="cc-badge">JS/TS only</span>
+      </div>
+    </div>
+
+    <div class="quick-strip" aria-label="Most used commands">
+      <div class="quick-item"><strong>Install</strong><code>npm init playwright@latest</code></div>
+      <div class="quick-item"><strong>Run tests</strong><code>npx playwright test</code></div>
+      <div class="quick-item"><strong>Debug</strong><code>npx playwright test --debug</code></div>
+      <div class="quick-item"><strong>Generate</strong><code>npx playwright codegen</code></div>
+    </div>
+
+    <div class="sheet-grid" aria-label="Playwright cheatsheet sections">
+      <div class="cheat-card green">
+        <h2 class="cheat-title"><span>1</span> Installation</h2>
+        <pre><code># Test runner project
+npm init playwright@latest
+
+# Existing project
+npm i -D @playwright/test
+npx playwright install
+
+# Specific browsers
+npx playwright install chromium
+npx playwright install firefox
+npx playwright install webkit
+npx playwright install --with-deps</code></pre>
+      </div>
+
+      <div class="cheat-card wide blue">
+        <h2 class="cheat-title"><span>2</span> Basic Test Structure</h2>
+        <pre><code>import { test, expect } from '@playwright/test';
+
+test.describe('checkout', () =&gt; {
+  test.beforeEach(async ({ page }) =&gt; {
+    await page.goto('/shop');
+  });
+
+  test('user can buy a mug', async ({ page }) =&gt; {
+    await page.getByRole('button', { name: 'Add to cart' }).click();
+    await expect(page.getByText('Cart')).toBeVisible();
+  });
+});</code></pre>
+      </div>
+
+      <div class="cheat-card purple">
+        <h2 class="cheat-title"><span>3</span> Browser and Context</h2>
+        <pre><code>import { chromium, devices } from '@playwright/test';
+
+const browser = await chromium.launch({ headless: false });
+const context = await browser.newContext({
+  viewport: { width: 1280, height: 720 },
+  userAgent: 'Mozilla/5.0 ...',
+  locale: 'en-US',
+  permissions: ['geolocation'],
+  ...devices['iPhone 13'],
+});
+const page = await context.newPage();
+await context.close();
+await browser.close();</code></pre>
+      </div>
+
+      <div class="cheat-card navy">
+        <h2 class="cheat-title"><span>4</span> Page Navigation</h2>
+        <pre><code>await page.goto('https://example.com');
+await page.reload();
+await page.goBack();
+await page.goForward();
+
+await page.waitForURL('**/dashboard');
+await page.waitForLoadState('domcontentloaded');
+await page.waitForLoadState('networkidle');
+page.setDefaultNavigationTimeout(30_000);</code></pre>
+      </div>
+
+      <div class="cheat-card pink tall">
+        <h2 class="cheat-title"><span>5</span> Locators</h2>
+        <pre><code>page.getByRole('button', { name: 'Save' })
+page.getByLabel('Email')
+page.getByPlaceholder('Search')
+page.getByText('Welcome')
+page.getByAltText('Logo')
+page.getByTitle('Close')
+page.getByTestId('submit')
+page.locator('css=.item')
+
+const row = page.getByRole('row').filter({ hasText: 'Ada' });
+await row.getByRole('button', { name: 'Edit' }).click();
+
+await expect(page.getByRole('listitem')).toHaveCount(3);</code></pre>
+      </div>
+
+      <div class="cheat-card orange tall">
+        <h2 class="cheat-title"><span>6</span> Actions</h2>
+        <pre><code>await locator.click();
+await locator.dblclick();
+await locator.fill('hello');
+await locator.clear();
+await locator.press('Enter');
+await locator.check();
+await locator.uncheck();
+await locator.selectOption('CA');
+await locator.hover();
+await locator.focus();
+await locator.blur();
+await locator.dragTo(target);
+
+await page.keyboard.press('Meta+K');
+await page.mouse.click(100, 200);</code></pre>
+      </div>
+
+      <div class="cheat-card green tall">
+        <h2 class="cheat-title"><span>7</span> Assertions</h2>
+        <pre><code>await expect(locator).toBeVisible();
+await expect(locator).toBeHidden();
+await expect(locator).toBeEnabled();
+await expect(locator).toBeDisabled();
+await expect(locator).toHaveText(/done/i);
+await expect(locator).toContainText('Item');
+await expect(locator).toHaveValue('abc');
+await expect(locator).toHaveAttribute('href', /docs/);
+await expect(locator).toHaveClass(/active/);
+await expect(locator).toHaveCSS('display', 'flex');
+await expect(page).toHaveTitle(/Playwright/);
+await expect(page).toHaveURL(/dashboard/);
+await expect(response).toBeOK();</code></pre>
+      </div>
+
+      <div class="cheat-card teal">
+        <h2 class="cheat-title"><span>8</span> Waits</h2>
+        <pre><code>await locator.waitFor({ state: 'visible' });
+await page.waitForSelector('.ready');
+await page.waitForResponse(/api\/users/);
+await page.waitForEvent('popup');
+await expect(locator).toBeVisible();
+
+// Prefer web assertions over fixed sleeps.
+await page.waitForTimeout(500);</code></pre>
+      </div>
+
+      <div class="cheat-card purple">
+        <h2 class="cheat-title"><span>9</span> Dialogs and Popups</h2>
+        <pre><code>page.on('dialog', async dialog =&gt; {
+  console.log(dialog.message());
+  await dialog.accept();
+  // await dialog.dismiss();
+});
+
+const popupPromise = page.waitForEvent('popup');
+await page.getByRole('link', { name: 'Open' }).click();
+const popup = await popupPromise;
+await popup.waitForLoadState();</code></pre>
+      </div>
+
+      <div class="cheat-card blue">
+        <h2 class="cheat-title"><span>10</span> Files and Downloads</h2>
+        <pre><code>await page.setInputFiles('input[type=file]', 'file.png');
+await page.setInputFiles('input[type=file]', [
+  'one.png',
+  'two.png',
+]);
+
+const downloadPromise = page.waitForEvent('download');
+await page.getByRole('button', { name: 'Export' }).click();
+const download = await downloadPromise;
+await download.saveAs('report.pdf');</code></pre>
+      </div>
+
+      <div class="cheat-card orange">
+        <h2 class="cheat-title"><span>11</span> Screenshots and Video</h2>
+        <pre><code>await page.screenshot({ path: 'page.png' });
+await page.screenshot({
+  path: 'fullpage.png',
+  fullPage: true,
+});
+await locator.screenshot({ path: 'card.png' });
+
+const context = await browser.newContext({
+  recordVideo: { dir: 'videos/' },
+});</code></pre>
+      </div>
+
+      <div class="cheat-card teal">
+        <h2 class="cheat-title"><span>12</span> Storage and Cookies</h2>
+        <pre><code>await context.addCookies([{
+  name: 'token',
+  value: 'abc123',
+  domain: 'example.com',
+  path: '/',
+}]);
+const cookies = await context.cookies();
+await context.clearCookies();
+
+await page.evaluate(() =&gt; {
+  localStorage.setItem('theme', 'dark');
+  sessionStorage.setItem('step', '1');
+});</code></pre>
+      </div>
+
+      <div class="cheat-card navy">
+        <h2 class="cheat-title"><span>13</span> Frames and Shadow DOM</h2>
+        <pre><code>const frame = page.frame({ url: /checkout/ });
+await frame?.getByLabel('Card').fill('4242');
+
+const frameLocator = page.frameLocator('iframe[name=pay]');
+await frameLocator.getByRole('button', { name: 'Pay' }).click();
+
+const input = page.locator('my-widget').locator('input');
+await input.fill('Playwright');</code></pre>
+      </div>
+
+      <div class="cheat-card green">
+        <h2 class="cheat-title"><span>14</span> API Testing</h2>
+        <pre><code>import { request, expect } from '@playwright/test';
+
+const api = await request.newContext({
+  baseURL: 'https://api.example.com',
+});
+const response = await api.post('/login', {
+  data: { user: 'admin', password: 'secret' },
+});
+await expect(response).toBeOK();
+const body = await response.json();</code></pre>
+      </div>
+
+      <div class="cheat-card pink">
+        <h2 class="cheat-title"><span>15</span> Debugging and Tracing</h2>
+        <pre><code>await page.pause();
+
+# CLI
+npx playwright test --debug
+npx playwright test --headed
+npx playwright show-report
+npx playwright show-trace trace.zip
+
+await context.tracing.start({
+  screenshots: true,
+  snapshots: true,
+  sources: true,
+});
+await context.tracing.stop({ path: 'trace.zip' });</code></pre>
+      </div>
+
+      <div class="cheat-card wide purple">
+        <h2 class="cheat-title"><span>16</span> Test Configuration</h2>
+        <pre><code>import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests',
+  timeout: 30_000,
+  expect: { timeout: 5_000 },
+  retries: process.env.CI ? 2 : 0,
+  fullyParallel: true,
+  use: {
+    baseURL: 'https://example.com',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+  },
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
+});</code></pre>
+      </div>
+
+      <div class="cheat-card blue">
+        <h2 class="cheat-title"><span>17</span> Annotations and Hooks</h2>
+        <pre><code>test.beforeAll(async () =&gt; {});
+test.beforeEach(async ({ page }) =&gt; {});
+test.afterEach(async ({ page }) =&gt; {});
+test.afterAll(async () =&gt; {});
+
+test.skip(browserName === 'webkit', 'Not supported yet');
+test.fixme('Known issue');
+test.slow();
+test.describe.configure({ mode: 'serial' });</code></pre>
+      </div>
+
+      <div class="cheat-card orange">
+        <h2 class="cheat-title"><span>18</span> CLI Essentials</h2>
+        <pre><code>npx playwright test
+npx playwright test tests/login.spec.ts
+npx playwright test -g "checkout"
+npx playwright test --project=chromium
+npx playwright test --workers=4
+npx playwright test --ui
+npx playwright test --reporter=html
+npx playwright codegen https://example.com</code></pre>
+      </div>
+    </div>
+
+    <div class="sources">
+      Reference inputs: Browsercat Playwright cheatsheet, local reference images, and Playwright JavaScript/TypeScript testing conventions.
+    </div>
+  </div>
+  <script>
+    (() => {
+      const escapeHtml = (value) => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+      const tokenPattern = /(\/\/[^\n]*|#[^\n]*|\/[^/\n]+\/[gimsuy]*)|(`(?:\\.|[^`])*`|'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")|(\b(?:import|from|const|let|var|await|async|function|return|if|else|true|false|null|undefined|new|export|default|process|env)\b)|(\b(?:npm|npx|playwright|tsx|node)\b)|(@[A-Za-z0-9_/-]+(?:\/[A-Za-z0-9_.-]+)?|--?[A-Za-z][\w-]*)|(\b\d+(?:_\d+)*(?:\.\d+)?\b)|([A-Za-z_$][\w$]*(?=\())|([{}[\]();:,.?])/g;
+
+      const tokenClass = (match, comment, string, keyword, command, pkg, number, fn) => {
+        if (comment) return 'tok-comment';
+        if (string) return 'tok-string';
+        if (keyword) return 'tok-keyword';
+        if (command) return 'tok-command';
+        if (pkg) return 'tok-package';
+        if (number) return 'tok-number';
+        if (fn) return 'tok-function';
+        return 'tok-punctuation';
+      };
+
+      document.querySelectorAll('.cheat-card pre code, .quick-item code').forEach((code) => {
+        if (code.dataset.highlighted === 'true') return;
+
+        const source = code.textContent;
+        let cursor = 0;
+        let html = '';
+
+        source.replace(tokenPattern, (match, comment, string, keyword, command, pkg, number, fn, punctuation, offset) => {
+          html += escapeHtml(source.slice(cursor, offset));
+          html += `<span class="${tokenClass(match, comment, string, keyword, command, pkg, number, fn, punctuation)}">${escapeHtml(match)}</span>`;
+          cursor = offset + match.length;
+          return match;
+        });
+
+        html += escapeHtml(source.slice(cursor));
+        code.innerHTML = html;
+        code.dataset.highlighted = 'true';
+      });
+    })();
+  </script>
+</body>
+</html>

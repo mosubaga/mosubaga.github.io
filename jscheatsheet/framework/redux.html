@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redux Cheatsheet</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="cc-page redux-page">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Modern Redux Toolkit</p>
+        <h1 id="page-title">Redux Cheatsheet</h1>
+        <p>A quick reference for predictable global state: stores, slices, actions, reducers, selectors, React-Redux hooks, async thunks, and RTK Query.</p>
+      </div>
+      <div class="hero-badges" aria-label="Cheatsheet topics">
+        <span class="cc-badge">Redux Toolkit</span>
+        <span class="cc-badge">React-Redux</span>
+        <span class="cc-badge">Async Logic</span>
+        <span class="cc-badge">Selectors</span>
+      </div>
+    </section>
+
+    <section class="quick-rules" aria-labelledby="rules-title">
+      <div class="section-heading">
+        <p class="eyebrow">Core model</p>
+        <h2 id="rules-title">Redux in One Flow</h2>
+      </div>
+      <div class="flow-strip" aria-label="Redux data flow">
+        <div><strong>UI</strong><span>User clicks, types, loads, or submits.</span></div>
+        <div><strong>Dispatch</strong><span>Send an action describing what happened.</span></div>
+        <div><strong>Reducer</strong><span>Calculate the next state from state plus action.</span></div>
+        <div><strong>Store</strong><span>Save the new state and notify subscribers.</span></div>
+        <div><strong>Render</strong><span>Selectors read state and React updates the screen.</span></div>
+      </div>
+    </section>
+
+    <section class="hook-grid" aria-label="Expanded Redux notes">
+      <article class="hook-card blue">
+        <div class="hook-title"><span>1</span><h2>Install</h2></div>
+        <p>Use Redux Toolkit for Redux logic and React-Redux for connecting React components to the store.</p>
+        <ul>
+          <li>Redux Toolkit is the default modern Redux API.</li>
+          <li>React-Redux provides <code>Provider</code>, <code>useSelector</code>, and <code>useDispatch</code>.</li>
+          <li>The Redux DevTools browser extension helps inspect actions and state changes.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-comment"># npm</span>
+npm install @reduxjs/toolkit react-redux
+
+<span class="sh-comment"># pnpm</span>
+pnpm add @reduxjs/toolkit react-redux</code></pre>
+      </article>
+
+      <article class="hook-card purple">
+        <div class="hook-title"><span>2</span><h2>Store</h2></div>
+        <p>The store holds the current application state and runs reducers whenever actions are dispatched.</p>
+        <ul>
+          <li>Create it once for the app.</li>
+          <li>Pass slice reducers into <code>configureStore</code>.</li>
+          <li>Redux Toolkit sets up useful defaults like DevTools and middleware.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">import</span> { configureStore } <span class="sh-keyword">from</span> <span class="sh-string">'@reduxjs/toolkit'</span>;
+<span class="sh-keyword">import</span> todosReducer <span class="sh-keyword">from</span> <span class="sh-string">'./features/todos/todosSlice'</span>;
+
+<span class="sh-keyword">export</span> <span class="sh-keyword">const</span> store = <span class="sh-function">configureStore</span>({
+  reducer: {
+    todos: todosReducer
+  }
+});</code></pre>
+      </article>
+
+      <article class="hook-card green">
+        <div class="hook-title"><span>3</span><h2>Provider</h2></div>
+        <p><code>Provider</code> makes the store available to React components below it.</p>
+        <ul>
+          <li>Wrap your app near the root.</li>
+          <li>Pass the same store instance for the lifetime of the app.</li>
+          <li>Components can then use React-Redux hooks.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">import</span> { Provider } <span class="sh-keyword">from</span> <span class="sh-string">'react-redux'</span>;
+<span class="sh-keyword">import</span> { store } <span class="sh-keyword">from</span> <span class="sh-string">'./store'</span>;
+
+root.<span class="sh-function">render</span>(
+  <span class="sh-tag">&lt;Provider</span> <span class="sh-attr">store</span>={store}<span class="sh-tag">&gt;</span>
+    <span class="sh-tag">&lt;App</span> <span class="sh-tag">/&gt;</span>
+  <span class="sh-tag">&lt;/Provider&gt;</span>
+);</code></pre>
+      </article>
+
+      <article class="hook-card orange">
+        <div class="hook-title"><span>4</span><h2>Slice</h2></div>
+        <p>A slice groups reducer logic, action creators, and initial state for one feature.</p>
+        <ul>
+          <li>Write reducers as if mutating state; Immer safely produces immutable updates.</li>
+          <li>Each reducer becomes an action creator.</li>
+          <li>Use feature-based files like <code>features/cart/cartSlice.js</code>.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> todosSlice = <span class="sh-function">createSlice</span>({
+  name: <span class="sh-string">'todos'</span>,
+  initialState: [],
+  reducers: {
+    todoAdded(state, action) {
+      state.<span class="sh-function">push</span>({
+        id: <span class="sh-function">nanoid</span>(),
+        text: action.payload,
+        completed: <span class="sh-boolean">false</span>
+      });
+    }
+  }
+});</code></pre>
+      </article>
+
+      <article class="hook-card pink">
+        <div class="hook-title"><span>5</span><h2>Actions</h2></div>
+        <p>Actions are events. They describe what happened, while reducers decide how state changes.</p>
+        <ul>
+          <li>Action objects have a <code>type</code> field.</li>
+          <li>Extra data usually goes in <code>payload</code>.</li>
+          <li>Dispatch action creators generated by slices.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">export</span> <span class="sh-keyword">const</span> { todoAdded, todoToggled } = todosSlice.actions;
+
+dispatch(<span class="sh-function">todoAdded</span>(<span class="sh-string">'Learn Redux Toolkit'</span>));
+
+<span class="sh-comment">// Resulting action shape</span>
+{
+  type: <span class="sh-string">'todos/todoAdded'</span>,
+  payload: <span class="sh-string">'Learn Redux Toolkit'</span>
+}</code></pre>
+      </article>
+
+      <article class="hook-card teal">
+        <div class="hook-title"><span>6</span><h2>useSelector</h2></div>
+        <p><code>useSelector</code> reads data from the Redux store and rerenders when the selected value changes.</p>
+        <ul>
+          <li>Select the smallest data the component needs.</li>
+          <li>Avoid returning new objects or arrays unless they are memoized.</li>
+          <li>Move repeated lookup logic into selector functions.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> selectTodos = state =&gt; state.todos;
+<span class="sh-keyword">const</span> selectCompleted = state =&gt;
+  state.todos.<span class="sh-function">filter</span>(todo =&gt; todo.completed);
+
+<span class="sh-keyword">function</span> <span class="sh-function">TodoList</span>() {
+  <span class="sh-keyword">const</span> todos = <span class="sh-function">useSelector</span>(selectTodos);
+  <span class="sh-keyword">return</span> todos.<span class="sh-function">map</span>(todo =&gt; <span class="sh-tag">&lt;Todo</span> <span class="sh-attr">key</span>={todo.id} <span class="sh-attr">todo</span>={todo} <span class="sh-tag">/&gt;</span>);
+}</code></pre>
+      </article>
+
+      <article class="hook-card blue">
+        <div class="hook-title"><span>7</span><h2>useDispatch</h2></div>
+        <p><code>useDispatch</code> returns the store dispatch function so components can send actions.</p>
+        <ul>
+          <li>Dispatch from event handlers, effects, or callbacks.</li>
+          <li>Keep business logic in slices, thunks, or services when it grows.</li>
+          <li>In TypeScript, prefer typed hooks like <code>useAppDispatch</code>.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">function</span> <span class="sh-function">AddTodo</span>() {
+  <span class="sh-keyword">const</span> dispatch = <span class="sh-function">useDispatch</span>();
+
+  <span class="sh-keyword">function</span> <span class="sh-function">handleSubmit</span>(text) {
+    <span class="sh-function">dispatch</span>(<span class="sh-function">todoAdded</span>(text));
+  }
+}</code></pre>
+      </article>
+
+      <article class="hook-card amber">
+        <div class="hook-title"><span>8</span><h2>Async Thunks</h2></div>
+        <p><code>createAsyncThunk</code> handles promise lifecycles with pending, fulfilled, and rejected actions.</p>
+        <ul>
+          <li>Use thunks for request logic, conditional async work, or orchestration.</li>
+          <li>Track loading and error state in <code>extraReducers</code>.</li>
+          <li>Use RTK Query for most server-cache CRUD workflows.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">export</span> <span class="sh-keyword">const</span> fetchTodos = <span class="sh-function">createAsyncThunk</span>(
+  <span class="sh-string">'todos/fetchTodos'</span>,
+  <span class="sh-keyword">async</span> () =&gt; {
+    <span class="sh-keyword">const</span> response = <span class="sh-keyword">await</span> <span class="sh-function">fetch</span>(<span class="sh-string">'/api/todos'</span>);
+    <span class="sh-keyword">return</span> response.<span class="sh-function">json</span>();
+  }
+);</code></pre>
+      </article>
+
+      <article class="hook-card violet">
+        <div class="hook-title"><span>9</span><h2>extraReducers</h2></div>
+        <p>Use <code>extraReducers</code> when a slice reacts to actions it did not define.</p>
+        <ul>
+          <li>Most common with async thunk lifecycle actions.</li>
+          <li>The builder callback keeps action matching type-safe and readable.</li>
+          <li>Reducers still must stay synchronous.</li>
+        </ul>
+        <pre><code class="syntax-js">extraReducers: builder =&gt; {
+  builder
+    .<span class="sh-function">addCase</span>(fetchTodos.pending, state =&gt; {
+      state.status = <span class="sh-string">'loading'</span>;
+    })
+    .<span class="sh-function">addCase</span>(fetchTodos.fulfilled, (state, action) =&gt; {
+      state.status = <span class="sh-string">'succeeded'</span>;
+      state.items = action.payload;
+    });
+}</code></pre>
+      </article>
+
+      <article class="hook-card cyan">
+        <div class="hook-title"><span>10</span><h2>RTK Query</h2></div>
+        <p>RTK Query is Redux Toolkit's data fetching and caching layer.</p>
+        <ul>
+          <li>Use it for API cache, loading states, deduping, invalidation, and refetching.</li>
+          <li>It generates React hooks from endpoint definitions.</li>
+          <li>Prefer it over hand-written thunks for typical server data.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> api = <span class="sh-function">createApi</span>({
+  baseQuery: <span class="sh-function">fetchBaseQuery</span>({ baseUrl: <span class="sh-string">'/api'</span> }),
+  endpoints: builder =&gt; ({
+    getTodos: builder.<span class="sh-function">query</span>({
+      query: () =&gt; <span class="sh-string">'todos'</span>
+    })
+  })
+});
+
+<span class="sh-keyword">export</span> <span class="sh-keyword">const</span> { useGetTodosQuery } = api;</code></pre>
+      </article>
+    </section>
+
+    <section class="comparison" aria-labelledby="compare-title">
+      <div class="section-heading">
+        <p class="eyebrow">Fast decisions</p>
+        <h2 id="compare-title">When Should I Use Redux?</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Situation</th>
+            <th>Good choice</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Local form input or one component toggle</td>
+            <td><code>useState</code></td>
+            <td>Keep simple state near the component that owns it.</td>
+          </tr>
+          <tr>
+            <td>Shared app state used across many screens</td>
+            <td><code>createSlice</code></td>
+            <td>Centralized updates make behavior easier to trace.</td>
+          </tr>
+          <tr>
+            <td>Complex update rules with many events</td>
+            <td>Reducers</td>
+            <td>Actions separate what happened from how state changes.</td>
+          </tr>
+          <tr>
+            <td>Derived values from store state</td>
+            <td>Selectors</td>
+            <td>Selectors keep component reads consistent and reusable.</td>
+          </tr>
+          <tr>
+            <td>Server data with caching needs</td>
+            <td>RTK Query</td>
+            <td>It handles loading, caching, invalidation, and refetching.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="quick-rules" aria-labelledby="pitfalls-title">
+      <div class="section-heading">
+        <p class="eyebrow">Common mistakes</p>
+        <h2 id="pitfalls-title">Redux Gotchas</h2>
+      </div>
+      <div class="rules-grid">
+        <article>
+          <h3>Putting everything in Redux</h3>
+          <p>Use Redux for shared, important, or complex state. Keep purely local UI state inside components.</p>
+        </article>
+        <article>
+          <h3>Mutating outside slices</h3>
+          <p>Immer is active inside Toolkit reducers. Outside reducers, normal JavaScript mutation is still mutation.</p>
+        </article>
+        <article>
+          <h3>Unstable selectors</h3>
+          <p>Returning fresh arrays or objects from <code>useSelector</code> can rerender on every action.</p>
+        </article>
+        <article>
+          <h3>Side effects in reducers</h3>
+          <p>Reducers should be pure and synchronous. Put async work in thunks, listeners, RTK Query, or components.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

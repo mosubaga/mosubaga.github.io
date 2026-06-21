@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>React Hooks Cheatsheet</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="cc-page hooks-page">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">React JavaScript Library</p>
+        <h1 id="page-title">React Hooks Cheatsheet</h1>
+        <p>Scan practical notes for when to use each hook, common pitfalls, and small production-style examples with highlighted JavaScript and JSX snippets.</p>
+      </div>
+      <div class="hero-badges" aria-label="Cheatsheet topics">
+        <span class="cc-badge">State</span>
+        <span class="cc-badge">Effects</span>
+        <span class="cc-badge">Context</span>
+        <span class="cc-badge">Performance</span>
+      </div>
+    </section>
+
+    <section class="quick-rules" aria-labelledby="rules-title">
+      <div class="section-heading">
+        <p class="eyebrow">Before choosing a hook</p>
+        <h2 id="rules-title">Rules and Mental Models</h2>
+      </div>
+      <div class="rules-grid">
+        <article>
+          <h3>Call hooks at the top level</h3>
+          <p>Do not call hooks inside loops, conditions, nested functions, or event handlers. React relies on the same call order on every render.</p>
+        </article>
+        <article>
+          <h3>Use dependencies honestly</h3>
+          <p>Every value read inside an effect, memo, or callback should appear in its dependency array unless it is stable by design.</p>
+        </article>
+        <article>
+          <h3>Prefer state only for rendering</h3>
+          <p>If changing a value should update the UI, use state. If it should persist without causing a render, use a ref.</p>
+        </article>
+        <article>
+          <h3>Memoize after measuring</h3>
+          <p><code>useMemo</code> and <code>useCallback</code> help when recomputation or child rerenders are actually expensive.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="hook-grid" aria-label="Expanded React hooks notes">
+      <article class="hook-card blue">
+        <div class="hook-title"><span>1</span><h2>useState</h2></div>
+        <p>Stores local component state and returns the current value plus an updater function.</p>
+        <ul>
+          <li>Best for form fields, toggles, counters, selected tabs, and local UI state.</li>
+          <li>Use functional updates when the next state depends on the previous state.</li>
+          <li>Keep related state together when it changes together.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> [count, setCount] = <span class="sh-function">useState</span>(<span class="sh-number">0</span>);
+
+<span class="sh-keyword">function</span> <span class="sh-function">increment</span>() {
+  <span class="sh-function">setCount</span>(previous =&gt; previous + <span class="sh-number">1</span>);
+}</code></pre>
+      </article>
+
+      <article class="hook-card green">
+        <div class="hook-title"><span>2</span><h2>useEffect</h2></div>
+        <p>Runs side effects after React paints the screen, such as fetching data or subscribing to external systems.</p>
+        <ul>
+          <li>No dependency array: runs after every render.</li>
+          <li>Empty array: runs once after mount, then cleanup on unmount.</li>
+          <li>Dependency array: reruns when listed values change.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-function">useEffect</span>(() =&gt; {
+  <span class="sh-keyword">const</span> controller = <span class="sh-keyword">new</span> <span class="sh-function">AbortController</span>();
+
+  <span class="sh-function">fetch</span>(<span class="sh-string">'/api/users'</span>, { signal: controller.signal });
+
+  <span class="sh-keyword">return</span> () =&gt; controller.<span class="sh-function">abort</span>();
+}, []);</code></pre>
+      </article>
+
+      <article class="hook-card purple">
+        <div class="hook-title"><span>3</span><h2>useContext</h2></div>
+        <p>Reads a value from the nearest matching context provider without passing props through every level.</p>
+        <ul>
+          <li>Good for theme, locale, authenticated user, feature flags, and app-level services.</li>
+          <li>Changing a provider value rerenders consumers below it.</li>
+          <li>Split contexts when unrelated values update at different speeds.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> ThemeContext = <span class="sh-function">createContext</span>(<span class="sh-string">'light'</span>);
+
+<span class="sh-keyword">function</span> <span class="sh-function">Toolbar</span>() {
+  <span class="sh-keyword">const</span> theme = <span class="sh-function">useContext</span>(ThemeContext);
+  <span class="sh-keyword">return</span> <span class="sh-tag">&lt;button</span> <span class="sh-attr">className</span>={theme}<span class="sh-tag">&gt;</span>Save<span class="sh-tag">&lt;/button&gt;</span>;
+}</code></pre>
+      </article>
+
+      <article class="hook-card orange">
+        <div class="hook-title"><span>4</span><h2>useReducer</h2></div>
+        <p>Manages state transitions with a reducer function, which is useful when updates become branching or event-driven.</p>
+        <ul>
+          <li>Good for multi-field forms, workflows, undoable state, and related state transitions.</li>
+          <li>Actions describe what happened; the reducer decides the next state.</li>
+          <li>Reducers should stay pure and return new objects instead of mutating state.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">function</span> <span class="sh-function">reducer</span>(state, action) {
+  <span class="sh-keyword">switch</span> (action.type) {
+    <span class="sh-keyword">case</span> <span class="sh-string">'open'</span>:
+      <span class="sh-keyword">return</span> { ...state, isOpen: <span class="sh-boolean">true</span> };
+    <span class="sh-keyword">default</span>:
+      <span class="sh-keyword">return</span> state;
+  }
+}
+
+<span class="sh-keyword">const</span> [state, dispatch] = <span class="sh-function">useReducer</span>(reducer, { isOpen: <span class="sh-boolean">false</span> });</code></pre>
+      </article>
+
+      <article class="hook-card pink">
+        <div class="hook-title"><span>5</span><h2>useRef</h2></div>
+        <p>Stores a mutable value whose <code>.current</code> property survives renders without triggering another render.</p>
+        <ul>
+          <li>Use it for DOM nodes, timer IDs, previous values, and integration handles.</li>
+          <li>Do not read or write refs during render when the value affects output.</li>
+          <li>For visible UI changes, use <code>useState</code> instead.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> inputRef = <span class="sh-function">useRef</span>(<span class="sh-null">null</span>);
+
+<span class="sh-keyword">function</span> <span class="sh-function">focusSearch</span>() {
+  inputRef.current?.<span class="sh-function">focus</span>();
+}
+
+<span class="sh-keyword">return</span> <span class="sh-tag">&lt;input</span> <span class="sh-attr">ref</span>={inputRef} <span class="sh-tag">/&gt;</span>;</code></pre>
+      </article>
+
+      <article class="hook-card teal">
+        <div class="hook-title"><span>6</span><h2>useMemo</h2></div>
+        <p>Caches the result of an expensive calculation until one of its dependencies changes.</p>
+        <ul>
+          <li>Useful for filtering, sorting, formatting, or deriving large data sets.</li>
+          <li>It is a performance hint, not a semantic guarantee.</li>
+          <li>Avoid wrapping every calculation by default.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> visibleTodos = <span class="sh-function">useMemo</span>(() =&gt; {
+  <span class="sh-keyword">return</span> todos.<span class="sh-function">filter</span>(todo =&gt; todo.status === filter);
+}, [todos, filter]);</code></pre>
+      </article>
+
+      <article class="hook-card blue">
+        <div class="hook-title"><span>7</span><h2>useCallback</h2></div>
+        <p>Returns a stable function reference until its dependencies change.</p>
+        <ul>
+          <li>Helpful when passing callbacks to memoized children.</li>
+          <li>Useful when a function is itself a dependency of another hook.</li>
+          <li>It does not prevent the function body from running when called.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">const</span> handleSave = <span class="sh-function">useCallback</span>(() =&gt; {
+  <span class="sh-function">saveDraft</span>(draftId, title);
+}, [draftId, title]);
+
+<span class="sh-keyword">return</span> <span class="sh-tag">&lt;Editor</span> <span class="sh-attr">onSave</span>={handleSave} <span class="sh-tag">/&gt;</span>;</code></pre>
+      </article>
+
+      <article class="hook-card amber">
+        <div class="hook-title"><span>8</span><h2>useLayoutEffect</h2></div>
+        <p>Runs synchronously after DOM mutations but before the browser paints.</p>
+        <ul>
+          <li>Use it for layout reads, measurements, and positioning that must avoid flicker.</li>
+          <li>Prefer <code>useEffect</code> unless the timing matters visually.</li>
+          <li>Keep the work small because it blocks painting.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-function">useLayoutEffect</span>(() =&gt; {
+  <span class="sh-keyword">const</span> box = panelRef.current.<span class="sh-function">getBoundingClientRect</span>();
+  <span class="sh-function">setPanelHeight</span>(box.height);
+}, [items.length]);</code></pre>
+      </article>
+
+      <article class="hook-card violet">
+        <div class="hook-title"><span>9</span><h2>useImperativeHandle</h2></div>
+        <p>Customizes the value exposed to a parent component through a ref.</p>
+        <ul>
+          <li>Usually paired with <code>forwardRef</code>.</li>
+          <li>Good for exposing focused methods like <code>focus</code>, <code>reset</code>, or <code>scrollToTop</code>.</li>
+          <li>Avoid exposing broad internal component state.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-function">useImperativeHandle</span>(ref, () =&gt; ({
+  <span class="sh-function">focus</span>() {
+    inputRef.current?.<span class="sh-function">focus</span>();
+  }
+}), []);</code></pre>
+      </article>
+
+      <article class="hook-card cyan">
+        <div class="hook-title"><span>10</span><h2>useDebugValue</h2></div>
+        <p>Displays a label for custom hooks in React DevTools.</p>
+        <ul>
+          <li>Most useful inside reusable custom hooks.</li>
+          <li>Keep labels short and focused on the hook state.</li>
+          <li>Use lazy formatting if creating the label is expensive.</li>
+        </ul>
+        <pre><code class="syntax-js"><span class="sh-keyword">function</span> <span class="sh-function">useOnlineStatus</span>() {
+  <span class="sh-keyword">const</span> isOnline = <span class="sh-function">useNetworkStore</span>();
+
+  <span class="sh-function">useDebugValue</span>(isOnline ? <span class="sh-string">'Online'</span> : <span class="sh-string">'Offline'</span>);
+  <span class="sh-keyword">return</span> isOnline;
+}</code></pre>
+      </article>
+    </section>
+
+    <section class="comparison" aria-labelledby="compare-title">
+      <div class="section-heading">
+        <p class="eyebrow">Fast decisions</p>
+        <h2 id="compare-title">Which Hook Should I Reach For?</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Need</th>
+            <th>Hook</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>UI changes when a value changes</td>
+            <td><code>useState</code> or <code>useReducer</code></td>
+            <td>State updates schedule renders.</td>
+          </tr>
+          <tr>
+            <td>Talk to the outside world</td>
+            <td><code>useEffect</code></td>
+            <td>Effects synchronize React with APIs, subscriptions, timers, and the DOM.</td>
+          </tr>
+          <tr>
+            <td>Share app-wide values</td>
+            <td><code>useContext</code></td>
+            <td>Consumers read values from a provider without prop drilling.</td>
+          </tr>
+          <tr>
+            <td>Persist a value without rendering</td>
+            <td><code>useRef</code></td>
+            <td>Refs survive renders while staying mutable.</td>
+          </tr>
+          <tr>
+            <td>Avoid costly recalculation</td>
+            <td><code>useMemo</code></td>
+            <td>The computed result is reused while dependencies stay the same.</td>
+          </tr>
+          <tr>
+            <td>Pass a stable function</td>
+            <td><code>useCallback</code></td>
+            <td>The function identity remains stable between dependency changes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
