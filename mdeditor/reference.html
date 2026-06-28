@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown &amp; LaTeX Reference — MD Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    main {
+      padding: 0 0 80px;
+    }
+
+    /* ── Hero ── */
+    .ref-hero {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 40px;
+    }
+
+    .ref-hero .eyebrow { margin-bottom: 10px; }
+
+    .ref-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      margin-bottom: 12px;
+    }
+
+    .ref-hero p {
+      color: var(--muted);
+      font-size: 1.02rem;
+      margin: 0;
+    }
+
+    .ref-hero .actions {
+      margin-top: 20px;
+    }
+
+    /* ── Section layout ── */
+    .ref-section {
+      margin-bottom: 48px;
+    }
+
+    .ref-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .ref-section-title h2 {
+      font-size: 1.4rem;
+      margin: 0;
+    }
+
+    .ref-section-title .section-num {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Reference table ── */
+    .ref-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.76);
+      font-size: 0.94rem;
+    }
+
+    .ref-table thead th {
+      padding: 10px 16px;
+      background: rgba(40, 66, 80, 0.06);
+      font-weight: 700;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .ref-table tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    .ref-table tbody tr:last-child td { border-bottom: 0; }
+
+    .ref-table td:first-child {
+      width: 44%;
+      font-family: 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 0.86rem;
+      color: var(--ink);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .ref-table td:nth-child(2) {
+      width: 30%;
+      color: var(--ink);
+    }
+
+    .ref-table td:nth-child(3) {
+      width: 26%;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* ── Inline rendered previews ── */
+    .ref-table td.rendered h1,
+    .ref-table td.rendered h2,
+    .ref-table td.rendered h3,
+    .ref-table td.rendered h4 {
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .ref-table td.rendered h1 { font-size: 1.4rem; }
+    .ref-table td.rendered h2 { font-size: 1.15rem; }
+    .ref-table td.rendered h3 { font-size: 1rem; }
+    .ref-table td.rendered h4 { font-size: 0.94rem; }
+
+    .ref-table td.rendered p { margin: 0; line-height: 1.6; }
+
+    .ref-table td.rendered strong { font-weight: 700; }
+    .ref-table td.rendered em { font-style: italic; }
+    .ref-table td.rendered del { text-decoration: line-through; color: var(--muted); }
+
+    .ref-table td.rendered code {
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(40, 66, 80, 0.08);
+      font-size: 0.85em;
+      font-family: 'Fira Code', ui-monospace, monospace;
+    }
+
+    .ref-table td.rendered blockquote {
+      margin: 0;
+      padding: 6px 12px;
+      border-left: 3px solid var(--blue);
+      background: rgba(126, 206, 244, 0.09);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .ref-table td.rendered ul,
+    .ref-table td.rendered ol {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .ref-table td.rendered a { color: var(--blue); text-decoration: underline; }
+
+    .ref-table td.rendered table {
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    .ref-table td.rendered th,
+    .ref-table td.rendered td {
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+    }
+
+    .ref-table td.rendered th { background: rgba(40,66,80,0.06); font-weight: 700; }
+
+    /* ── Note cards ── */
+    .note-card {
+      display: flex;
+      gap: 12px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 229, 166, 0.22);
+      margin-top: 12px;
+      font-size: 0.88rem;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .note-card::before {
+      content: '💡';
+      flex-shrink: 0;
+    }
+
+    /* ── LaTeX reference separator ── */
+    .latex-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 48px 0 40px;
+    }
+
+    .latex-divider-line { flex: 1; height: 1px; background: var(--line); }
+
+    .latex-divider-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── LaTeX section number accent ── */
+    .section-num.latex { background: var(--pink); color: #6a1a2e; }
+
+    /* ── LaTeX syntax table (wider first column) ── */
+    .latex-table td:first-child  { width: 46%; }
+    .latex-table td:nth-child(2) { width: 28%; }
+    .latex-table td:nth-child(3) { width: 26%; }
+
+    /* ── Equation cards (section 14) ── */
+    .ref-intro { color: var(--muted); font-size: 0.9rem; margin: 0 0 16px; }
+
+    .eq-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.76);
+      margin-bottom: 12px;
+    }
+
+    .eq-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(40, 66, 80, 0.04);
+    }
+
+    .eq-name { font-size: 0.9rem; font-weight: 700; color: var(--ink); }
+
+    .eq-field {
+      font-size: 0.72rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+
+    .eq-field--physics { background: rgba(126,206,244,0.28); color: #1a5a8a; }
+    .eq-field--math    { background: rgba(255,181,192,0.4);  color: #8a1a3a; }
+    .eq-field--stats   { background: rgba(255,229,166,0.6);  color: #7a5000; }
+    .eq-field--calc    { background: rgba(53,161,107,0.2);   color: #1a5a35; }
+
+    .eq-body { display: grid; grid-template-columns: 1fr 1fr; }
+
+    .eq-source-col {
+      padding: 14px 16px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .eq-render-col {
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .eq-col-label {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .eq-src {
+      display: block;
+      font-family: 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: var(--ink);
+      background: rgba(40, 66, 80, 0.05);
+      padding: 8px 10px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      flex: 1;
+    }
+
+    .eq-copy-btn {
+      align-self: flex-start;
+      padding: 4px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 0.76rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .eq-copy-btn:hover  { background: var(--blue); border-color: var(--blue); color: #1a3a50; }
+    .eq-copy-btn.copied { background: #22c55e; border-color: #22c55e; color: #fff; }
+
+    .eq-render { overflow-x: auto; max-width: 100%; text-align: center; }
+    .eq-render .katex-display { margin: 0; }
+
+    /* ── Symbol grid (section 15) ── */
+    .sym-heading {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 20px 0 10px;
+    }
+
+    .sym-heading:first-child { margin-top: 0; }
+
+    .sym-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .sym-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.76);
+      text-align: center;
+    }
+
+    .sym-rendered {
+      font-size: 1.15rem;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sym-cmd {
+      font-family: 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+      font-size: 0.66rem;
+      color: var(--muted);
+      word-break: break-all;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">#</div>
+      <span>MD Editor</span>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-button"><i class="fa-solid fa-arrow-left"></i> Editor</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="ref-hero">
+      <p class="eyebrow">Quick Reference</p>
+      <h1>Markdown &amp; LaTeX Syntax</h1>
+      <p>A concise reference for the Markdown elements and LaTeX equations supported in MD Editor.</p>
+      <div class="actions">
+        <a href="index.html" class="button primary"><i class="fa-solid fa-pen-to-square"></i> Open Editor</a>
+      </div>
+    </div>
+
+    <!-- 1. Headings -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">1</span>
+        <h2>Headings</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td># Heading 1</td>
+            <td class="rendered"><h1>Heading 1</h1></td>
+            <td>Page title level</td>
+          </tr>
+          <tr>
+            <td>## Heading 2</td>
+            <td class="rendered"><h2>Heading 2</h2></td>
+            <td>Section level</td>
+          </tr>
+          <tr>
+            <td>### Heading 3</td>
+            <td class="rendered"><h3>Heading 3</h3></td>
+            <td>Subsection</td>
+          </tr>
+          <tr>
+            <td>#### Heading 4</td>
+            <td class="rendered"><h4>Heading 4</h4></td>
+            <td>Up to H6 supported</td>
+          </tr>
+          <tr>
+            <td>Heading 1{"\n"}=========</td>
+            <td class="rendered"><h1>Heading 1</h1></td>
+            <td>Setext-style alternative</td>
+          </tr>
+          <tr>
+            <td>Heading 2{"\n"}---------</td>
+            <td class="rendered"><h2>Heading 2</h2></td>
+            <td>Setext H2 alternative</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 2. Emphasis -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">2</span>
+        <h2>Emphasis</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>*italic* or _italic_</td>
+            <td class="rendered"><p><em>italic</em></p></td>
+            <td>Use * or _ symmetrically</td>
+          </tr>
+          <tr>
+            <td>**bold** or __bold__</td>
+            <td class="rendered"><p><strong>bold</strong></p></td>
+            <td>Double asterisks or underscores</td>
+          </tr>
+          <tr>
+            <td>***bold italic***</td>
+            <td class="rendered"><p><strong><em>bold italic</em></strong></p></td>
+            <td>Triple asterisks</td>
+          </tr>
+          <tr>
+            <td>~~strikethrough~~</td>
+            <td class="rendered"><p><del>strikethrough</del></p></td>
+            <td>Double tildes</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 3. Lists -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">3</span>
+        <h2>Lists</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>- Item 1{"\n"}- Item 2{"\n"}- Item 3</td>
+            <td class="rendered"><ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul></td>
+            <td>Also: * or + as bullet</td>
+          </tr>
+          <tr>
+            <td>1. First{"\n"}2. Second{"\n"}3. Third</td>
+            <td class="rendered"><ol><li>First</li><li>Second</li><li>Third</li></ol></td>
+            <td>Numbers auto-increment</td>
+          </tr>
+          <tr>
+            <td>- Parent{"\n"}  - Child{"\n"}  - Child</td>
+            <td class="rendered"><ul><li>Parent<ul><li>Child</li><li>Child</li></ul></li></ul></td>
+            <td>Indent 2 spaces to nest</td>
+          </tr>
+          <tr>
+            <td>- [x] Done{"\n"}- [ ] Todo</td>
+            <td class="rendered"><ul><li>✅ Done</li><li>☐ Todo</li></ul></td>
+            <td>Task list (GFM)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 4. Links & Images -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">4</span>
+        <h2>Links &amp; Images</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[Link text](https://example.com)</td>
+            <td class="rendered"><a href="#">Link text</a></td>
+            <td>Inline link</td>
+          </tr>
+          <tr>
+            <td>[Link text](url "Title")</td>
+            <td class="rendered"><a href="#" title="Title">Link text</a></td>
+            <td>With hover title</td>
+          </tr>
+          <tr>
+            <td>[Ref link][ref-id]{"\n\n"}[ref-id]: https://…</td>
+            <td class="rendered"><a href="#">Ref link</a></td>
+            <td>Reference-style; def can be anywhere</td>
+          </tr>
+          <tr>
+            <td>![Alt text](image.png)</td>
+            <td class="rendered"><p>🖼 <em>image</em></p></td>
+            <td>Leading ! makes it an image</td>
+          </tr>
+          <tr>
+            <td>&lt;https://example.com&gt;</td>
+            <td class="rendered"><a href="#">https://example.com</a></td>
+            <td>Auto-link with angle brackets</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 5. Code -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">5</span>
+        <h2>Code</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>`inline code`</td>
+            <td class="rendered"><code>inline code</code></td>
+            <td>Backtick wrapping</td>
+          </tr>
+          <tr>
+            <td>``contains `backtick` ``</td>
+            <td class="rendered"><code>contains `backtick`</code></td>
+            <td>Double backticks allow inner backtick</td>
+          </tr>
+          <tr>
+            <td>```js{"\n"}const x = 1;{"\n"}```</td>
+            <td class="rendered"><pre><code>const x = 1;</code></pre></td>
+            <td>Fenced block; lang hint optional</td>
+          </tr>
+          <tr>
+            <td>(4 spaces or 1 tab){"\n"}    indented block</td>
+            <td class="rendered"><pre><code>indented block</code></pre></td>
+            <td>Legacy indent-style code block</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6. Blockquotes -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">6</span>
+        <h2>Blockquotes</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>&gt; Quoted text</td>
+            <td class="rendered"><blockquote>Quoted text</blockquote></td>
+            <td>Leading &gt; on each line</td>
+          </tr>
+          <tr>
+            <td>&gt; Line one{"\n"}&gt; Line two</td>
+            <td class="rendered"><blockquote>Line one Line two</blockquote></td>
+            <td>Continues across lines</td>
+          </tr>
+          <tr>
+            <td>&gt; Outer{"\n"}&gt;&gt; Nested</td>
+            <td class="rendered"><blockquote>Outer <blockquote>Nested</blockquote></blockquote></td>
+            <td>Double &gt;&gt; to nest</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 7. Tables -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">7</span>
+        <h2>Tables</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>| Name  | Age |{"\n"}| ----- | --- |{"\n"}| Alice | 30  |{"\n"}| Bob   | 25  |</td>
+            <td class="rendered">
+              <table>
+                <thead><tr><th>Name</th><th>Age</th></tr></thead>
+                <tbody>
+                  <tr><td>Alice</td><td>30</td></tr>
+                  <tr><td>Bob</td><td>25</td></tr>
+                </tbody>
+              </table>
+            </td>
+            <td>GFM table; pipes on each side optional</td>
+          </tr>
+          <tr>
+            <td>| Left | Center | Right |{"\n"}| :--- | :----: | ----: |{"\n"}| a    |   b    |     c |</td>
+            <td class="rendered">
+              <table>
+                <thead><tr><th style="text-align:left">Left</th><th style="text-align:center">Center</th><th style="text-align:right">Right</th></tr></thead>
+                <tbody><tr><td style="text-align:left">a</td><td style="text-align:center">b</td><td style="text-align:right">c</td></tr></tbody>
+              </table>
+            </td>
+            <td>: controls column alignment</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note-card">
+        The separator row (---) must have at least one dash per column. Column widths in the source don't affect rendering.
+      </div>
+    </section>
+
+    <!-- 8. Horizontal Rules -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">8</span>
+        <h2>Horizontal Rules</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>---</td>
+            <td class="rendered"><hr style="border:none;border-top:1px solid #ccc;margin:6px 0"></td>
+            <td>Three or more hyphens</td>
+          </tr>
+          <tr>
+            <td>***</td>
+            <td class="rendered"><hr style="border:none;border-top:1px solid #ccc;margin:6px 0"></td>
+            <td>Asterisks also work</td>
+          </tr>
+          <tr>
+            <td>___</td>
+            <td class="rendered"><hr style="border:none;border-top:1px solid #ccc;margin:6px 0"></td>
+            <td>Or underscores</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 9. Escaping & Special Characters -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">9</span>
+        <h2>Escaping &amp; Special Characters</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>\*not italic\*</td>
+            <td class="rendered"><p>*not italic*</p></td>
+            <td>Backslash escapes special chars</td>
+          </tr>
+          <tr>
+            <td>\# Not a heading</td>
+            <td class="rendered"><p># Not a heading</p></td>
+            <td>Works on: \ ` * _ {} [] () # + - . !</td>
+          </tr>
+          <tr>
+            <td>&amp;amp; &amp;lt; &amp;gt; &amp;copy;</td>
+            <td class="rendered"><p>&amp; &lt; &gt; ©</p></td>
+            <td>HTML entities are supported</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 10. HTML -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">10</span>
+        <h2>Inline HTML</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>&lt;b&gt;Bold&lt;/b&gt; via HTML</td>
+            <td class="rendered"><p><b>Bold</b> via HTML</p></td>
+            <td>Raw HTML passes through</td>
+          </tr>
+          <tr>
+            <td>&lt;br&gt;</td>
+            <td class="rendered"><p>Line<br>break</p></td>
+            <td>Explicit line break</td>
+          </tr>
+          <tr>
+            <td>&lt;details&gt;{"\n"}  &lt;summary&gt;Click&lt;/summary&gt;{"\n"}  Hidden text.{"\n"}&lt;/details&gt;</td>
+            <td class="rendered"><details><summary>Click</summary>Hidden text.</details></td>
+            <td>Block HTML must be separated by blank lines</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note-card">
+        HTML is enabled in this editor. Markdown inside HTML block elements is not processed.
+      </div>
+    </section>
+
+    <!-- 11. Line breaks & Paragraphs -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">11</span>
+        <h2>Line Breaks &amp; Paragraphs</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Markdown</th><th>Rendered</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Paragraph one{"\n\n"}Paragraph two</td>
+            <td class="rendered"><p>Paragraph one</p><p>Paragraph two</p></td>
+            <td>Blank line separates paragraphs</td>
+          </tr>
+          <tr>
+            <td>Line one{"\n"}(single newline)</td>
+            <td class="rendered"><p>Line one (single newline)</p></td>
+            <td>Single newline is ignored inside a paragraph</td>
+          </tr>
+          <tr>
+            <td>Line one··{"\n"}Line two</td>
+            <td class="rendered"><p>Line one<br>Line two</p></td>
+            <td>Two trailing spaces → &lt;br&gt;</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 12. Keyboard shortcuts in the editor -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num">12</span>
+        <h2>Editor Keyboard Shortcuts</h2>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr><th>Shortcut</th><th>Action</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ctrl / Cmd + S</td><td class="rendered"><p>Save</p></td><td>Writes back to open file (Chrome/Edge) or triggers download</td></tr>
+          <tr><td>Ctrl / Cmd + F</td><td class="rendered"><p>Find</p></td><td>Persistent search bar in editor</td></tr>
+          <tr><td>Ctrl / Cmd + H</td><td class="rendered"><p>Find &amp; Replace</p></td><td>Replace single match</td></tr>
+          <tr><td>Shift + Ctrl / Cmd + H</td><td class="rendered"><p>Replace All</p></td><td>Replace all matches in document</td></tr>
+          <tr><td>Ctrl / Cmd + Z</td><td class="rendered"><p>Undo</p></td><td>Full undo history per session</td></tr>
+          <tr><td>Ctrl / Cmd + Y  or  Shift + Ctrl / Cmd + Z</td><td class="rendered"><p>Redo</p></td><td></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─────────────── LaTeX Reference ─────────────── -->
+    <div class="latex-divider">
+      <div class="latex-divider-line"></div>
+      <span class="latex-divider-label"><i class="fa-solid fa-square-root-variable"></i> LaTeX Math Reference</span>
+      <div class="latex-divider-line"></div>
+    </div>
+
+    <!-- 13. LaTeX Syntax -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num latex">13</span>
+        <h2>LaTeX Syntax</h2>
+      </div>
+      <table class="ref-table latex-table">
+        <thead>
+          <tr><th>What to type</th><th>Renders as</th><th>When to use</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$x^2 + y^2 = r^2$</td>
+            <td class="rendered">$x^2 + y^2 = r^2$</td>
+            <td>Inline — equation flows within a sentence</td>
+          </tr>
+          <tr>
+            <td>$$E = mc^2$$</td>
+            <td class="rendered">$$E = mc^2$$</td>
+            <td>Display — centered on its own line</td>
+          </tr>
+          <tr>
+            <td>$$
+\int_0^1 x^2\,dx = \frac{1}{3}
+$$</td>
+            <td class="rendered">$$\int_0^1 x^2\,dx = \frac{1}{3}$$</td>
+            <td><code>$$</code> on separate lines for longer equations</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note-card">
+        Use <code>$...$</code> for math inline with text (e.g. "let $x = 5$, then…"). Use <code>$$...$$</code> for standalone display equations. Both render live in the preview pane via KaTeX.
+      </div>
+    </section>
+
+    <!-- 14. Famous Equations -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num latex">14</span>
+        <h2>Famous Equations</h2>
+      </div>
+      <p class="ref-intro">Click <strong>Copy</strong> on any card to paste that equation into the editor.</p>
+
+      <!-- Physics -->
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Einstein's Mass-Energy Equivalence</span>
+          <span class="eq-field eq-field--physics">Physics · Relativity</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$E = mc^2$$</code>
+            <button class="eq-copy-btn" data-copy="$$E = mc^2$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$E = mc^2$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Newton's Second Law</span>
+          <span class="eq-field eq-field--physics">Physics · Mechanics</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$\mathbf{F} = m\mathbf{a}$$</code>
+            <button class="eq-copy-btn" data-copy="$$\mathbf{F} = m\mathbf{a}$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$\mathbf{F} = m\mathbf{a}$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Schrödinger Equation</span>
+          <span class="eq-field eq-field--physics">Physics · Quantum Mechanics</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi$$</code>
+            <button class="eq-copy-btn" data-copy="$$i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Gauss's Law (Maxwell)</span>
+          <span class="eq-field eq-field--physics">Physics · Electromagnetism</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$$</code>
+            <button class="eq-copy-btn" data-copy="$$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$$</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mathematics -->
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Euler's Identity</span>
+          <span class="eq-field eq-field--math">Math · Complex Analysis</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$e^{i\pi} + 1 = 0$$</code>
+            <button class="eq-copy-btn" data-copy="$$e^{i\pi} + 1 = 0$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$e^{i\pi} + 1 = 0$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Pythagorean Theorem</span>
+          <span class="eq-field eq-field--math">Math · Geometry</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$a^2 + b^2 = c^2$$</code>
+            <button class="eq-copy-btn" data-copy="$$a^2 + b^2 = c^2$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$a^2 + b^2 = c^2$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Quadratic Formula</span>
+          <span class="eq-field eq-field--math">Math · Algebra</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$</code>
+            <button class="eq-copy-btn" data-copy="$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Euler's Formula</span>
+          <span class="eq-field eq-field--math">Math · Complex Analysis</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$e^{i\theta} = \cos\theta + i\sin\theta$$</code>
+            <button class="eq-copy-btn" data-copy="$$e^{i\theta} = \cos\theta + i\sin\theta$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$e^{i\theta} = \cos\theta + i\sin\theta$$</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculus -->
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Taylor Series</span>
+          <span class="eq-field eq-field--calc">Calculus · Series</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$$</code>
+            <button class="eq-copy-btn" data-copy="$$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Fourier Transform</span>
+          <span class="eq-field eq-field--calc">Calculus · Analysis</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x)\, e^{-2\pi i x \xi}\, dx$$</code>
+            <button class="eq-copy-btn" data-copy="$$\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x)\, e^{-2\pi i x \xi}\, dx$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x)\, e^{-2\pi i x \xi}\, dx$$</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Normal Distribution PDF</span>
+          <span class="eq-field eq-field--stats">Statistics · Probability</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$f(x) = \frac{1}{\sigma\sqrt{2\pi}}\, e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$</code>
+            <button class="eq-copy-btn" data-copy="$$f(x) = \frac{1}{\sigma\sqrt{2\pi}}\, e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$f(x) = \frac{1}{\sigma\sqrt{2\pi}}\, e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-meta">
+          <span class="eq-name">Bayes' Theorem</span>
+          <span class="eq-field eq-field--stats">Statistics · Probability</span>
+        </div>
+        <div class="eq-body">
+          <div class="eq-source-col">
+            <div class="eq-col-label">Type in editor</div>
+            <code class="eq-src">$$P(A|B) = \frac{P(B|A)\,P(A)}{P(B)}$$</code>
+            <button class="eq-copy-btn" data-copy="$$P(A|B) = \frac{P(B|A)\,P(A)}{P(B)}$$"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <div class="eq-render-col">
+            <div class="eq-col-label">Renders as</div>
+            <div class="eq-render">$$P(A|B) = \frac{P(B|A)\,P(A)}{P(B)}$$</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. Symbols & Greek Letters -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num latex">15</span>
+        <h2>Symbols &amp; Greek Letters</h2>
+      </div>
+
+      <p class="sym-heading">Greek — Lowercase</p>
+      <div class="sym-grid">
+        <div class="sym-card"><span class="sym-rendered">$\alpha$</span><code class="sym-cmd">\alpha</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\beta$</span><code class="sym-cmd">\beta</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\gamma$</span><code class="sym-cmd">\gamma</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\delta$</span><code class="sym-cmd">\delta</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\varepsilon$</span><code class="sym-cmd">\varepsilon</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\zeta$</span><code class="sym-cmd">\zeta</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\eta$</span><code class="sym-cmd">\eta</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\theta$</span><code class="sym-cmd">\theta</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\kappa$</span><code class="sym-cmd">\kappa</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\lambda$</span><code class="sym-cmd">\lambda</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\mu$</span><code class="sym-cmd">\mu</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\nu$</span><code class="sym-cmd">\nu</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\xi$</span><code class="sym-cmd">\xi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\pi$</span><code class="sym-cmd">\pi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\rho$</span><code class="sym-cmd">\rho</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\sigma$</span><code class="sym-cmd">\sigma</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\tau$</span><code class="sym-cmd">\tau</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\varphi$</span><code class="sym-cmd">\varphi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\chi$</span><code class="sym-cmd">\chi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\psi$</span><code class="sym-cmd">\psi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\omega$</span><code class="sym-cmd">\omega</code></div>
+      </div>
+
+      <p class="sym-heading">Greek — Uppercase</p>
+      <div class="sym-grid">
+        <div class="sym-card"><span class="sym-rendered">$\Gamma$</span><code class="sym-cmd">\Gamma</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Delta$</span><code class="sym-cmd">\Delta</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Theta$</span><code class="sym-cmd">\Theta</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Lambda$</span><code class="sym-cmd">\Lambda</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Xi$</span><code class="sym-cmd">\Xi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Pi$</span><code class="sym-cmd">\Pi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Sigma$</span><code class="sym-cmd">\Sigma</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Phi$</span><code class="sym-cmd">\Phi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Psi$</span><code class="sym-cmd">\Psi</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\Omega$</span><code class="sym-cmd">\Omega</code></div>
+      </div>
+
+      <p class="sym-heading">Operators &amp; Special</p>
+      <div class="sym-grid">
+        <div class="sym-card"><span class="sym-rendered">$\infty$</span><code class="sym-cmd">\infty</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\partial$</span><code class="sym-cmd">\partial</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\nabla$</span><code class="sym-cmd">\nabla</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\sum$</span><code class="sym-cmd">\sum</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\prod$</span><code class="sym-cmd">\prod</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\int$</span><code class="sym-cmd">\int</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\oint$</span><code class="sym-cmd">\oint</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\pm$</span><code class="sym-cmd">\pm</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\mp$</span><code class="sym-cmd">\mp</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\times$</span><code class="sym-cmd">\times</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\div$</span><code class="sym-cmd">\div</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\cdot$</span><code class="sym-cmd">\cdot</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\hbar$</span><code class="sym-cmd">\hbar</code></div>
+      </div>
+
+      <p class="sym-heading">Relations &amp; Sets</p>
+      <div class="sym-grid">
+        <div class="sym-card"><span class="sym-rendered">$\leq$</span><code class="sym-cmd">\leq</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\geq$</span><code class="sym-cmd">\geq</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\neq$</span><code class="sym-cmd">\neq</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\approx$</span><code class="sym-cmd">\approx</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\equiv$</span><code class="sym-cmd">\equiv</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\in$</span><code class="sym-cmd">\in</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\notin$</span><code class="sym-cmd">\notin</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\subset$</span><code class="sym-cmd">\subset</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\subseteq$</span><code class="sym-cmd">\subseteq</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\cup$</span><code class="sym-cmd">\cup</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\cap$</span><code class="sym-cmd">\cap</code></div>
+        <div class="sym-card"><span class="sym-rendered">$\emptyset$</span><code class="sym-cmd">\emptyset</code></div>
+      </div>
+    </section>
+
+    <!-- 16. Common Structures -->
+    <section class="ref-section">
+      <div class="ref-section-title">
+        <span class="section-num latex">16</span>
+        <h2>Common Structures</h2>
+      </div>
+      <table class="ref-table latex-table">
+        <thead>
+          <tr><th>What to type</th><th>Renders as</th><th>Structure</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>\frac{a}{b}</td>
+            <td class="rendered">$\frac{a}{b}$</td>
+            <td>Fraction</td>
+          </tr>
+          <tr>
+            <td>\sqrt{x}</td>
+            <td class="rendered">$\sqrt{x}$</td>
+            <td>Square root</td>
+          </tr>
+          <tr>
+            <td>\sqrt[n]{x}</td>
+            <td class="rendered">$\sqrt[n]{x}$</td>
+            <td>n-th root</td>
+          </tr>
+          <tr>
+            <td>x^{2}</td>
+            <td class="rendered">$x^{2}$</td>
+            <td>Superscript / exponent</td>
+          </tr>
+          <tr>
+            <td>x_{i}</td>
+            <td class="rendered">$x_{i}$</td>
+            <td>Subscript / index</td>
+          </tr>
+          <tr>
+            <td>\sum_{i=1}^{n} x_i</td>
+            <td class="rendered">$$\sum_{i=1}^{n} x_i$$</td>
+            <td>Summation</td>
+          </tr>
+          <tr>
+            <td>\prod_{i=1}^{n} a_i</td>
+            <td class="rendered">$$\prod_{i=1}^{n} a_i$$</td>
+            <td>Product</td>
+          </tr>
+          <tr>
+            <td>\int_a^b f(x)\,dx</td>
+            <td class="rendered">$$\int_a^b f(x)\,dx$$</td>
+            <td>Definite integral</td>
+          </tr>
+          <tr>
+            <td>\lim_{x \to \infty} f(x)</td>
+            <td class="rendered">$$\lim_{x \to \infty} f(x)$$</td>
+            <td>Limit</td>
+          </tr>
+          <tr>
+            <td>\vec{v}</td>
+            <td class="rendered">$\vec{v}$</td>
+            <td>Vector (arrow notation)</td>
+          </tr>
+          <tr>
+            <td>\mathbf{v}</td>
+            <td class="rendered">$\mathbf{v}$</td>
+            <td>Bold vector</td>
+          </tr>
+          <tr>
+            <td>\left( \frac{a}{b} \right)</td>
+            <td class="rendered">$\left( \frac{a}{b} \right)$</td>
+            <td>Auto-sized brackets</td>
+          </tr>
+          <tr>
+            <td>\begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}</td>
+            <td class="rendered">$$\begin{pmatrix} a & b \\ c & d \end{pmatrix}$$</td>
+            <td>2 × 2 matrix</td>
+          </tr>
+          <tr>
+            <td>\text{some text}</td>
+            <td class="rendered">$x \text{ is real}$</td>
+            <td>Plain text inside math mode</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$',  right: '$',  display: false },
+        ],
+        ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'option'],
+        throwOnError: false,
+      });
+
+      document.querySelectorAll('.eq-copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
