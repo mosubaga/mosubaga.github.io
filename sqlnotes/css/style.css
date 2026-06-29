@@ -181,7 +181,7 @@ pre {
 }
 
 .cc-page {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1360px, calc(100% - 32px));
   margin: 0 auto;
   padding: 48px 0;
 }
@@ -204,6 +204,18 @@ pre {
 
 .cc-header {
   text-align: center;
+}
+
+.cc-title {
+  display: inline-flex;
+  gap: 0.65rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.cc-title-icon {
+  color: var(--cc-pink-hot);
+  font-size: 0.9em;
 }
 
 .cc-main {
@@ -276,26 +288,37 @@ pre {
 
 .cc-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px;
+  flex-wrap: nowrap;
+  gap: 10px;
+  padding: 6px;
   border: 1px solid var(--cc-border);
   border-radius: var(--cc-radius-md);
   background: var(--cc-bg-soft);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
 }
 
 .cc-nav {
+  width: fit-content;
+  max-width: 100%;
   justify-content: center;
-  margin-top: 18px;
+  margin: 18px auto 0;
 }
 
 .cc-nav .cc-tab {
+  flex: 0 0 auto;
   min-height: 44px;
   padding: 0 18px;
   font-size: 1.08rem;
+  white-space: nowrap;
 }
 
 .cc-tab {
+  display: inline-flex;
+  gap: 0.55rem;
+  align-items: center;
+  justify-content: center;
   min-height: 36px;
   padding: 0 14px;
   border: 0;
@@ -304,6 +327,10 @@ pre {
   font: 700 0.92rem/1 var(--cc-font);
   background: transparent;
   cursor: pointer;
+}
+
+.cc-tab-icon {
+  font-size: 0.92em;
 }
 
 .cc-tab[aria-selected="true"],
@@ -497,7 +524,7 @@ tr:hover td {
 
 @media (max-width: 640px) {
   .cc-page {
-    width: min(100% - 24px, 1120px);
+    width: min(100% - 24px, 1360px);
     padding: 28px 0;
   }
 
@@ -523,6 +550,6 @@ tr:hover td {
   input[type="button"],
   input[type="submit"],
   input[type="reset"] {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
   }
 }
