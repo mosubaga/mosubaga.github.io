@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Go network and web service notes covering net/http servers, clients, JSON, XML, REST patterns, and chi routing.">
+    <title>Go Network and Web Services Guide</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html">Fundamentals</a>
+        <a href="structs.html">Structs &amp; Interfaces</a>
+        <a href="mod.html">Packages &amp; Modules</a>
+        <a href="concurrency.html">Concurrency</a>
+        <a href="network.html" class="active">Network &amp; Web</a>
+        <a href="stdlib.html">Standard Library</a>
+    </nav>
+
+    <h1>Network and Web Services in Go</h1>
+
+    <p>Go is an ideal language for building massively scalable backend systems and RESTful APIs. The standard library package <code>net/http</code> provides the foundational layer for writing both web servers and clients with a focus on simplicity and reliability.</p>
+
+    <!-- SECTION 1: HTTP SERVERS -->
+    <h2>1. Developing HTTP Servers</h2>
+    <p>A Go application typically receives connections directly from clients using its built-in web server, meaning no intermediate application server is required. The server logic is organized around <strong>handlers</strong> and <strong>multiplexers</strong>.</p>
+
+    <h3>Basic Server with Handlers</h3>
+    <p>A handler is a type that implements the <code>ServeHTTP</code> method, which is responsible for writing headers and bodies into the HTTP response. The simplest way to define endpoints is using <code>http.HandleFunc</code>.</p>
+
+    <pre><code class="language-go">package main
+import (
+    "fmt"
+    "net/http"
+)
+
+// Define a handler function
+func myHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Serving: %s\n", r.URL.Path)
+}
+
+func main() {
+    // Register the handler for the root path
+    http.HandleFunc("/", myHandler)
+    
+    // Start the server on port 8080
+    err := http.ListenAndServe(":8080", nil)
+    if err != nil {
+        panic(err)
+    }
+}</code></pre>
+
+    <h3>Request Multiplexing (ServeMux)</h3>
+    <p>The <code>http.ServeMux</code> acts as an HTTP request router, comparing incoming URIs against predefined patterns to execute the associated handler. A more specific pattern takes precedence over a more general one.</p>
+
+    <!-- SECTION 2: HTTP CLIENTS -->
+    <h2>2. Developing HTTP Clients</h2>
+    <p>Go's <code>net/http</code> package offers straightforward functions like <code>http.Get()</code> and <code>http.NewRequest()</code> for clients to interact with web services.</p>
+
+    <h3>Simple GET Request</h3>
+    <p>For quick requests where advanced configuration isn't needed, the shared <code>DefaultClient</code> can be used.</p>
+
+    <pre><code class="language-go">package main
+import (
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    url := "https://www.golang.org"
+    response, err := http.Get(url)
+    if err != nil {
+        panic(err)
+    }
+    defer response.Body.Close() // Mandatory to prevent memory leaks
+
+    body, err := io.ReadAll(response.Body)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(body))
+}</code></pre>
+
+    <h3>Advanced Client Requests</h3>
+    <p>To apply timeouts or custom headers, you should create a custom <code>http.Client</code> and use <code>http.NewRequest()</code>.</p>
+
+    <!-- SECTION 3: HANDLING JSON AND XML -->
+    <h2>3. Handling JSON and XML Data</h2>
+    <p>Exchanging structured data is fundamental to modern web services. Go provides the <code>encoding/json</code> and <code>encoding/xml</code> packages for serialization (marshaling) and deserialization (unmarshaling).</p>
+
+    <h3>Working with JSON</h3>
+    <p>JSON is the de facto standard for web APIs. Go uses <strong>struct tags</strong> to map between JSON keys and Go structure fields.</p>
+
+    <pre><code class="language-go">import (
+    "encoding/json"
+    "fmt"
+)
+
+type User struct {
+    Name     string `json:"username"` // Maps "username" in JSON to "Name"
+    Password string `json:"-"`        // Ignored by the encoder
+}
+
+func main() {
+    u := User{Name: "Gopher"}
+    // Marshal: Go struct -&gt; JSON bytes
+    jsonData, err := json.Marshal(&amp;u)
+    if err != nil {
+        panic(err)
+    }
+
+    // Unmarshal: JSON bytes -&gt; Go struct
+    var u2 User
+    if err := json.Unmarshal(jsonData, &amp;u2); err != nil {
+        panic(err)
+    }
+    fmt.Println(u2.Name) // Gopher
+}</code></pre>
+
+    <h3>Working with XML</h3>
+    <p>XML processing follows a similar pattern to JSON but supports more complex structures like attributes and namespaces.</p>
+
+    <pre><code class="language-go">import "encoding/xml"
+
+type Person struct {
+    XMLName xml.Name `xml:"person"`     // Root element name (xml.Name from encoding/xml)
+    Type    string   `xml:"type,attr"`  // Map as an XML attribute
+    Content string   `xml:",chardata"`  // Raw character data
+}</code></pre>
+
+    <!-- SECTION 4: BUILDING REST APIS -->
+    <h2>4. Building REST APIs</h2>
+    <p>REST (Representational State Transfer) is an architectural style designed for standardized data access. RESTful services primarily focus on defining Go structures and using marshaling/unmarshaling to exchange JSON data between clients and servers.</p>
+
+    <h3>Standard REST Verbs</h3>
+    <ul>
+        <li><strong>POST:</strong> Create new resources.</li>
+        <li><strong>GET:</strong> Read existing resources.</li>
+        <li><strong>PUT:</strong> Update existing resources with a full version.</li>
+        <li><strong>DELETE:</strong> Remove existing resources.</li>
+    </ul>
+
+    <h3>Routing with go-chi</h3>
+    <p><a href="https://github.com/go-chi/chi">go-chi</a> is a lightweight, idiomatic router that is fully compatible with <code>net/http</code>. It supports URL parameters, middleware chaining, and composable subrouters, making it the popular choice for production REST APIs.</p>
+
+    <pre><code class="language-go">// Install: go get github.com/go-chi/chi/v5
+import (
+    "fmt"
+    "net/http"
+    "github.com/go-chi/chi/v5"
+    "github.com/go-chi/chi/v5/middleware"
+)
+
+func main() {
+    r := chi.NewRouter()
+
+    // Built-in middleware
+    r.Use(middleware.Logger)
+    r.Use(middleware.Recoverer)
+
+    // Define routes by HTTP method
+    r.Get("/articles", listArticlesHandler)
+    r.Post("/articles", createArticleHandler)
+
+    // Named URL parameters with a subrouter
+    r.Route("/articles/{id}", func(r chi.Router) {
+        r.Get("/", getArticleHandler)
+        r.Put("/", updateArticleHandler)
+        r.Delete("/", deleteArticleHandler)
+    })
+
+    if err := http.ListenAndServe(":1234", r); err != nil {
+        panic(err)
+    }
+}
+
+func listArticlesHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "Listing articles")
+}
+
+func createArticleHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "Creating article")
+}
+
+// Access a URL parameter inside any handler
+func getArticleHandler(w http.ResponseWriter, r *http.Request) {
+    id := chi.URLParam(r, "id")
+    fmt.Fprintf(w, "Article ID: %s", id)
+}
+
+func updateArticleHandler(w http.ResponseWriter, r *http.Request) {
+    id := chi.URLParam(r, "id")
+    fmt.Fprintf(w, "Updating article %s", id)
+}
+
+func deleteArticleHandler(w http.ResponseWriter, r *http.Request) {
+    id := chi.URLParam(r, "id")
+    fmt.Fprintf(w, "Deleting article %s", id)
+}</code></pre>
+
+    <div class="note">
+        <p><strong>Security Tip:</strong> Always close the <code>response.Body</code> when finished to prevent the server from reserving resources indefinitely. For production services, always implement timeouts for both reading and writing processes.</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="js/copy.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Intermediate Go notes covering pointers, structs, methods, interfaces, receivers, and best practices.">
+    <title>Go Pointers, Structs, Methods, and Interfaces</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html">Fundamentals</a>
+        <a href="structs.html" class="active">Structs &amp; Interfaces</a>
+        <a href="mod.html">Packages &amp; Modules</a>
+        <a href="concurrency.html">Concurrency</a>
+        <a href="network.html">Network &amp; Web</a>
+        <a href="stdlib.html">Standard Library</a>
+    </nav>
+
+    <h1>Intermediate Go: Core Concepts</h1>
+
+    <div class="summary-box">
+        <p>This guide covers <strong>Pointers, Structs, Methods, and Interfaces</strong>. These features allow you to build complex data types and define common behaviors, forming the backbone of robust Go applications.</p>
+    </div>
+
+    <!-- Section: Pointers -->
+    <h2>1. Pointers</h2>
+    <p>A <strong>pointer</strong> is a variable that stores the <strong>memory address</strong> of another value rather than the value itself. Pointers are fundamental for sharing memory across different parts of a program without copying data.</p>
+    
+    <h3>Key Operators</h3>
+    <ul>
+        <li><code>&amp;</code> (Address Operator): Generates a pointer to a variable.</li>
+        <li><code>*</code> (Indirection/Dereference Operator): Accesses the value stored at the address a pointer refers to.</li>
+    </ul>
+
+    <pre><code class="language-go">package main
+import "fmt"
+
+func main() {
+    value := 42
+    ptr := &amp;value // &amp; creates a pointer to value
+
+    fmt.Println("Address:", ptr)  // e.g., 0xc000012070
+    fmt.Println("Value:", *ptr)   // 42 (Dereferencing)
+
+    *ptr = 100 // Modifying the original value via the pointer
+    fmt.Println("Updated Value:", value) // 100
+}</code></pre>
+    <p><strong>Note:</strong> Go does <strong>not support pointer arithmetic</strong> (like incrementing a memory address to access the next array element), which prevents a common class of bugs found in C/C++.</p>
+
+    <!-- Section: Structs -->
+    <h2>2. Structs</h2>
+    <p><strong>Structs</strong> (short for structures) are user-defined types that group together related data fields into a single entity. They are essential for modeling real-world objects.</p>
+
+    <h3>Declaration and Visibility</h3>
+    <p>Fields starting with an <strong>uppercase letter</strong> are <strong>exported</strong> (public) and accessible outside the package; those starting with lowercase are <strong>unexported</strong> (private).</p>
+
+    <pre><code class="language-go">type Product struct {
+    Name     string  // Exported field
+    price    float64 // Unexported field
+}
+
+func main() {
+    // 1. Using a struct literal (named fields are always preferred)
+    p1 := Product{Name: "Kayak", price: 275.0}
+
+    // 2. Creating a pointer to a struct
+    p2 := &amp;Product{Name: "Lifejacket", price: 48.95}
+
+    // Accessing fields via dot notation
+    fmt.Println(p1.Name, p2.Name) // Kayak Lifejacket
+}</code></pre>
+
+    <!-- Section: Methods -->
+    <h2>3. Methods</h2>
+    <p>A <strong>method</strong> is a function attached to a specific data type using a <strong>receiver</strong>. Methods allow you to add behavior directly to your structs.</p>
+
+    <h3>Value vs. Pointer Receivers</h3>
+    <ul>
+        <li><strong>Value Receiver:</strong> Operates on a <strong>copy</strong> of the data. Changes do not affect the original.</li>
+        <li><strong>Pointer Receiver:</strong> Operates on the <strong>original value</strong> via its memory address. Use this to modify the receiver's state.</li>
+    </ul>
+
+    <pre><code class="language-go">type Rectangle struct {
+    Length, Width float64
+}
+
+// Value receiver: Does not modify the original
+func (r Rectangle) Area() float64 {
+    return r.Length * r.Width
+}
+
+// Pointer receiver: Can modify the original
+func (r *Rectangle) Scale(factor float64) {
+    r.Length *= factor
+    r.Width *= factor
+}
+
+func main() {
+    rect := Rectangle{10, 5}
+    rect.Scale(2) // Go automatically handles the pointer conversion
+    fmt.Println("New Area:", rect.Area()) // 200
+}</code></pre>
+
+    <!-- Section: Interfaces -->
+    <h2>4. Interfaces</h2>
+    <p>An <strong>interface</strong> is an abstract type that defines a <strong>contract</strong> of behavior by specifying a set of method signatures.</p>
+
+    <h3>Implicit Implementation</h3>
+    <p>Unlike Java or C#, Go uses <strong>implicit satisfaction</strong>. A type implements an interface simply by defining all required methods; there is no <code>implements</code> keyword.</p>
+
+    <pre><code class="language-go">// 1. Define the interface
+type Speaker interface {
+    Speak() string
+}
+
+type Dog struct{}
+func (d Dog) Speak() string { return "Woof!" } // Dog satisfies Speaker
+
+type Cat struct{}
+func (c Cat) Speak() string { return "Meow!" } // Cat satisfies Speaker
+
+func MakeItSpeak(s Speaker) {
+    fmt.Println(s.Speak()) // Polymorphism: works for any Speaker
+}
+
+func main() {
+    d := Dog{}
+    c := Cat{}
+    MakeItSpeak(d)
+    MakeItSpeak(c)
+}</code></pre>
+
+    <h3>The Empty Interface</h3>
+    <p>Represented as <code>interface{}</code> (or <code>any</code> in Go 1.18+), the <strong>empty interface</strong> has no methods and can therefore hold a value of <strong>any type</strong>.</p>
+
+    <pre><code class="language-go">func PrintAnything(v any) { // 'any' is an alias for interface{}
+    fmt.Println(v)
+}</code></pre>
+
+    <div class="summary-box">
+        <h3>Best Practice Summary</h3>
+        <ul>
+            <li>Use <strong>Pointers</strong> to avoid expensive data copies or to allow functions to modify values.</li>
+            <li>Use <strong>Structs</strong> to group data; remember that field visibility is controlled by capitalization.</li>
+            <li>Use <strong>Pointer Receivers</strong> for methods if the struct is large or needs to be modified.</li>
+            <li>Use <strong>Interfaces</strong> to define shared behavior and enable flexible, decoupled code.</li>
+        </ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="js/copy.js"></script>
+</body>
+</html>

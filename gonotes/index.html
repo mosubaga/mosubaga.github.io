@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Practical Go programming notes covering syntax, tooling, collections, packages, concurrency, web services, and the standard library.">
+    <title>Go Programming Fundamentals with Code Samples</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html" class="active">Fundamentals</a>
+        <a href="structs.html">Structs &amp; Interfaces</a>
+        <a href="mod.html">Packages &amp; Modules</a>
+        <a href="concurrency.html">Concurrency</a>
+        <a href="network.html">Network &amp; Web</a>
+        <a href="stdlib.html">Standard Library</a>
+    </nav>
+
+    <h1>Go Programming Fundamentals</h1>
+    <p>This guide introduces the fundamental concepts of Go with practical, copy-friendly code samples. Start here for syntax, tooling, values, control flow, and collections before moving into the more focused topics in the navigation.</p>
+
+    <!-- Section 1: Introduction and Ecosystem -->
+    <h2>1. Introduction and Ecosystem</h2>
+    <p>Go is an open-source language focused on <strong>simplicity and efficiency</strong>. To verify your installation, you can use the command line:</p>
+    <pre><code class="language-bash">$ go version
+# Example output: go version go1.26.4 darwin/arm64</code></pre>
+    <p>You can also use the <strong>Go Playground</strong> at <a href="https://go.dev/play">go.dev/play</a> to run code directly in your browser.</p>
+
+    <!-- Section 2: The Go Toolchain -->
+    <h2>2. The Go Toolchain</h2>
+    <p>The Go command is a "Swiss Army Knife" for developers, handling everything from running scripts to building binaries.</p>
+    <pre><code class="language-bash"># 1. Run code immediately without creating a visible binary
+$ go run main.go
+
+# 2. Build an executable binary for your OS
+$ go build main.go
+
+# 3. Format code according to standard rules
+$ go fmt main.go
+
+# 4. Initialize a new module for dependency management
+$ go mod init myproject</code></pre>
+
+    <!-- Section 3: Program Structure -->
+    <h2>3. Program Structure</h2>
+    <p>All Go programs are organized into <strong>packages</strong>, with <code>package main</code> serving as the entry point for executable applications.</p>
+    <pre><code class="language-go">package main // Mandatory package declaration
+
+import "fmt" // Import standard library package
+
+// The main function is where execution starts
+func main() {
+    fmt.Println("Hello, Go!") // Formatted output
+}</code></pre>
+
+    <!-- Section 4: Variables and Constants -->
+    <h2>4. Variables and Constants</h2>
+    <p>Go supports both explicit declarations and <strong>short variable declarations</strong> (which use type inference) inside functions.</p>
+    <pre><code class="language-go">package main
+import "fmt"
+
+const Pi = 3.14 // Constant declaration
+
+func main() {
+    // 1. Explicit declaration with type
+    var name string = "Gopher"
+
+    // 2. Short declaration (only inside functions)
+    age := 10
+
+    // 3. Declaration of multiple variables
+    var x, y int = 1, 2
+
+    // 4. Using Iota for auto-incrementing constants
+    const (
+        Zero = iota // 0
+        One         // 1
+        Two         // 2
+    )
+
+    fmt.Println(name, age, x, y, Pi, Zero, One, Two)
+}</code></pre>
+
+    <!-- Section 5: Primitive Data Types -->
+    <h2>5. Primitive Data Types</h2>
+    <p>Go provides fixed-size numeric types, booleans, and context-aware characters called <strong>runes</strong>.</p>
+    <pre><code class="language-go">var (
+    a bool    = true    // Boolean
+    b int     = 42      // Integer (32 or 64 bits depending on OS)
+    c float64 = 19.99   // Floating-point
+    d string  = "Go"    // Sequence of characters
+    e rune    = '世'    // Single Unicode code point (int32 alias)
+)
+
+fmt.Println(a, b, c, d, e)</code></pre>
+
+    <!-- Section 6: Operators and Conversions -->
+    <h2>6. Operators and Conversions</h2>
+    <p>Go does not perform <strong>implicit conversion</strong>; you must explicitly convert types to combine them in expressions.</p>
+    <pre><code class="language-go">kayak := 275      // int
+soccerBall := 19.5 // float64
+
+// Incorrect: kayak + soccerBall would cause a compiler error
+
+// Correct: Explicitly convert int to float64
+total := float64(kayak) + soccerBall
+
+// Comparison operators produce a bool result
+isExpensive := total &gt; 100
+fmt.Println(total, isExpensive)</code></pre>
+
+    <!-- Section 7: Flow Control -->
+    <h2>7. Flow Control</h2>
+    <p>Go uses <code>if/else</code>, <code>switch</code>, and <code>for</code> loops. Notably, <code>for</code> is the only looping construct available.</p>
+    <pre><code class="language-go">// 1. If statement with initialization
+if x := 10; x &gt; 5 {
+    fmt.Println("x is large")
+}
+
+// 2. Switch statement (no parentheses required)
+switch day := "Monday"; day {
+case "Monday", "Tuesday":
+    fmt.Println("Weekday")
+default:
+    fmt.Println("Other day")
+}
+
+// 3. For loop (Traditional, while-style, and range)
+for i := 0; i &lt; 5; i++ {
+    fmt.Println(i)
+}
+
+nums := []int{2, 3, 4}
+for index, value := range nums {
+    fmt.Printf("Index %d has value %d\n", index, value)
+}</code></pre>
+
+    <!-- Section 8: Basic Collection Types -->
+    <h2>8. Basic Collection Types</h2>
+    <p>Collections allow grouping elements. <strong>Slices</strong> are dynamic and more commonly used than fixed-length <strong>arrays</strong>.</p>
+    <pre><code class="language-go">// 1. Array (Fixed length)
+var names = [3]string{"Ann", "Bob", "Cal"}
+
+// 2. Slice (Variable length)
+items := []string{"Hat", "Shirt"} // Literal
+items = append(items, "Boots")    // Dynamic growth
+
+// 3. Map (Key-Value pairs)
+prices := make(map[string]float64)
+prices["Kayak"] = 279.0
+prices["Paddle"] = 40.0
+
+// Checking for existence in a map
+_, exists := prices["Hat"] // exists is false; use _ to discard value</code></pre>
+
+    <div class="note">
+        <p><strong>Note:</strong> All code examples above are compliant with standard Go rules. For example, variables declared must be used, or the compiler will report an error.</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="js/copy.js"></script>
+</body>
+</html>

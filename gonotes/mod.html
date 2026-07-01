@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A practical guide to Go packages, modules, go.mod, dependency commands, and internal package structure.">
+    <title>Go Packages and Modules Guide</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html">Fundamentals</a>
+        <a href="structs.html">Structs &amp; Interfaces</a>
+        <a href="mod.html" class="active">Packages &amp; Modules</a>
+        <a href="concurrency.html">Concurrency</a>
+        <a href="network.html">Network &amp; Web</a>
+        <a href="stdlib.html">Standard Library</a>
+    </nav>
+
+    <h1>Go Packages and Modules</h1>
+
+    <p>In Go, code is organized into <strong>packages</strong>, and these packages are grouped into <strong>modules</strong>. This guide provides a detailed look at how to manage dependencies and project structure using the Go module system.</p>
+
+    <h2>1. Understanding Packages</h2>
+    <p>A package is a collection of source files located in the same directory that share the same <code>package</code> declaration. They define boundaries between different concerns and control which functions and types are visible to other parts of the program.</p>
+
+    <h3>Rules for Packages:</h3>
+    <ul>
+        <li><strong>Main Package:</strong> The <code>main</code> package is special and indicates that the compiler should produce an executable program.</li>
+        <li><strong>Visibility (Exporting):</strong> Identifiers starting with an <strong>uppercase letter</strong> are exported (public); those starting with a lowercase letter are unexported (private).</li>
+        <li><strong>Naming:</strong> By convention, package names match their directory name and should be short, lowercase, single words.</li>
+    </ul>
+
+    <div class="file-label">mathutils/adder.go</div>
+<pre><code class="language-go">package mathutils // Package declaration matches directory name
+
+// Add is exported because it starts with an uppercase letter
+func Add(a, b int) int {
+    return a + b
+}
+
+// subtract is private to this package
+func subtract(a, b int) int {
+    return a - b
+}</code></pre>
+
+    <h2>2. Introduction to Modules</h2>
+    <p>A <strong>module</strong> is a collection of related Go packages versioned together as a single unit. It is defined by a <code>go.mod</code> file at its root, which tracks the module's path and its dependency requirements. Modules allow you to build projects outside of the traditional <code>GOPATH</code>.</p>
+
+    <h3>Initializing a Module:</h3>
+    <p>To start a new project, navigate to your project directory and run:</p>
+<pre><code class="language-bash">$ go mod init github.com/username/myproject</code></pre>
+    <p>The argument <code>github.com/username/myproject</code> is the <strong>module path</strong>, which serves as a unique identifier and the prefix for all internal packages.</p>
+
+    <h2>3. The go.mod File in Detail</h2>
+    <p>The <code>go.mod</code> file is both human-readable and machine-editable. It manages all the information the Go toolchain needs to build your project.</p>
+
+    <h3>Directives in go.mod:</h3>
+    <ul>
+        <li><code>module</code>: Declares the module path.</li>
+        <li><code>go</code>: Specifies the minimum Go version required for the module.</li>
+        <li><code>require</code>: Lists specific versions of dependencies.</li>
+        <li><code>replace</code>: Overrides a dependency path, often used for local development.</li>
+        <li><code>exclude</code>: Prevents specific versions of a module from being used.</li>
+    </ul>
+
+    <div class="file-label">go.mod</div>
+<pre><code class="language-plaintext">module github.com/username/myproject // The module path
+
+go 1.26 // Minimum Go language version
+
+require (
+    github.com/google/uuid v1.6.0 // Direct dependency
+    golang.org/x/text v0.14.0 // Direct dependency
+    github.com/mattn/go-sqlite3 v1.14.17 // indirect
+)
+
+// The replace directive points a dependency to a local folder
+replace github.com/username/othermodule =&gt; ../local-version</code></pre>
+
+    <div class="note">
+        <strong>Security Tip:</strong> Alongside <code>go.mod</code>, Go maintains a <code>go.sum</code> file. It contains cryptographic checksums to ensure that your dependencies haven't been tampered with and that every developer gets the exact same code.
+    </div>
+
+    <h2>4. Common Module Commands</h2>
+    <p>The <code>go</code> command includes several subcommands for module management:</p>
+    <ul>
+        <li><code>go get &lt;path&gt;</code>: Adds or changes a library dependency in <code>go.mod</code>. Use <code>go install package@version</code> for command-line tools.</li>
+        <li><code>go mod tidy</code>: Removes unused dependencies and adds missing ones to keep <code>go.mod</code> clean.</li>
+        <li><code>go mod edit</code>: Allows you to modify the <code>go.mod</code> file from the command line (e.g., adding a <code>replace</code> directive).</li>
+        <li><code>go list -m all</code>: Lists the current module and all its dependencies.</li>
+    </ul>
+
+    <h2>5. Practical Code Example: Using Internal Packages</h2>
+    <p>When you have code that should not be visible to external users of your module, place it in an <code>internal/</code> directory. The Go compiler forbids other modules from importing packages within an internal directory.</p>
+
+    <h3>Project Structure:</h3>
+<pre><code class="language-plaintext">myproject/
+|-- go.mod
+|-- main.go
+|-- pkg/
+|   `-- publicapi/
+|       `-- api.go       // Reusable by others
+`-- internal/
+    `-- secrets/
+        `-- database.go  // Only usable by myproject</code></pre>
+
+    <h3>Importing within the same module:</h3>
+    <p>To import your own packages, use the full module path defined in <code>go.mod</code>.</p>
+
+    <div class="file-label">main.go</div>
+<pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "github.com/username/myproject/pkg/publicapi" // Full path required
+)
+
+func main() {
+    publicapi.Start() // Calling an exported function
+}</code></pre>
+
+    <div class="note">
+        <strong>Pro Tip:</strong> Use the <strong>blank identifier</strong> (<code>_</code>) in an import to only trigger a package's <code>init()</code> function without using its exported symbols. This is common for database drivers.
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="js/copy.js"></script>
+</body>
+</html>

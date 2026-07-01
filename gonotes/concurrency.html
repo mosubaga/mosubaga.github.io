@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Go concurrency notes covering goroutines, WaitGroups, channels, select, runtime scheduling, errgroup, and common patterns.">
+    <title>Go Concurrency: Goroutines, Channels, and Design Patterns</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html">Fundamentals</a>
+        <a href="structs.html">Structs &amp; Interfaces</a>
+        <a href="mod.html">Packages &amp; Modules</a>
+        <a href="concurrency.html" class="active">Concurrency</a>
+        <a href="network.html">Network &amp; Web</a>
+        <a href="stdlib.html">Standard Library</a>
+    </nav>
+
+    <h1>Mastering Go Concurrency</h1>
+
+    <p>Concurrency is the ability to run and make progress on multiple smaller components of a larger program simultaneously. Go implements concurrency using <strong>goroutines</strong> and <strong>channels</strong> based on the Communicating Sequential Processes (CSP) model.</p>
+
+    <!-- SECTION 1: GOROUTINES -->
+    <h2>1. Goroutines: Lightweight Threads</h2>
+    <p>A goroutine is the smallest executable entity in Go. They are managed by the Go runtime and are extremely resource-efficient, requiring only a few kilobytes of stack space that can grow or shrink as needed.</p>
+    
+    <h3>Launching a Goroutine</h3>
+    <p>You create a goroutine by prefixing a function call with the <code>go</code> keyword. This causes the function to run asynchronously in the background.</p>
+    
+    <pre><code class="language-go">package main
+import (
+    "fmt"
+    "time"
+)
+
+func sayHello() {
+    fmt.Println("Hello from a goroutine!")
+}
+
+func main() {
+    go sayHello() // Starts a new goroutine
+    fmt.Println("Main function continues...")
+    time.Sleep(time.Millisecond * 10) // Wait briefly so the goroutine can finish
+}</code></pre>
+
+    <!-- SECTION 2: SYNCHRONIZATION WITH WAITGROUPS -->
+    <h2>2. Synchronizing with WaitGroups</h2>
+    <p>Because the <code>main</code> function does not wait for background goroutines to finish before exiting, we use a <code>sync.WaitGroup</code> to coordinate their completion.</p>
+    <ul>
+        <li><code>Add(n)</code>: Sets the number of goroutines to wait for.</li>
+        <li><code>Done()</code>: Decrements the counter; typically called via <code>defer</code> inside the goroutine.</li>
+        <li><code>Wait()</code>: Blocks until the counter reaches zero.</li>
+    </ul>
+
+    <pre><code class="language-go">import (
+    "fmt"
+    "sync"
+)
+
+var wg sync.WaitGroup
+
+func worker(id int) {
+    defer wg.Done() // Signal completion
+    fmt.Printf("Worker %d is working...\n", id)
+}
+
+func main() {
+    for i := 1; i &lt;= 3; i++ {
+        wg.Add(1)
+        go worker(i)
+    }
+    wg.Wait() // Block until all 3 workers call Done()
+    fmt.Println("All work complete.")
+}</code></pre>
+
+    <!-- SECTION 3: CHANNELS -->
+    <h2>3. Channels: Communication Pipes</h2>
+    <p>Channels act as the "glue" that allows goroutines to exchange data safely without explicit locking.</p>
+    <ul>
+        <li><strong>Unbuffered Channels:</strong> Synchronous; the sender blocks until a receiver is ready.</li>
+        <li><strong>Buffered Channels:</strong> Asynchronous; they can hold a limited number of values before blocking the sender.</li>
+    </ul>
+
+    <pre><code class="language-go">func main() {
+    // Unbuffered channel
+    ch := make(chan string)
+
+    go func() {
+        ch &lt;- "Data from goroutine" // Send
+    }()
+
+    msg := &lt;-ch // Receive (blocks until data is sent)
+    fmt.Println(msg)
+}</code></pre>
+
+    <!-- SECTION 4: DESIGN PATTERNS -->
+    <h2>4. Advanced Concurrency Design Patterns</h2>
+
+    <div class="pattern-box">
+        <h3>Pattern A: Worker Pools</h3>
+        <p>A worker pool processes many tasks concurrently while controlling the level of parallelism. It uses a shared channel as a work queue for a fixed number of worker goroutines.</p>
+<pre><code class="language-go">func workerPool(id int, jobs &lt;-chan int, results chan&lt;- int) {
+    for j := range jobs {
+        fmt.Printf("Worker %d processing job %d\n", id, j)
+        results &lt;- j * 2
+    }
+}
+
+func main() {
+    jobs := make(chan int, 100)
+    results := make(chan int, 100)
+
+    // Start 3 workers
+    for w := 1; w &lt;= 3; w++ {
+        go workerPool(w, jobs, results)
+    }
+
+    // Send 5 jobs
+    for j := 1; j &lt;= 5; j++ {
+        jobs &lt;- j
+    }
+    close(jobs) // Signal no more jobs are coming
+
+    // Collect exactly one result for each submitted job
+    for a := 1; a &lt;= 5; a++ {
+        fmt.Println("result:", &lt;-results)
+    }
+}</code></pre>
+    </div>
+
+    <div class="pattern-box">
+        <h3>Pattern B: Fan-Out / Fan-In</h3>
+        <p><strong>Fan-out</strong> launches multiple goroutines to perform work in parallel. <strong>Fan-in</strong> collects and aggregates their outputs into a single stream.</p>
+<pre><code class="language-go">// Example Fan-In function (requires: import "sync")
+func fanIn(sources ...&lt;-chan string) &lt;-chan string {
+    var wg sync.WaitGroup
+    out := make(chan string)
+
+    output := func(c &lt;-chan string) {
+        defer wg.Done()
+        for n := range c {
+            out &lt;- n
+        }
+    }
+
+    wg.Add(len(sources))
+    for _, c := range sources {
+        go output(c)
+    }
+
+    // Close output once all inputs are finished
+    go func() {
+        wg.Wait()
+        close(out)
+    }()
+    return out
+}</code></pre>
+    </div>
+
+    <!-- SECTION 5: COMBINING WAITS AND CHANNELS -->
+    <h2>5. Combining Waits and Channels for Efficiency</h2>
+    <p>The most efficient processes often combine <code>WaitGroup</code> for tracking lifecycle and <code>channels</code> for result collection. Using them together prevents race conditions and ensures "clean" termination where no result is lost.</p>
+
+    <div class="pattern-box">
+        <h3>The "Result Aggregator" Pattern</h3>
+        <p>In this pattern, you use a <code>WaitGroup</code> to track workers and a separate goroutine to <code>Wait()</code> and then <code>close()</code> the result channel. This allows the <code>main</code> goroutine to use a <code>range</code> loop over the results channel without deadlocking.</p>
+<pre><code class="language-go">func main() {
+    results := make(chan int)
+    var wg sync.WaitGroup
+
+    for i := 0; i &lt; 10; i++ {
+        wg.Add(1)
+        go func(val int) {
+            defer wg.Done()
+            results &lt;- val * val // Send result to channel
+        }(i)
+    }
+
+    // CRITICAL: Combining Wait and Close in a side-goroutine
+    go func() {
+        wg.Wait()      // Wait for all workers to finish
+        close(results) // Close channel so range loop below can terminate
+    }()
+
+    // Efficiently aggregate results as they arrive
+    for res := range results {
+        fmt.Println("Received:", res)
+    }
+}</code></pre>
+    </div>
+
+    <div class="pattern-box">
+        <h3>The Select Statement</h3>
+        <p>The <code>select</code> statement lets a goroutine wait on multiple channel operations, proceeding with whichever is ready first. This is essential for implementing timeouts and non-blocking communication.</p>
+<pre><code class="language-go">select {
+case msg := &lt;-ch1:
+    fmt.Println("Received from ch1:", msg)
+case &lt;-time.After(time.Second): // Timeout pattern
+    fmt.Println("Timed out!")
+}</code></pre>
+    </div>
+
+    <div class="note">
+        <p><strong>Summary:</strong> Goroutines provide the execution power, WaitGroups manage the lifecycle, and Channels handle the data flow. Combining them correctly is the key to building high-performance, deadlock-free Go applications.</p>
+    </div>
+
+    <!-- SECTION 6: GO RUNTIME AND SCHEDULER -->
+    <h2>6. The Go Runtime and Scheduler</h2>
+    <p>Understanding how Go manages concurrency under the hood is critical for high-performance applications.</p>
+    <ul>
+        <li><strong>M:N Scheduling:</strong> Go uses an M:N scheduler where <em>m</em> goroutines are multiplexed onto <em>n</em> OS threads, making goroutines far cheaper than OS threads.</li>
+        <li><strong>The GOMAXPROCS Variable:</strong> Controls the number of OS threads that can execute user-level Go code simultaneously. The runtime chooses a sensible default, and explicit tuning is rarely needed.</li>
+        <li><strong>Work-Stealing Algorithm:</strong> Underutilized logical processors "steal" tasks from others to automatically balance the load across cores.</li>
+    </ul>
+    <pre><code class="language-go">import (
+    "fmt"
+    "runtime"
+)
+
+func main() {
+    // Query or set the number of logical CPUs in use
+    fmt.Println("CPUs:", runtime.NumCPU())
+    runtime.GOMAXPROCS(runtime.NumCPU()) // Default; explicit setting is rarely needed
+}</code></pre>
+
+    <!-- SECTION 7: ADVANCED SYNCHRONIZATION PRIMITIVES -->
+    <h2>7. Advanced Synchronization Primitives</h2>
+    <p>Beyond <code>Mutex</code> and <code>WaitGroup</code>, the <code>sync</code> package provides specialized tools:</p>
+    <ul>
+        <li><strong>Condition Variables (<code>sync.Cond</code>):</strong> A goroutine waits on a condition via <code>Wait()</code> and is woken by <code>Signal()</code> (one goroutine) or <code>Broadcast()</code> (all waiters).</li>
+        <li><strong>Once (<code>sync.Once</code>):</strong> Ensures a piece of code, such as configuration loading or a singleton, runs exactly once regardless of how many goroutines call it.</li>
+        <li><strong>Atomic Operations (<code>sync/atomic</code>):</strong> Lock-free primitives for thread-safe counters and flags; faster than a mutex for simple operations.</li>
+    </ul>
+    <pre><code class="language-go">import "sync"
+
+type Config struct {
+    DSN string
+}
+
+var once sync.Once
+var instance *Config
+
+func GetConfig() *Config {
+    once.Do(func() {
+        instance = &amp;Config{DSN: "postgres://localhost/app"} // Runs exactly once
+    })
+    return instance
+}</code></pre>
+
+    <!-- SECTION 8: ROBUST ERROR AND LIFECYCLE MANAGEMENT -->
+    <h2>8. Robust Error and Lifecycle Management</h2>
+    <p>Professional concurrent code requires lifecycle control beyond just launching goroutines.</p>
+    <ul>
+        <li><strong>Error Groups (<code>errgroup</code>):</strong> Tracks a collection of goroutines and returns the first non-nil error encountered, while cancelling the shared context automatically.</li>
+        <li><strong>The Context Package:</strong> Essential for propagating deadlines, cancellation signals, and request-scoped values across API boundaries.</li>
+        <li><strong>UNIX Signal Handling:</strong> Use channels to catch <code>SIGINT</code> / <code>SIGTERM</code> for graceful shutdowns.</li>
+    </ul>
+    <pre><code class="language-go">import (
+    "context"
+    "fmt"
+    "golang.org/x/sync/errgroup"
+)
+
+func fetchData(ctx context.Context, url string) error {
+    fmt.Println("Fetching", url)
+    return nil // Replace with real HTTP call
+}
+
+func main() {
+    g, ctx := errgroup.WithContext(context.Background())
+
+    g.Go(func() error { return fetchData(ctx, "https://api.example.com/a") })
+    g.Go(func() error { return fetchData(ctx, "https://api.example.com/b") })
+
+    if err := g.Wait(); err != nil {
+        fmt.Println("Error:", err)
+    }
+}</code></pre>
+
+    <!-- SECTION 9: SAFETY AND PERFORMANCE -->
+    <h2>9. Safety and Performance Optimization</h2>
+    <ul>
+        <li><strong>Race Detector:</strong> The <code>-race</code> flag instruments the binary to detect concurrent unsynchronized memory accesses at runtime.</li>
+        <li><strong>Deadlock Analysis:</strong> Avoid circular waits, such as goroutine A waiting for B while B waits for A. Consistent lock ordering and timeouts prevent this.</li>
+        <li><strong>Throttling via Semaphores:</strong> Use a buffered channel as a semaphore to cap the number of goroutines accessing a resource concurrently.</li>
+        <li><strong>Testing with <code>t.Parallel()</code>:</strong> Run unit tests concurrently to surface synchronization bugs early.</li>
+    </ul>
+    <pre><code class="language-go">// Run with the race detector:
+// $ go test -race ./...
+// $ go run -race main.go
+
+type Task struct {
+    ID int
+}
+
+func process(t Task) {
+    fmt.Println("processing", t.ID)
+}
+
+// Buffered channel as a semaphore (max 5 concurrent workers)
+sem := make(chan struct{}, 5)
+
+for _, task := range tasks {
+    sem &lt;- struct{}{}        // Acquire
+    go func(t Task) {
+        defer func() { &lt;-sem }() // Release
+        process(t)
+    }(task)
+}</code></pre>
+
+    <!-- SECTION 10: SPECIALIZED DESIGN PATTERNS -->
+    <h2>10. Specialized Design Patterns</h2>
+
+    <div class="pattern-box">
+        <h3>The Pipeline Pattern</h3>
+        <p>Connect goroutines so the output of one stage feeds directly into the input of the next via channels. Each stage is independently concurrent.</p>
+        <pre><code class="language-go">func generate(nums ...int) &lt;-chan int {
+    out := make(chan int)
+    go func() {
+        for _, n := range nums {
+            out &lt;- n
+        }
+        close(out)
+    }()
+    return out
+}
+
+func square(in &lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+    go func() {
+        for n := range in {
+            out &lt;- n * n
+        }
+        close(out)
+    }()
+    return out
+}
+
+func main() {
+    for n := range square(generate(2, 3, 4)) {
+        fmt.Println(n) // 4, 9, 16
+    }
+}</code></pre>
+    </div>
+
+    <div class="pattern-box">
+        <h3>The Quit Channel Pattern</h3>
+        <p>Use a dedicated channel to signal one or more goroutines to stop cleanly instead of killing them externally.</p>
+        <pre><code class="language-go">func worker(jobs &lt;-chan int, quit &lt;-chan struct{}) {
+    for {
+        select {
+        case j, ok := &lt;-jobs:
+            if !ok {
+                return
+            }
+            fmt.Println("Processing", j)
+        case &lt;-quit:
+            fmt.Println("Worker stopping")
+            return
+        }
+    }
+}
+
+func main() {
+    jobs := make(chan int, 10)
+    quit := make(chan struct{})
+
+    go worker(jobs, quit)
+
+    jobs &lt;- 1
+    jobs &lt;- 2
+    close(quit) // Signal the worker to stop
+}</code></pre>
+    </div>
+
+    <div class="pattern-box">
+        <h3>Monitor Goroutine</h3>
+        <p>A safer alternative to shared memory: a dedicated goroutine <em>owns</em> the data, and others communicate with it via channels to read or update state, eliminating the need for mutexes.</p>
+        <pre><code class="language-go">type request struct {
+    key   string
+    reply chan string
+}
+
+func monitor(store map[string]string, reqs &lt;-chan request) {
+    for req := range reqs {
+        req.reply &lt;- store[req.key]
+    }
+}
+
+func main() {
+    store := map[string]string{"name": "Gopher"}
+    reqs := make(chan request)
+    go monitor(store, reqs)
+
+    reply := make(chan string)
+    reqs &lt;- request{key: "name", reply: reply}
+    fmt.Println(&lt;-reply) // Gopher
+}</code></pre>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="js/copy.js"></script>
+</body>
+</html>

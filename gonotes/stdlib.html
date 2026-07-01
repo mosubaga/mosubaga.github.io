@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Go standard library notes covering time, log, log/slog, os, io, bufio, and file operations.">
+    <title>Go Standard Library: Time, Logging, and File I/O</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a href="index.html">Fundamentals</a>
+        <a href="structs.html">Structs &amp; Interfaces</a>
+        <a href="mod.html">Packages &amp; Modules</a>
+        <a href="concurrency.html">Concurrency</a>
+        <a href="network.html">Network &amp; Web</a>
+        <a href="stdlib.html" class="active">Standard Library</a>
+    </nav>
+
+    <h1>Leveraging the Go Standard Library</h1>
+
+    <p>Go provides a powerful and comprehensive standard library that offers essential building blocks for modern applications, including networking, math, and data serialization. This guide focuses on three critical areas: time management, logging, and file I/O.</p>
+
+    <!-- SECTION 1: TIME MANAGEMENT -->
+    <h2>1. Time Management</h2>
+    <p>The <code>time</code> package is the primary tool for representing moments in time and durations. It encapsulates everything required for dates and times, including time zone management and mathematical operations.</p>
+
+    <h3>Key Functions and Types</h3>
+    <ul>
+        <li><strong>time.Time:</strong> Represents a specific instant in time with nanosecond precision.</li>
+        <li><strong>time.Now():</strong> Returns the current local time.</li>
+        <li><strong>time.Duration:</strong> Represents the elapsed time between two instants as an <code>int64</code> value in nanoseconds.</li>
+    </ul>
+
+    <pre><code class="language-go">package main
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+    // 1. Getting current time
+    now := time.Now()
+    
+    // 2. Formatting (uses a unique reference time: Jan 2 15:04:05 MST 2006)
+    fmt.Println(now.Format("2006-01-02 15:04:05"))
+
+    // 3. Parsing strings into time
+    layout := "2006-Jan-02"
+    parsed, err := time.Parse(layout, "2023-Jun-09")
+    if err != nil {
+        panic(err)
+    }
+
+    // 4. Time arithmetic
+    future := now.Add(10 * time.Minute)
+    diff := future.Sub(now) // returns a Duration
+    fmt.Printf("Parsed: %s; Difference: %v\n", parsed.Format(time.DateOnly), diff)
+}</code></pre>
+
+    <!-- SECTION 2: LOGGING -->
+    <h2>2. Logging</h2>
+    <p>Logging is essential for troubleshooting and examining program behavior. Go offers two primary logging packages: the traditional <code>log</code> package and the newer structured <code>log/slog</code> package.</p>
+
+    <h3>The Standard log Package</h3>
+    <p>The <code>log</code> package sends messages to standard error by default and automatically includes a timestamp. It supports basic functions like <code>Print</code>, <code>Fatal</code> (which exits the program), and <code>Panic</code>.</p>
+
+    <pre><code class="language-go">import "log"
+
+func main() {
+    log.Println("Basic log message")
+    
+    // Customizing log output (e.g., adding line numbers)
+    log.SetFlags(log.LstdFlags | log.Lshortfile)
+}</code></pre>
+
+    <h3>Structured Logging with slog</h3>
+    <p>Introduced in Go 1.21, <code>log/slog</code> provides structured logs, often in JSON format, which are easier for automated tools to process.</p>
+
+    <pre><code class="language-go">import (
+    "log/slog"
+    "os"
+)
+
+func main() {
+    // Simple structured log
+    slog.Info("usage statistics", "user", "gopher", "attempts", 3)
+
+    // JSON output handler
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+    logger.Error("failed to connect", "retry", true)
+}</code></pre>
+
+    <!-- SECTION 3: BASIC FILE I/O -->
+    <h2>3. Basic File I/O</h2>
+    <p>File operations are primarily handled by the <code>os</code> package, while the <code>io</code> and <code>bufio</code> packages provide interfaces and buffering for efficient data transfer.</p>
+
+    <h3>Reading Files</h3>
+    <p>The simplest way to read a small file is <code>os.ReadFile</code>, which loads the entire content into memory. For larger files, use <code>os.Open</code> with a buffer or a scanner.</p>
+
+    <pre><code class="language-go">// 1. Quick read
+data, err := os.ReadFile("config.json")
+if err != nil {
+    return err
+}
+fmt.Println(string(data))
+
+// 2. Buffered read (line by line)
+file, err := os.Open("large.txt")
+if err != nil {
+    return err
+}
+defer file.Close()
+scanner := bufio.NewScanner(file)
+for scanner.Scan() {
+    fmt.Println(scanner.Text())
+}
+if err := scanner.Err(); err != nil {
+    return err
+}</code></pre>
+
+    <h3>Writing Files</h3>
+    <p><code>os.WriteFile</code> is used for one-shot writes, while <code>os.Create</code> or <code>os.OpenFile</code> (with flags like <code>os.O_APPEND</code>) allow for more control.</p>
+
+    <pre><code class="language-go">// 1. One-shot write
+err := os.WriteFile("output.txt", []byte("Hello Go"), 0644)
+
+// 2. Appending to a file
+f, err := os.OpenFile("log.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+if err != nil {
+    return err
+}
+defer f.Close()
+if _, err := f.WriteString("New log entry\n"); err != nil {
+    return err
+}</code></pre>
+
+    <div class="note">
+        <p><strong>Note:</strong> Always remember to call <code>Close()</code> on file descriptors to prevent resource leaks. Using the <code>defer</code> keyword is the idiomatic way to ensure a file closes when the function returns.</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="js/copy.js"></script>
+</body>
+</html>
