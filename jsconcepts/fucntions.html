@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Callbacks and Higher-Order Functions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i class="fa-brands fa-js"></i></span>
+        JS Concepts
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="callstack.html">Call Stack</a>
+        <a href="closures.html">Closures</a>
+        <a href="eventloop.html">Event Loop</a>
+        <a href="fucntions.html">Functions</a>
+        <a href="hoisting.html">Hoisting</a>
+        <a href="modules.html">Modules</a>
+        <a href="typecoercion.html">Type Coercion</a>
+      </div>
+    </nav>
+  </header>
+
+  <header>
+    <div class="wrap">
+      <h1>Callbacks and Higher-Order Functions</h1>
+      <p class="lead">
+        Callbacks and higher-order functions are two of the most important ideas in JavaScript.
+        They explain how event handlers, array methods, asynchronous code, React props, middleware,
+        and many web application patterns work.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <article>
+      <section id="big-picture">
+        <h2>1. Big Picture</h2>
+        <p>
+          In JavaScript, <strong>functions are values</strong>. This means a function can be stored in a variable,
+          passed into another function, returned from another function, placed inside an array, or used as an object property.
+        </p>
+
+        <pre><code>function greet(name) {
+  return `Hello, ${name}`;
+}
+
+const fn = greet;
+
+console.log(fn("Nobu")); // Hello, Nobu</code></pre>
+
+        <p class="note">
+          Because functions are values, JavaScript can use callbacks and higher-order functions naturally.
+        </p>
+      </section>
+
+      <section id="callbacks">
+        <h2>2. What is a Callback Function?</h2>
+        <p>
+          A <strong>callback</strong> is a function passed into another function so it can be called later.
+          The receiving function decides when to execute the callback.
+        </p>
+
+        <pre><code>function processUserInput(name, callback) {
+  const formattedName = name.trim().toUpperCase();
+  callback(formattedName);
+}
+
+function displayResult(value) {
+  console.log("Result:", value);
+}
+
+processUserInput("  nobu  ", displayResult);
+// Result: NOBU</code></pre>
+
+        <h3>What is happening?</h3>
+        <ol>
+          <li><code>displayResult</code> is passed into <code>processUserInput</code>.</li>
+          <li><code>processUserInput</code> cleans up the input.</li>
+          <li>Then it calls the callback with the cleaned value.</li>
+        </ol>
+
+        <p class="note good">
+          A callback lets one function say: “I will do the main work. You give me the custom behavior.”
+        </p>
+      </section>
+
+      <section id="higher-order">
+        <h2>3. What is a Higher-Order Function?</h2>
+        <p>
+          A <strong>higher-order function</strong> is a function that does at least one of these things:
+        </p>
+
+        <ul>
+          <li>Accepts another function as an argument</li>
+          <li>Returns another function</li>
+        </ul>
+
+        <h3>Example: accepts a function</h3>
+        <pre><code>function repeat(times, action) {
+  for (let i = 0; i &lt; times; i++) {
+    action(i);
+  }
+}
+
+repeat(3, function(index) {
+  console.log("Running", index);
+});</code></pre>
+
+        <h3>Example: returns a function</h3>
+        <pre><code>function createMultiplier(multiplier) {
+  return function(number) {
+    return number * multiplier;
+  };
+}
+
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+
+console.log(double(10)); // 20
+console.log(triple(10)); // 30</code></pre>
+
+        <p>
+          This second example also uses a <strong>closure</strong>. The returned function remembers the value of
+          <code>multiplier</code> even after <code>createMultiplier</code> has finished running.
+        </p>
+      </section>
+
+      <section id="array-methods">
+        <h2>4. Array Methods Use Callbacks</h2>
+        <p>
+          Many everyday JavaScript methods are higher-order functions because they accept callback functions.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Purpose</th>
+              <th>Callback Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>map</code></td>
+              <td>Transforms every item</td>
+              <td>How should each item be changed?</td>
+            </tr>
+            <tr>
+              <td><code>filter</code></td>
+              <td>Keeps selected items</td>
+              <td>Should this item stay?</td>
+            </tr>
+            <tr>
+              <td><code>reduce</code></td>
+              <td>Combines values into one result</td>
+              <td>How should the running result be updated?</td>
+            </tr>
+            <tr>
+              <td><code>forEach</code></td>
+              <td>Runs side effects</td>
+              <td>What should happen for each item?</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3><code>map</code></h3>
+        <pre><code>const prices = [10, 20, 30];
+
+const pricesWithTax = prices.map(function(price) {
+  return price * 1.08;
+});
+
+console.log(pricesWithTax); // [10.8, 21.6, 32.4]</code></pre>
+
+        <h3><code>filter</code></h3>
+        <pre><code>const users = [
+  { name: "Aki", active: true },
+  { name: "Ben", active: false },
+  { name: "Cara", active: true }
+];
+
+const activeUsers = users.filter(function(user) {
+  return user.active;
+});
+
+console.log(activeUsers);</code></pre>
+
+        <h3><code>reduce</code></h3>
+        <pre><code>const cart = [
+  { item: "Keyboard", price: 80 },
+  { item: "Mouse", price: 30 },
+  { item: "Monitor", price: 220 }
+];
+
+const total = cart.reduce(function(sum, product) {
+  return sum + product.price;
+}, 0);
+
+console.log(total); // 330</code></pre>
+      </section>
+
+      <section id="events">
+        <h2>5. Callbacks in Browser Events</h2>
+        <p>
+          Event listeners are one of the most common places where callbacks appear in web development.
+        </p>
+
+        <pre><code>const button = document.querySelector("#saveButton");
+
+button.addEventListener("click", function(event) {
+  console.log("Button clicked");
+  console.log(event.target);
+});</code></pre>
+
+        <p>
+          The function passed to <code>addEventListener</code> is a callback. The browser calls it later when the user clicks the button.
+        </p>
+
+        <h3>Important idea</h3>
+        <p>
+          You do not call the callback yourself. You give it to the browser, and the browser calls it when the event happens.
+        </p>
+
+        <pre><code>// Correct
+button.addEventListener("click", handleClick);
+
+// Incorrect if you want it to wait for the click
+button.addEventListener("click", handleClick());</code></pre>
+
+        <p class="note warn">
+          <code>handleClick</code> passes the function. <code>handleClick()</code> calls the function immediately.
+        </p>
+      </section>
+
+      <section id="async">
+        <h2>6. Callbacks and Asynchronous Code</h2>
+        <p>
+          JavaScript uses callbacks heavily for asynchronous work: timers, file operations, network requests, and user events.
+        </p>
+
+        <pre><code>console.log("Start");
+
+setTimeout(function() {
+  console.log("Timer finished");
+}, 1000);
+
+console.log("End");</code></pre>
+
+        <p>Output:</p>
+        <pre><code>Start
+End
+Timer finished</code></pre>
+
+        <p>
+          The callback passed to <code>setTimeout</code> runs later. JavaScript does not stop and wait for it.
+          This is closely related to the event loop.
+        </p>
+
+        <h3>Modern replacement: Promises and async/await</h3>
+        <p>
+          Older JavaScript often used deeply nested callbacks. Modern JavaScript usually uses Promises and <code>async</code>/<code>await</code>,
+          but callbacks are still everywhere underneath.
+        </p>
+
+        <pre><code>// Callback style
+loadUser(function(user) {
+  loadOrders(user.id, function(orders) {
+    console.log(orders);
+  });
+});
+
+// Promise / async style
+const user = await loadUser();
+const orders = await loadOrders(user.id);
+console.log(orders);</code></pre>
+      </section>
+
+      <section id="web-apps">
+        <h2>7. How This Applies to Web App Development</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Forms</h3>
+            <p>Callbacks validate input, submit forms, display errors, and update the UI.</p>
+            <pre><code>form.addEventListener("submit", handleSubmit);</code></pre>
+          </div>
+
+          <div class="card">
+            <h3>Search Boxes</h3>
+            <p>Callbacks run when users type. They are often combined with debounce.</p>
+            <pre><code>searchInput.addEventListener("input", handleSearch);</code></pre>
+          </div>
+
+          <div class="card">
+            <h3>React Props</h3>
+            <p>React components often receive callback functions from parent components.</p>
+            <pre><code>&lt;SaveButton onSave={saveUser} /&gt;</code></pre>
+          </div>
+
+          <div class="card">
+            <h3>Data Processing</h3>
+            <p>Higher-order array methods transform API data before rendering it.</p>
+            <pre><code>users.filter(isActive).map(toUserCard);</code></pre>
+          </div>
+        </div>
+
+        <h3>Realistic Web App Example</h3>
+        <pre><code>const products = [
+  { name: "Laptop", price: 1200, inStock: true },
+  { name: "Mouse", price: 30, inStock: true },
+  { name: "Monitor", price: 250, inStock: false }
+];
+
+function isAvailable(product) {
+  return product.inStock;
+}
+
+function toListItem(product) {
+  return `&lt;li&gt;${product.name} - $${product.price}&lt;/li&gt;`;
+}
+
+const html = products
+  .filter(isAvailable)
+  .map(toListItem)
+  .join("");
+
+document.querySelector("#productList").innerHTML = html;</code></pre>
+
+        <p>
+          In this example, <code>filter</code> and <code>map</code> are higher-order functions.
+          <code>isAvailable</code> and <code>toListItem</code> are callbacks.
+        </p>
+      </section>
+
+      <section id="mistakes">
+        <h2>8. Common Mistakes</h2>
+
+        <h3>Mistake 1: Calling the function too early</h3>
+        <pre><code>// Wrong
+button.addEventListener("click", saveUser());
+
+// Right
+button.addEventListener("click", saveUser);</code></pre>
+
+        <h3>Mistake 2: Making callbacks too large</h3>
+        <pre><code>// Hard to read
+users.filter(function(user) {
+  return user.active &amp;&amp; user.role === "admin" &amp;&amp; user.lastLoginDays &lt; 30;
+});
+
+// Easier to read
+function isRecentActiveAdmin(user) {
+  return user.active &amp;&amp; user.role === "admin" &amp;&amp; user.lastLoginDays &lt; 30;
+}
+
+users.filter(isRecentActiveAdmin);</code></pre>
+
+        <h3>Mistake 3: Ignoring return values</h3>
+        <pre><code>const numbers = [1, 2, 3];
+
+// Wrong: map expects a returned value
+const doubled = numbers.map(function(n) {
+  n * 2;
+});
+
+console.log(doubled); // [undefined, undefined, undefined]
+
+// Right
+const fixed = numbers.map(function(n) {
+  return n * 2;
+});</code></pre>
+      </section>
+
+      <section id="best-practices">
+        <h2>9. Best Practices</h2>
+        <ul>
+          <li>Use named callback functions when the logic is important or reused.</li>
+          <li>Use short arrow functions for simple transformations.</li>
+          <li>Keep callbacks small and focused.</li>
+          <li>Prefer <code>map</code>, <code>filter</code>, and <code>reduce</code> for data transformations.</li>
+          <li>Use <code>forEach</code> when you intentionally want side effects.</li>
+          <li>Do not call a callback when passing it to an event listener.</li>
+          <li>Use Promises or <code>async</code>/<code>await</code> instead of deeply nested asynchronous callbacks.</li>
+        </ul>
+      </section>
+
+      <section id="exercises">
+        <h2>10. Exercises</h2>
+
+        <h3>Exercise 1</h3>
+        <p>Write a higher-order function named <code>runTwice</code> that accepts a callback and runs it two times.</p>
+
+        <pre><code>function runTwice(callback) {
+  // your code here
+}</code></pre>
+
+        <h3>Exercise 2</h3>
+        <p>Given an array of prices, use <code>map</code> to add 8% tax to each price.</p>
+
+        <pre><code>const prices = [20, 50, 100];</code></pre>
+
+        <h3>Exercise 3</h3>
+        <p>Given an array of users, use <code>filter</code> to keep only active users.</p>
+
+        <pre><code>const users = [
+  { name: "Aki", active: true },
+  { name: "Ben", active: false },
+  { name: "Cara", active: true }
+];</code></pre>
+
+        <h3>Mini Project</h3>
+        <p>
+          Build a small product list page. Use <code>filter</code> to show only in-stock products,
+          <code>map</code> to create HTML, and an event callback to update the page when a checkbox is clicked.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer">
+    JavaScript Learning Site · Callbacks and Higher-Order Functions
+  </footer>
+  <script src="js/code.js"></script>
+</body>
+</html>

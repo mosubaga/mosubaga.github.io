@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Hoisting Explained</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i class="fa-brands fa-js"></i></span>
+        JS Concepts
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="callstack.html">Call Stack</a>
+        <a href="closures.html">Closures</a>
+        <a href="eventloop.html">Event Loop</a>
+        <a href="fucntions.html">Functions</a>
+        <a href="hoisting.html">Hoisting</a>
+        <a href="modules.html">Modules</a>
+        <a href="typecoercion.html">Type Coercion</a>
+      </div>
+    </nav>
+  </header>
+
+  <header>
+    <h1>Hoisting in JavaScript</h1>
+    <p>Hoisting explains why some variables and functions can be referenced before their declarations appear in the source code. It is really about how JavaScript prepares memory before running your code.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>What is Hoisting?</h2>
+      <p><strong>Hoisting is JavaScript's behavior of processing declarations before executing the code.</strong></p>
+      <p>Before the first line of your program runs, the JavaScript engine scans the current scope and creates memory for variables and functions.</p>
+      <div class="phase-grid">
+        <div class="card">
+          <h3>1. Creation Phase</h3>
+          <ul>
+            <li>Create the execution context</li>
+            <li>Allocate memory</li>
+            <li>Register variable declarations</li>
+            <li>Register function declarations</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>2. Execution Phase</h3>
+          <ul>
+            <li>Execute code line by line</li>
+            <li>Assign values</li>
+            <li>Call functions</li>
+            <li>Update memory</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout">
+        JavaScript does not literally move your code to the top. The engine prepares declarations before execution begins.
+      </div>
+    </section>
+
+    <section>
+      <h2>Example 1: <code>var</code></h2>
+      <pre><code>console.log(user);
+
+var user = "John";</code></pre>
+      <p>Output:</p>
+      <pre><code>undefined</code></pre>
+      <p>JavaScript behaves as if the declaration was known first, while the assignment stays in place.</p>
+      <pre><code>var user;
+
+console.log(user);
+
+user = "John";</code></pre>
+      <p>The declaration is hoisted. The assignment is not.</p>
+    </section>
+
+    <section>
+      <h2>Example 2: Function Declarations</h2>
+      <pre><code>greet();
+
+function greet() {
+  console.log("Hello");
+}</code></pre>
+      <p>Output:</p>
+      <pre><code>Hello</code></pre>
+      <p>Function declarations are fully available during the creation phase, so they can be called before they appear in the file.</p>
+    </section>
+
+    <section>
+      <h2>Example 3: Function Expressions</h2>
+      <pre><code>greet();
+
+const greet = function () {
+  console.log("Hello");
+};</code></pre>
+      <p>This causes a <code>ReferenceError</code> because <code>greet</code> is declared with <code>const</code>. The variable exists, but it cannot be accessed before initialization.</p>
+    </section>
+
+    <section>
+      <h2><code>var</code>, <code>let</code>, and <code>const</code></h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Keyword</th>
+            <th>Hoisted?</th>
+            <th>Initial Value Before Declaration?</th>
+            <th>Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>var</code></td>
+            <td>Yes</td>
+            <td><code>undefined</code></td>
+            <td>Can be read before assignment, but the value is <code>undefined</code>.</td>
+          </tr>
+          <tr>
+            <td><code>let</code></td>
+            <td>Yes</td>
+            <td>Uninitialized</td>
+            <td>Cannot be accessed before declaration because of the Temporal Dead Zone.</td>
+          </tr>
+          <tr>
+            <td><code>const</code></td>
+            <td>Yes</td>
+            <td>Uninitialized</td>
+            <td>Same as <code>let</code>, but reassignment is also not allowed.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3><code>let</code> and the Temporal Dead Zone</h3>
+      <pre><code>console.log(a);
+
+let a = 10;</code></pre>
+      <p>Output:</p>
+      <pre><code>ReferenceError: Cannot access 'a' before initialization</code></pre>
+      <p><code>let</code> and <code>const</code> are hoisted, but they remain unavailable until execution reaches the declaration line.</p>
+    </section>
+
+    <section>
+      <h2>Visualizing Hoisting</h2>
+      <pre><code>console.log(user);
+
+var user = "John";
+
+greet();
+
+function greet() {
+  console.log("Hi");
+}</code></pre>
+
+      <h3>Creation Phase</h3>
+      <pre><code>Memory
+
+user  → undefined
+greet → function greet() { ... }</code></pre>
+
+      <h3>Execution Phase</h3>
+      <pre><code>console.log(user); // undefined
+user = "John";
+greet();           // Hi</code></pre>
+    </section>
+
+    <section>
+      <h2>Why JavaScript Has Hoisting</h2>
+      <p>Hoisting allows functions to be called before their definitions appear in the source file. This can make application startup code easier to read.</p>
+      <pre><code>initializeApp();
+
+function initializeApp() {
+  loadConfiguration();
+  attachEvents();
+  renderUI();
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>How Hoisting Applies to Web App Development</h2>
+
+      <h3>1. Application Startup</h3>
+      <pre><code>initialize();
+
+function initialize() {
+  loadConfig();
+  attachEvents();
+  startApplication();
+}</code></pre>
+      <p>This works because <code>initialize</code> is a function declaration.</p>
+
+      <h3>2. Event Handlers</h3>
+      <pre><code>button.addEventListener("click", saveUser);
+
+function saveUser() {
+  console.log("Saved");
+}</code></pre>
+      <p>The event handler can be registered before its function declaration appears.</p>
+
+      <h3>3. Modules</h3>
+      <pre><code>// app.js
+import { login } from "./auth.js";
+
+login();</code></pre>
+      <pre><code>// auth.js
+export function login() {
+  console.log("Logging in...");
+}</code></pre>
+      <p>Modern apps use ES modules. Inside each module, declarations still follow JavaScript's hoisting behavior within that module scope.</p>
+
+      <h3>4. React Components</h3>
+      <pre><code>function App() {
+  function login() {
+    console.log("Login");
+  }
+
+  return (
+    &lt;button onClick={login}&gt;
+      Login
+    &lt;/button&gt;
+  );
+}</code></pre>
+      <p>This works because <code>login</code> is a function declaration inside the component.</p>
+
+      <pre><code>function App() {
+  return (
+    &lt;button onClick={login}&gt;
+      Login
+    &lt;/button&gt;
+  );
+
+  const login = () =&gt; {
+    console.log("Login");
+  };
+}</code></pre>
+      <p>This version fails because <code>login</code> is a <code>const</code> function expression and cannot be used before initialization.</p>
+    </section>
+
+    <section>
+      <h2>Common Mistakes</h2>
+      <h3>Mistake 1: Assuming <code>undefined</code> means not declared</h3>
+      <pre><code>console.log(a);
+
+var a = 5;</code></pre>
+      <p>The variable is declared, but it has not been assigned yet.</p>
+
+      <h3>Mistake 2: Thinking <code>let</code> is not hoisted</h3>
+      <p><code>let</code> and <code>const</code> are hoisted, but they cannot be accessed before initialization.</p>
+
+      <h3>Mistake 3: Mixing <code>var</code> and <code>let</code></h3>
+      <pre><code>var count = 5;
+
+if (true) {
+  let count = 10;
+}</code></pre>
+      <p>Different scoping rules can create subtle bugs.</p>
+    </section>
+
+    <section>
+      <h2>Best Practices</h2>
+      <ul>
+        <li>Prefer <code>const</code> by default.</li>
+        <li>Use <code>let</code> only when reassignment is needed.</li>
+        <li>Avoid <code>var</code> in new code.</li>
+        <li>Declare variables near their first use.</li>
+        <li>Use function declarations when you intentionally want callable functions throughout the scope.</li>
+        <li>Use function expressions when you want initialization order to be explicit.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Interview Questions</h2>
+      <h3>Question 1</h3>
+      <pre><code>console.log(x);
+
+var x = 10;</code></pre>
+      <p><strong>Answer:</strong> It prints <code>undefined</code> because <code>var</code> is hoisted and initialized to <code>undefined</code>.</p>
+
+      <h3>Question 2</h3>
+      <pre><code>console.log(x);
+
+let x = 10;</code></pre>
+      <p><strong>Answer:</strong> It throws a <code>ReferenceError</code> because <code>x</code> is in the Temporal Dead Zone.</p>
+
+      <h3>Question 3</h3>
+      <pre><code>function foo() {}
+
+const bar = function () {};</code></pre>
+      <p><strong>Answer:</strong> <code>foo</code> can be called before its declaration. <code>bar</code> cannot be called before initialization.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    JavaScript Concepts Learning Page — Hoisting
+  </footer>
+  <script src="js/code.js"></script>
+</body>
+</html>

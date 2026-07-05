@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Type Coercion in JavaScript</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i class="fa-brands fa-js"></i></span>
+        JS Concepts
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="callstack.html">Call Stack</a>
+        <a href="closures.html">Closures</a>
+        <a href="eventloop.html">Event Loop</a>
+        <a href="fucntions.html">Functions</a>
+        <a href="hoisting.html">Hoisting</a>
+        <a href="modules.html">Modules</a>
+        <a href="typecoercion.html">Type Coercion</a>
+      </div>
+    </nav>
+  </header>
+
+  <header>
+    <h1>Type Coercion in JavaScript</h1>
+    <p>
+      Type coercion is JavaScript's automatic conversion of a value from one type to another. It is powerful, convenient, and sometimes surprising. Understanding it helps you avoid bugs in forms, APIs, conditionals, comparisons, and arithmetic.
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <h2>What is Type Coercion?</h2>
+      <p class="lead">
+        <strong>Type coercion</strong> happens when JavaScript automatically converts a value from one data type into another type so an operation can continue.
+      </p>
+
+      <pre><code>console.log("5" + 2);  // "52"
+console.log("5" - 2);  // 3
+console.log(5 == "5"); // true
+console.log(5 === "5"); // false</code></pre>
+
+      <p>
+        These results happen because JavaScript tries to make sense of the operation. With <code>+</code>, JavaScript often prefers string concatenation when a string is involved. With <code>-</code>, JavaScript expects numbers, so it converts <code>"5"</code> into <code>5</code>.
+      </p>
+
+      <div class="warning">
+        The key idea: JavaScript does not always throw an error when types do not match. Instead, it often converts values automatically.
+      </div>
+    </section>
+
+    <section>
+      <h2>Two Kinds of Conversion</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Explicit Conversion</h3>
+          <p>You intentionally convert a value yourself.</p>
+          <pre><code>const ageInput = "42";
+const age = Number(ageInput);
+
+console.log(age); // 42</code></pre>
+        </div>
+
+        <div class="card">
+          <h3>Implicit Conversion</h3>
+          <p>JavaScript converts a value automatically during an operation.</p>
+          <pre><code>console.log("42" * 2); // 84
+console.log(true + 1); // 2</code></pre>
+        </div>
+      </div>
+
+      <p>
+        In application development, explicit conversion is usually safer because it makes your intention clear to other developers and prevents hidden bugs.
+      </p>
+    </section>
+
+    <section>
+      <h2>String Coercion</h2>
+      <p>
+        String coercion happens when JavaScript converts a value into a string. This often happens with the <code>+</code> operator when one side is already a string.
+      </p>
+
+      <pre><code>console.log("User ID: " + 123);     // "User ID: 123"
+console.log("Total: " + true);      // "Total: true"
+console.log("Value: " + null);      // "Value: null"
+console.log("Items: " + [1, 2, 3]); // "Items: 1,2,3"</code></pre>
+
+      <h3>Applied to Web Apps</h3>
+      <p>
+        String coercion is useful when building UI messages, labels, logs, or simple text output. However, template literals are usually cleaner.
+      </p>
+
+      <pre><code>const count = 3;
+const message = `You have ${count} items in your cart.`;
+
+console.log(message);</code></pre>
+    </section>
+
+    <section>
+      <h2>Numeric Coercion</h2>
+      <p>
+        Numeric coercion happens when JavaScript converts values into numbers. This often happens with arithmetic operators such as <code>-</code>, <code>*</code>, <code>/</code>, and comparison operators.
+      </p>
+
+      <pre><code>console.log("10" - 3); // 7
+console.log("10" * 3); // 30
+console.log("10" / 2); // 5
+console.log(true + 1); // 2
+console.log(false + 1); // 1
+console.log(null + 1); // 1
+console.log(undefined + 1); // NaN</code></pre>
+
+      <h3>Common Conversions</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Value</th>
+            <th>Number Conversion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>Number("42")</code></td><td><code>42</code></td></tr>
+          <tr><td><code>Number("")</code></td><td><code>0</code></td></tr>
+          <tr><td><code>Number("hello")</code></td><td><code>NaN</code></td></tr>
+          <tr><td><code>Number(true)</code></td><td><code>1</code></td></tr>
+          <tr><td><code>Number(false)</code></td><td><code>0</code></td></tr>
+          <tr><td><code>Number(null)</code></td><td><code>0</code></td></tr>
+          <tr><td><code>Number(undefined)</code></td><td><code>NaN</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Applied to Web Forms</h3>
+      <p>
+        HTML form inputs usually return strings, even when the input type is <code>number</code>. This is one of the most common places where coercion causes bugs.
+      </p>
+
+      <pre><code>const priceInput = "100";
+const quantityInput = "2";
+
+console.log(priceInput + quantityInput); // "1002" - wrong for math
+
+const price = Number(priceInput);
+const quantity = Number(quantityInput);
+
+console.log(price + quantity); // 102</code></pre>
+
+      <div class="good">
+        In real apps, convert form values explicitly before doing math, saving to a database, or sending data to an API.
+      </div>
+    </section>
+
+    <section>
+      <h2>Boolean Coercion</h2>
+      <p>
+        Boolean coercion happens when JavaScript evaluates a value in a condition such as <code>if</code>, <code>while</code>, <code>&&</code>, <code>||</code>, or <code>!</code>.
+      </p>
+
+      <pre><code>if ("hello") {
+  console.log("This runs");
+}
+
+if ("") {
+  console.log("This does not run");
+}</code></pre>
+
+      <h3>Falsy Values</h3>
+      <p>These values become <code>false</code> in a Boolean context:</p>
+
+      <pre><code>false
+0
+-0
+0n
+""
+null
+undefined
+NaN</code></pre>
+
+      <p>Almost everything else is truthy, including empty arrays and empty objects.</p>
+
+      <pre><code>console.log(Boolean([])); // true
+console.log(Boolean({})); // true
+console.log(Boolean("0")); // true
+console.log(Boolean("false")); // true</code></pre>
+
+      <h3>Applied to Authentication UI</h3>
+      <pre><code>const user = { name: "Ada" };
+
+if (user) {
+  showDashboard();
+} else {
+  showLoginPage();
+}</code></pre>
+
+      <p>
+        This works because objects are truthy. But be careful: an empty object is also truthy, so this does not prove that the object contains valid user data.
+      </p>
+    </section>
+
+    <section>
+      <h2><code>==</code> vs <code>===</code></h2>
+      <p>
+        The loose equality operator <code>==</code> allows type coercion. The strict equality operator <code>===</code> compares both value and type.
+      </p>
+
+      <pre><code>console.log(5 == "5");   // true
+console.log(5 === "5");  // false
+
+console.log(false == 0);  // true
+console.log(false === 0); // false
+
+console.log(null == undefined);  // true
+console.log(null === undefined); // false</code></pre>
+
+      <div class="danger">
+        In application code, prefer <code>===</code> and <code>!==</code>. Loose equality can hide bugs because JavaScript silently converts values before comparison.
+      </div>
+
+      <h3>Real Web App Example</h3>
+      <pre><code>const userIdFromUrl = "7";
+const userIdFromApi = 7;
+
+console.log(userIdFromUrl == userIdFromApi);  // true
+console.log(userIdFromUrl === userIdFromApi); // false</code></pre>
+
+      <p>
+        A better approach is to convert once, then compare strictly.
+      </p>
+
+      <pre><code>const userIdFromUrl = Number("7");
+const userIdFromApi = 7;
+
+console.log(userIdFromUrl === userIdFromApi); // true</code></pre>
+    </section>
+
+    <section>
+      <h2>The Special Case of <code>+</code></h2>
+      <p>
+        The <code>+</code> operator is special because it can mean numeric addition or string concatenation.
+      </p>
+
+      <pre><code>console.log(1 + 2);       // 3
+console.log("1" + 2);     // "12"
+console.log(1 + "2");     // "12"
+console.log("1" + 2 + 3); // "123"
+console.log(1 + 2 + "3"); // "33"</code></pre>
+
+      <p>
+        JavaScript evaluates from left to right. Once a string is involved, <code>+</code> often becomes concatenation.
+      </p>
+
+      <h3>Application Bug Example</h3>
+      <pre><code>const subtotal = "50";
+const tax = "5";
+
+const total = subtotal + tax;
+
+console.log(total); // "505", not 55</code></pre>
+
+      <p>Correct version:</p>
+
+      <pre><code>const subtotal = Number("50");
+const tax = Number("5");
+
+const total = subtotal + tax;
+
+console.log(total); // 55</code></pre>
+    </section>
+
+    <section>
+      <h2>Objects, Arrays, and Coercion</h2>
+      <p>
+        Objects and arrays can also be coerced. This is where JavaScript can become very surprising.
+      </p>
+
+      <pre><code>console.log([1, 2] + [3, 4]); // "1,23,4"
+console.log([] + 1);          // "1"
+console.log({} + "hello");    // "[object Object]hello"</code></pre>
+
+      <p>
+        When JavaScript needs a primitive value from an object, it tries conversion methods such as <code>valueOf()</code> and <code>toString()</code>.
+      </p>
+
+      <pre><code>const product = {
+  name: "Keyboard",
+  price: 80,
+  toString() {
+    return this.name;
+  },
+  valueOf() {
+    return this.price;
+  }
+};
+
+console.log(String(product)); // "Keyboard"
+console.log(Number(product)); // 80</code></pre>
+
+      <div class="warning">
+        In normal app development, avoid depending on object coercion unless you have a very specific reason. It can make code hard to read.
+      </div>
+    </section>
+
+    <section>
+      <h2>How Type Coercion Applies to App Development</h2>
+
+      <h3>1. Form Input Validation</h3>
+      <p>
+        User input is often a string. Convert it before validation or calculation.
+      </p>
+
+      <pre><code>function validateAge(value) {
+  const age = Number(value);
+
+  if (Number.isNaN(age)) {
+    return "Age must be a number.";
+  }
+
+  if (age < 18) {
+    return "You must be at least 18.";
+  }
+
+  return "Valid";
+}</code></pre>
+
+      <h3>2. API Data Handling</h3>
+      <p>
+        APIs sometimes send numeric-looking values as strings. Normalize your data at the boundary of your app.
+      </p>
+
+      <pre><code>const apiUser = {
+  id: "101",
+  active: "true",
+  balance: "245.50"
+};
+
+const user = {
+  id: Number(apiUser.id),
+  active: apiUser.active === "true",
+  balance: Number(apiUser.balance)
+};</code></pre>
+
+      <h3>3. Conditional Rendering</h3>
+      <p>
+        In frameworks like React, truthy and falsy values are often used to decide what appears on the page.
+      </p>
+
+      <pre><code>const items = [];
+
+if (items.length) {
+  renderCart(items);
+} else {
+  renderEmptyCartMessage();
+}</code></pre>
+
+      <p>
+        Here, <code>items.length</code> is <code>0</code>, which is falsy. This is a useful and common pattern.
+      </p>
+
+      <h3>4. Query Parameters</h3>
+      <p>
+        Values from URLs are strings. Convert them before using them as numbers or booleans.
+      </p>
+
+      <pre><code>const params = new URLSearchParams(window.location.search);
+
+const page = Number(params.get("page") ?? "1");
+const showArchived = params.get("archived") === "true";</code></pre>
+    </section>
+
+    <section>
+      <h2>Common Mistakes</h2>
+
+      <h3>Mistake 1: Adding Strings Instead of Numbers</h3>
+      <pre><code>const a = "10";
+const b = "20";
+
+console.log(a + b); // "1020"</code></pre>
+
+      <h3>Mistake 2: Using <code>==</code> Without Thinking</h3>
+      <pre><code>console.log(0 == false); // true
+console.log("" == false); // true
+console.log([] == false); // true</code></pre>
+
+      <h3>Mistake 3: Assuming Empty Objects Are Falsy</h3>
+      <pre><code>if ({}) {
+  console.log("This runs");
+}</code></pre>
+
+      <h3>Mistake 4: Forgetting That <code>NaN</code> Is Special</h3>
+      <pre><code>console.log(NaN === NaN); // false
+console.log(Number.isNaN(NaN)); // true</code></pre>
+    </section>
+
+    <section>
+      <h2>Best Practices</h2>
+      <ul>
+        <li>Use <code>===</code> and <code>!==</code> instead of <code>==</code> and <code>!=</code>.</li>
+        <li>Convert user input explicitly with <code>Number()</code>, <code>String()</code>, or <code>Boolean()</code>.</li>
+        <li>Validate converted numbers with <code>Number.isNaN()</code>.</li>
+        <li>Normalize API data when it enters your application.</li>
+        <li>Be careful with <code>+</code> because it can perform addition or string concatenation.</li>
+        <li>Use descriptive conversion code instead of relying on clever implicit coercion.</li>
+      </ul>
+
+      <pre><code>// Clear
+const price = Number(priceInput.value);
+
+// Less clear
+const price = +priceInput.value;</code></pre>
+    </section>
+
+    <section>
+      <h2>Interview Questions</h2>
+
+      <h3>Q1. What is the output?</h3>
+      <pre><code>console.log("5" + 1);
+console.log("5" - 1);</code></pre>
+      <p>
+        Answer: <code>"51"</code> and <code>4</code>. The first uses string concatenation. The second converts <code>"5"</code> to a number.
+      </p>
+
+      <h3>Q2. Why is this false?</h3>
+      <pre><code>console.log(0 === false);</code></pre>
+      <p>
+        Answer: <code>===</code> does not perform type coercion. <code>0</code> is a number and <code>false</code> is a boolean.
+      </p>
+
+      <h3>Q3. Why does this return true?</h3>
+      <pre><code>console.log(null == undefined);</code></pre>
+      <p>
+        Answer: Loose equality treats <code>null</code> and <code>undefined</code> as equal. However, <code>null === undefined</code> is false.
+      </p>
+    </section>
+
+    <section>
+      <h2>Exercises</h2>
+      <ol>
+        <li>Write a function that accepts two form input values and returns their numeric sum.</li>
+        <li>Write a function that checks whether a query parameter named <code>debug</code> is exactly <code>"true"</code>.</li>
+        <li>Predict the output of <code>"10" + 5 * 2</code>.</li>
+        <li>Explain why <code>Boolean([])</code> is true.</li>
+        <li>Refactor a piece of code that uses <code>==</code> into code that uses explicit conversion and <code>===</code>.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Mini Project: Checkout Calculator</h2>
+      <p>
+        Build a small checkout calculator that reads string values from input fields, converts them to numbers, validates them, and displays a total.
+      </p>
+
+      <pre><code>function calculateTotal(priceValue, quantityValue) {
+  const price = Number(priceValue);
+  const quantity = Number(quantityValue);
+
+  if (Number.isNaN(price) || Number.isNaN(quantity)) {
+    return "Please enter valid numbers.";
+  }
+
+  return price * quantity;
+}
+
+console.log(calculateTotal("19.99", "3")); // 59.97</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Type Coercion in JavaScript — part of the JavaScript Concepts learning series.
+  </footer>
+  <script src="js/code.js"></script>
+</body>
+</html>

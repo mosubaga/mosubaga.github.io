@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Call Stack Explained</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i class="fa-brands fa-js"></i></span>
+        JS Concepts
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="callstack.html">Call Stack</a>
+        <a href="closures.html">Closures</a>
+        <a href="eventloop.html">Event Loop</a>
+        <a href="fucntions.html">Functions</a>
+        <a href="hoisting.html">Hoisting</a>
+        <a href="modules.html">Modules</a>
+        <a href="typecoercion.html">Type Coercion</a>
+      </div>
+    </nav>
+  </header>
+
+  <header>
+    <div class="wrap">
+      <h1>Call Stack in JavaScript</h1>
+      <p>
+        The call stack is the mechanism JavaScript uses to remember where it is in your program.
+        It tracks which function is currently running, which function called it, and where execution
+        should return when a function finishes.
+      </p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="summary-grid">
+      <div class="card">
+        <h3>Core Idea</h3>
+        <p>The call stack stores function calls in a last-in, first-out structure.</p>
+      </div>
+      <div class="card">
+        <h3>Why It Matters</h3>
+        <p>It explains execution order, debugging stack traces, recursion, and stack overflow errors.</p>
+      </div>
+      <div class="card">
+        <h3>Web App Use</h3>
+        <p>It helps you understand event handlers, rendering logic, API callbacks, and async behavior.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>What is the Call Stack?</h2>
+      <p>
+        JavaScript is single-threaded in the sense that one main piece of JavaScript code executes at a time.
+        When a function is called, JavaScript places that function call on the <strong>call stack</strong>.
+        When the function finishes, JavaScript removes it from the stack and continues with the previous function.
+      </p>
+
+      <div class="note">
+        The call stack does not store all your application data. It stores the active execution path:
+        which functions are currently running and where JavaScript should return next.
+      </div>
+    </section>
+
+    <section>
+      <h2>Simple Example</h2>
+      <pre><code>function first() {
+  console.log("First function");
+  second();
+}
+
+function second() {
+  console.log("Second function");
+  third();
+}
+
+function third() {
+  console.log("Third function");
+}
+
+first();</code></pre>
+
+      <p>The output is:</p>
+      <pre><code>First function
+Second function
+Third function</code></pre>
+
+      <p>Here is what happens internally:</p>
+
+      <div class="stack-box">1. Program starts
+
+Call Stack:
+[ global execution context ]</div>
+
+      <div class="stack-box">2. first() is called
+
+Call Stack:
+[ first ]
+[ global execution context ]</div>
+
+      <div class="stack-box">3. second() is called inside first()
+
+Call Stack:
+[ second ]
+[ first  ]
+[ global execution context ]</div>
+
+      <div class="stack-box">4. third() is called inside second()
+
+Call Stack:
+[ third  ]
+[ second ]
+[ first  ]
+[ global execution context ]</div>
+
+      <div class="stack-box">5. third() finishes, then second(), then first()
+
+Call Stack eventually becomes:
+[ global execution context ]</div>
+    </section>
+
+    <section>
+      <h2>Last In, First Out</h2>
+      <p>
+        The call stack works like a stack of plates. The last plate placed on top is the first plate removed.
+        In JavaScript, the last function called is the first function that must finish.
+      </p>
+
+      <pre><code>function app() {
+  login();
+}
+
+function login() {
+  validateForm();
+}
+
+function validateForm() {
+  console.log("Checking form...");
+}
+
+app();</code></pre>
+
+      <p>The stack grows like this:</p>
+      <div class="stack-box">validateForm()
+login()
+app()
+global</div>
+
+      <p>Then it unwinds in reverse:</p>
+      <div class="stack-box">validateForm() finishes
+login() finishes
+app() finishes</div>
+    </section>
+
+    <section>
+      <h2>Call Stack and Execution Context</h2>
+      <p>
+        Every time JavaScript calls a function, it creates a new <strong>execution context</strong> for that function.
+        This context contains information such as local variables, parameters, and where the function should return.
+      </p>
+
+      <pre><code>function calculateTotal(price, quantity) {
+  const subtotal = price * quantity;
+  return subtotal;
+}
+
+const total = calculateTotal(20, 3);
+console.log(total);</code></pre>
+
+      <p>When <code>calculateTotal(20, 3)</code> runs, JavaScript creates a function execution context containing:</p>
+      <ul>
+        <li><code>price = 20</code></li>
+        <li><code>quantity = 3</code></li>
+        <li><code>subtotal = 60</code></li>
+      </ul>
+
+      <p>After the function returns, that execution context is removed from the call stack.</p>
+    </section>
+
+    <section>
+      <h2>Why the Call Stack Matters in Web Apps</h2>
+      <p>
+        In web applications, JavaScript constantly responds to user actions: button clicks, form submissions,
+        key presses, page loads, route changes, API responses, and timers. Each handler runs through the call stack.
+      </p>
+
+      <h3>Example: Button Click</h3>
+      <pre><code>const button = document.querySelector("#saveButton");
+
+button.addEventListener("click", function handleClick() {
+  validateForm();
+  saveUser();
+  showMessage();
+});
+
+function validateForm() {
+  console.log("Validating...");
+}
+
+function saveUser() {
+  console.log("Saving...");
+}
+
+function showMessage() {
+  console.log("Saved!");
+}</code></pre>
+
+      <p>When the user clicks the button, the browser sends the click callback to JavaScript. Then the call stack looks like this while <code>validateForm()</code> is running:</p>
+
+      <div class="stack-box">validateForm()
+handleClick()
+global/browser event dispatch</div>
+
+      <p>
+        The event handler must finish before the browser can continue with the next task, such as another click,
+        a timer callback, or a repaint.
+      </p>
+    </section>
+
+    <section>
+      <h2>Blocking the Call Stack</h2>
+      <p>
+        If you run a long synchronous operation, it blocks the call stack. While the stack is blocked,
+        the browser cannot respond smoothly to user input or repaint the page.
+      </p>
+
+      <pre><code>button.addEventListener("click", () =&gt; {
+  for (let i = 0; i &lt; 5_000_000_000; i++) {
+    // Long synchronous work
+  }
+
+  console.log("Finished");
+});</code></pre>
+
+      <p>
+        In a real web app, this can freeze the UI. Buttons may not respond, animations may stop,
+        and the page may feel broken.
+      </p>
+
+      <h3>Better Approach</h3>
+      <p>Break heavy work into smaller chunks or move it away from the main thread.</p>
+
+      <pre><code>// Break work into smaller chunks
+function processItems(items, index = 0) {
+  const chunkSize = 100;
+  const end = Math.min(index + chunkSize, items.length);
+
+  for (let i = index; i &lt; end; i++) {
+    processItem(items[i]);
+  }
+
+  if (end &lt; items.length) {
+    setTimeout(() =&gt; processItems(items, end), 0);
+  }
+}</code></pre>
+
+      <p>
+        For very heavy work, consider a Web Worker so the main browser thread remains responsive.
+      </p>
+    </section>
+
+    <section>
+      <h2>Call Stack and the Event Loop</h2>
+      <p>
+        The call stack works closely with the event loop. The event loop checks whether the call stack is empty.
+        When the stack is empty, JavaScript can take the next callback from a queue and execute it.
+      </p>
+
+      <pre><code>console.log("A");
+
+setTimeout(() =&gt; {
+  console.log("B");
+}, 0);
+
+console.log("C");</code></pre>
+
+      <p>The output is:</p>
+      <pre><code>A
+C
+B</code></pre>
+
+      <p>
+        Even though the timer delay is <code>0</code>, the callback cannot run until the current call stack is empty.
+        First JavaScript runs the synchronous code, then the timer callback is allowed to run.
+      </p>
+    </section>
+
+    <section>
+      <h2>Stack Traces and Debugging</h2>
+      <p>
+        When an error occurs, JavaScript often shows a <strong>stack trace</strong>. A stack trace tells you which functions
+        were called before the error happened.
+      </p>
+
+      <pre><code>function loadUser() {
+  parseUser(null);
+}
+
+function parseUser(user) {
+  return user.name;
+}
+
+loadUser();</code></pre>
+
+      <p>You may see an error similar to:</p>
+      <pre><code>TypeError: Cannot read properties of null
+    at parseUser
+    at loadUser</code></pre>
+
+      <p>
+        Read this from the top error location downward: the error happened in <code>parseUser</code>,
+        which was called by <code>loadUser</code>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Recursion and Stack Overflow</h2>
+      <p>
+        Recursion happens when a function calls itself. Recursion is useful, but if it does not stop,
+        the call stack keeps growing until JavaScript throws a stack overflow error.
+      </p>
+
+      <pre><code>function countdown(n) {
+  if (n === 0) {
+    return;
+  }
+
+  console.log(n);
+  countdown(n - 1);
+}
+
+countdown(3);</code></pre>
+
+      <p>This is safe because it has a base case: <code>if (n === 0) return;</code>.</p>
+
+      <pre><code>function broken() {
+  broken();
+}
+
+broken();</code></pre>
+
+      <p>This is unsafe because the function never stops calling itself. Eventually you get:</p>
+      <pre><code>RangeError: Maximum call stack size exceeded</code></pre>
+    </section>
+
+    <section>
+      <h2>Application Development Examples</h2>
+
+      <h3>1. Form Validation</h3>
+      <pre><code>function handleSubmit(event) {
+  event.preventDefault();
+
+  const data = readForm();
+  const errors = validate(data);
+
+  if (errors.length &gt; 0) {
+    showErrors(errors);
+    return;
+  }
+
+  submitForm(data);
+}</code></pre>
+
+      <p>
+        The call stack helps you understand the exact sequence of execution:
+        <code>handleSubmit</code> calls <code>readForm</code>, then <code>validate</code>, then either <code>showErrors</code> or <code>submitForm</code>.
+      </p>
+
+      <h3>2. React Component Logic</h3>
+      <pre><code>function ProductPage() {
+  const total = calculateTotal();
+
+  return &lt;div&gt;Total: {total}&lt;/div&gt;;
+}
+
+function calculateTotal() {
+  return calculateSubtotal() + calculateTax();
+}</code></pre>
+
+      <p>
+        When React renders a component, your component function and helper functions are placed on the call stack.
+        If one helper throws an error, the stack trace helps you find the source.
+      </p>
+
+      <h3>3. API Response Handling</h3>
+      <pre><code>async function loadProducts() {
+  const response = await fetch("/api/products");
+  const products = await response.json();
+  renderProducts(products);
+}</code></pre>
+
+      <p>
+        The synchronous parts of this function use the call stack. When JavaScript reaches <code>await</code>,
+        the function pauses and the call stack is freed. Later, when the promise resolves, execution resumes.
+      </p>
+    </section>
+
+    <section>
+      <h2>Common Mistakes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Mistake</th>
+            <th>Why It Happens</th>
+            <th>Better Practice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Running heavy loops on the main thread</td>
+            <td>The call stack stays busy and blocks the UI.</td>
+            <td>Chunk the work, use async scheduling, or use Web Workers.</td>
+          </tr>
+          <tr>
+            <td>Recursive function with no base case</td>
+            <td>The function keeps adding calls to the stack.</td>
+            <td>Always include a stopping condition.</td>
+          </tr>
+          <tr>
+            <td>Ignoring stack traces</td>
+            <td>The error path is often visible in the stack trace.</td>
+            <td>Read the stack trace to find the function chain.</td>
+          </tr>
+          <tr>
+            <td>Assuming async code runs immediately</td>
+            <td>Callbacks wait until the current call stack is empty.</td>
+            <td>Understand how the call stack and event loop work together.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Best Practices</h2>
+      <ul>
+        <li>Keep synchronous work short so the browser remains responsive.</li>
+        <li>Use stack traces when debugging errors.</li>
+        <li>Be careful with recursion and always include a base case.</li>
+        <li>Use smaller helper functions so the call chain is easier to understand.</li>
+        <li>Use <code>async</code>/<code>await</code>, timers, or Web Workers when work should not block the UI.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Interview Questions</h2>
+
+      <h3>Q1. What is the call stack?</h3>
+      <p>
+        The call stack is JavaScript's structure for tracking active function calls. Each time a function is called,
+        it is pushed onto the stack. When it finishes, it is popped off.
+      </p>
+
+      <h3>Q2. Why does JavaScript throw "Maximum call stack size exceeded"?</h3>
+      <p>
+        Usually because a recursive function keeps calling itself without a stopping condition, causing the stack to grow until it reaches the engine's limit.
+      </p>
+
+      <h3>Q3. Why does <code>setTimeout(fn, 0)</code> not run immediately?</h3>
+      <p>
+        Because the callback must wait until the current call stack is empty before the event loop can place it onto the stack for execution.
+      </p>
+    </section>
+
+    <section>
+      <h2>Mini Exercise</h2>
+      <p>Predict the output before running this code:</p>
+      <pre><code>function one() {
+  console.log("one start");
+  two();
+  console.log("one end");
+}
+
+function two() {
+  console.log("two start");
+  three();
+  console.log("two end");
+}
+
+function three() {
+  console.log("three");
+}
+
+one();</code></pre>
+
+      <p>Answer:</p>
+      <pre><code>one start
+two start
+three
+two end
+one end</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    JavaScript Concepts Guide — Call Stack
+  </footer>
+  <script src="js/code.js"></script>
+</body>
+</html>

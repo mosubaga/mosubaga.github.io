@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Concepts — Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i class="fa-brands fa-js"></i></span>
+        JS Concepts
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="callstack.html">Call Stack</a>
+        <a href="closures.html">Closures</a>
+        <a href="eventloop.html">Event Loop</a>
+        <a href="fucntions.html">Functions</a>
+        <a href="hoisting.html">Hoisting</a>
+        <a href="modules.html">Modules</a>
+        <a href="typecoercion.html">Type Coercion</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Master JavaScript Concepts</h1>
+      <p class="lead">
+        A focused guide to the core JavaScript concepts every web developer needs to know — from how the engine executes code to how modern applications are organized.
+      </p>
+      <div class="hero-actions">
+        <a href="callstack.html" class="btn btn-primary">Start Learning</a>
+        <a href="#topics" class="btn btn-secondary">Browse Topics</a>
+      </div>
+    </div>
+    <div class="preview-card">
+      <div class="window-bar">
+        <div class="dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <span class="window-title">javascript-concepts.js</span>
+      </div>
+      <pre class="code-preview"><code><span class="keyword">function</span> <span class="function">callStack</span>() {   <span class="comment">// LIFO execution</span>
+  <span class="keyword">return</span> <span class="string">"runs first"</span>;
+}
+
+<span class="keyword">const</span> <span class="variable">count</span> = <span class="function">counter</span>(); <span class="comment">// closure</span>
+<span class="variable">count</span>();               <span class="comment">// state persists</span>
+
+<span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"/api"</span>);   <span class="comment">// event loop</span>
+
+<span class="keyword">import</span> { <span class="variable">add</span> } <span class="keyword">from</span> <span class="string">"./math.js"</span>; <span class="comment">// module</span></code></pre>
+    </div>
+  </div>
+
+  <div class="section" id="topics">
+    <div class="section-header">
+      <h2>Topics</h2>
+      <p>Seven essential JavaScript concepts explained with real-world examples, common pitfalls, and practical exercises.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <h3><a href="callstack.html">Call Stack</a></h3>
+        <p>How JavaScript tracks function execution in a last-in, first-out structure — and why blocking it freezes the UI.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-lock"></i></div>
+        <h3><a href="closures.html">Closures</a></h3>
+        <p>How functions remember variables from their surrounding scope, powering callbacks, caching, and private state.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+        <h3><a href="eventloop.html">Event Loop</a></h3>
+        <p>How JavaScript handles async work — timers, promises, fetch — without blocking the browser's main thread.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-code"></i></div>
+        <h3><a href="fucntions.html">Functions &amp; Callbacks</a></h3>
+        <p>Functions as first-class values: event handlers, higher-order functions, array methods, and React props.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-arrow-up"></i></div>
+        <h3><a href="hoisting.html">Hoisting</a></h3>
+        <p>How JavaScript prepares declarations before execution begins, and what that means for var, let, and const.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
+        <h3><a href="modules.html">Modules</a></h3>
+        <p>Organizing code across files using export and import — the foundation of modern JavaScript application structure.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-right-left"></i></div>
+        <h3><a href="typecoercion.html">Type Coercion</a></h3>
+        <p>How JavaScript automatically converts types and why that matters for forms, APIs, and comparisons.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>JavaScript Concepts Guide — A static HTML learning resource.</p>
+  </footer>
+  <script src="js/code.js"></script>
+</body>
+</html>

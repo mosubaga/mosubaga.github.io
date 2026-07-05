@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Closures Explained</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i class="fa-brands fa-js"></i></span>
+        JS Concepts
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="callstack.html">Call Stack</a>
+        <a href="closures.html">Closures</a>
+        <a href="eventloop.html">Event Loop</a>
+        <a href="fucntions.html">Functions</a>
+        <a href="hoisting.html">Hoisting</a>
+        <a href="modules.html">Modules</a>
+        <a href="typecoercion.html">Type Coercion</a>
+      </div>
+    </nav>
+  </header>
+
+  <header>
+    <h1>Closures in JavaScript</h1>
+    <p>A closure is one of the most important JavaScript concepts for building real web applications. It explains how functions remember variables from the scope where they were created.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>What is a Closure?</h2>
+      <p>A <strong>closure</strong> is created when a function remembers and continues to access variables from its outer scope, even after the outer function has finished running.</p>
+
+      <pre><code>function counter() {
+  let count = 0;
+
+  return function () {
+    count++;
+    return count;
+  };
+}
+
+const increment = counter();
+
+console.log(increment()); // 1
+console.log(increment()); // 2
+console.log(increment()); // 3</code></pre>
+
+      <p>The inner function still has access to <code>count</code>, even though <code>counter()</code> already finished executing. That remembered access is the closure.</p>
+    </section>
+
+    <section>
+      <h2>The Key Idea</h2>
+      <p>JavaScript uses <strong>lexical scope</strong>. That means a function's available variables are determined by where the function is written in the source code, not just where it is called.</p>
+
+      <pre><code>function outer() {
+  const message = "Hello from outer";
+
+  function inner() {
+    console.log(message);
+  }
+
+  return inner;
+}
+
+const savedFunction = outer();
+savedFunction(); // Hello from outer</code></pre>
+
+      <div class="callout">
+        <strong>Important:</strong> The function <code>inner</code> carries its surrounding environment with it. It does not copy the value once; it keeps access to the variable itself.
+      </div>
+    </section>
+
+    <section>
+      <h2>Visualizing a Closure</h2>
+      <pre><code>Global Scope
+
+savedFunction ───────► inner function
+                         │
+                         ▼
+                    Lexical Environment
+                    message = "Hello from outer"</code></pre>
+
+      <p>Even after <code>outer()</code> returns, JavaScript keeps the needed lexical environment alive because <code>savedFunction</code> still references it.</p>
+    </section>
+
+    <section>
+      <h2>Why Closures Matter</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Private State</h3>
+          <p>Closures let you hide data so outside code cannot directly modify it.</p>
+        </div>
+        <div class="card">
+          <h3>Callbacks</h3>
+          <p>Event handlers and timers often use closures to remember values.</p>
+        </div>
+        <div class="card">
+          <h3>Factories</h3>
+          <p>Functions can create customized functions with remembered configuration.</p>
+        </div>
+        <div class="card">
+          <h3>Modules</h3>
+          <p>Closures help separate public APIs from private implementation details.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Closures for Private Variables</h2>
+      <p>Before modern JavaScript classes and private fields, closures were one of the most common ways to create private data.</p>
+
+      <pre><code>function createBankAccount(initialBalance) {
+  let balance = initialBalance;
+
+  return {
+    deposit(amount) {
+      balance += amount;
+      return balance;
+    },
+
+    withdraw(amount) {
+      if (amount > balance) {
+        return "Insufficient funds";
+      }
+      balance -= amount;
+      return balance;
+    },
+
+    getBalance() {
+      return balance;
+    }
+  };
+}
+
+const account = createBankAccount(100);
+
+console.log(account.deposit(50));   // 150
+console.log(account.withdraw(25));  // 125
+console.log(account.getBalance());  // 125
+console.log(account.balance);       // undefined</code></pre>
+
+      <p>The variable <code>balance</code> is protected. The only way to change it is through the returned methods.</p>
+    </section>
+
+    <section>
+      <h2>Closures in Web App Development</h2>
+      <p>Closures are not just a theory topic. They appear constantly in real web apps.</p>
+
+      <h3>1. Event Handlers</h3>
+      <pre><code>function setupButton(username) {
+  const button = document.querySelector("#saveButton");
+
+  button.addEventListener("click", function () {
+    console.log(`Saving data for ${username}`);
+  });
+}
+
+setupButton("John");</code></pre>
+
+      <p>The click handler remembers <code>username</code> because it forms a closure.</p>
+
+      <h3>2. Search Boxes and Debouncing</h3>
+      <pre><code>function debounce(fn, delay) {
+  let timerId;
+
+  return function (...args) {
+    clearTimeout(timerId);
+
+    timerId = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
+const search = debounce(function (text) {
+  console.log("Searching for:", text);
+}, 500);
+
+search("j");
+search("ja");
+search("jav");</code></pre>
+
+      <p>The returned function remembers <code>timerId</code>. This is how debounce avoids running the search function too often.</p>
+
+      <h3>3. Caching API Results</h3>
+      <pre><code>function createUserService() {
+  const cache = new Map();
+
+  return async function getUser(id) {
+    if (cache.has(id)) {
+      return cache.get(id);
+    }
+
+    const response = await fetch(`/api/users/${id}`);
+    const user = await response.json();
+
+    cache.set(id, user);
+    return user;
+  };
+}
+
+const getUser = createUserService();</code></pre>
+
+      <p>The <code>cache</code> variable stays private but remains available to <code>getUser</code>.</p>
+    </section>
+
+    <section>
+      <h2>Closures in React</h2>
+      <p>React developers use closures constantly, even when they do not explicitly think about them.</p>
+
+      <pre><code>function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return &lt;button onClick={handleClick}&gt;{count}&lt;/button&gt;;
+}</code></pre>
+
+      <p>The function <code>handleClick</code> closes over <code>count</code> and <code>setCount</code>. This is why event handlers inside components can access component state.</p>
+
+      <div class="callout">
+        In React, closures are powerful but can also cause stale state bugs if an old function remembers an old value. This is common with timers, effects, and asynchronous callbacks.
+      </div>
+    </section>
+
+    <section>
+      <h2>A Common Closure Mistake</h2>
+      <p>Older JavaScript code using <code>var</code> often produces confusing closure behavior in loops.</p>
+
+      <pre><code>for (var i = 0; i &lt; 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 100);
+}
+
+// 3
+// 3
+// 3</code></pre>
+
+      <p>Because <code>var</code> is function-scoped, all three callbacks share the same <code>i</code>.</p>
+
+      <p>Using <code>let</code> fixes this because <code>let</code> creates a new binding for each loop iteration.</p>
+
+      <pre><code>for (let i = 0; i &lt; 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 100);
+}
+
+// 0
+// 1
+// 2</code></pre>
+    </section>
+
+    <section>
+      <h2>Closures and Memory</h2>
+      <p>Closures keep referenced variables alive. This is useful, but it can also cause memory problems if you accidentally keep large objects around.</p>
+
+      <pre><code>function createProcessor() {
+  const largeData = new Array(1_000_000).fill("data");
+
+  return function process(index) {
+    return largeData[index];
+  };
+}
+
+const processor = createProcessor();</code></pre>
+
+      <p>As long as <code>processor</code> exists, <code>largeData</code> cannot be garbage collected.</p>
+    </section>
+
+    <section>
+      <h2>Best Practices</h2>
+      <ul>
+        <li>Use closures to protect private state.</li>
+        <li>Use closures for event handlers, callbacks, debounce, throttle, and caching.</li>
+        <li>Avoid storing huge data structures inside long-lived closures unless necessary.</li>
+        <li>Prefer <code>let</code> and <code>const</code> over <code>var</code> to avoid loop-related closure bugs.</li>
+        <li>In React, watch for stale closures in <code>useEffect</code>, timers, and async callbacks.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Closures in One Table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Use Case</th>
+            <th>How Closure Helps</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Private variables</td>
+            <td>Hides implementation details from outside code.</td>
+          </tr>
+          <tr>
+            <td>Event handlers</td>
+            <td>Lets handlers remember values from setup time.</td>
+          </tr>
+          <tr>
+            <td>Debounce/throttle</td>
+            <td>Stores timer state between function calls.</td>
+          </tr>
+          <tr>
+            <td>Caching</td>
+            <td>Keeps a private cache available across calls.</td>
+          </tr>
+          <tr>
+            <td>React components</td>
+            <td>Allows event handlers and effects to access component state.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Practice Exercise</h2>
+      <p>Create a shopping cart using closures.</p>
+      <p>Requirements:</p>
+      <ul>
+        <li><code>addItem(item)</code></li>
+        <li><code>removeItem(name)</code></li>
+        <li><code>getItems()</code></li>
+        <li><code>getTotal()</code></li>
+      </ul>
+      <p>The internal array of items should not be directly accessible from outside the cart.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    JavaScript Closures Explained — Static HTML Learning Page
+  </footer>
+  <script src="js/code.js"></script>
+</body>
+</html>

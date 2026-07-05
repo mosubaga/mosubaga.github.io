@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaScript Event Loop Explained</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><i class="fa-brands fa-js"></i></span>
+        JS Concepts
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="callstack.html">Call Stack</a>
+        <a href="closures.html">Closures</a>
+        <a href="eventloop.html">Event Loop</a>
+        <a href="fucntions.html">Functions</a>
+        <a href="hoisting.html">Hoisting</a>
+        <a href="modules.html">Modules</a>
+        <a href="typecoercion.html">Type Coercion</a>
+      </div>
+    </nav>
+  </header>
+
+  <header>
+    <h1>The Event Loop in JavaScript</h1>
+    <p>The event loop explains how JavaScript handles asynchronous work such as timers, user events, network requests, and promises without blocking the browser's main thread.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>What is the Event Loop?</h2>
+      <p>The <strong>event loop</strong> is the mechanism that lets JavaScript run synchronous code first, then come back later to handle asynchronous callbacks.</p>
+      <p>JavaScript usually runs on one main thread in the browser. That means only one piece of JavaScript code executes at a time. The event loop coordinates what should run next.</p>
+
+      <div class="callout">
+        <strong>Main idea:</strong> JavaScript does not stop and wait for slow work like timers or network requests. The browser handles that work in the background, then places callbacks in a queue. The event loop sends those callbacks back to the call stack when the stack is empty.
+      </div>
+    </section>
+
+    <section>
+      <h2>The Pieces Involved</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Call Stack</h3>
+          <p>Where currently running JavaScript functions are placed. The top function runs first.</p>
+        </div>
+        <div class="card">
+          <h3>Browser APIs</h3>
+          <p>Features provided by the browser, such as <code>setTimeout</code>, DOM events, and <code>fetch</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Task Queue</h3>
+          <p>Stores callbacks from timers, DOM events, and other tasks waiting to run.</p>
+        </div>
+        <div class="card">
+          <h3>Microtask Queue</h3>
+          <p>Stores promise callbacks, such as <code>.then()</code>, <code>.catch()</code>, and code after <code>await</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Event Loop</h3>
+          <p>Checks whether the call stack is empty. If it is, it moves queued work onto the stack.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Simple Example</h2>
+      <pre><code>console.log("Start");
+
+setTimeout(() =&gt; {
+  console.log("Timer finished");
+}, 0);
+
+console.log("End");</code></pre>
+
+      <p>Output:</p>
+      <pre><code>Start
+End
+Timer finished</code></pre>
+
+      <p>Even though the timer delay is <code>0</code>, the callback does not run immediately. It must wait until the current synchronous code finishes and the call stack becomes empty.</p>
+    </section>
+
+    <section>
+      <h2>Step-by-Step Execution</h2>
+      <pre><code>console.log("Start");
+
+setTimeout(() =&gt; {
+  console.log("Async");
+}, 0);
+
+console.log("End");</code></pre>
+
+      <h3>1. Run synchronous code</h3>
+      <pre><code>console.log("Start"); // prints Start</code></pre>
+
+      <h3>2. Register the timer</h3>
+      <pre><code>setTimeout(..., 0);</code></pre>
+      <p>The callback is handed to the browser timer API. JavaScript continues running.</p>
+
+      <h3>3. Continue synchronous code</h3>
+      <pre><code>console.log("End"); // prints End</code></pre>
+
+      <h3>4. Event loop checks the queue</h3>
+      <p>After the call stack is empty, the timer callback is moved to the stack.</p>
+
+      <h3>5. Run the callback</h3>
+      <pre><code>console.log("Async"); // prints Async</code></pre>
+    </section>
+
+    <section>
+      <h2>Promises and the Microtask Queue</h2>
+      <p>Promises use the <strong>microtask queue</strong>, which has higher priority than the regular task queue.</p>
+
+      <pre><code>console.log("Start");
+
+setTimeout(() =&gt; {
+  console.log("Timer");
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+  console.log("Promise");
+});
+
+console.log("End");</code></pre>
+
+      <p>Output:</p>
+      <pre><code>Start
+End
+Promise
+Timer</code></pre>
+
+      <p>The promise callback runs before the timer callback because microtasks are processed before regular tasks.</p>
+    </section>
+
+    <section>
+      <h2>How <code>async</code> and <code>await</code> Fit In</h2>
+      <p><code>async</code> and <code>await</code> are built on promises. When JavaScript reaches <code>await</code>, the function pauses, returns control to the rest of the program, and continues later as a microtask.</p>
+
+      <pre><code>async function loadUser() {
+  console.log("Before fetch");
+
+  const response = await fetch("/api/user");
+  const user = await response.json();
+
+  console.log(user.name);
+}
+
+loadUser();
+console.log("App continues running");</code></pre>
+
+      <p>The browser can remain responsive while the network request is in progress.</p>
+    </section>
+
+    <section>
+      <h2>Why the Event Loop Matters in Web Applications</h2>
+      <p>The event loop is essential to web app development because the browser must stay responsive while your app handles many kinds of work.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Web App Feature</th>
+            <th>How the Event Loop Applies</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Button clicks</td>
+            <td>Click handlers wait in the task queue until the current code finishes.</td>
+          </tr>
+          <tr>
+            <td>API requests</td>
+            <td><code>fetch</code> runs asynchronously. The UI can keep working while data loads.</td>
+          </tr>
+          <tr>
+            <td>Search boxes</td>
+            <td>Input events can trigger debounced API calls without freezing the page.</td>
+          </tr>
+          <tr>
+            <td>Animations</td>
+            <td>Browser rendering happens between event loop turns. Long JavaScript tasks can make animations choppy.</td>
+          </tr>
+          <tr>
+            <td>React, Vue, Angular, Svelte</td>
+            <td>Frameworks schedule state updates, rendering work, and effects around the event loop.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Example: Loading Data Without Freezing the UI</h2>
+      <p>In a real app, you might show a loading message while waiting for data from an API.</p>
+
+      <pre><code>const button = document.querySelector("#loadButton");
+const output = document.querySelector("#output");
+
+button.addEventListener("click", async () =&gt; {
+  output.textContent = "Loading...";
+
+  try {
+    const response = await fetch("/api/products");
+    const products = await response.json();
+
+    output.textContent = `Loaded ${products.length} products`;
+  } catch (error) {
+    output.textContent = "Could not load products";
+  }
+});</code></pre>
+
+      <p>The page does not lock up while <code>fetch</code> is waiting for the server. The event loop allows other events, rendering, and user interactions to continue.</p>
+    </section>
+
+    <section>
+      <h2>Common Mistake: Blocking the Event Loop</h2>
+      <p>Heavy synchronous code blocks everything else. While this loop is running, the browser cannot respond to clicks, update the UI, or run timers.</p>
+
+      <pre><code>button.addEventListener("click", () =&gt; {
+  for (let i = 0; i &lt; 5_000_000_000; i++) {
+    // Expensive work
+  }
+
+  console.log("Finished");
+});</code></pre>
+
+      <p>This can make the app feel frozen.</p>
+
+      <div class="callout">
+        <strong>Best practice:</strong> Break large work into smaller chunks, move heavy work to a Web Worker, or perform expensive operations on the server.
+      </div>
+    </section>
+
+    <section>
+      <h2>Common Mistake: Expecting <code>setTimeout(..., 0)</code> to Run Immediately</h2>
+      <pre><code>setTimeout(() =&gt; {
+  console.log("Timer");
+}, 0);
+
+console.log("Synchronous code");</code></pre>
+
+      <p>Output:</p>
+      <pre><code>Synchronous code
+Timer</code></pre>
+
+      <p>A zero-delay timer means "run this after the current call stack is clear," not "run this right now."</p>
+    </section>
+
+    <section>
+      <h2>Best Practices for App Development</h2>
+      <ul>
+        <li>Use <code>async</code> / <code>await</code> for network requests and asynchronous workflows.</li>
+        <li>Never perform expensive CPU-heavy work directly in event handlers.</li>
+        <li>Use debounce for search inputs and resize events.</li>
+        <li>Use throttle for scroll, mousemove, and drag events.</li>
+        <li>Prefer clear loading states when waiting for asynchronous data.</li>
+        <li>Handle errors with <code>try...catch</code> around awaited operations.</li>
+        <li>Remember that promise callbacks run before timer callbacks.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Interview Questions</h2>
+
+      <h3>Question 1</h3>
+      <pre><code>console.log("A");
+
+setTimeout(() =&gt; console.log("B"), 0);
+
+console.log("C");</code></pre>
+      <p><strong>Answer:</strong></p>
+      <pre><code>A
+C
+B</code></pre>
+
+      <h3>Question 2</h3>
+      <pre><code>console.log("A");
+
+Promise.resolve().then(() =&gt; console.log("B"));
+
+setTimeout(() =&gt; console.log("C"), 0);
+
+console.log("D");</code></pre>
+      <p><strong>Answer:</strong></p>
+      <pre><code>A
+D
+B
+C</code></pre>
+
+      <h3>Why?</h3>
+      <p>Synchronous code runs first. Then microtasks, such as promise callbacks, run. After that, regular tasks, such as timer callbacks, run.</p>
+    </section>
+
+    <section>
+      <h2>Mini Exercise</h2>
+      <p>Predict the output before running the code:</p>
+
+      <pre><code>console.log("1");
+
+setTimeout(() =&gt; console.log("2"), 0);
+
+Promise.resolve().then(() =&gt; console.log("3"));
+
+console.log("4");</code></pre>
+
+      <p><strong>Expected output:</strong></p>
+      <pre><code>1
+4
+3
+2</code></pre>
+    </section>
+
+    <section>
+      <h2>Key Takeaway</h2>
+      <p>The event loop is what makes JavaScript useful for web apps. It allows JavaScript to start asynchronous work, keep the UI responsive, and then process callbacks later when the call stack is clear.</p>
+
+      <div class="callout">
+        <strong>Remember:</strong> Synchronous code first, then microtasks, then regular tasks.
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    JavaScript Concepts Guide — Event Loop
+  </footer>
+  <script src="js/code.js"></script>
+</body>
+</html>
