@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Diff — Compare Two Texts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+
+    <header class="page-header">
+      <div class="header-tag">TEXT · TEXT</div>
+      <h1>Text Diff</h1>
+      <p class="subtitle">
+        Compare two texts and instantly find every difference at the character, word, or line level.
+        All processing runs entirely in your browser — nothing is uploaded.
+      </p>
+    </header>
+
+    <div class="toolbar pastel-card">
+      <div class="mode-group">
+        <span class="toolbar-label">Mode</span>
+        <div class="mode-buttons">
+          <button class="mode-btn active" data-mode="line">Line</button>
+          <button class="mode-btn" data-mode="word">Word</button>
+          <button class="mode-btn" data-mode="char">Character</button>
+        </div>
+      </div>
+      <div class="action-group">
+        <button class="pastel-btn secondary-btn" id="swapBtn" title="Swap Original and Modified">&#8644; Swap</button>
+        <button class="pastel-btn secondary-btn" id="clearAllBtn">Clear All</button>
+        <button class="pastel-btn" id="compareBtn">Compare</button>
+      </div>
+    </div>
+
+    <div class="panels-wrapper">
+      <div class="panel pastel-card">
+        <div class="panel-header">
+          <span class="panel-title">Original</span>
+          <button class="panel-clear-btn" data-target="original">Clear</button>
+        </div>
+        <div class="drop-zone" id="originalDrop">
+          <textarea id="originalText" placeholder="Paste text here, or drag &amp; drop a file…" spellcheck="false"></textarea>
+          <div class="drop-overlay"><span>Drop file here</span></div>
+        </div>
+      </div>
+
+      <div class="panel pastel-card">
+        <div class="panel-header">
+          <span class="panel-title">Modified</span>
+          <button class="panel-clear-btn" data-target="modified">Clear</button>
+        </div>
+        <div class="drop-zone" id="modifiedDrop">
+          <textarea id="modifiedText" placeholder="Paste text here, or drag &amp; drop a file…" spellcheck="false"></textarea>
+          <div class="drop-overlay"><span>Drop file here</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="diffResult" class="diff-result-wrapper hidden">
+      <div id="statsBar" class="stats-bar pastel-card"></div>
+      <div id="diffOutput" class="diff-output pastel-card"></div>
+    </div>
+
+  </div>
+
+  <script src="js/diff.js"></script>
+</body>
+</html>

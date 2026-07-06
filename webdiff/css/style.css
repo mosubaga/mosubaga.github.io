@@ -1,0 +1,322 @@
+:root {
+  --bg-pastel:    #FFF0F5;
+  --bg-card:      #FFFFFF;
+  --color-accent: #FFB6C1;
+  --color-point:  #E6E6FA;
+  --text-main:    #6C7A89;
+  --border-curved: 20px;
+
+  --diff-add-bg:    #d4f7d4;
+  --diff-add-color: #1a7f3c;
+  --diff-del-bg:    #fde8e8;
+  --diff-del-color: #c0392b;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--bg-pastel);
+  color: var(--text-main);
+  font-family: "Varela Round", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.page-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.header-tag {
+  display: inline-block;
+  background: #222;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.page-header h1 {
+  font-size: 2.4rem;
+  color: #333;
+  margin: 0 0 10px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── Cards ──────────────────────────────────────────────────────────────── */
+
+.pastel-card {
+  background-color: var(--bg-card);
+  border-radius: var(--border-curved);
+  box-shadow: 0 8px 16px rgba(255, 182, 193, 0.15);
+  padding: 24px;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px 24px;
+}
+
+.toolbar-label {
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 10px;
+  color: var(--text-main);
+}
+
+.mode-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mode-buttons {
+  display: flex;
+  border: 2px solid var(--color-accent);
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.mode-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 20px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: bold;
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mode-btn:not(:last-child) {
+  border-right: 2px solid var(--color-accent);
+}
+
+.mode-btn.active {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.mode-btn:hover:not(.active) {
+  background: #fff0f5cc;
+}
+
+.action-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+
+.pastel-btn {
+  background-color: var(--color-accent);
+  color: #fff;
+  border-radius: 50px;
+  border: none;
+  padding: 10px 26px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s;
+}
+
+.pastel-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(0.95);
+}
+
+.secondary-btn {
+  background-color: var(--bg-card);
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+}
+
+.secondary-btn:hover {
+  background-color: #fff0f5cc;
+}
+
+/* ── Input Panels ───────────────────────────────────────────────────────── */
+
+.panels-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .panels-wrapper { grid-template-columns: 1fr; }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f3d6df;
+}
+
+.panel-title {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.panel-clear-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 20px;
+  transition: background 0.15s;
+}
+
+.panel-clear-btn:hover {
+  background: #fce4ec;
+  color: #c0392b;
+}
+
+/* Drop zone */
+.drop-zone {
+  position: relative;
+  flex: 1;
+}
+
+.drop-zone textarea {
+  width: 100%;
+  height: 340px;
+  padding: 16px 20px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: "Varela Round", monospace;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #444;
+  background: transparent;
+  border-radius: 0 0 var(--border-curved) var(--border-curved);
+}
+
+.drop-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 182, 193, 0.18);
+  border: 3px dashed var(--color-accent);
+  border-radius: 0 0 var(--border-curved) var(--border-curved);
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-accent);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.drag-over .drop-overlay {
+  opacity: 1;
+}
+
+/* ── Stats Bar ──────────────────────────────────────────────────────────── */
+
+.stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 24px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 5px 14px;
+  border-radius: 50px;
+}
+
+.stat-add  { background: var(--diff-add-bg); color: var(--diff-add-color); }
+.stat-del  { background: var(--diff-del-bg); color: var(--diff-del-color); }
+.stat-eq   { background: #f0f0f0; color: #555; }
+.stat-warn { background: #fff3cd; color: #856404; }
+
+/* ── Diff Output ────────────────────────────────────────────────────────── */
+
+.diff-result-wrapper.hidden { display: none; }
+
+.diff-output {
+  padding: 28px 32px;
+  overflow-x: auto;
+}
+
+.diff-pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: "Varela Round", monospace;
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #333;
+}
+
+ins.diff-add {
+  text-decoration: underline;
+  text-decoration-color: var(--diff-add-color);
+  text-decoration-thickness: 2px;
+  background: var(--diff-add-bg);
+  color: var(--diff-add-color);
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+del.diff-del {
+  text-decoration: line-through;
+  text-decoration-color: var(--diff-del-color);
+  text-decoration-thickness: 2px;
+  background: var(--diff-del-bg);
+  color: var(--diff-del-color);
+  border-radius: 3px;
+  padding: 0 1px;
+}
