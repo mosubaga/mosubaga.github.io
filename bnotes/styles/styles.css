@@ -5,7 +5,7 @@ box-sizing: border-box;
 }
 
 body {
-font-family: 'Hachi Maru Pop', cursive;
+font-family: 'Varela Round', sans-serif;
 background: linear-gradient(135deg, #F1FFED 0%, #ECE8FE 50%, #FFEFF6 100%);
 min-height: 100vh;
 display: flex;
@@ -160,11 +160,49 @@ overflow-x: auto;
 margin: 1.5rem 0;
 font-family: 'Courier New', monospace;
 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+position: relative;
 }
 
 .code-example code {
 font-size: 0.9rem;
 line-height: 1.6;
+}
+
+.copy-btn {
+position: absolute;
+top: 0.6rem;
+right: 0.6rem;
+display: inline-flex;
+align-items: center;
+gap: 0.35rem;
+padding: 0.3rem 0.7rem;
+background: rgba(255, 255, 255, 0.1);
+color: #ccc;
+border: 1px solid rgba(255, 255, 255, 0.18);
+border-radius: 6px;
+font-family: 'Varela Round', sans-serif;
+font-size: 0.75rem;
+cursor: pointer;
+transition: background 0.15s, color 0.15s, border-color 0.15s;
+user-select: none;
+}
+
+.copy-btn svg {
+width: 0.85rem;
+height: 0.85rem;
+flex-shrink: 0;
+}
+
+.copy-btn:hover {
+background: rgba(255, 255, 255, 0.2);
+color: #fff;
+border-color: rgba(255, 255, 255, 0.35);
+}
+
+.copy-btn.copied {
+background: rgba(80, 200, 120, 0.2);
+color: #6ee79a;
+border-color: rgba(80, 200, 120, 0.4);
 }
 
 footer {
@@ -197,6 +235,56 @@ box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
 .cta-button:hover {
 transform: translateY(-3px);
 box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* ── Font Awesome icon styles ── */
+
+/* Nav icons */
+.nav-links a i {
+margin-right: 0.35rem;
+font-size: 0.8rem;
+opacity: 0.75;
+transition: opacity 0.2s;
+}
+.nav-links a:hover i,
+.nav-links a.active i {
+opacity: 1;
+}
+
+/* Hero h1 icon */
+.hero h1 i {
+margin-right: 0.4rem;
+font-size: 0.85em;
+opacity: 0.9;
+}
+
+/* Card h2 icons */
+.card h2 i {
+margin-right: 0.4rem;
+font-size: 0.9em;
+opacity: 0.8;
+vertical-align: middle;
+}
+
+/* Card h3 icons */
+.card h3 i,
+h3 i {
+margin-right: 0.35rem;
+font-size: 0.85em;
+opacity: 0.75;
+vertical-align: middle;
+}
+
+/* CTA button icon */
+.cta-button i {
+margin-right: 0.4rem;
+}
+
+/* Inline tip/warning icons */
+.tip i,
+.tip-box i,
+.warning-box i {
+margin-right: 0.3rem;
 }
 
 @media (max-width: 768px) {

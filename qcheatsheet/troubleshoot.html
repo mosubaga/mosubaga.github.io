@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git Troubleshooting — QuickCheat</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+
+  <header class="site-header site-header--solid">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="index.html">
+          <i class="fa-solid fa-terminal brand-fa" aria-hidden="true"></i>
+          QuickCheat
+        </a>
+        <div class="nav-links">
+          <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+          <a href="linuxcommands.html"><i class="fa-solid fa-terminal"></i>Linux</a>
+          <a href="gitcommands.html"><i class="fa-solid fa-code-branch"></i>Git</a>
+          <a href="troubleshoot.html" class="active"><i class="fa-solid fa-screwdriver-wrench"></i>Troubleshoot</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>Git Troubleshooting</h1>
+      <p>Step-by-step fixes for the most common Git problems developers run into.</p>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+      <div class="issue-grid">
+
+        <!-- 1. Detached HEAD -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Detached HEAD State</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You are in "detached HEAD" state when HEAD points directly to a commit rather than a branch. This happens after <code>git checkout [commit-hash]</code> or <code>git checkout [tag]</code>. Any commits you make will be lost once you switch away unless you create a branch.
+            </p>
+            <p><strong>Option A — Save your work on a new branch:</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git checkout -b [new-branch-name]</code> — create a branch at the current commit</span></li>
+              <li><span class="step-num">2</span><span>Continue working normally on the new branch</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>Option B — Discard and return to a branch:</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git checkout main</code> (or any branch name) — return to a named branch</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 2. Merge Conflicts -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Merge Conflicts</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              A merge conflict occurs when two branches have modified the same part of the same file differently. Git cannot automatically decide which change to keep and marks the conflicting sections in the file.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git status</code> — list all files with conflicts (shown as "both modified")</span></li>
+              <li><span class="step-num">2</span><span>Open each conflicted file and look for <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> markers</span></li>
+              <li><span class="step-num">3</span><span>Edit the file to keep the correct code and remove all conflict markers</span></li>
+              <li><span class="step-num">4</span><span><code>git add [file]</code> — mark each resolved file as resolved</span></li>
+              <li><span class="step-num">5</span><span><code>git commit</code> — finalize the merge commit</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>To abort and start over:</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git merge --abort</code> — cancel the merge and restore the pre-merge state</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 3. Accidentally committed to main -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Accidentally Committed to main (or wrong branch)</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You committed work directly to <code>main</code> (or another protected branch) instead of a feature branch. You need to move those commits to a new branch and undo them on <code>main</code>.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git branch [feature-branch]</code> — create a new branch at the current commit (your work is now saved here)</span></li>
+              <li><span class="step-num">2</span><span><code>git reset --hard HEAD~[n]</code> — move main back n commits (replace n with number of commits to undo)</span></li>
+              <li><span class="step-num">3</span><span><code>git checkout [feature-branch]</code> — switch to your new branch and continue working</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 4. Undo last commit keep changes -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Undo Last Commit (keep your changes)</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You committed too early or need to revise what's in the commit — but you don't want to lose the actual file changes.
+            </p>
+            <p><strong>Keep changes staged (ready to re-commit):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git reset --soft HEAD~1</code></span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>Keep changes unstaged (in working tree):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git reset HEAD~1</code> (same as <code>--mixed</code>)</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>Discard all changes from the last commit:</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git reset --hard HEAD~1</code> — WARNING: changes are permanently lost</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 5. Forgot to add files to last commit -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Forgot to Add Files to Last Commit</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You just committed but forgot to include one or more files. If you haven't pushed yet, you can amend the commit to include them.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git add [forgotten-file]</code> — stage the missing file</span></li>
+              <li><span class="step-num">2</span><span><code>git commit --amend --no-edit</code> — add it to the last commit without changing the message</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;margin-bottom:0;color:var(--summer-muted);font-size:0.9rem;">
+              Note: Do not amend commits that have already been pushed to a shared remote branch.
+            </p>
+          </div>
+        </div>
+
+        <!-- 6. Push rejected non-fast-forward -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Push Rejected: Non-Fast-Forward / Remote Has New Commits</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              Someone else pushed commits to the remote branch after your last pull. Git cannot automatically merge them with a simple push.
+            </p>
+            <p><strong>Option A — Rebase (clean linear history):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git pull --rebase</code> — fetch the new commits and replay yours on top</span></li>
+              <li><span class="step-num">2</span><span>Resolve any conflicts if prompted</span></li>
+              <li><span class="step-num">3</span><span><code>git push</code></span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>Option B — Merge (preserves branch history):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git pull</code> — fetch and merge remote commits</span></li>
+              <li><span class="step-num">2</span><span>Resolve any conflicts if prompted</span></li>
+              <li><span class="step-num">3</span><span><code>git push</code></span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 7. Accidentally deleted branch -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Accidentally Deleted a Branch</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You deleted a branch with <code>git branch -D</code> that still had unmerged commits. Git does not immediately garbage-collect those commits, so you can recover them using the reflog.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git reflog</code> — find the commit hash of the last commit that was on the deleted branch</span></li>
+              <li><span class="step-num">2</span><span>Look for an entry like <code>HEAD@{n}: commit: [your commit message]</code></span></li>
+              <li><span class="step-num">3</span><span><code>git checkout -b [branch-name] [commit-hash]</code> — recreate the branch at that commit</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 8. Wrong commit message -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Wrong Commit Message</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You made a typo or used the wrong message in the most recent commit and haven't pushed yet.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git commit --amend -m "Correct message here"</code> — rewrite the last commit message</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;margin-bottom:0;color:var(--summer-muted);font-size:0.9rem;">
+              For commits already pushed to a shared branch, use <code>git revert</code> instead of amending.
+            </p>
+          </div>
+        </div>
+
+        <!-- 9. Large/sensitive file committed -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Accidentally Committed a Large File or Sensitive Data</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You committed a file you shouldn't have (e.g., a large binary, an <code>.env</code> file, or API keys). If not yet pushed, you can fix it locally.
+            </p>
+            <p><strong>If not yet pushed:</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git rm --cached [file]</code> — stop tracking the file (keeps it on disk)</span></li>
+              <li><span class="step-num">2</span><span>Add the file to <code>.gitignore</code></span></li>
+              <li><span class="step-num">3</span><span><code>git commit --amend --no-edit</code> — update the last commit to exclude the file</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>If already pushed (sensitive data — act fast):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span>Immediately rotate/revoke any exposed credentials</span></li>
+              <li><span class="step-num">2</span><span>Use <code>git filter-repo</code> (recommended) or BFG Repo Cleaner to purge the file from all history</span></li>
+              <li><span class="step-num">3</span><span>Force-push all branches: <code>git push --force-with-lease --all</code></span></li>
+              <li><span class="step-num">4</span><span>Notify all collaborators to re-clone the repository</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 10. Wrong remote URL -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Wrong Remote URL / Remote Changed</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              The remote repository was moved, renamed, or you set the wrong URL when cloning.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git remote -v</code> — view the current remote URLs</span></li>
+              <li><span class="step-num">2</span><span><code>git remote set-url origin [new-url]</code> — update the URL</span></li>
+              <li><span class="step-num">3</span><span><code>git remote -v</code> — verify the change</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 11. Unrelated histories -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Error: "refusing to merge unrelated histories"</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              This happens when you try to merge two repositories that have no common ancestor — for example, after <code>git init</code> on a project and then trying to pull from a freshly created GitHub repo.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git pull origin main --allow-unrelated-histories</code> — force Git to merge despite no shared history</span></li>
+              <li><span class="step-num">2</span><span>Resolve any conflicts that arise</span></li>
+              <li><span class="step-num">3</span><span><code>git push -u origin main</code></span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 12. Authentication failure -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Authentication Failure / Cannot Push or Pull</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              GitHub and GitLab no longer accept passwords for HTTPS operations — you need a Personal Access Token (PAT) or an SSH key.
+            </p>
+            <p><strong>Option A — Use an SSH key (recommended):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>ssh-keygen -t ed25519 -C "your@email.com"</code> — generate a key pair</span></li>
+              <li><span class="step-num">2</span><span>Add the public key (<code>~/.ssh/id_ed25519.pub</code>) to your GitHub/GitLab account settings</span></li>
+              <li><span class="step-num">3</span><span><code>git remote set-url origin git@github.com:[user]/[repo].git</code> — switch remote to SSH</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>Option B — Use a Personal Access Token (HTTPS):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span>Create a PAT in your GitHub/GitLab account settings (with "repo" scope)</span></li>
+              <li><span class="step-num">2</span><span>When prompted for a password, enter the PAT instead of your account password</span></li>
+              <li><span class="step-num">3</span><span><code>git config --global credential.helper store</code> — cache credentials to avoid repeated prompts</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 13. Stash mistake -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Committed on the Wrong Branch — Need to Move Changes</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              You started working and committed on <code>main</code> when you meant to work on a feature branch. Your changes need to be moved to the correct branch.
+            </p>
+            <p><strong>Using cherry-pick (moves commits cleanly):</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git log --oneline -5</code> — note the commit hash(es) you want to move</span></li>
+              <li><span class="step-num">2</span><span><code>git checkout [correct-branch]</code> — switch to the target branch</span></li>
+              <li><span class="step-num">3</span><span><code>git cherry-pick [commit-hash]</code> — apply the commit here</span></li>
+              <li><span class="step-num">4</span><span><code>git checkout main</code> — go back to main</span></li>
+              <li><span class="step-num">5</span><span><code>git reset --hard HEAD~1</code> — remove the commit from main</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 14. Rebase conflicts -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Conflicts During Rebase</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              During an interactive or regular rebase, a commit causes a conflict that Git cannot resolve automatically.
+            </p>
+            <p><strong>To resolve and continue:</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git status</code> — see which files have conflicts</span></li>
+              <li><span class="step-num">2</span><span>Edit each conflicted file to resolve the conflict markers</span></li>
+              <li><span class="step-num">3</span><span><code>git add [file]</code> — mark each file as resolved</span></li>
+              <li><span class="step-num">4</span><span><code>git rebase --continue</code> — proceed to the next commit in the rebase</span></li>
+            </ol>
+            <p style="margin-top:0.9rem;"><strong>To abort and restore original state:</strong></p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git rebase --abort</code> — cancel the entire rebase</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 15. Repo too large / slow -->
+        <div class="issue-card">
+          <div class="issue-problem">
+            <span class="issue-problem-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <span>Repository is Slow or Growing Too Large</span>
+          </div>
+          <div class="issue-body">
+            <p class="cause">
+              Over time, unreferenced objects, large binaries, or deleted history can bloat a repository and slow it down.
+            </p>
+            <ol class="issue-steps">
+              <li><span class="step-num">1</span><span><code>git gc</code> — run garbage collection to compress and clean the repo</span></li>
+              <li><span class="step-num">2</span><span><code>git gc --aggressive --prune=now</code> — more thorough cleanup (takes longer)</span></li>
+              <li><span class="step-num">3</span><span><code>git count-objects -vH</code> — check the repo size before and after</span></li>
+              <li><span class="step-num">4</span><span>Use <code>.gitignore</code> to avoid committing large build artifacts or binaries going forward</span></li>
+              <li><span class="step-num">5</span><span>Consider Git LFS (<code>git lfs track "*.psd"</code>) for large files that must be versioned</span></li>
+            </ol>
+          </div>
+        </div>
+
+      </div><!-- /.issue-grid -->
+    </div><!-- /.container -->
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-row">
+        <span>QuickCheat — Linux &amp; Git Reference</span>
+        <div style="display:flex;gap:1.5rem;">
+          <a href="index.html">Home</a>
+          <a href="linuxcommands.html">Linux</a>
+          <a href="gitcommands.html">Git</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux Commands — QuickCheat</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+
+  <header class="site-header site-header--solid">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="index.html">
+          <i class="fa-solid fa-terminal brand-fa" aria-hidden="true"></i>
+          QuickCheat
+        </a>
+        <div class="nav-links">
+          <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+          <a href="linuxcommands.html" class="active"><i class="fa-solid fa-terminal"></i>Linux</a>
+          <a href="gitcommands.html"><i class="fa-solid fa-code-branch"></i>Git</a>
+          <a href="troubleshoot.html"><i class="fa-solid fa-screwdriver-wrench"></i>Troubleshoot</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>Linux Commands</h1>
+      <p>Essential terminal commands for software engineers and developers — organized by category.</p>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- File & Directory Management -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-folder-open fa-icon"></i>File &amp; Directory Management</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">ls</code>
+            <p class="cmd-desc">List files and directories in the current directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ls -la</code>
+            <p class="cmd-desc">List all files (including hidden) with detailed info and permissions</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ls -lh</code>
+            <p class="cmd-desc">List files with human-readable file sizes (KB, MB, GB)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">pwd</code>
+            <p class="cmd-desc">Print the current working directory path</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">cd [directory]</code>
+            <p class="cmd-desc">Change to the specified directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">cd ..</code>
+            <p class="cmd-desc">Move up one directory level</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">cd ~</code>
+            <p class="cmd-desc">Go to the home directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">mkdir [directory]</code>
+            <p class="cmd-desc">Create a new directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">mkdir -p [path/to/dir]</code>
+            <p class="cmd-desc">Create nested directories, including all intermediate ones</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">touch [file]</code>
+            <p class="cmd-desc">Create an empty file or update an existing file's timestamp</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">cp [source] [dest]</code>
+            <p class="cmd-desc">Copy a file to a new location</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">cp -r [source] [dest]</code>
+            <p class="cmd-desc">Recursively copy a directory and all its contents</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">mv [source] [dest]</code>
+            <p class="cmd-desc">Move or rename a file or directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">rm [file]</code>
+            <p class="cmd-desc">Remove (delete) a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">rm -r [directory]</code>
+            <p class="cmd-desc">Recursively remove a directory and its contents</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">rm -rf [directory]</code>
+            <p class="cmd-desc">Force-remove a directory without confirmation prompts</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ln -s [target] [link]</code>
+            <p class="cmd-desc">Create a symbolic (soft) link pointing to target</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">find [path] -name "[pattern]"</code>
+            <p class="cmd-desc">Find files matching a name pattern under the given path</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">find . -type f -mtime -7</code>
+            <p class="cmd-desc">Find files modified within the last 7 days</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">find . -size +100M</code>
+            <p class="cmd-desc">Find files larger than 100 MB</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Viewing -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-eye fa-icon"></i>File Viewing &amp; Reading</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">cat [file]</code>
+            <p class="cmd-desc">Display the entire contents of a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">less [file]</code>
+            <p class="cmd-desc">Page through a file (q to quit, / to search)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">more [file]</code>
+            <p class="cmd-desc">Display file content one screen at a time</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">head [file]</code>
+            <p class="cmd-desc">Show the first 10 lines of a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">head -n 20 [file]</code>
+            <p class="cmd-desc">Show the first 20 lines of a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tail [file]</code>
+            <p class="cmd-desc">Show the last 10 lines of a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tail -n 20 [file]</code>
+            <p class="cmd-desc">Show the last 20 lines of a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tail -f [file]</code>
+            <p class="cmd-desc">Follow a file in real-time as new lines are added (great for logs)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">wc -l [file]</code>
+            <p class="cmd-desc">Count the number of lines in a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">wc -w [file]</code>
+            <p class="cmd-desc">Count the number of words in a file</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text Processing -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-filter fa-icon"></i>Text Processing</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">grep [pattern] [file]</code>
+            <p class="cmd-desc">Search for lines matching a pattern in a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">grep -r [pattern] [dir]</code>
+            <p class="cmd-desc">Recursively search for pattern in all files under a directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">grep -i [pattern] [file]</code>
+            <p class="cmd-desc">Case-insensitive search</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">grep -n [pattern] [file]</code>
+            <p class="cmd-desc">Show matching lines with their line numbers</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">grep -v [pattern] [file]</code>
+            <p class="cmd-desc">Show lines that do NOT match the pattern (invert match)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">grep -E "[regex]" [file]</code>
+            <p class="cmd-desc">Use extended regular expressions</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">sed 's/old/new/g' [file]</code>
+            <p class="cmd-desc">Replace all occurrences of "old" with "new" in output</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">sed -i 's/old/new/g' [file]</code>
+            <p class="cmd-desc">Replace text in-place inside the file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">awk '{print $1}' [file]</code>
+            <p class="cmd-desc">Print the first whitespace-delimited field of each line</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">awk -F',' '{print $2}' [file]</code>
+            <p class="cmd-desc">Print the second field using comma as delimiter (CSV)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">sort [file]</code>
+            <p class="cmd-desc">Sort lines alphabetically</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">sort -n [file]</code>
+            <p class="cmd-desc">Sort lines numerically</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">sort -u [file]</code>
+            <p class="cmd-desc">Sort and remove duplicate lines</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">uniq [file]</code>
+            <p class="cmd-desc">Remove consecutive duplicate lines (sort first)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">cut -d',' -f1 [file]</code>
+            <p class="cmd-desc">Extract the first comma-separated field from each line</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tr 'a-z' 'A-Z'</code>
+            <p class="cmd-desc">Translate lowercase letters to uppercase (reads from stdin)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">xargs [command]</code>
+            <p class="cmd-desc">Build and execute a command using stdin as arguments</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">diff [file1] [file2]</code>
+            <p class="cmd-desc">Show line-by-line differences between two files</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- I/O Redirection -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-right-left fa-icon"></i>I/O Redirection &amp; Pipes</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">cmd1 | cmd2</code>
+            <p class="cmd-desc">Pipe: send stdout of cmd1 as stdin to cmd2</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">command &gt; file</code>
+            <p class="cmd-desc">Redirect stdout to a file (overwrites existing content)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">command &gt;&gt; file</code>
+            <p class="cmd-desc">Append stdout to a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">command 2&gt; file</code>
+            <p class="cmd-desc">Redirect stderr to a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">command 2&gt;&amp;1</code>
+            <p class="cmd-desc">Redirect stderr to the same destination as stdout</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">command &lt; file</code>
+            <p class="cmd-desc">Redirect a file as stdin to a command</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">command &gt; /dev/null</code>
+            <p class="cmd-desc">Discard stdout output (send to null device)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tee [file]</code>
+            <p class="cmd-desc">Write stdin to both stdout and a file simultaneously</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Information -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-server fa-icon"></i>System Information</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">uname -a</code>
+            <p class="cmd-desc">Show all system information (kernel, hostname, OS, architecture)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">hostname</code>
+            <p class="cmd-desc">Display or set the system's hostname</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">whoami</code>
+            <p class="cmd-desc">Print the current logged-in username</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">id</code>
+            <p class="cmd-desc">Show current user ID, group ID, and group memberships</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">uptime</code>
+            <p class="cmd-desc">Show how long the system has been running and load averages</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">df -h</code>
+            <p class="cmd-desc">Show disk space usage for all mounted filesystems (human-readable)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">du -sh [directory]</code>
+            <p class="cmd-desc">Show the total disk usage of a directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">du -sh * | sort -h</code>
+            <p class="cmd-desc">List sizes of items in current directory, sorted by size</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">free -h</code>
+            <p class="cmd-desc">Show RAM and swap memory usage (human-readable)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">date</code>
+            <p class="cmd-desc">Display the current date and time</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">env</code>
+            <p class="cmd-desc">List all environment variables</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">echo $VAR</code>
+            <p class="cmd-desc">Print the value of an environment variable</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Process Management -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-gears fa-icon"></i>Process Management</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">top</code>
+            <p class="cmd-desc">Real-time interactive process viewer (q to quit)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">htop</code>
+            <p class="cmd-desc">Enhanced interactive process viewer (if installed)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ps aux</code>
+            <p class="cmd-desc">List all running processes with details (CPU, memory, user)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ps aux | grep [name]</code>
+            <p class="cmd-desc">Find a specific process by name</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">kill [PID]</code>
+            <p class="cmd-desc">Send SIGTERM to a process, asking it to terminate gracefully</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">kill -9 [PID]</code>
+            <p class="cmd-desc">Force-kill a process immediately (SIGKILL)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">killall [name]</code>
+            <p class="cmd-desc">Kill all processes matching a name</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">command &amp;</code>
+            <p class="cmd-desc">Run a command in the background</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">jobs</code>
+            <p class="cmd-desc">List all background jobs in the current shell</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">bg [%job]</code>
+            <p class="cmd-desc">Resume a suspended job in the background</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">fg [%job]</code>
+            <p class="cmd-desc">Bring a background job to the foreground</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">nohup command &amp;</code>
+            <p class="cmd-desc">Run a command immune to hangups (persists after logout)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">Ctrl + C</code>
+            <p class="cmd-desc">Interrupt (terminate) the currently running foreground process</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">Ctrl + Z</code>
+            <p class="cmd-desc">Suspend the currently running foreground process</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Permissions -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-lock fa-icon"></i>File Permissions</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">chmod [mode] [file]</code>
+            <p class="cmd-desc">Change file permissions using octal or symbolic mode</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">chmod 755 [file]</code>
+            <p class="cmd-desc">Set rwxr-xr-x (owner: all; group/others: read+execute)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">chmod 644 [file]</code>
+            <p class="cmd-desc">Set rw-r--r-- (owner: read+write; group/others: read only)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">chmod +x [file]</code>
+            <p class="cmd-desc">Add execute permission for all users</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">chmod -R 755 [directory]</code>
+            <p class="cmd-desc">Recursively change permissions for all files in a directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">chown [user]:[group] [file]</code>
+            <p class="cmd-desc">Change the owner and group of a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">chown -R [user]:[group] [dir]</code>
+            <p class="cmd-desc">Recursively change ownership of a directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">umask</code>
+            <p class="cmd-desc">Show or set the default permission mask for new files</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Networking -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-network-wired fa-icon"></i>Networking</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">ping [host]</code>
+            <p class="cmd-desc">Send ICMP packets to test network connectivity to a host</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ping -c 4 [host]</code>
+            <p class="cmd-desc">Send exactly 4 ping packets and stop</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">curl [url]</code>
+            <p class="cmd-desc">Transfer data from or to a URL (prints to stdout by default)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">curl -O [url]</code>
+            <p class="cmd-desc">Download a file, saving it with the original filename</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">curl -X POST -d '{}' [url]</code>
+            <p class="cmd-desc">Send a POST request with a JSON body</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">wget [url]</code>
+            <p class="cmd-desc">Download a file from the internet</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ssh [user]@[host]</code>
+            <p class="cmd-desc">Open an SSH session to a remote host</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ssh -p [port] [user]@[host]</code>
+            <p class="cmd-desc">SSH on a non-standard port</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">scp [file] [user]@[host]:[path]</code>
+            <p class="cmd-desc">Securely copy a file to a remote host</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">scp -r [dir] [user]@[host]:[path]</code>
+            <p class="cmd-desc">Recursively copy a directory to a remote host</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ifconfig</code>
+            <p class="cmd-desc">Show network interface configuration (legacy)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ip addr</code>
+            <p class="cmd-desc">Show network interfaces and IP addresses (modern)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">netstat -tulpn</code>
+            <p class="cmd-desc">Show listening TCP/UDP ports with PID info</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">ss -tulpn</code>
+            <p class="cmd-desc">Show socket statistics (faster modern alternative to netstat)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">nslookup [domain]</code>
+            <p class="cmd-desc">Query DNS to resolve a domain name</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">dig [domain]</code>
+            <p class="cmd-desc">Detailed DNS lookup with query/response info</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compression & Archiving -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-file-zipper fa-icon"></i>Compression &amp; Archiving</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">tar -czf archive.tar.gz [dir]</code>
+            <p class="cmd-desc">Create a gzip-compressed tar archive from a directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tar -xzf archive.tar.gz</code>
+            <p class="cmd-desc">Extract a gzip-compressed tar archive</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tar -xzf archive.tar.gz -C [dir]</code>
+            <p class="cmd-desc">Extract tar archive into a specific directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">tar -tzf archive.tar.gz</code>
+            <p class="cmd-desc">List contents of a tar archive without extracting</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">zip -r archive.zip [dir]</code>
+            <p class="cmd-desc">Create a zip archive from a directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">unzip archive.zip</code>
+            <p class="cmd-desc">Extract a zip archive</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">unzip -l archive.zip</code>
+            <p class="cmd-desc">List contents of a zip archive without extracting</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">gzip [file]</code>
+            <p class="cmd-desc">Compress a file (replaces original with .gz file)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">gunzip [file.gz]</code>
+            <p class="cmd-desc">Decompress a .gz file</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shell & Environment -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-terminal fa-icon"></i>Shell &amp; Environment</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">export VAR=value</code>
+            <p class="cmd-desc">Set an environment variable for the current session</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">echo $VAR</code>
+            <p class="cmd-desc">Print the value of an environment variable</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">unset VAR</code>
+            <p class="cmd-desc">Remove an environment variable</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">alias ll='ls -la'</code>
+            <p class="cmd-desc">Create a shortcut alias for a command</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">source ~/.bashrc</code>
+            <p class="cmd-desc">Reload your shell configuration file without restarting</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">history</code>
+            <p class="cmd-desc">Show the command history for the current shell</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">history | grep [term]</code>
+            <p class="cmd-desc">Search your command history for a specific term</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">which [command]</code>
+            <p class="cmd-desc">Show the full path to a command's executable</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">man [command]</code>
+            <p class="cmd-desc">Open the manual (help) page for a command</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">sudo [command]</code>
+            <p class="cmd-desc">Run a command with superuser (root) privileges</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">!!
+sudo !!</code>
+            <p class="cmd-desc">Repeat the last command; prepend sudo to re-run it as root</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">Ctrl + R</code>
+            <p class="cmd-desc">Reverse-search through command history interactively</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">Ctrl + L</code>
+            <p class="cmd-desc">Clear the terminal screen</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">Tab</code>
+            <p class="cmd-desc">Auto-complete commands, file names, and paths</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package Management -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-box fa-icon"></i>Package Management</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">apt update</code>
+            <p class="cmd-desc">Update the local package list (Debian/Ubuntu)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">apt install [package]</code>
+            <p class="cmd-desc">Install a package (Debian/Ubuntu)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">apt remove [package]</code>
+            <p class="cmd-desc">Remove a package (Debian/Ubuntu)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">apt upgrade</code>
+            <p class="cmd-desc">Upgrade all installed packages (Debian/Ubuntu)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">yum install [package]</code>
+            <p class="cmd-desc">Install a package (RHEL/CentOS/Fedora)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">dnf install [package]</code>
+            <p class="cmd-desc">Install a package using DNF (modern Fedora/RHEL)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">brew install [package]</code>
+            <p class="cmd-desc">Install a package using Homebrew (macOS)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">brew update &amp;&amp; brew upgrade</code>
+            <p class="cmd-desc">Update Homebrew and upgrade all installed packages (macOS)</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.container -->
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-row">
+        <span>QuickCheat — Linux &amp; Git Reference</span>
+        <div style="display:flex;gap:1.5rem;">
+          <a href="index.html">Home</a>
+          <a href="gitcommands.html">Git</a>
+          <a href="troubleshoot.html">Troubleshoot</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

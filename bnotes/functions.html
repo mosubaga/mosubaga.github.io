@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bash Scripting Guide - Functions</title>
     <link href="styles/styles.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 </head>
@@ -15,25 +14,25 @@
     <nav>
         <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="index.html" >Introduction</a></li>
-                <li><a href="basic_syntax.html">Basic Syntax</a></li>
-                <li><a href="control_flow.html">Control Flow</a></li>
-                <li><a href="functions.html" class="active">Functions</a></li>
-                <li><a href="sed_awk.html">Sed & Awk</a></li>
-                <li><a href="best_practices.html">Best Practices</a></li>
-                <li><a href="debugging.html">Debugging</a></li>
+                <li><a href="index.html" ><i class="fa-solid fa-house"></i> Introduction</a></li>
+                <li><a href="basic_syntax.html"><i class="fa-solid fa-code"></i> Basic Syntax</a></li>
+                <li><a href="control_flow.html"><i class="fa-solid fa-code-branch"></i> Control Flow</a></li>
+                <li><a href="functions.html" class="active"><i class="fa-solid fa-cube"></i> Functions</a></li>
+                <li><a href="sed_awk.html"><i class="fa-solid fa-filter"></i> Sed & Awk</a></li>
+                <li><a href="best_practices.html"><i class="fa-solid fa-star"></i> Best Practices</a></li>
+                <li><a href="debugging.html"><i class="fa-solid fa-bug"></i> Debugging</a></li>
             </ul>
         </div>
     </nav>
 
     <main>
         <div class="hero">
-            <h1>Functions</h1>
+            <h1><i class="fa-solid fa-cube"></i> Functions</h1>
             <p>Write reusable, modular code with Bash functions</p>
         </div>
 
         <div class="card">
-            <h2>Defining Functions</h2>
+            <h2><i class="fa-solid fa-pen-to-square"></i> Defining Functions</h2>
             <p>Functions help organize code into reusable blocks. There are two ways to define them:</p>
             
             <div class="code-example">
@@ -53,7 +52,7 @@ greet</code></pre>
         </div></div>
         <br>
         <div class="card">
-            <h2>Function Parameters</h2>
+            <h2><i class="fa-solid fa-sliders"></i> Function Parameters</h2>
             <p>Functions can accept arguments just like scripts:</p>
             <div class="code-example">
                 <pre><code>#!/bin/bash
@@ -80,7 +79,7 @@ print_all() {
 print_all apple banana cherry</code>
             </div>
 
-            <h3>Parameter Variables</h3>
+            <h3><i class="fa-solid fa-list-ol"></i> Parameter Variables</h3>
             <div class="code-example">
                 <pre><code>$1-$9    # First 9 arguments
 ${10}    # 10th argument and beyond
@@ -92,7 +91,7 @@ $0       # Script/function name</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Return Values</h2>
+            <h2><i class="fa-solid fa-right-from-bracket"></i> Return Values</h2>
             <p>Functions can return values using the <code>return</code> statement:</p>
             <div class="code-example">
                 <pre><code>#!/bin/bash
@@ -110,7 +109,7 @@ echo "Sum: $result"</code></pre>
         </div>
         <br>
                 <div class="card">
-            <h2>Local Variables</h2>
+            <h2><i class="fa-solid fa-lock"></i> Local Variables</h2>
             <p>Use local variables to avoid conflicts with global scope:</p>
             
             <div class="code-example">
@@ -139,12 +138,12 @@ echo "Global counter: $counter"  # Now 11</code></pre>
             </div>
 
             <div class="warning-box">
-                <strong>⚠️ Important:</strong> Always use <code>local</code> for function variables to prevent unexpected side effects!
+                <strong><i class="fa-solid fa-triangle-exclamation"></i> Important:</strong> Always use <code>local</code> for function variables to prevent unexpected side effects!
             </div>
         </div>
         <br>
                 <div class="card">
-            <h2>Default Parameter Values</h2>
+            <h2><i class="fa-solid fa-gear"></i> Default Parameter Values</h2>
             
             <div class="code-example">
                 <pre><code># Set default values
@@ -173,7 +172,7 @@ process_file() {
         </div>
         <br>
         <div class="card">
-            <h2>Recursive Functions</h2>
+            <h2><i class="fa-solid fa-arrows-rotate"></i> Recursive Functions</h2>
             
             <div class="code-example">
                 <pre><code># Factorial calculation
@@ -209,7 +208,7 @@ echo "Fibonacci(7) = $(fibonacci 7)"  # 13</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Function Best Practices</h2>
+            <h2><i class="fa-solid fa-star"></i> Function Best Practices</h2>
             
             <div class="code-example">
                 <pre><code>#!/bin/bash
@@ -281,9 +280,9 @@ safe_delete() {
         </div>
         <br>
      <div class="card">
-            <h2>Advanced Function Examples</h2>
+            <h2><i class="fa-solid fa-flask"></i> Advanced Function Examples</h2>
             
-            <h3>Menu System</h3>
+            <h3><i class="fa-solid fa-bars"></i> Menu System</h3>
             <div class="code-example">
                 <pre><code>#!/bin/bash
 
@@ -331,7 +330,7 @@ main() {
 main</code></pre>
             </div>
 
-            <h3>Configuration Loader</h3>
+            <h3><i class="fa-solid fa-gear"></i> Configuration Loader</h3>
             <div class="code-example">
                 <pre><code>#!/bin/bash
 
@@ -368,7 +367,7 @@ echo "Connecting to $DB_HOST:$DB_PORT/$DB_NAME"</code></pre>
     </main>
 
     <footer>
-        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. <i class="fa-solid fa-rocket"></i></p>
     </footer>
     <script>hljs.highlightAll();</script>
     <script>
@@ -405,5 +404,6 @@ echo "Connecting to $DB_HOST:$DB_PORT/$DB_NAME"</code></pre>
             observer.observe(card);
         });
     </script>
+    <script src="js/copy-code.js"></script>
 </body>
 </html>

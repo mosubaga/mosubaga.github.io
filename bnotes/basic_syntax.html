@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bash Scripting Guide - Basic Syntax</title>
     <link href="styles/styles.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 </head>
@@ -15,20 +14,20 @@
     <nav>
         <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="index.html" >Introduction</a></li>
-                <li><a href="basic_syntax.html" class="active">Basic Syntax</a></li>
-                <li><a href="control_flow.html">Control Flow</a></li>
-                <li><a href="functions.html">Functions</a></li>
-                <li><a href="sed_awk.html">Sed & Awk</a></li>
-                <li><a href="best_practices.html">Best Practices</a></li>
-                <li><a href="debugging.html">Debugging</a></li>
+                <li><a href="index.html" ><i class="fa-solid fa-house"></i> Introduction</a></li>
+                <li><a href="basic_syntax.html" class="active"><i class="fa-solid fa-code"></i> Basic Syntax</a></li>
+                <li><a href="control_flow.html"><i class="fa-solid fa-code-branch"></i> Control Flow</a></li>
+                <li><a href="functions.html"><i class="fa-solid fa-cube"></i> Functions</a></li>
+                <li><a href="sed_awk.html"><i class="fa-solid fa-filter"></i> Sed & Awk</a></li>
+                <li><a href="best_practices.html"><i class="fa-solid fa-star"></i> Best Practices</a></li>
+                <li><a href="debugging.html"><i class="fa-solid fa-bug"></i> Debugging</a></li>
             </ul>
         </div>
     </nav>
 
     <main>
         <div class="hero">
-            <h1>Basics of Bash Scripting</h1>
+            <h1><i class="fa-solid fa-code"></i> Basics of Bash Scripting</h1>
             <p>Bash scripts are lines of code that are executed by the Bash shell. They are used to automate tasks and perform repetitive actions.</p>
             <p>Scripts are stored in files with a .sh extension and can be executed by typing the path to the file in the terminal.</p>
             <p>Make your script executable:</p>
@@ -39,7 +38,7 @@
         </div>
 
         <div class="card">
-            <h2>Basic Syntax</h2>
+            <h2><i class="fa-solid fa-code"></i> Basic Syntax</h2>
             <p>First line: The <code>shebang</code> to indicate the interpreter this is a bash script:</p>
             <div class="code-example">
                 <pre><code class="language-bash">#!/bin/bash</code></pre>
@@ -53,14 +52,14 @@ echo "Hello, world!" # This prints a message
         </div>
         <br>
         <div class="card">
-            <h2>Variables</h2>
+            <h2><i class="fa-solid fa-database"></i> Variables</h2>
             <p>Variables are used to store values:</p>
             <div class="code-example">
                 <pre><code class="language-bash">#!/bin/bash
 name="John"
 echo "Hello, $name!"
 </code></pre></div>
-            <h2>User Input</h2>
+            <h2><i class="fa-solid fa-keyboard"></i> User Input</h2>
             <p>Read user input:</p>
             <div class="code-example">
                 <pre><code class="language-bash">#!/bin/bash
@@ -70,7 +69,7 @@ echo "Hello, $name!"
         </div>
         <br>
         <div class="card">
-            <h2>Bash Arrays & Associative Arrays</h2>
+            <h2><i class="fa-solid fa-layer-group"></i> Bash Arrays & Associative Arrays</h2>
             <p>Declare and use arrays where each element has a numeric index (starting at 0).</p>
 
             <div class="code-example">
@@ -102,7 +101,7 @@ fruits+=(mango)
           <li>Always quote expansions when elements can contain whitespace: <code>"${arr[@]}"</code>.</li>
         </ul>
                 
-        <h2>Iterate through an array</h2>
+        <h2><i class="fa-solid fa-rotate"></i> Iterate through an array</h2>
         <div class="code-example">
         <pre><code># iterate values
 for val in "${fruits[@]}"; do
@@ -116,7 +115,7 @@ done
 </code></pre>
 </div>
 
-      <h2>Associative arrays (hashes)</h2>
+      <h2><i class="fa-solid fa-table"></i> Associative arrays (hashes)</h2>
       <p>Associative arrays map string keys to values. Require Bash 4+.</p>
 
       <div class="code-example">
@@ -154,7 +153,7 @@ unset 'user[lang]'
         </div>
         <br>
         <div class="card">
-            <h2>Useful Resources</h2>
+            <h2><i class="fa-solid fa-link"></i> Useful Resources</h2>
             <p>Here are some useful resources to learn more about Bash scripting:</p>
             <ul>
                 <li><a href="https://www.gnu.org/software/bash/manual/bash.html">Bash Manual</a></li>
@@ -165,7 +164,7 @@ unset 'user[lang]'
     </main>
 
     <footer>
-        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. <i class="fa-solid fa-rocket"></i></p>
     </footer>
     <script>hljs.highlightAll();</script>
     <script>
@@ -202,5 +201,6 @@ unset 'user[lang]'
             observer.observe(card);
         });
     </script>
+    <script src="js/copy-code.js"></script>
 </body>
 </html>

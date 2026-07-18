@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bash Scripting Guide - Control Flow</title>
     <link href="styles/styles.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 </head>
@@ -15,25 +14,25 @@
     <nav>
         <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="index.html" >Introduction</a></li>
-                <li><a href="basic_syntax.html">Basic Syntax</a></li>
-                <li><a href="control_flow.html" class="active">Control Flow</a></li>
-                <li><a href="functions.html">Functions</a></li>
-                <li><a href="sed_awk.html">Sed & Awk</a></li>
-                <li><a href="best_practices.html">Best Practices</a></li>
-                <li><a href="debugging.html">Debugging</a></li>
+                <li><a href="index.html" ><i class="fa-solid fa-house"></i> Introduction</a></li>
+                <li><a href="basic_syntax.html"><i class="fa-solid fa-code"></i> Basic Syntax</a></li>
+                <li><a href="control_flow.html" class="active"><i class="fa-solid fa-code-branch"></i> Control Flow</a></li>
+                <li><a href="functions.html"><i class="fa-solid fa-cube"></i> Functions</a></li>
+                <li><a href="sed_awk.html"><i class="fa-solid fa-filter"></i> Sed & Awk</a></li>
+                <li><a href="best_practices.html"><i class="fa-solid fa-star"></i> Best Practices</a></li>
+                <li><a href="debugging.html"><i class="fa-solid fa-bug"></i> Debugging</a></li>
             </ul>
         </div>
     </nav>
 
     <main>
          <div class="hero">
-            <h1>Control Flow</h1>
+            <h1><i class="fa-solid fa-code-branch"></i> Control Flow</h1>
             <p>Master conditional statements and loops in Bash. This page will also introduce you to Regular Expressions in Bash.</p>
         </div>
 
         <div class="card">
-            <h2>If Statements</h2>
+            <h2><i class="fa-solid fa-code-branch"></i> If Statements</h2>
             <p>Conditional execution based on test conditions:</p>
             
             <div class="code-example">
@@ -64,14 +63,14 @@ fi</code></pre>
             </div>
 
             <div class="info-box">
-                <strong>💡 Note:</strong> Always use spaces inside square brackets: <code>[ $var -eq 5 ]</code> not <code>[$var -eq 5]</code>
+                <strong><i class="fa-solid fa-lightbulb"></i> Note:</strong> Always use spaces inside square brackets: <code>[ $var -eq 5 ]</code> not <code>[$var -eq 5]</code>
             </div>
         </div>
         <br>
         <div class="card">
-            <h2>Test Operators</h2>
+            <h2><i class="fa-solid fa-equals"></i> Test Operators</h2>
             
-            <h3>Integer Comparisons</h3>
+            <h3><i class="fa-solid fa-hashtag"></i> Integer Comparisons</h3>
             <div class="code-example">
                 <pre><code>-eq    # Equal to
 -ne    # Not equal to
@@ -85,7 +84,7 @@ fi</code></pre>
 [ $x -gt 10 ]    # Is x greater than 10?</code></pre>
             </div>
 
-            <h3>String Comparisons</h3>
+            <h3><i class="fa-solid fa-font"></i> String Comparisons</h3>
             <div class="code-example">
                 <span class="code-label">BASH</span>
                 <pre><code>=      # Equal to
@@ -101,7 +100,7 @@ fi</code></pre>
 [ -n "$str" ]            # Is string not empty?</code></pre>
             </div>
 
-            <h3>File Tests</h3>
+            <h3><i class="fa-solid fa-file-circle-check"></i> File Tests</h3>
             <div class="code-example">
                 <pre><code>-e     # File exists
 -f     # Is a regular file
@@ -125,7 +124,7 @@ if [ ! -e "file.txt" ]; then
 fi</code></pre>
             </div>
 
-            <h3>Logical Operators</h3>
+            <h3><i class="fa-solid fa-circle-nodes"></i> Logical Operators</h3>
             <div class="code-example">
                 <span class="code-label">BASH</span>
                 <pre><code>&&     # AND
@@ -148,7 +147,7 @@ fi</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Modern Test Syntax [[ ]]</h2>
+            <h2><i class="fa-solid fa-square-check"></i> Modern Test Syntax [[ ]]</h2>
             <p>The double bracket syntax provides more features and is generally preferred:</p>
             
             <div class="code-example">
@@ -175,7 +174,7 @@ fi</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Case Statements</h2>
+            <h2><i class="fa-solid fa-list"></i> Case Statements</h2>
             <p>Multi-way branching for cleaner code:</p>
             
             <div class="code-example">
@@ -235,9 +234,9 @@ esac</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>For Loops</h2>
+            <h2><i class="fa-solid fa-rotate"></i> For Loops</h2>
             
-            <h3>Basic For Loop</h3>
+            <h3><i class="fa-solid fa-rotate"></i> Basic For Loop</h3>
             <div class="code-example">
                 <pre><code># Loop over a list
 for item in apple banana cherry; do
@@ -257,7 +256,7 @@ for fruit in "${fruits[@]}"; do
 done</code></pre>
             </div>
 
-            <h3>C-Style For Loop</h3>
+            <h3><i class="fa-solid fa-c"></i> C-Style For Loop</h3>
             <div class="code-example">
                 <span class="code-label">BASH</span>
                 <pre><code># Traditional for loop
@@ -273,7 +272,7 @@ done
 echo "Liftoff!"</code></pre>
             </div>
 
-            <h3>Looping Through Files</h3>
+            <h3><i class="fa-solid fa-folder-open"></i> Looping Through Files</h3>
             <div class="code-example">
                 <pre><code># Safe way to loop through files with spaces
 while IFS= read -r -d '' file; do
@@ -290,7 +289,7 @@ done</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>While Loops</h2>
+            <h2><i class="fa-solid fa-rotate-right"></i> While Loops</h2>
             <p>Execute commands while a condition is true:</p>
             
             <div class="code-example">
@@ -330,7 +329,7 @@ echo "File found!"</code>
         </div>
         <br>
         <div class="card">
-            <h2>Until Loops</h2>
+            <h2><i class="fa-solid fa-clock"></i> Until Loops</h2>
             <p>Execute commands until a condition becomes true:</p>
             
             <div class="code-example">
@@ -352,7 +351,7 @@ echo "Service is ready!"</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Loop Control</h2>
+            <h2><i class="fa-solid fa-circle-stop"></i> Loop Control</h2>
             
             <div class="code-example">
                 <pre><code># break - exit the loop
@@ -384,7 +383,7 @@ done</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Select Menu</h2>
+            <h2><i class="fa-solid fa-bars"></i> Select Menu</h2>
             <p>Create interactive menus easily:</p>
             
             <div class="code-example">
@@ -416,7 +415,7 @@ done</code></pre>
         <br>
         <div class="card">
                 <section>
-      <h2>1. What is a Regular Expression (regex)?</h2>
+      <h2><i class="fa-solid fa-asterisk"></i> 1. What is a Regular Expression (regex)?</h2>
       <p>
         A <strong>regular expression</strong> is a sequence of characters that forms a search pattern,
         commonly used for string matching, extraction, and text validation.
@@ -424,7 +423,7 @@ done</code></pre>
     </section>
 
     <section>
-      <h2>2. Regex in Bash Scripting</h2>
+      <h2><i class="fa-solid fa-code"></i> 2. Regex in Bash Scripting</h2>
       <ul>
         <li>Bash supports regex in the <code>[[ string =~ regex ]]</code> conditional expression.</li>
         <li>Regex is also widely used in tools like <code>grep</code>, <code>sed</code>, <code>awk</code>.</li>
@@ -435,7 +434,7 @@ done</code></pre>
     </section>
 
     <section>
-      <h2>3. Basic Syntax Examples</h2>
+      <h2><i class="fa-solid fa-align-left"></i> 3. Basic Syntax Examples</h2>
       <ul>
         <li>
           In Bash conditionals:
@@ -453,7 +452,7 @@ fi
     </section>
 
     <section>
-      <h2>4. Common Regex Patterns</h2>
+      <h2><i class="fa-solid fa-list"></i> 4. Common Regex Patterns</h2>
       <table style="width:100%;border-collapse:collapse;font-size:0.96em;">
         <tr>
           <th style="text-align:left;padding:0.45em 0.7em;">Pattern</th>
@@ -475,7 +474,7 @@ fi
     </section>
 
     <section>
-      <h2>5. Practical Bash Regex Matching Example</h2>
+      <h2><i class="fa-solid fa-vial"></i> 5. Practical Bash Regex Matching Example</h2>
       <div class="code-example">
         <pre><code>#!/bin/bash
 
@@ -495,7 +494,7 @@ fi
     </section>
 
     <section>
-      <h2>6. Regex with <code>grep</code> and <code>sed</code></h2>
+      <h2><i class="fa-solid fa-filter"></i> 6. Regex with <code>grep</code> and <code>sed</code></h2>
       <ul>
         <li>
           <strong>Search lines containing a phone number:</strong>
@@ -509,7 +508,7 @@ fi
     </section>
 
     <section>
-      <h2>7. Extracting regex matches in Bash</h2>
+      <h2><i class="fa-solid fa-scissors"></i> 7. Extracting regex matches in Bash</h2>
       <div class="code-example">
         <pre><code>line="My phone: 555-1212"
 if [[ $line =~ ([0-9]{3})-([0-9]{4}) ]]; then
@@ -524,11 +523,11 @@ fi
     <section>
         <!-- Perl and Python One-Liners for Bash Scripting -->
 
-<h2>8. Perl and Python One-Liners for Bash Scripting</h2>
+<h2><i class="fa-solid fa-terminal"></i> 8. Perl and Python One-Liners for Bash Scripting</h2>
 
 <p>Perl and Python one-liners are powerful tools for manipulating text, processing data, and performing quick operations directly from the command line, often used as part of Bash scripts. Here are some useful examples to help streamline your workflow:</p>
 
-<h3>Perl One-Liners</h3>
+<h3><i class="fa-solid fa-p"></i> Perl One-Liners</h3>
 <ul>
   <li><b>Print only lines matching a pattern:</b>
     <pre><code>perl -ne 'print if /pattern/' filename</code></pre>
@@ -544,7 +543,7 @@ fi
   </li>
 </ul>
 
-<h3>Python One-Liners</h3>
+<h3><i class="fa-solid fa-snake"></i> Python One-Liners</h3>
 <ul>
   <li><b>Print lines containing a pattern:</b>
     <pre><code>python3 -c "import sys; [print(line, end='') for line in sys.stdin if 'pattern' in line]" &lt; filename</code></pre>
@@ -564,7 +563,7 @@ fi
     </section>
 
     <section>
-      <h2>9. Resources</h2>
+      <h2><i class="fa-solid fa-link"></i> 9. Resources</h2>
       <ul>
         <li><a href="https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html" target="_blank">Bash Manual: Pattern Matching</a></li>
         <li><a href="https://www.gnu.org/software/grep/manual/grep.html#Regular-Expressions" target="_blank">GNU grep Regular Expressions</a></li>
@@ -576,7 +575,7 @@ fi
     </main>
 
     <footer>
-        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. <i class="fa-solid fa-rocket"></i></p>
     </footer>
     <script>hljs.highlightAll();</script>
     <script>
@@ -613,5 +612,6 @@ fi
             observer.observe(card);
         });
     </script>
+    <script src="js/copy-code.js"></script>
 </body>
 </html>

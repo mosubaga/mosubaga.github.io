@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git Commands — QuickCheat</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+<body>
+
+  <header class="site-header site-header--solid">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="index.html">
+          <i class="fa-solid fa-terminal brand-fa" aria-hidden="true"></i>
+          QuickCheat
+        </a>
+        <div class="nav-links">
+          <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+          <a href="linuxcommands.html"><i class="fa-solid fa-terminal"></i>Linux</a>
+          <a href="gitcommands.html" class="active"><i class="fa-solid fa-code-branch"></i>Git</a>
+          <a href="troubleshoot.html"><i class="fa-solid fa-screwdriver-wrench"></i>Troubleshoot</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>Git Commands</h1>
+      <p>The complete Git workflow — from first init to advanced collaboration — in one place.</p>
+    </div>
+  </div>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- Setup & Config -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-gear fa-icon"></i>Setup &amp; Configuration</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git config --global user.name "[name]"</code>
+            <p class="cmd-desc">Set the name attached to all your commits globally</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git config --global user.email "[email]"</code>
+            <p class="cmd-desc">Set the email attached to all your commits globally</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git config --global color.ui auto</code>
+            <p class="cmd-desc">Enable helpful colorized output in the terminal</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git config --global core.editor [editor]</code>
+            <p class="cmd-desc">Set the default text editor for commit messages (e.g., vim, nano, code)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git config --list</code>
+            <p class="cmd-desc">Show all current Git configuration settings</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git config --global alias.st status</code>
+            <p class="cmd-desc">Create a shorthand alias (e.g., git st = git status)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Repositories -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-folder-plus fa-icon"></i>Create Repositories</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git init</code>
+            <p class="cmd-desc">Initialize a new Git repository in the current directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git init [project-name]</code>
+            <p class="cmd-desc">Create a new directory and initialize a Git repo inside it</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git clone [url]</code>
+            <p class="cmd-desc">Clone a remote repository to a new local directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git clone [url] [directory]</code>
+            <p class="cmd-desc">Clone a remote repository into a specific local directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git clone --depth 1 [url]</code>
+            <p class="cmd-desc">Shallow clone — download only the most recent commit (faster)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage & Snapshot -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-camera fa-icon"></i>Stage &amp; Snapshot</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git status</code>
+            <p class="cmd-desc">Show the working tree status — staged, unstaged, and untracked files</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git add [file]</code>
+            <p class="cmd-desc">Stage a specific file for the next commit</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git add .</code>
+            <p class="cmd-desc">Stage all changes (new, modified, deleted) in the current directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git add -p</code>
+            <p class="cmd-desc">Interactively stage chunks of changes (patch mode)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git diff</code>
+            <p class="cmd-desc">Show unstaged changes — what's in the working tree vs the index</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git diff --staged</code>
+            <p class="cmd-desc">Show staged changes — what's in the index vs the last commit</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git reset [file]</code>
+            <p class="cmd-desc">Unstage a file while keeping its changes in the working tree</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git restore --staged [file]</code>
+            <p class="cmd-desc">Unstage a file (modern equivalent of git reset [file])</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git restore [file]</code>
+            <p class="cmd-desc">Discard changes in the working tree for a file</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git commit -m "[message]"</code>
+            <p class="cmd-desc">Commit staged changes with a descriptive message</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git commit -am "[message]"</code>
+            <p class="cmd-desc">Stage all tracked changes and commit in one step</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git commit --amend</code>
+            <p class="cmd-desc">Modify the most recent commit (message or staged content)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git commit --amend --no-edit</code>
+            <p class="cmd-desc">Add staged changes to the last commit without changing its message</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Branching -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-code-branch fa-icon"></i>Branching</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git branch</code>
+            <p class="cmd-desc">List all local branches (* marks the current branch)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git branch -a</code>
+            <p class="cmd-desc">List all local and remote-tracking branches</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git branch [name]</code>
+            <p class="cmd-desc">Create a new branch at the current commit (does not switch)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git branch -d [name]</code>
+            <p class="cmd-desc">Delete a branch (only if it has been merged)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git branch -D [name]</code>
+            <p class="cmd-desc">Force-delete a branch regardless of merge status</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git branch -m [old] [new]</code>
+            <p class="cmd-desc">Rename a branch</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git checkout [branch]</code>
+            <p class="cmd-desc">Switch to an existing branch</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git checkout -b [name]</code>
+            <p class="cmd-desc">Create a new branch and switch to it immediately</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git switch [branch]</code>
+            <p class="cmd-desc">Switch to a branch (modern alternative to git checkout)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git switch -c [name]</code>
+            <p class="cmd-desc">Create and switch to a new branch (modern syntax)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git merge [branch]</code>
+            <p class="cmd-desc">Merge the specified branch into the current branch</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git merge --no-ff [branch]</code>
+            <p class="cmd-desc">Merge without fast-forwarding (preserves branch history)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git rebase [branch]</code>
+            <p class="cmd-desc">Reapply commits from current branch on top of another branch</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git rebase -i HEAD~[n]</code>
+            <p class="cmd-desc">Interactively rebase the last n commits (squash, reorder, edit)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git cherry-pick [commit]</code>
+            <p class="cmd-desc">Apply the changes from a specific commit onto the current branch</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stash -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-box-archive fa-icon"></i>Stash</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git stash</code>
+            <p class="cmd-desc">Stash current uncommitted changes and restore a clean working tree</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git stash push -m "[message]"</code>
+            <p class="cmd-desc">Stash changes with a descriptive message</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git stash list</code>
+            <p class="cmd-desc">List all saved stashes</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git stash pop</code>
+            <p class="cmd-desc">Apply the most recent stash and remove it from the stash list</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git stash apply stash@{n}</code>
+            <p class="cmd-desc">Apply a specific stash without removing it from the list</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git stash drop stash@{n}</code>
+            <p class="cmd-desc">Delete a specific stash entry</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git stash clear</code>
+            <p class="cmd-desc">Remove all stash entries</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git stash show -p stash@{n}</code>
+            <p class="cmd-desc">Show the diff of a specific stash entry</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspect & History -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-clock-rotate-left fa-icon"></i>Inspect &amp; Review History</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git log</code>
+            <p class="cmd-desc">Show the full commit history with author, date, and message</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git log --oneline</code>
+            <p class="cmd-desc">Show a compact one-line-per-commit history</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git log --oneline --graph --all</code>
+            <p class="cmd-desc">Show a visual branch graph of the full history</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git log --follow [file]</code>
+            <p class="cmd-desc">Show commit history for a specific file, following renames</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git log -n 10</code>
+            <p class="cmd-desc">Show only the last 10 commits</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git log --author="[name]"</code>
+            <p class="cmd-desc">Show commits by a specific author</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git log --since="2 weeks ago"</code>
+            <p class="cmd-desc">Show commits from the last two weeks</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git diff [branch1]...[branch2]</code>
+            <p class="cmd-desc">Show changes between two branches</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git show [commit]</code>
+            <p class="cmd-desc">Show the changes introduced by a specific commit</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git blame [file]</code>
+            <p class="cmd-desc">Show who last modified each line of a file and when</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git shortlog -sn</code>
+            <p class="cmd-desc">Show commit count per author, sorted by number of commits</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git reflog</code>
+            <p class="cmd-desc">Show a log of all HEAD movements — useful for recovering lost commits</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Undo Changes -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-rotate-left fa-icon"></i>Undo Changes</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git reset HEAD~1</code>
+            <p class="cmd-desc">Undo the last commit, keeping all changes unstaged</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git reset --soft HEAD~1</code>
+            <p class="cmd-desc">Undo the last commit, keeping all changes staged</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git reset --hard HEAD~1</code>
+            <p class="cmd-desc">Undo the last commit and discard all changes (destructive)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git revert [commit]</code>
+            <p class="cmd-desc">Create a new commit that undoes changes from a specific commit (safe for shared history)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git restore [file]</code>
+            <p class="cmd-desc">Discard changes to a file in the working directory</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git restore --staged [file]</code>
+            <p class="cmd-desc">Unstage a file (keep the working tree changes)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git clean -fd</code>
+            <p class="cmd-desc">Remove untracked files and directories from the working tree</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git clean -n</code>
+            <p class="cmd-desc">Dry-run — show which files would be removed by git clean</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ignore Files -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-eye-slash fa-icon"></i>Ignore Files</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">.gitignore</code>
+            <p class="cmd-desc">File listing patterns of files/dirs Git should not track</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git ls-files --others --ignored --exclude-standard</code>
+            <p class="cmd-desc">List all ignored files in the repository</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git check-ignore -v [file]</code>
+            <p class="cmd-desc">Show which .gitignore rule is causing a file to be ignored</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git rm --cached [file]</code>
+            <p class="cmd-desc">Stop tracking a file without deleting it from disk</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-tag fa-icon"></i>Tags</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git tag</code>
+            <p class="cmd-desc">List all tags in the repository</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git tag [name]</code>
+            <p class="cmd-desc">Create a lightweight tag at the current commit</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git tag -a [name] -m "[message]"</code>
+            <p class="cmd-desc">Create an annotated tag with a message (recommended for releases)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git tag -a [name] [commit]</code>
+            <p class="cmd-desc">Tag a specific past commit</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git push origin [tag]</code>
+            <p class="cmd-desc">Push a specific tag to the remote repository</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git push origin --tags</code>
+            <p class="cmd-desc">Push all local tags to the remote repository</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git tag -d [name]</code>
+            <p class="cmd-desc">Delete a local tag</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git push origin --delete [tag]</code>
+            <p class="cmd-desc">Delete a tag from the remote repository</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Synchronize Remotes -->
+      <div class="cmd-section">
+        <h2 class="cmd-section-title"><i class="fa-solid fa-cloud-arrow-up fa-icon"></i>Synchronize with Remote</h2>
+        <div class="cmd-grid">
+          <div class="cmd-card">
+            <code class="cmd-code">git remote -v</code>
+            <p class="cmd-desc">List all remote connections with their fetch/push URLs</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git remote add [name] [url]</code>
+            <p class="cmd-desc">Add a new remote connection named "name"</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git remote remove [name]</code>
+            <p class="cmd-desc">Remove a remote connection</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git remote set-url origin [url]</code>
+            <p class="cmd-desc">Change the URL of the origin remote</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git fetch [remote]</code>
+            <p class="cmd-desc">Download changes from remote without merging into local branch</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git fetch --all</code>
+            <p class="cmd-desc">Fetch from all configured remote repositories</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git pull</code>
+            <p class="cmd-desc">Fetch from the tracking remote and merge into the current branch</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git pull --rebase</code>
+            <p class="cmd-desc">Fetch and rebase local commits on top of the remote (cleaner history)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git push [remote] [branch]</code>
+            <p class="cmd-desc">Push local branch to the specified remote</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git push -u origin [branch]</code>
+            <p class="cmd-desc">Push and set the upstream tracking branch (needed once per new branch)</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git push --force-with-lease</code>
+            <p class="cmd-desc">Force push safely — aborts if remote has changes you haven't fetched</p>
+          </div>
+          <div class="cmd-card">
+            <code class="cmd-code">git push origin --delete [branch]</code>
+            <p class="cmd-desc">Delete a branch on the remote repository</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.container -->
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-row">
+        <span>QuickCheat — Linux &amp; Git Reference</span>
+        <div style="display:flex;gap:1.5rem;">
+          <a href="index.html">Home</a>
+          <a href="linuxcommands.html">Linux</a>
+          <a href="troubleshoot.html">Troubleshoot</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

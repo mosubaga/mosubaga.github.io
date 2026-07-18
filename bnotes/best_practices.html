@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bash Scripting Guide - Best Practices</title>
     <link href="styles/styles.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/srcery.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 </head>
@@ -15,25 +14,25 @@
     <nav>
         <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="index.html">Introduction</a></li>
-                <li><a href="basic_syntax.html">Basic Syntax</a></li>
-                <li><a href="control_flow.html">Control Flow</a></li>
-                <li><a href="functions.html">Functions</a></li>
-                <li><a href="sed_awk.html">Sed & Awk</a></li>
-                <li><a href="best_practices.html" class="active">Best Practices</a></li>
-                <li><a href="debugging.html">Debugging</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Introduction</a></li>
+                <li><a href="basic_syntax.html"><i class="fa-solid fa-code"></i> Basic Syntax</a></li>
+                <li><a href="control_flow.html"><i class="fa-solid fa-code-branch"></i> Control Flow</a></li>
+                <li><a href="functions.html"><i class="fa-solid fa-cube"></i> Functions</a></li>
+                <li><a href="sed_awk.html"><i class="fa-solid fa-filter"></i> Sed & Awk</a></li>
+                <li><a href="best_practices.html" class="active"><i class="fa-solid fa-star"></i> Best Practices</a></li>
+                <li><a href="debugging.html"><i class="fa-solid fa-bug"></i> Debugging</a></li>
             </ul>
         </div>
     </nav>
 
     <main>
         <div class="hero">
-            <h1>Best Practices</h1>
+            <h1><i class="fa-solid fa-star"></i> Best Practices</h1>
             <p>Write clean, maintainable, and robust Bash scripts</p>
         </div>
         
        <div class="card">
-            <h2>Script Structure</h2>
+            <h2><i class="fa-solid fa-sitemap"></i> Script Structure</h2>
             
             <div class="code-example">
                 <pre><code>#!/usr/bin/env bash
@@ -74,7 +73,7 @@ main "$@"</code></pre>
             </div>
 
             <div class="info-box">
-                <strong>💡 Key Elements:</strong>
+                <strong><i class="fa-solid fa-lightbulb"></i> Key Elements:</strong>
                 <ul>
                     <li>Clear shebang with <code>/usr/bin/env bash</code></li>
                     <li>Comprehensive header comments</li>
@@ -86,9 +85,9 @@ main "$@"</code></pre>
         </div>
         <br>
          <div class="card">
-            <h2>Error Handling</h2>
+            <h2><i class="fa-solid fa-triangle-exclamation"></i> Error Handling</h2>
             
-            <h3>Use set Options</h3>
+            <h3><i class="fa-solid fa-toggle-on"></i> Use set Options</h3>
             <div class="code-example">
                 <pre><code>#!/bin/bash
 
@@ -105,7 +104,7 @@ set -o pipefail
 set -euo pipefail</code></pre>
             </div>
 
-            <h3>Trap Errors</h3>
+            <h3><i class="fa-solid fa-circle-exclamation"></i> Trap Errors</h3>
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
                 <pre><code>#!/bin/bash
@@ -129,7 +128,7 @@ trap cleanup EXIT ERR
 # Script logic here</code></pre>
             </div>
 
-            <h3>Check Command Success</h3>
+            <h3><i class="fa-solid fa-circle-check"></i> Check Command Success</h3>
             <div class="comparison">
                 <div class="good-box">
                     <h4>✓ Good</h4>
@@ -159,9 +158,9 @@ docker ps</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Variable Naming and Quoting</h2>
+            <h2><i class="fa-solid fa-tag"></i> Variable Naming and Quoting</h2>
             
-            <h3>Always Quote Variables</h3>
+            <h3><i class="fa-solid fa-quote-right"></i> Always Quote Variables</h3>
             <div class="comparison">
                 <div class="good-box">
                     <h4>✓ Good</h4>
@@ -191,7 +190,7 @@ done</code></pre>
                 </div>
             </div>
 
-            <h3>Use Meaningful Variable Names</h3>
+            <h3><i class="fa-solid fa-tag"></i> Use Meaningful Variable Names</h3>
             <div class="comparison">
                 <div class="good-box">
                     <h4>✓ Good</h4>
@@ -219,7 +218,7 @@ MAX=100</code></pre>
                 </div>
             </div>
 
-            <h3>Use readonly for Constants</h3>
+            <h3><i class="fa-solid fa-lock"></i> Use readonly for Constants</h3>
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
                 <pre><code>readonly API_URL="https://api.example.com"
@@ -232,7 +231,7 @@ readonly BACKUP_DIR="/var/backups"
         </div>
         <br>
         <div class="card">
-            <h2>Function Best Practices</h2>
+            <h2><i class="fa-solid fa-puzzle-piece"></i> Function Best Practices</h2>
             
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
@@ -287,7 +286,7 @@ process_file() {
     </div>
     <br>
     <div class="card">
-            <h2>Input Validation</h2>
+            <h2><i class="fa-solid fa-shield-halved"></i> Input Validation</h2>
             
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
@@ -328,7 +327,7 @@ fi</code></pre>
         </div>
 <br>
 <div class="card">
-            <h2>Safe File Operations</h2>
+            <h2><i class="fa-solid fa-shield"></i> Safe File Operations</h2>
             
             <div class="comparison">
                 <div class="good-box">
@@ -354,7 +353,7 @@ process_data > final_file.txt</code></pre>
                 </div>
             </div>
 
-            <h3>Safe Directory Operations</h3>
+            <h3><i class="fa-solid fa-folder-open"></i> Safe Directory Operations</h3>
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
                 <pre><code># Change directory safely
@@ -373,7 +372,7 @@ cd "$directory" || {
         </div>
 <br>
         <div class="card">
-            <h2>Logging and Output</h2>
+            <h2><i class="fa-solid fa-file-lines"></i> Logging and Output</h2>
             
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
@@ -414,7 +413,7 @@ log_debug "Variable value: $var"
         </div>
 <br>
         <div class="card">
-            <h2>Command Substitution</h2>
+            <h2><i class="fa-solid fa-terminal"></i> Command Substitution</h2>
             
             <div class="comparison">
                 <div class="good-box">
@@ -441,7 +440,7 @@ backup_name="backup-`date +%Y%m%d`.tar.gz"</code></pre>
         </div>
 <br>
         <div class="card">
-            <h2>Testing and Conditionals</h2>
+            <h2><i class="fa-solid fa-vial"></i> Testing and Conditionals</h2>
             
             <div class="comparison">
                 <div class="good-box">
@@ -483,7 +482,7 @@ fi</code></pre>
         </div>
         <br>
  <div class="card">
-            <h2>Performance Tips</h2>
+            <h2><i class="fa-solid fa-gauge-high"></i> Performance Tips</h2>
             
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
@@ -518,7 +517,7 @@ done</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Security Best Practices</h2>
+            <h2><i class="fa-solid fa-lock"></i> Security Best Practices</h2>
             
             <div class="code-example good-example">
                 <span class="code-label">✓ GOOD</span>
@@ -553,7 +552,7 @@ DB_PASSWORD="${DB_PASSWORD:-$(cat /etc/db_password)}"</code></pre>
         </div>
         <br>
         <div class="card">
-            <h2>Script Template</h2>
+            <h2><i class="fa-solid fa-file-code"></i> Script Template</h2>
             <p>Here's a comprehensive template following all best practices:</p>
             
             <div class="code-example good-example">
@@ -682,7 +681,7 @@ main "$@"</code></pre>
     </main>
 
     <footer>
-        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. 🚀</p>
+        <p>&copy; 2025 Bash Scripting Guide. Learn, Practice, Master. <i class="fa-solid fa-rocket"></i></p>
     </footer>
     <script>hljs.highlightAll();</script>
     <script>
@@ -719,5 +718,6 @@ main "$@"</code></pre>
             observer.observe(card);
         });
     </script>
+    <script src="js/copy-code.js"></script>
 </body>
 </html>
