@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Engineering for Test Agents — Playwright AI Lab</title>
+  <meta name="description" content="Answering: how can Context Engineering be used to build AI agents that write and maintain Playwright tests without drowning a local LLM in snapshot data?">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-flask-vial"></i></span>
+        <span>Playwright AI Lab</span>
+      </a>
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="primary-nav-links" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="site-nav__links" id="primary-nav-links">
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="playwright-mcp.html"><i class="fa-solid fa-plug"></i>Playwright MCP</a>
+        <a href="other-mcp.html"><i class="fa-solid fa-server"></i>Other MCP</a>
+        <a href="subagents.html"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html" aria-current="page"><i class="fa-solid fa-brain"></i>Context Eng</a>
+        <a href="loopeng.html"><i class="fa-solid fa-arrows-rotate"></i>Loop Eng</a>
+        <a href="ai-agents.html"><i class="fa-solid fa-users-gear"></i>AI Agents</a>
+        <a href="maintenance.html"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge"><i class="fa-solid fa-circle-question"></i>&nbsp; Question 4</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Context Engineering for Test Agents
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        A raw <code>browser_snapshot</code> of a real page can be thousands of tokens of accessibility tree.
+        Feed that in full, every call, across a growing test suite, and a small local model runs out of room
+        to think — or starts skimming and hallucinating selectors. Context Engineering is what keeps test
+        run #500 as reliable as test run #1.
+      </p>
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Find concepts, then press Enter…"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- The problem -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-triangle-exclamation h-icon"></i>The Problem: Snapshots Are Big, Context Windows Aren't
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Why It Matters</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        A local model has a smaller, more crowded context window than a hosted frontier model, and suffers
+        from <strong>context rot</strong> — comprehension quietly degrading as input grows — sooner. An agent
+        that dumps a full page snapshot, the whole existing test file, and a long failure history into every
+        prompt will eventually spend most of its context re-reading things it already saw instead of fixing
+        the one broken locator in front of it.
+      </p>
+    </div>
+
+    <!-- Three domains applied -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-brain h-icon"></i>The Three Domains, Applied to Test Agents</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <i class="fa-solid fa-download card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Acquisition</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Pull only the subtree of the accessibility snapshot relevant to the component under test — the
+          <code>&lt;nav&gt;</code>, not the whole page — plus the one failing test's error, never the full CI log.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <i class="fa-solid fa-gears card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Processing</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Subagent isolation (see <a href="subagents.html">Subagents</a>) keeps the Fixer from ever seeing the
+          Reviewer's rules, and lets the Flake Triager's rerun summary feed the Fixer only when it's a real
+          regression — not on every flaky blip.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <i class="fa-solid fa-folder-tree card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Management</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Long-lived state — known-good selectors, known-flaky tests — lives outside the LLM entirely, in a
+          small JSON or SQLite store, and only the relevant slice is ever loaded into a prompt.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Practical strategies -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-list-check h-icon"></i>Three Strategies That Do the Work</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <i class="fa-solid fa-rotate card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Per-Test Context Reset</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Every spec file gets a fresh context. The Fixer never carries yesterday's failing test into today's
+          — each run starts from the current error and the current snapshot only.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <i class="fa-solid fa-scissors card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Snapshot Trimming</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Filter the accessibility tree to the region around the element the test cares about, instead of
+          passing the entire page every time a selector needs re-checking.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <i class="fa-solid fa-book-bookmark card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Selector Knowledge Base</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Known-good locators for common elements (nav, footer, hero) are cached once and reused, so the
+          Generator doesn't re-derive them from a full snapshot for every new spec file.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Context budget -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-scale-balanced h-icon"></i>The Fixer's Context Budget
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Practical Guide</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        What actually goes into the Fixer's prompt for one failing test, in priority order:
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-book-bookmark"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Role &amp; rules</strong> — the Fixer's fixed system prompt (never touch the assertion).</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-triangle-exclamation"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>The one error message</strong> — locator timeout, expected vs. actual — not the full test log.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-mint);"><i class="fa-solid fa-code"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>The failing spec file</strong> — just that file, not the whole <code>tests/</code> tree.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-yellow);"><i class="fa-solid fa-crop-simple"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>A trimmed snapshot</strong> — the subtree around the last-known-good selector, capped by token budget.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-code"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Output format</strong> — return only the patched locator line, not a full file rewrite.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-code h-icon"></i>Trimming a Snapshot and Caching Selectors
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Two habits keep a run both correct and fast: capping the accessibility tree to a token budget instead
+        of shipping the whole thing, and reading known selectors from a small cache before ever asking the
+        model to re-derive them.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">context-budget.ts</span>
+      </div>
+      <pre><span class="kw">import</span> { readFileSync, writeFileSync, existsSync } <span class="kw">from</span> <span class="st">'fs'</span>;
+
+<span class="kw">const</span> MAX_SNAPSHOT_WORDS = <span class="ty">600</span>; <span class="cm">// keep the snapshot from crowding out the actual error</span>
+<span class="kw">const</span> CACHE_PATH = <span class="st">'.cache/selectors.json'</span>;
+
+<span class="kw">interface</span> SelectorCache {
+  [component: <span class="ty">string</span>]: <span class="ty">string</span>;
+}
+
+<span class="kw">function</span> <span class="fn">loadSelectorCache</span>(): SelectorCache {
+  <span class="cm">// Known-good locators, reused instead of re-derived from a full snapshot.</span>
+  <span class="kw">return</span> <span class="fn">existsSync</span>(CACHE_PATH) ? JSON.<span class="fn">parse</span>(<span class="fn">readFileSync</span>(CACHE_PATH, <span class="st">'utf-8'</span>)) : {};
+}
+
+<span class="kw">function</span> <span class="fn">saveSelector</span>(component: <span class="ty">string</span>, locator: <span class="ty">string</span>): <span class="ty">void</span> {
+  <span class="kw">const</span> cache = <span class="fn">loadSelectorCache</span>();
+  cache[component] = locator;
+  <span class="fn">writeFileSync</span>(CACHE_PATH, JSON.<span class="fn">stringify</span>(cache, <span class="kw">null</span>, <span class="ty">2</span>));
+}
+
+<span class="kw">function</span> <span class="fn">trimSnapshot</span>(snapshot: <span class="ty">string</span>, maxWords = MAX_SNAPSHOT_WORDS): <span class="ty">string</span> {
+  <span class="kw">const</span> words = snapshot.<span class="fn">split</span>(<span class="cm">/\s+/</span>);
+  <span class="kw">return</span> words.<span class="fn">length</span> &lt;= maxWords ? snapshot : words.<span class="fn">slice</span>(<span class="ty">0</span>, maxWords).<span class="fn">join</span>(<span class="st">' '</span>) + <span class="st">' …(truncated)'</span>;
+}
+
+<span class="kw">function</span> <span class="fn">buildFixerPrompt</span>(errorMessage: <span class="ty">string</span>, specFile: <span class="ty">string</span>, fullSnapshot: <span class="ty">string</span>): <span class="ty">string</span> {
+  <span class="kw">return</span> (
+    <span class="cm">`Error:\n${errorMessage}\n\n`</span> +
+    <span class="cm">`Spec file:\n${specFile}\n\n`</span> +
+    <span class="cm">`Relevant snapshot:\n${trimSnapshot(fullSnapshot)}`</span>
+  );
+}</pre>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <a class="kawaii-btn" href="loopeng.html">Next: Loop Engineering <i class="fa-solid fa-arrow-right"></i></a>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i>Back to Top
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      <i class="fa-solid fa-book"></i>&nbsp; Sources:
+      <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Playwright MCP snapshot format</a> &middot;
+      <a href="https://github.com/ollama/ollama/blob/main/docs/api.md" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Ollama API docs</a>
+    </footer>
+
+  </main>
+
+  <script src="js/nav.js"></script>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+  <script src="js/search.js"></script>
+</body>
+</html>

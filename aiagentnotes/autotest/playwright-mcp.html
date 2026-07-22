@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setting Up Playwright MCP with a Local LLM — Playwright AI Lab</title>
+  <meta name="description" content="Answering: how do you set up Playwright MCP on a local LLM, and how can you use it to write automated Playwright tests against a real site?">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+    .mcp-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--kawaii-text);
+    }
+    .mcp-table th, .mcp-table td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--kawaii-border);
+      vertical-align: top;
+    }
+    .mcp-table th {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      opacity: 0.8;
+    }
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--kawaii-white);
+      border: 2px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 10px 14px;
+    }
+    .pipeline-arrow {
+      text-align: center;
+      color: var(--kawaii-border);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-flask-vial"></i></span>
+        <span>Playwright AI Lab</span>
+      </a>
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="primary-nav-links" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="site-nav__links" id="primary-nav-links">
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="playwright-mcp.html" aria-current="page"><i class="fa-solid fa-plug"></i>Playwright MCP</a>
+        <a href="other-mcp.html"><i class="fa-solid fa-server"></i>Other MCP</a>
+        <a href="subagents.html"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html"><i class="fa-solid fa-brain"></i>Context Eng</a>
+        <a href="loopeng.html"><i class="fa-solid fa-arrows-rotate"></i>Loop Eng</a>
+        <a href="ai-agents.html"><i class="fa-solid fa-users-gear"></i>AI Agents</a>
+        <a href="maintenance.html"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge"><i class="fa-solid fa-circle-question"></i>&nbsp; Question 1</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Setting Up Playwright MCP on a Local LLM
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        Ollama doesn't speak MCP on its own — it's a chat/tool-calling API. <strong>Playwright MCP</strong> is
+        a standalone server that exposes a real browser as MCP tools. The bridge between them is a small
+        TypeScript harness: it lists Playwright MCP's tools, hands them to Ollama as function-calling tools,
+        and forwards every tool call the model makes back to the browser.
+      </p>
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Find concepts, then press Enter…"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- What Playwright MCP is -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-circle-info h-icon"></i>What Playwright MCP Actually Gives You
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">@playwright/mcp</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener">Microsoft's Playwright
+        MCP server</a> drives a real Chromium/Firefox/WebKit instance and exposes it as callable tools — an
+        accessibility-tree <strong>snapshot</strong> instead of raw HTML, so a model gets a compact, structured
+        view of the page it can reason about, click into, and type into, without ever needing pixel-level vision.
+      </p>
+    </div>
+
+    <!-- Install steps -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-download h-icon"></i>Installing the Pieces</h2>
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);">1</span>
+          <span><code>npm init -y &amp;&amp; npm i -D @playwright/test @playwright/mcp typescript</code></span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-purple);">2</span>
+          <span><code>npx playwright install</code> — downloads the actual browser binaries</span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-mint);">3</span>
+          <span><code>ollama pull qwen2.5:7b</code> — a local model with tool-calling support</span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-blue);">4</span>
+          <span><code>npm i -D @modelcontextprotocol/sdk ollama</code> — the client libraries for the harness</span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);">5</span>
+          <span>Run the harness — it launches <code>@playwright/mcp</code> over stdio and starts chatting</span>
+        </div>
+      </div>
+      <p style="color: var(--kawaii-text); margin: 1rem 0 0;">
+        Not every local model supports tool calling reliably — <code>qwen2.5</code>, <code>qwen3</code>,
+        <code>llama3.1</code>, and <code>mistral-nemo</code> all do. Smaller quantizations of the same model
+        family also work but call tools less reliably; test with a real prompt before trusting one in a loop.
+      </p>
+    </div>
+
+    <!-- MCP client config -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-gears h-icon"></i>Pointing an MCP Client at the Server
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Config</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        If you're driving Playwright MCP from an MCP-native host (Claude Code, Cursor, Claude Desktop) rather
+        than a custom harness, this is the entire setup — one entry in its MCP config file.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">mcp.json</span>
+      </div>
+      <pre>{
+  <span class="st">"mcpServers"</span>: {
+    <span class="st">"playwright"</span>: {
+      <span class="st">"command"</span>: <span class="st">"npx"</span>,
+      <span class="st">"args"</span>: [<span class="st">"@playwright/mcp@latest"</span>, <span class="st">"--headless"</span>]
+    }
+  }
+}</pre>
+    </div>
+
+    <!-- Custom Ollama harness -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-code h-icon"></i>Wiring Ollama to Playwright MCP
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Since Ollama can't launch MCP servers itself, this harness does three things: start
+        <code>@playwright/mcp</code> as a subprocess over stdio, translate its tool list into the schema
+        Ollama's <code>chat()</code> expects, and loop — feed the model's tool calls back into MCP until it
+        stops calling tools and returns a final answer.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">agent.ts</span>
+      </div>
+      <pre><span class="kw">import</span> { Client } <span class="kw">from</span> <span class="st">'@modelcontextprotocol/sdk/client/index.js'</span>;
+<span class="kw">import</span> { StdioClientTransport } <span class="kw">from</span> <span class="st">'@modelcontextprotocol/sdk/client/stdio.js'</span>;
+<span class="kw">import</span> ollama <span class="kw">from</span> <span class="st">'ollama'</span>;
+
+<span class="kw">const</span> transport = <span class="kw">new</span> <span class="fn">StdioClientTransport</span>({
+  command: <span class="st">'npx'</span>,
+  args: [<span class="st">'@playwright/mcp@latest'</span>, <span class="st">'--headless'</span>],
+});
+
+<span class="kw">const</span> mcp = <span class="kw">new</span> <span class="fn">Client</span>({ name: <span class="st">'ollama-playwright-agent'</span>, version: <span class="st">'1.0.0'</span> });
+<span class="kw">await</span> mcp.<span class="fn">connect</span>(transport);
+
+<span class="cm">// Translate MCP tool definitions into the schema Ollama expects.</span>
+<span class="kw">const</span> { tools } = <span class="kw">await</span> mcp.<span class="fn">listTools</span>();
+<span class="kw">const</span> ollamaTools = tools.<span class="fn">map</span>((t) => ({
+  type: <span class="st">'function'</span> <span class="kw">as const</span>,
+  function: { name: t.name, description: t.description, parameters: t.inputSchema },
+}));
+
+<span class="kw">const</span> messages = [
+  {
+    role: <span class="st">'system'</span>,
+    content:
+      <span class="st">'You write Playwright TypeScript tests. Use the browser tools to inspect the '</span> +
+      <span class="st">'real page before writing a locator — never guess selectors.'</span>,
+  },
+  {
+    role: <span class="st">'user'</span>,
+    content:
+      <span class="st">'Open https://mosubaga.github.io, snapshot the homepage, and write a '</span> +
+      <span class="st">'Playwright test that asserts the primary nav is visible.'</span>,
+  },
+];
+
+<span class="kw">while</span> (<span class="kw">true</span>) {
+  <span class="kw">const</span> response = <span class="kw">await</span> ollama.<span class="fn">chat</span>({ model: <span class="st">'qwen2.5:7b'</span>, messages, tools: ollamaTools });
+  messages.<span class="fn">push</span>(response.message);
+
+  <span class="kw">if</span> (!response.message.tool_calls?.length) {
+    console.<span class="fn">log</span>(response.message.content); <span class="cm">// final answer — the generated test</span>
+    <span class="kw">break</span>;
+  }
+
+  <span class="kw">for</span> (<span class="kw">const</span> call <span class="kw">of</span> response.message.tool_calls) {
+    <span class="kw">const</span> result = <span class="kw">await</span> mcp.<span class="fn">callTool</span>({
+      name: call.function.name,
+      arguments: call.function.arguments,
+    });
+    messages.<span class="fn">push</span>({ role: <span class="st">'tool'</span>, content: JSON.<span class="fn">stringify</span>(result.content) });
+  }
+}</pre>
+    </div>
+
+    <!-- Key tools table -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-toolbox h-icon"></i>Tools an Agent Actually Calls
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Reference</span>
+      </h2>
+      <div style="overflow-x: auto;">
+        <table class="mcp-table">
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Used for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>browser_navigate</code></td>
+              <td>Open <code>https://mosubaga.github.io</code> or a specific route in it.</td>
+            </tr>
+            <tr>
+              <td><code>browser_snapshot</code></td>
+              <td>Get a structured accessibility tree — this is what the model actually reads to find locators.</td>
+            </tr>
+            <tr>
+              <td><code>browser_click</code> / <code>browser_type</code></td>
+              <td>Exercise the page the way the test will, to confirm a flow works before writing it down.</td>
+            </tr>
+            <tr>
+              <td><code>browser_take_screenshot</code></td>
+              <td>Visual sanity check when the accessibility tree alone doesn't explain a layout.</td>
+            </tr>
+            <tr>
+              <td><code>browser_console_messages</code></td>
+              <td>Surface JS errors — feeds directly into the bug-hunter subagent on the <a href="maintenance.html">Maintenance page</a>.</td>
+            </tr>
+            <tr>
+              <td><code>browser_network_requests</code></td>
+              <td>Confirm which requests a page actually fires, useful for asserting on API calls in a test.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-check h-icon"></i>What You Get Back
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Result</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        Because the model actually looked at the live accessibility tree via <code>browser_snapshot</code>
+        instead of guessing, the test it writes back matches real markup — see the
+        <a href="index.html#sample-title">sample test on the home page</a> for the shape of what comes out.
+        This grounding is the whole point: an agent that never opens the page will happily invent a
+        <code>#main-nav</code> selector that doesn't exist.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <a class="kawaii-btn" href="other-mcp.html">Next: Other MCP Servers <i class="fa-solid fa-arrow-right"></i></a>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i>Back to Top
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      <i class="fa-solid fa-book"></i>&nbsp; Sources:
+      <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Playwright MCP</a> &middot;
+      <a href="https://github.com/ollama/ollama/blob/main/docs/api.md" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Ollama tool calling</a> &middot;
+      <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>MCP docs</a>
+    </footer>
+
+  </main>
+
+  <script src="js/nav.js"></script>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+  <script src="js/search.js"></script>
+</body>
+</html>

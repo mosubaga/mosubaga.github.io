@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Engineering for a Semester-Long Agent — Study Agent Lab</title>
+  <meta name="description" content="Answering: how can Context Engineering keep a study agent coherent across a full semester of daily problem sets, without context rot or unbounded history?">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span>Study Agent Lab</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="rag.html"><i class="fa-solid fa-book-open"></i>RAG</a>
+        <a href="mcp.html"><i class="fa-solid fa-plug"></i>MCP</a>
+        <a href="subagents.html"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html" aria-current="page"><i class="fa-solid fa-brain"></i>Context Engineering</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge"><i class="fa-solid fa-circle-question"></i>&nbsp; Question 4</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Context Engineering for a Semester-Long Agent
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        Running for ~100 days is the hard part of this project. If the agent naively appends every day's
+        transcript to the next day's prompt, by week 10 it's feeding a bloated, stale history into a small
+        local model — and quality degrades. Context Engineering is what keeps day 97 as sharp as day 1.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search concepts (digest, hint ladder, keep_alive…)"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- The problem -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-triangle-exclamation h-icon"></i>The Problem: 100 Days of Accumulated State
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Why It Matters</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        A local model has a smaller, more crowded context window than a hosted frontier model, and it suffers
+        from <strong>context rot</strong> — comprehension quietly degrading as input grows — sooner than a
+        larger model would. A semester-long agent that just keeps appending history will eventually spend
+        most of its context window re-reading January while trying to write April's problem set.
+      </p>
+    </div>
+
+    <!-- Three domains applied -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-brain h-icon"></i>The Three Domains, Applied to This Agent</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <i class="fa-solid fa-download card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Acquisition</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Each day, pull only what's relevant: today's syllabus topic, the textbook excerpts that match it
+          (see <a href="rag.html">RAG</a>), and this one student's weak-topic list — never the whole book,
+          never the whole semester.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <i class="fa-solid fa-gears card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Processing</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Subagent isolation (see <a href="subagents.html">Subagents</a>) keeps the Tutor's context free of
+          the answer key, and lets the Grader's <code>sympy</code> check result feed back into the LLM before
+          it commits to a correctness judgment — a small self-check loop.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <i class="fa-solid fa-folder-tree card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Management</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Semester-long state lives outside the LLM entirely — in SQLite — and gets compressed into a short
+          weekly digest before it's ever shown to a model again.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Practical strategies -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-list-check h-icon"></i>Three Strategies That Do the Work</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <i class="fa-solid fa-rotate card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Daily Context Reset</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Every day's job starts a brand-new context. It's rebuilt fresh from the database each morning —
+          never a running chat log across ~100 sessions.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <i class="fa-solid fa-list-ol card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Progressive Hint Disclosure</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          The Tutor's prompt enforces a hint ladder — conceptual nudge, then a partial step, then a full
+          worked solution — released only across repeated wrong attempts, not all at once.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <i class="fa-solid fa-file-lines card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Weekly Digests</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Fifteen weeks of raw attempts compress into fifteen 3-sentence digests — a bounded, roughly
+          constant-size summary instead of unbounded growth.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Context budget for this agent -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-scale-balanced h-icon"></i>The Daily Context Budget
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Practical Guide</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        What actually goes into the Problem-Setter's prompt each morning, in priority order:
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-book-bookmark"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Role &amp; rules</strong> — the subagent's fixed system prompt.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-calendar-day"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Today's syllabus topic</strong> — one line from the scheduler.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-mint);"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Retrieved excerpts</strong> — the top 5 chunks from RAG, capped by token budget.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-yellow);"><i class="fa-solid fa-id-card"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Student digest</strong> — 3-4 sentences, not the full attempt history.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-code"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Output format</strong> — the JSON schema the response must follow.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code: budget + keep_alive -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-code h-icon"></i>Assembling a Trimmed, Cached Daily Context
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Two habits keep the daily run both correct and fast: trimming retrieved excerpts to a token budget
+        instead of dumping everything, and reusing <code>keep_alive</code> so Ollama keeps the model and
+        the repeated system prompt warm across the whole batch of students that morning.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">build_daily_context.py</span>
+      </div>
+      <pre><span class="kw">import</span> sqlite3
+<span class="kw">import</span> ollama
+
+MAX_EXCERPT_WORDS = <span class="ty">700</span>  <span class="cm"># keep retrieval from crowding out the digest</span>
+
+<span class="kw">def</span> <span class="fn">load_student_digest</span>(student_id: <span class="ty">str</span>) -> <span class="ty">str</span>:
+    <span class="cm"># The digest is pre-summarized weekly — never the raw attempt log.</span>
+    conn = sqlite3.<span class="fn">connect</span>(<span class="st">"students.db"</span>)
+    row = conn.<span class="fn">execute</span>(
+        <span class="st">"SELECT digest FROM student_digests WHERE student_id = ? "</span>
+        <span class="st">"ORDER BY week DESC LIMIT 1"</span>,
+        (student_id,),
+    ).<span class="fn">fetchone</span>()
+    <span class="kw">return</span> row[<span class="ty">0</span>] <span class="kw">if</span> row <span class="kw">else</span> <span class="st">"No prior activity."</span>
+
+<span class="kw">def</span> <span class="fn">trim_excerpts</span>(excerpts: <span class="ty">list</span>[<span class="ty">dict</span>], max_words: <span class="ty">int</span> = MAX_EXCERPT_WORDS) -> <span class="ty">str</span>:
+    kept, total = [], <span class="ty">0</span>
+    <span class="kw">for</span> e <span class="kw">in</span> excerpts:
+        words = <span class="fn">len</span>(e[<span class="st">"text"</span>].<span class="fn">split</span>())
+        <span class="kw">if</span> total + words > max_words:
+            <span class="kw">break</span>
+        kept.<span class="fn">append</span>(<span class="st">f"[p.{e['page']}] {e['text']}"</span>)
+        total += words
+    <span class="kw">return</span> <span class="st">"\n\n"</span>.<span class="fn">join</span>(kept)
+
+<span class="kw">def</span> <span class="fn">build_context</span>(student_id: <span class="ty">str</span>, topic: <span class="ty">str</span>, excerpts: <span class="ty">list</span>[<span class="ty">dict</span>]) -> <span class="ty">str</span>:
+    digest = <span class="fn">load_student_digest</span>(student_id)
+    grounding = <span class="fn">trim_excerpts</span>(excerpts)
+    <span class="kw">return</span> (
+        <span class="st">f"Topic: {topic}\n\n"</span>
+        <span class="st">f"Student summary: {digest}\n\n"</span>
+        <span class="st">f"Textbook excerpts:\n{grounding}"</span>
+    )
+
+<span class="kw">def</span> <span class="fn">run_for_batch</span>(students: <span class="ty">list</span>[<span class="ty">dict</span>], system_prompt: <span class="ty">str</span>) -> <span class="ty">None</span>:
+    <span class="kw">for</span> s <span class="kw">in</span> students:
+        context = <span class="fn">build_context</span>(s[<span class="st">"id"</span>], s[<span class="st">"topic"</span>], s[<span class="st">"excerpts"</span>])
+        ollama.<span class="fn">chat</span>(
+            model=<span class="st">"qwen2.5:7b"</span>,
+            messages=[
+                {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: system_prompt},
+                {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: context},
+            ],
+            <span class="cm"># Keep the model (and its processed system prompt) warm for the</span>
+            <span class="cm"># whole class run instead of reloading it per student.</span>
+            keep_alive=<span class="st">"30m"</span>,
+        )</pre>
+    </div>
+
+    <!-- Semester loop -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-clock h-icon"></i>Closing the Loop: Cron for a Semester
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Automation</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        Goal items 4 and 5 — daily, automatic, for a whole semester — are satisfied by a plain cron entry.
+        Context engineering is what makes running it 100 times in a row not degrade in quality.
+      </p>
+      <pre><span class="cm"># crontab -e — run every weekday morning at 6am, semester-long</span>
+0 6 * * 1-5 <span class="kw">cd</span> /opt/study-agent && python daily_job.py >> logs/daily.log 2>&amp;1</pre>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <a class="kawaii-btn" href="index.html"><i class="fa-solid fa-arrow-left"></i>Back to Overview</a>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i>Back to Top
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      <i class="fa-solid fa-book"></i>&nbsp; Sources:
+      <a href="https://github.com/ollama/ollama/blob/main/docs/api.md" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Ollama API docs (keep_alive)</a> &middot;
+      <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>MCP docs</a>
+    </footer>
+
+  </main>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+</body>
+</html>

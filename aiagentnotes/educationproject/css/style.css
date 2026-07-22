@@ -474,6 +474,68 @@ svg {
   color: #a8e6a3;
 }
 
+/* ==========================================================================
+   8. ICONS (Font Awesome)
+   ========================================================================== */
+.site-nav__brand-mark i,
+.site-nav__links a i {
+  font-size: 0.95em;
+}
+
+.site-nav__links a {
+  gap: 7px;
+}
+
+.site-nav__links a i {
+  width: 1em;
+  text-align: center;
+}
+
+h1 i.h-icon,
+h2 i.h-icon,
+h3 i.h-icon {
+  color: var(--kawaii-border);
+  margin-right: 10px;
+}
+
+.icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--kawaii-white);
+  border: 2px solid var(--kawaii-border);
+  color: var(--kawaii-text);
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+
+.topic-card .topic-card__icon,
+.kawaii-card > i.card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--kawaii-white);
+  border: 2px solid var(--kawaii-border);
+  color: var(--kawaii-text);
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.kawaii-btn i {
+  font-size: 0.9em;
+}
+
+footer a i {
+  margin-right: 4px;
+  opacity: 0.85;
+}
+
 /* Phone (up to 560px) */
 @media (max-width: 560px) {
   body {

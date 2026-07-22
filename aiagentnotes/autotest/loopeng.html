@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loop Engineering to Update Tests — Playwright AI Lab</title>
+  <meta name="description" content="Answering: can Loop Engineering be used to update Playwright tests? A bounded run-inspect-patch-rerun loop with guardrails, built on Playwright MCP and a local LLM.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--kawaii-white);
+      border: 2px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 10px 14px;
+    }
+    .pipeline-arrow {
+      text-align: center;
+      color: var(--kawaii-border);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-flask-vial"></i></span>
+        <span>Playwright AI Lab</span>
+      </a>
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="primary-nav-links" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="site-nav__links" id="primary-nav-links">
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="playwright-mcp.html"><i class="fa-solid fa-plug"></i>Playwright MCP</a>
+        <a href="other-mcp.html"><i class="fa-solid fa-server"></i>Other MCP</a>
+        <a href="subagents.html"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html"><i class="fa-solid fa-brain"></i>Context Eng</a>
+        <a href="loopeng.html" aria-current="page"><i class="fa-solid fa-arrows-rotate"></i>Loop Eng</a>
+        <a href="ai-agents.html"><i class="fa-solid fa-users-gear"></i>AI Agents</a>
+        <a href="maintenance.html"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge"><i class="fa-solid fa-circle-question"></i>&nbsp; Question 5</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Can Loop Engineering Update Tests?
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        Yes — this is where the Fixer subagent stops being a one-shot call and becomes a bounded loop:
+        <strong>run, inspect, patch, rerun</strong>, repeated until the suite is green or an iteration cap is
+        hit. The engineering part isn't the loop itself, it's the guardrails that keep it from quietly
+        rewriting a test's intent just to make it pass.
+      </p>
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Find concepts, then press Enter…"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- The loop -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-route h-icon"></i>The Update-Test Loop
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Overview</span>
+      </h2>
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-play"></i></span>
+          <span><code>npx playwright test</code> runs the suite against <code>mosubaga.github.io</code></span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <span>Flake Triager reruns failures — real regressions continue, flaky ones stop here</span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-mint);"><i class="fa-solid fa-plug"></i></span>
+          <span>Playwright MCP re-inspects the live page for the failing element</span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-blue);"><i class="fa-solid fa-wrench"></i></span>
+          <span>Fixer subagent patches the locator, Reviewer checks the assertion is untouched</span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-rotate-right"></i></span>
+          <span>Rerun that one test — pass exits the loop, fail increments the counter</span>
+        </div>
+        <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+        <div class="pipeline-step">
+          <span class="icon-badge" style="background-color: var(--kawaii-yellow);"><i class="fa-solid fa-user-check"></i></span>
+          <span>Cap hit → open a draft PR with the diff and a summary, and stop — a human decides</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-code h-icon"></i>A Bounded Fix Loop
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        The cap is the whole point: an unbounded loop that keeps "trying again" is a bug, not a feature. This
+        one gives up after three attempts and hands the diff to a human instead of looping forever.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">fix_loop.ts</span>
+      </div>
+      <pre><span class="kw">import</span> { runSubagent } <span class="kw">from</span> <span class="st">'./subagents'</span>;
+<span class="kw">import</span> { runSingleTest, type TestResult } <span class="kw">from</span> <span class="st">'./test-runner'</span>;
+<span class="kw">import</span> { openDraftPullRequest } <span class="kw">from</span> <span class="st">'./github'</span>;
+
+<span class="kw">const</span> MAX_ATTEMPTS = <span class="ty">3</span>;
+
+<span class="kw">async function</span> <span class="fn">healTest</span>(specFile: <span class="ty">string</span>, testTitle: <span class="ty">string</span>): <span class="ty">Promise</span>&lt;<span class="ty">void</span>&gt; {
+  <span class="kw">let</span> lastResult: TestResult = <span class="kw">await</span> <span class="fn">runSingleTest</span>(specFile, testTitle);
+  <span class="kw">let</span> attempt = <span class="ty">0</span>;
+
+  <span class="kw">while</span> (!lastResult.passed &amp;&amp; attempt &lt; MAX_ATTEMPTS) {
+    attempt++;
+    console.<span class="fn">log</span>(<span class="cm">`Attempt ${attempt}/${MAX_ATTEMPTS} for "${testTitle}"`</span>);
+
+    <span class="kw">const</span> patch = <span class="kw">await</span> <span class="fn">runSubagent</span>(
+      <span class="st">'fixer'</span>,
+      <span class="cm">`File: ${specFile}\nTest: ${testTitle}\nError: ${lastResult.error}`</span>
+    );
+
+    <span class="kw">const</span> review = <span class="kw">await</span> <span class="fn">runSubagent</span>(<span class="st">'reviewer'</span>, patch);
+    <span class="kw">if</span> (review.<span class="fn">includes</span>(<span class="st">'ASSERTION_CHANGED'</span>)) {
+      <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="cm">`Fixer altered an assertion in ${specFile} — refusing to apply`</span>);
+    }
+
+    <span class="kw">await</span> <span class="fn">applyPatch</span>(specFile, patch);
+    lastResult = <span class="kw">await</span> <span class="fn">runSingleTest</span>(specFile, testTitle);
+  }
+
+  <span class="kw">if</span> (!lastResult.passed) {
+    <span class="cm">// Cap reached — stop looping and let a person look at the diff.</span>
+    <span class="kw">await</span> <span class="fn">openDraftPullRequest</span>({
+      title: <span class="cm">`Could not auto-heal: ${testTitle}`</span>,
+      body: <span class="cm">`${attempt} attempts made. Last error:\n\n${lastResult.error}`</span>,
+    });
+  }
+}</pre>
+    </div>
+
+    <!-- Guardrails -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-pink);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-shield-halved h-icon"></i>Guardrails That Make This Safe
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Important</span>
+      </h2>
+      <ul style="color: var(--kawaii-text); margin: 0; padding-left: 0.5rem; list-style: none;">
+        <li style="margin-bottom: 8px;"><i class="fa-solid fa-check" style="color: var(--kawaii-border); margin-right: 8px;"></i><strong>Cap iterations.</strong> Three tries and escalate, not thirty — an agent that "just needs one more attempt" forever is a runaway loop, not progress.</li>
+        <li style="margin-bottom: 8px;"><i class="fa-solid fa-check" style="color: var(--kawaii-border); margin-right: 8px;"></i><strong>Assert intent, not output.</strong> The Reviewer rejects any patch that changes what's being asserted — the loop may only fix <em>how</em> an element is found, never <em>what</em> is expected of it.</li>
+        <li style="margin-bottom: 8px;"><i class="fa-solid fa-check" style="color: var(--kawaii-border); margin-right: 8px;"></i><strong>No silent merges.</strong> Every outcome — healed or escalated — lands as a draft PR with a diff, never a direct commit to <code>main</code>.</li>
+        <li style="margin-bottom: 0;"><i class="fa-solid fa-check" style="color: var(--kawaii-border); margin-right: 8px;"></i><strong>Log every attempt.</strong> A three-attempt trail in the PR description tells a reviewer exactly what the agent tried and why it gave up.</li>
+      </ul>
+    </div>
+
+    <!-- Scheduling the loop -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-clock h-icon"></i>Running It on a Schedule
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Automation</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        The loop doesn't have to wait for a failing CI run to trigger it — a nightly job catches drift on
+        <code>mosubaga.github.io</code> before a human even notices the suite is red.
+      </p>
+      <pre><span class="cm"># crontab -e — nightly at 2am, well before the morning's first CI run</span>
+0 2 * * * <span class="kw">cd</span> /opt/test-agent &amp;&amp; npm run heal-suite >> logs/heal.log 2>&amp;1</pre>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <a class="kawaii-btn" href="ai-agents.html">Next: Other AI Agents <i class="fa-solid fa-arrow-right"></i></a>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i>Back to Top
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      <i class="fa-solid fa-book"></i>&nbsp; Sources:
+      <a href="https://playwright.dev/docs/test-retries" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Playwright retries</a> &middot;
+      <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Playwright MCP</a>
+    </footer>
+
+  </main>
+
+  <script src="js/nav.js"></script>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+  <script src="js/search.js"></script>
+</body>
+</html>

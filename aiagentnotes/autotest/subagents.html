@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subagents for Test Automation — Playwright AI Lab</title>
+  <meta name="description" content="Answering: what subagents can we build for AI-driven Playwright test automation? Generator, Fixer, Bug Hunter, Reviewer, and Flake Triager.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-flask-vial"></i></span>
+        <span>Playwright AI Lab</span>
+      </a>
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="primary-nav-links" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="site-nav__links" id="primary-nav-links">
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="playwright-mcp.html"><i class="fa-solid fa-plug"></i>Playwright MCP</a>
+        <a href="other-mcp.html"><i class="fa-solid fa-server"></i>Other MCP</a>
+        <a href="subagents.html" aria-current="page"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html"><i class="fa-solid fa-brain"></i>Context Eng</a>
+        <a href="loopeng.html"><i class="fa-solid fa-arrows-rotate"></i>Loop Eng</a>
+        <a href="ai-agents.html"><i class="fa-solid fa-users-gear"></i>AI Agents</a>
+        <a href="maintenance.html"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge"><i class="fa-solid fa-circle-question"></i>&nbsp; Question 3</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        What Subagents Can We Build?
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        One prompt trying to be "test writer, selector fixer, bug hunter, and code reviewer" at once tends to
+        blur its own rules — a fixer that also rewrites assertions to match a bug instead of flagging it, for
+        example. Splitting the work into <strong>five focused subagents</strong>, each with a narrow job and
+        its own system prompt, keeps every role honest.
+      </p>
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Find concepts, then press Enter…"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- The 5 subagents -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-users-gear h-icon"></i>Five Subagents</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <i class="fa-solid fa-pen-ruler card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Generator</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Given a page URL or a user story, drives Playwright MCP to inspect the live page and writes a new
+          <code>*.spec.ts</code> file grounded in the real accessibility tree.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <i class="fa-solid fa-wrench card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Fixer</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Given a failing test and its error trace, re-inspects the page and patches the <em>locator</em> —
+          it is never allowed to loosen or delete the assertion it's failing.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <i class="fa-solid fa-bug card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Bug Hunter</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Crawls the live site looking for console errors, broken links, and layout breaks, and files a bug
+          report — it does not write or touch test files at all.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <i class="fa-solid fa-magnifying-glass card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Reviewer</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Reads a generated or patched spec file for anti-patterns — hard-coded waits, brittle CSS selectors,
+          missing <code>await</code> — before it's allowed into a PR.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <i class="fa-solid fa-chart-line card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Flake Triager</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Reruns a failing test several times and classifies it as flaky (timing/network) vs. a real
+          regression, so the Fixer and Bug Hunter aren't chasing noise.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Why subagents, not one prompt -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-layer-group h-icon"></i>Why Not One Big Prompt?
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Isolation</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        The Fixer's job depends on treating the assertion as fixed and only the locator as broken — a single
+        prompt asked to "make the test pass" will happily do the easy thing and weaken the assertion instead.
+        Keeping Fixer and Reviewer as separate subagents with separate contexts means the Reviewer catches
+        that weakening even if the Fixer's prompt were ever loosened by mistake. More on why this matters for
+        a small local model on the <a href="contexteng.html">Context Engineering page</a>.
+      </p>
+    </div>
+
+    <!-- Building subagents -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-code h-icon"></i>Building Subagents as a Registry
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript · Ollama</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Each subagent is a name, a system prompt, and the set of MCP tools it's allowed to call. A small
+        model is fine for the Flake Triager; the Generator and Fixer benefit from a stronger one.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">subagents.ts</span>
+      </div>
+      <pre><span class="kw">import</span> ollama <span class="kw">from</span> <span class="st">'ollama'</span>;
+
+<span class="kw">interface</span> Subagent {
+  model: <span class="ty">string</span>;
+  system: <span class="ty">string</span>;
+  allowedTools: <span class="ty">string</span>[];
+}
+
+<span class="kw">const</span> SUBAGENTS: Record&lt;<span class="ty">string</span>, Subagent&gt; = {
+  generator: {
+    model: <span class="st">'qwen2.5:7b'</span>,
+    system:
+      <span class="st">'You write Playwright TypeScript tests. Always call browser_snapshot before '</span> +
+      <span class="st">'writing a locator. Never invent a selector you have not seen in a snapshot.'</span>,
+    allowedTools: [<span class="st">'browser_navigate'</span>, <span class="st">'browser_snapshot'</span>, <span class="st">'write_file'</span>],
+  },
+  fixer: {
+    model: <span class="st">'qwen2.5:7b'</span>,
+    system:
+      <span class="st">'A Playwright test is failing. Re-inspect the live page and fix the locator '</span> +
+      <span class="st">'only. Do not change, remove, or loosen the assertion being tested.'</span>,
+    allowedTools: [<span class="st">'browser_navigate'</span>, <span class="st">'browser_snapshot'</span>, <span class="st">'read_file'</span>, <span class="st">'write_file'</span>],
+  },
+  bugHunter: {
+    model: <span class="st">'qwen2.5:7b'</span>,
+    system:
+      <span class="st">'Explore the site. Report console errors, broken links, and layout issues as '</span> +
+      <span class="st">'a short bug list. You do not write or edit test files.'</span>,
+    allowedTools: [<span class="st">'browser_navigate'</span>, <span class="st">'browser_console_messages'</span>, <span class="st">'browser_snapshot'</span>],
+  },
+  reviewer: {
+    model: <span class="st">'qwen2.5:3b'</span>,
+    system:
+      <span class="st">'Review a Playwright spec file for anti-patterns: hard-coded waits, brittle '</span> +
+      <span class="st">'CSS selectors, missing awaits. List problems, do not rewrite the file.'</span>,
+    allowedTools: [<span class="st">'read_file'</span>],
+  },
+  flakeTriager: {
+    model: <span class="st">'qwen2.5:3b'</span>,
+    system:
+      <span class="st">'Given N rerun results for one test, classify it as FLAKY or REGRESSION and '</span> +
+      <span class="st">'explain the pattern in one sentence.'</span>,
+    allowedTools: [],
+  },
+};
+
+<span class="kw">async function</span> <span class="fn">runSubagent</span>(name: <span class="ty">string</span>, userContent: <span class="ty">string</span>): <span class="ty">Promise</span>&lt;<span class="ty">string</span>&gt; {
+  <span class="kw">const</span> agent = SUBAGENTS[name];
+  <span class="kw">const</span> response = <span class="kw">await</span> ollama.<span class="fn">chat</span>({
+    model: agent.model,
+    messages: [
+      { role: <span class="st">'system'</span>, content: agent.system },
+      { role: <span class="st">'user'</span>, content: userContent },
+    ],
+  });
+  <span class="kw">return</span> response.message.content;
+}</pre>
+    </div>
+
+    <!-- Orchestrator -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-diagram-project h-icon"></i>A Small Orchestrator
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">TypeScript</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        A thin script — the same one triggered by the loop described on the <a href="loopeng.html">Loop Engineering
+        page</a> — routes between subagents for one CI run.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">run_ci_cycle.ts</span>
+      </div>
+      <pre><span class="kw">import</span> { runSubagent } <span class="kw">from</span> <span class="st">'./subagents'</span>;
+<span class="kw">import</span> { runTests, type TestFailure } <span class="kw">from</span> <span class="st">'./test-runner'</span>;
+
+<span class="kw">async function</span> <span class="fn">handleFailure</span>(failure: TestFailure): <span class="ty">Promise</span>&lt;<span class="ty">void</span>&gt; {
+  <span class="kw">const</span> verdict = <span class="kw">await</span> <span class="fn">runSubagent</span>(
+    <span class="st">'flakeTriager'</span>,
+    <span class="cm">`Test: ${failure.title}\nReruns: ${JSON.stringify(failure.rerunResults)}`</span>
+  );
+
+  <span class="kw">if</span> (verdict.<span class="fn">includes</span>(<span class="st">'FLAKY'</span>)) {
+    console.<span class="fn">log</span>(<span class="cm">`Skipping ${failure.title} — classified as flaky`</span>);
+    <span class="kw">return</span>;
+  }
+
+  <span class="cm">// Real regression — hand off to the Fixer, then have the Reviewer sanity-check the patch.</span>
+  <span class="kw">const</span> patch = <span class="kw">await</span> <span class="fn">runSubagent</span>(<span class="st">'fixer'</span>, <span class="cm">`File: ${failure.file}\nError: ${failure.error}`</span>);
+  <span class="kw">const</span> review = <span class="kw">await</span> <span class="fn">runSubagent</span>(<span class="st">'reviewer'</span>, patch);
+  console.<span class="fn">log</span>({ file: failure.file, patch, review });
+}
+
+<span class="kw">const</span> results = <span class="kw">await</span> <span class="fn">runTests</span>();
+<span class="kw">for</span> (<span class="kw">const</span> failure <span class="kw">of</span> results.failures) {
+  <span class="kw">await</span> <span class="fn">handleFailure</span>(failure);
+}</pre>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <a class="kawaii-btn" href="contexteng.html">Next: Context Engineering <i class="fa-solid fa-arrow-right"></i></a>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i>Back to Top
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      <i class="fa-solid fa-book"></i>&nbsp; Sources:
+      <a href="https://ollama.com/library" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Ollama model library</a> &middot;
+      <a href="https://playwright.dev/docs/test-retries" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Playwright retries &amp; flakiness</a>
+    </footer>
+
+  </main>
+
+  <script src="js/nav.js"></script>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+  <script src="js/search.js"></script>
+</body>
+</html>

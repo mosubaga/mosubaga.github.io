@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building a Semester-Long AI Study Agent</title>
+  <meta name="description" content="How to build an AI Agent that turns course textbooks into daily problem sets for Calculus, Linear Algebra, and Probability/Statistics, using Ollama, RAG, MCP, subagents, and context engineering.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--kawaii-white);
+      border: 2px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 10px 14px;
+    }
+    .pipeline-arrow {
+      text-align: center;
+      color: var(--kawaii-border);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span>Study Agent Lab</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html" aria-current="page"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="rag.html"><i class="fa-solid fa-book-open"></i>RAG</a>
+        <a href="mcp.html"><i class="fa-solid fa-plug"></i>MCP</a>
+        <a href="subagents.html"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html"><i class="fa-solid fa-brain"></i>Context Engineering</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="home-shell">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-hero__content">
+        <span class="kawaii-badge"><i class="fa-solid fa-graduation-cap"></i>&nbsp; Education AI Project</span>
+        <h1 class="home-hero__title" id="home-title">A Study Agent That Never Runs Out of Problems</h1>
+        <p class="home-hero__lead">
+          A walkthrough of how to build an AI Agent that reads a college textbook, generates a fresh
+          problem set every day for a full semester, helps a student when they get stuck, and checks
+          their work — built with a <strong>local Ollama LLM</strong> and <strong>Python</strong>.
+        </p>
+        <div class="home-hero__actions" aria-label="Featured links">
+          <a class="kawaii-btn" href="rag.html"><i class="fa-solid fa-book-open"></i>Start with RAG</a>
+          <a class="kawaii-btn kawaii-btn-alt" href="mcp.html"><i class="fa-solid fa-plug"></i>See the MCP Servers</a>
+        </div>
+      </div>
+      <div class="home-hero__visual" aria-label="Study agent pipeline diagram">
+        <div class="kawaii-card" style="max-width: none; background-color: var(--kawaii-yellow);">
+          <h3 style="margin-top: 0; color: var(--kawaii-text);"><i class="fa-solid fa-route h-icon"></i>The Daily Pipeline</h3>
+          <div class="pipeline">
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-file-pdf"></i></span>
+              <span>Calculus, Linear Algebra &amp; Prob/Stats textbooks</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-magnifying-glass"></i></span>
+              <span>Chunked &amp; embedded into a local vector index</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-mint);"><i class="fa-solid fa-microchip"></i></span>
+              <span>Ollama generates today's problem set</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-blue);"><i class="fa-solid fa-user-graduate"></i></span>
+              <span>Student solves, checks, and asks for hints</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-arrows-rotate"></i></span>
+              <span>Repeats daily, automatically, for 15 weeks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="scenario-title">
+      <h2 id="scenario-title"><i class="fa-solid fa-clipboard-list h-icon"></i>The Scenario</h2>
+      <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-blue);">
+        <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+          You're asked to build an AI Agent for college students studying <strong>Calculus</strong>,
+          <strong>Linear Algebra</strong>, and <strong>Probability/Statistics</strong>. The agent must:
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">1</span>
+            <p style="margin: 0; color: var(--kawaii-text);">Start from the given <strong>textbooks in PDF format</strong> — no other source of truth.</p>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-purple); flex-shrink: 0;">2</span>
+            <p style="margin: 0; color: var(--kawaii-text);">Combine those textbooks with an LLM to <strong>generate problem sets</strong> grounded in the actual course material.</p>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-mint); flex-shrink: 0;">3</span>
+            <p style="margin: 0; color: var(--kawaii-text);">Let the student <strong>solve, self-check, and ask for help</strong> without simply handing over the answer.</p>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-blue); flex-shrink: 0;">4</span>
+            <p style="margin: 0; color: var(--kawaii-text);">Generate a <strong>new problem set every day</strong>, automatically, without a human pressing "go."</p>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-yellow); flex-shrink: 0;">5</span>
+            <p style="margin: 0; color: var(--kawaii-text);">Keep running <strong>for an entire semester</strong> — roughly 15 weeks, ~100 class days.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-mint);">
+        <h2 style="margin-top: 0; color: var(--kawaii-text);">
+          <i class="fa-solid fa-list-check h-icon"></i>Assumptions
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Constraints</span>
+        </h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-microchip"></i>&nbsp; Local LLM via Ollama</span>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-download"></i>&nbsp; Model already downloaded</span>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-blue);"><i class="fa-brands fa-python"></i>&nbsp; Python throughout</span>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-yellow);"><i class="fa-solid fa-cloud-arrow-up"></i>&nbsp; No cloud API required</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="topics-title">
+      <h2 id="topics-title"><i class="fa-solid fa-puzzle-piece h-icon"></i>Four Questions, Four Building Blocks</h2>
+      <p style="max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        Each page below answers one question about how this agent is actually built.
+      </p>
+      <div class="topic-grid">
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-yellow);" href="rag.html">
+          <i class="fa-solid fa-magnifying-glass topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q1 · Retrieval</span>
+          <h3>Can RAG turn the PDFs into knowledge?</h3>
+          <p>Yes — chunk the textbooks, embed them locally, and retrieve grounded excerpts before generating problems.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-purple);" href="mcp.html">
+          <i class="fa-solid fa-plug topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q2 · Protocol</span>
+          <h3>What MCP servers does the agent need?</h3>
+          <p>Five small servers — textbook search, problem-set generation, grading, scheduling, and progress tracking.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-blue);" href="subagents.html">
+          <i class="fa-solid fa-robot topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q3 · Delegation</span>
+          <h3>What subagents can we build?</h3>
+          <p>A problem-setter, tutor, grader, scheduler, and progress-reporter — each with a narrow job and prompt.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-mint);" href="contexteng.html">
+          <i class="fa-solid fa-brain topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q4 · Memory</span>
+          <h3>How does Context Engineering keep it sane?</h3>
+          <p>Daily context resets and compact student digests stop a 15-week agent from drowning in its own history.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="stack-title" style="padding-bottom: 40px;">
+      <h2 id="stack-title"><i class="fa-solid fa-layer-group h-icon"></i>Tech Stack</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+        <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+          <i class="fa-solid fa-microchip card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">LLM</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">Ollama running a locally downloaded model (e.g. <code>qwen2.5:7b</code>) for both chat and embeddings.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+          <i class="fa-solid fa-database card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Retrieval</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">PDF parsing with <code>pdfplumber</code>, embeddings from Ollama, stored in a local <code>Chroma</code> vector index.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+          <i class="fa-solid fa-screwdriver-wrench card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Tools</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">MCP servers built with <code>FastMCP</code> expose retrieval, generation, and grading as callable tools.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+          <i class="fa-solid fa-clock card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Automation</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">A cron job (or Python <code>schedule</code>) triggers the daily pipeline for the length of the semester.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Over Course Textbooks — Study Agent Lab</title>
+  <meta name="description" content="Answering: can RAG turn Calculus, Linear Algebra, and Probability/Statistics textbook PDFs into a knowledge base for a local Ollama agent? Yes — here's how.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span>Study Agent Lab</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="rag.html" aria-current="page"><i class="fa-solid fa-book-open"></i>RAG</a>
+        <a href="mcp.html"><i class="fa-solid fa-plug"></i>MCP</a>
+        <a href="subagents.html"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html"><i class="fa-solid fa-brain"></i>Context Engineering</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge"><i class="fa-solid fa-circle-question"></i>&nbsp; Question 1</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        Can RAG Build Knowledge From the PDF Textbooks?
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        <strong>Yes.</strong> The agent must never invent a theorem or formula — every problem it writes has to
+        trace back to the actual Calculus, Linear Algebra, or Probability/Statistics textbook the student owns.
+        RAG is exactly the tool for that: it lets a local Ollama model consult the real textbook instead of
+        relying on whatever it half-remembers from training.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search concepts (chunking, embeddings, Chroma…)"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- Why RAG fits here -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-lightbulb h-icon"></i>Why RAG Is the Right Fit
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Rationale</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0.75rem;">
+        A general-purpose LLM already "knows" calculus in a fuzzy, statistical sense — but it doesn't know
+        <em>your</em> textbook's notation, numbering, or the specific subset of material covered up to
+        Chapter 6. RAG closes that gap without fine-tuning:
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: var(--kawaii-pink);">Matches the syllabus</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-purple);">Cites page &amp; chapter</span>
+        <span class="kawaii-badge" style="background-color: var(--kawaii-mint);">Works offline, per-book</span>
+      </div>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        <strong>Key idea:</strong> instead of asking Ollama "write a calculus problem," the agent asks it to
+        "write a problem <em>using this excerpt from Chapter 4, Section 2</em>" — retrieval turns a vague
+        request into a grounded one.
+      </p>
+    </div>
+
+    <!-- Workflow -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-yellow);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);"><i class="fa-solid fa-diagram-project h-icon"></i>The Textbook RAG Workflow</h2>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-file-import"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Extract</strong> — pull raw text page-by-page from each subject's PDF.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-scissors"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Chunk</strong> — split into small sections, tagged with subject, chapter, and page.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-mint);"><i class="fa-solid fa-vector-square"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Embed</strong> — turn each chunk into a vector using an Ollama embedding model.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-blue);"><i class="fa-solid fa-database"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Store</strong> — persist the vectors in a local Chroma collection, one per subject.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Retrieve</strong> — each morning, fetch the chunks matching today's syllabus topic.</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span class="icon-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+          <p style="margin: 0; color: var(--kawaii-text);"><strong>Generate</strong> — hand the retrieved excerpts to Ollama to draft a grounded problem set.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingestion code -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-file-arrow-down h-icon"></i>Step 1 — Ingest the Textbooks
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Run this once per textbook (or whenever a new edition arrives). It extracts, chunks, embeds with a
+        local Ollama embedding model, and writes everything into a persistent Chroma collection.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">ingest_textbooks.py</span>
+      </div>
+      <pre><span class="cm"># Requires: ollama serve && ollama pull nomic-embed-text</span>
+<span class="cm"># pip install pdfplumber chromadb ollama</span>
+<span class="kw">import</span> pdfplumber
+<span class="kw">import</span> chromadb
+<span class="kw">import</span> ollama
+
+TEXTBOOKS = {
+    <span class="st">"calculus"</span>: <span class="st">"textbooks/calculus.pdf"</span>,
+    <span class="st">"linear_algebra"</span>: <span class="st">"textbooks/linear_algebra.pdf"</span>,
+    <span class="st">"probability_statistics"</span>: <span class="st">"textbooks/prob_stats.pdf"</span>,
+}
+EMBED_MODEL = <span class="st">"nomic-embed-text"</span>
+CHUNK_WORDS = <span class="ty">180</span>
+
+<span class="kw">def</span> <span class="fn">chunk_page</span>(text: <span class="ty">str</span>, size: <span class="ty">int</span> = CHUNK_WORDS) -> <span class="ty">list</span>[<span class="ty">str</span>]:
+    <span class="cm"># Split on blank lines first so a proof/example isn't cut mid-formula,</span>
+    <span class="cm"># then fall back to a word-count window for long paragraphs.</span>
+    paragraphs = [p.strip() <span class="kw">for</span> p <span class="kw">in</span> text.<span class="fn">split</span>(<span class="st">"\n\n"</span>) <span class="kw">if</span> p.strip()]
+    chunks, buf = [], []
+    <span class="kw">for</span> para <span class="kw">in</span> paragraphs:
+        buf.<span class="fn">append</span>(para)
+        <span class="kw">if</span> <span class="fn">sum</span>(<span class="fn">len</span>(p.<span class="fn">split</span>()) <span class="kw">for</span> p <span class="kw">in</span> buf) >= size:
+            chunks.<span class="fn">append</span>(<span class="st">"\n\n"</span>.<span class="fn">join</span>(buf))
+            buf = []
+    <span class="kw">if</span> buf:
+        chunks.<span class="fn">append</span>(<span class="st">"\n\n"</span>.<span class="fn">join</span>(buf))
+    <span class="kw">return</span> chunks
+
+client = chromadb.<span class="fn">PersistentClient</span>(path=<span class="st">"./vector_store"</span>)
+collection = client.<span class="fn">get_or_create_collection</span>(<span class="st">"textbooks"</span>)
+
+<span class="kw">for</span> subject, path <span class="kw">in</span> TEXTBOOKS.items():
+    <span class="kw">with</span> pdfplumber.<span class="fn">open</span>(path) <span class="kw">as</span> pdf:
+        <span class="kw">for</span> page_num, page <span class="kw">in</span> <span class="fn">enumerate</span>(pdf.pages, start=<span class="ty">1</span>):
+            text = page.<span class="fn">extract_text</span>() <span class="kw">or</span> <span class="st">""</span>
+            <span class="kw">for</span> i, chunk <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="fn">chunk_page</span>(text)):
+                vector = ollama.<span class="fn">embeddings</span>(model=EMBED_MODEL, prompt=chunk)[<span class="st">"embedding"</span>]
+                collection.<span class="fn">add</span>(
+                    ids=[<span class="st">f"{subject}-p{page_num}-c{i}"</span>],
+                    embeddings=[vector],
+                    documents=[chunk],
+                    metadatas=[{<span class="st">"subject"</span>: subject, <span class="st">"page"</span>: page_num}],
+                )
+    <span class="fn">print</span>(<span class="st">f"Indexed {subject} from {path}"</span>)</pre>
+    </div>
+
+    <!-- Retrieval + generation code -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-wand-magic-sparkles h-icon"></i>Step 2 — Retrieve &amp; Generate a Problem Set
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        This runs as part of the daily job: pull the excerpts relevant to today's topic, then ask the local
+        chat model to write problems <em>only</em> from that material, with page citations for each one.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">generate_problem_set.py</span>
+      </div>
+      <pre><span class="cm"># Requires: ollama pull qwen2.5:7b</span>
+<span class="kw">import</span> json
+<span class="kw">import</span> chromadb
+<span class="kw">import</span> ollama
+
+client = chromadb.<span class="fn">PersistentClient</span>(path=<span class="st">"./vector_store"</span>)
+collection = client.<span class="fn">get_collection</span>(<span class="st">"textbooks"</span>)
+CHAT_MODEL = <span class="st">"qwen2.5:7b"</span>
+
+<span class="kw">def</span> <span class="fn">retrieve</span>(subject: <span class="ty">str</span>, topic: <span class="ty">str</span>, k: <span class="ty">int</span> = <span class="ty">5</span>) -> <span class="ty">list</span>[<span class="ty">dict</span>]:
+    result = collection.<span class="fn">query</span>(
+        query_texts=[topic],
+        n_results=k,
+        where={<span class="st">"subject"</span>: subject},
+    )
+    <span class="kw">return</span> [
+        {<span class="st">"text"</span>: doc, <span class="st">"page"</span>: meta[<span class="st">"page"</span>]}
+        <span class="kw">for</span> doc, meta <span class="kw">in</span> <span class="fn">zip</span>(result[<span class="st">"documents"</span>][<span class="ty">0</span>], result[<span class="st">"metadatas"</span>][<span class="ty">0</span>])
+    ]
+
+<span class="kw">def</span> <span class="fn">generate_problem_set</span>(subject: <span class="ty">str</span>, topic: <span class="ty">str</span>, count: <span class="ty">int</span> = <span class="ty">4</span>) -> <span class="ty">dict</span>:
+    excerpts = <span class="fn">retrieve</span>(subject, topic)
+    context = <span class="st">"\n\n"</span>.<span class="fn">join</span>(<span class="st">f"[p.{e['page']}] {e['text']}"</span> <span class="kw">for</span> e <span class="kw">in</span> excerpts)
+
+    system = (
+        <span class="st">"You are a professor writing practice problems for college students. "</span>
+        <span class="st">"Use ONLY the textbook excerpts below as your source of facts and notation. "</span>
+        <span class="st">"Cite the page number each problem is drawn from. "</span>
+        <span class="st">'Reply as JSON: {"problems": [{"question": str, "page": int, "answer": str}]}'</span>
+    )
+    user = <span class="st">f"Subject: {subject}\nTopic: {topic}\nWrite {count} problems.\n\nExcerpts:\n{context}"</span>
+
+    response = ollama.<span class="fn">chat</span>(
+        model=CHAT_MODEL,
+        messages=[
+            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: system},
+            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user},
+        ],
+        format=<span class="st">"json"</span>,
+    )
+    <span class="kw">return</span> json.<span class="fn">loads</span>(response[<span class="st">"message"</span>][<span class="st">"content"</span>])
+
+problem_set = <span class="fn">generate_problem_set</span>(<span class="st">"linear_algebra"</span>, <span class="st">"eigenvalues and eigenvectors"</span>)
+<span class="fn">print</span>(json.<span class="fn">dumps</span>(problem_set, indent=<span class="ty">2</span>))</pre>
+    </div>
+
+    <!-- Chunking tips -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-scissors h-icon"></i>Chunking Math Textbooks Well</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <i class="fa-solid fa-link card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Keep Proofs Whole</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Split on paragraph boundaries, not a fixed character count — cutting a theorem away from its proof
+          or a formula mid-derivation produces nonsense excerpts.
+        </p>
+      </div>
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <i class="fa-solid fa-tags card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Tag by Chapter</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Store subject, chapter, and page in metadata so retrieval can be filtered to "material covered so
+          far" and every generated problem can cite its source.
+        </p>
+      </div>
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <i class="fa-solid fa-cubes card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Small Chunks</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          ~150–200 words per chunk keeps retrieval precise — a whole chapter as one chunk buries the one
+          relevant definition in irrelevant surrounding text.
+        </p>
+      </div>
+    </div>
+
+    <!-- Failure modes -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-pink);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-triangle-exclamation h-icon"></i>Failure Modes to Watch For
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Math-Specific</span>
+      </h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+        <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+          <i class="fa-solid fa-square-root-variable card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">Broken Notation</h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">PDF text extraction can mangle superscripts, integrals, and Greek letters into garbled characters.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+          <i class="fa-solid fa-image card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">Scanned Pages</h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">Older textbooks scanned as images yield no extractable text at all — these pages need OCR before chunking.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+          <i class="fa-solid fa-scissors card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">Split Theorems</h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">A theorem statement and its proof landing in different chunks means neither retrieval hit is fully useful alone.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+          <i class="fa-solid fa-table-cells card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">Table-Based Layouts</h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">Statistics tables (z-scores, distributions) often extract in scrambled row/column order.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <a class="kawaii-btn" href="mcp.html">Next: MCP Servers <i class="fa-solid fa-arrow-right"></i></a>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i>Back to Top
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      <i class="fa-solid fa-book"></i>&nbsp; Sources:
+      <a href="https://ollama.com/library/nomic-embed-text" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Ollama embedding models</a> &middot;
+      <a href="https://docs.trychroma.com/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Chroma docs</a> &middot;
+      Package APIs change — check current docs before pinning versions.
+    </footer>
+
+  </main>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+</body>
+</html>

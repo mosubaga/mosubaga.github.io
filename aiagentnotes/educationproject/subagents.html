@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subagents for the Study Agent — Study Agent Lab</title>
+  <meta name="description" content="Answering: what subagents can we build for a study agent that generates daily problem sets and tutors students? Problem-setter, tutor, grader, scheduler, and progress-reporter.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span>Study Agent Lab</span>
+      </a>
+      <div class="site-nav__links">
+        <a href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="rag.html"><i class="fa-solid fa-book-open"></i>RAG</a>
+        <a href="mcp.html"><i class="fa-solid fa-plug"></i>MCP</a>
+        <a href="subagents.html" aria-current="page"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html"><i class="fa-solid fa-brain"></i>Context Engineering</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem;">
+      <span class="kawaii-badge"><i class="fa-solid fa-circle-question"></i>&nbsp; Question 3</span>
+      <h1 style="margin: 0.75rem 0 1rem; line-height: 1.1; font-size: clamp(2.4rem, 5vw, 4rem); color: var(--kawaii-text);">
+        What Subagents Can We Build?
+      </h1>
+      <p style="font-size: 1.08rem; max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        One giant prompt trying to be "textbook expert, problem writer, patient tutor, strict grader, and
+        scheduler" all at once tends to blur its own rules — a hint slips into a full solution, or grading
+        criteria get fuzzy. Splitting the work into <strong>five focused subagents</strong>, each with a
+        narrow job and its own system prompt, keeps every role sharp.
+      </p>
+      <input
+        class="kawaii-input"
+        type="search"
+        placeholder="Search concepts (orchestrator, hint ladder, sympy…)"
+        style="max-width: 420px;"
+        aria-label="Search concepts"
+      >
+    </header>
+
+    <!-- The 5 subagents -->
+    <h2 style="color: var(--kawaii-text); margin-bottom: 1rem;"><i class="fa-solid fa-users-gear h-icon"></i>Five Subagents</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 2.5rem;">
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+        <i class="fa-solid fa-pen-ruler card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Problem-Setter</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Takes retrieved textbook excerpts and today's syllabus topic, drafts a problem set with an
+          answer key. Never sees a student's past answers — it only cares about the material.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-mint);">
+        <i class="fa-solid fa-chalkboard-user card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Tutor</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Engages a stuck student with graduated hints — nudge, then partial step, then full worked
+          solution — and is instructed to never reveal the final answer on the first hint.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+        <i class="fa-solid fa-check-double card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Grader</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Checks a submitted answer, combining a deterministic <code>sympy</code> check for numeric/symbolic
+          answers with an LLM judgment for free-form proof-style responses.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+        <i class="fa-solid fa-calendar-days card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Scheduler</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Decides which topic comes next based on the syllabus pace and which topics a student is weak
+          in — mostly logic, with a small LLM call to break ties or re-sequence around a struggle.
+        </p>
+      </div>
+
+      <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+        <i class="fa-solid fa-chart-line card-icon"></i>
+        <h3 style="margin-top: 0; color: var(--kawaii-text);">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Progress-Reporter</span>
+        </h3>
+        <p style="margin-bottom: 0; color: var(--kawaii-text);">
+          Summarizes a week of attempts into a short digest — streaks, accuracy by topic, hints used —
+          instead of replaying the full history every time it's asked "how am I doing?"
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Why subagents, not one prompt -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-blue);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-layer-group h-icon"></i>Why Not One Big Prompt?
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Isolation</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 0;">
+        The Tutor's job depends on <em>not</em> knowing the answer key up front — otherwise it's tempted to
+        just state it. The Grader's job depends on seeing the answer key. Keeping those in separate subagents
+        with separate contexts isn't just tidier code, it's what makes the "give hints, don't give answers"
+        rule actually hold. This is the same idea explored in more depth on the
+        <a href="contexteng.html">Context Engineering page</a>.
+      </p>
+    </div>
+
+    <!-- Building subagents -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-purple);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-code h-icon"></i>Building Subagents as a Registry
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python · Ollama</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        Each subagent is just a name, a system prompt, and (optionally) a different local model — a small
+        model is often enough for the Scheduler, while the Tutor benefits from a stronger one.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">subagents.py</span>
+      </div>
+      <pre><span class="kw">import</span> ollama
+
+SUBAGENTS = {
+    <span class="st">"problem_setter"</span>: {
+        <span class="st">"model"</span>: <span class="st">"qwen2.5:7b"</span>,
+        <span class="st">"system"</span>: (
+            <span class="st">"You write college-level practice problems strictly from the provided "</span>
+            <span class="st">"textbook excerpts. Include a full answer key. Never discuss a specific "</span>
+            <span class="st">"student's history."</span>
+        ),
+    },
+    <span class="st">"tutor"</span>: {
+        <span class="st">"model"</span>: <span class="st">"qwen2.5:7b"</span>,
+        <span class="st">"system"</span>: (
+            <span class="st">"You are a patient tutor. A student is stuck on a problem. Give ONE small "</span>
+            <span class="st">"hint that nudges their thinking. Do not state the final answer, even if asked "</span>
+            <span class="st">"directly. Escalate to a bigger hint only after repeated wrong attempts."</span>
+        ),
+    },
+    <span class="st">"grader"</span>: {
+        <span class="st">"model"</span>: <span class="st">"qwen2.5:7b"</span>,
+        <span class="st">"system"</span>: (
+            <span class="st">"You check a student's answer against the provided answer key and a "</span>
+            <span class="st">"symbolic-check result. Explain briefly why the answer is correct or "</span>
+            <span class="st">"incorrect. Be concise and specific."</span>
+        ),
+    },
+    <span class="st">"scheduler"</span>: {
+        <span class="st">"model"</span>: <span class="st">"qwen2.5:3b"</span>,
+        <span class="st">"system"</span>: (
+            <span class="st">"Given the syllabus order and a list of the student's weak topics, choose "</span>
+            <span class="st">"tomorrow's topic. Prefer syllabus order unless a weak topic needs review first."</span>
+        ),
+    },
+    <span class="st">"progress_reporter"</span>: {
+        <span class="st">"model"</span>: <span class="st">"qwen2.5:3b"</span>,
+        <span class="st">"system"</span>: (
+            <span class="st">"Summarize a week of problem attempts into 3-4 sentences: accuracy trend, "</span>
+            <span class="st">"weakest topic, and one encouraging note."</span>
+        ),
+    },
+}
+
+<span class="kw">def</span> <span class="fn">run_subagent</span>(name: <span class="ty">str</span>, user_content: <span class="ty">str</span>) -> <span class="ty">str</span>:
+    agent = SUBAGENTS[name]
+    response = ollama.<span class="fn">chat</span>(
+        model=agent[<span class="st">"model"</span>],
+        messages=[
+            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: agent[<span class="st">"system"</span>]},
+            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_content},
+        ],
+    )
+    <span class="kw">return</span> response[<span class="st">"message"</span>][<span class="st">"content"</span>]
+
+hint = <span class="fn">run_subagent</span>(
+    <span class="st">"tutor"</span>,
+    <span class="st">"Problem: Find the eigenvalues of [[2,1],[1,2]]. "</span>
+    <span class="st">"Student tried: they set up det(A) = 0 instead of det(A - λI) = 0."</span>,
+)
+<span class="fn">print</span>(hint)</pre>
+    </div>
+
+    <!-- Orchestrator -->
+    <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2.5rem; background-color: var(--kawaii-mint);">
+      <h2 style="margin-top: 0; color: var(--kawaii-text);">
+        <i class="fa-solid fa-diagram-project h-icon"></i>The Daily Orchestrator
+        <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Python</span>
+      </h2>
+      <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+        A thin script — triggered by cron, see <a href="contexteng.html">Context Engineering</a> — routes
+        between subagents and MCP tools for one student's daily cycle.
+      </p>
+      <div style="margin-bottom: 0.75rem;">
+        <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">daily_job.py</span>
+      </div>
+      <pre><span class="kw">from</span> subagents <span class="kw">import</span> run_subagent
+<span class="kw">from</span> generate_problem_set <span class="kw">import</span> retrieve
+
+<span class="kw">def</span> <span class="fn">run_daily_cycle</span>(student_id: <span class="ty">str</span>, subject: <span class="ty">str</span>, topic: <span class="ty">str</span>) -> <span class="ty">dict</span>:
+    <span class="cm"># 1. Scheduler already chose `topic` for today (not shown here)</span>
+    <span class="cm"># 2. Ground the problem set in real textbook content</span>
+    excerpts = <span class="fn">retrieve</span>(subject, topic)
+    context = <span class="st">"\n\n"</span>.<span class="fn">join</span>(e[<span class="st">"text"</span>] <span class="kw">for</span> e <span class="kw">in</span> excerpts)
+
+    <span class="cm"># 3. Problem-Setter drafts today's set</span>
+    problem_set = <span class="fn">run_subagent</span>(
+        <span class="st">"problem_setter"</span>, <span class="st">f"Topic: {topic}\n\nExcerpts:\n{context}"</span>
+    )
+
+    <span class="kw">return</span> {<span class="st">"student_id"</span>: student_id, <span class="st">"subject"</span>: subject, <span class="st">"topic"</span>: topic, <span class="st">"problem_set"</span>: problem_set}
+
+<span class="kw">def</span> <span class="fn">handle_submission</span>(problem: <span class="ty">str</span>, student_answer: <span class="ty">str</span>, is_correct: <span class="ty">bool</span>) -> <span class="ty">str</span>:
+    <span class="kw">if</span> is_correct:
+        <span class="kw">return</span> <span class="fn">run_subagent</span>(<span class="st">"grader"</span>, <span class="st">f"Problem: {problem}\nAnswer: {student_answer}\nResult: correct"</span>)
+    <span class="cm"># Wrong answer — hand off to the Tutor instead of the Grader explaining the fix</span>
+    <span class="kw">return</span> <span class="fn">run_subagent</span>(<span class="st">"tutor"</span>, <span class="st">f"Problem: {problem}\nStudent tried: {student_answer}"</span>)</pre>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 2.5rem; align-items: center;">
+      <a class="kawaii-btn" href="contexteng.html">Next: Context Engineering <i class="fa-solid fa-arrow-right"></i></a>
+      <button class="kawaii-btn kawaii-btn-alt" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-arrow-up"></i>Back to Top
+      </button>
+    </div>
+
+    <footer style="text-align: center; color: var(--kawaii-text); padding: 1.5rem 0; border-top: 2px solid var(--kawaii-border); opacity: 0.75;">
+      <i class="fa-solid fa-book"></i>&nbsp; Sources:
+      <a href="https://ollama.com/library" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Ollama model library</a> &middot;
+      <a href="https://docs.sympy.org/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>SymPy docs</a>
+    </footer>
+
+  </main>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building AI Agents for Playwright Test Automation</title>
+  <meta name="description" content="How to use AI agents and a local LLM (Ollama) with Playwright MCP to write, run, and maintain TypeScript automated tests against https://mosubaga.github.io.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&amp;family=Nunito:wght@400;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--kawaii-white);
+      border: 2px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 10px 14px;
+    }
+    .pipeline-arrow {
+      text-align: center;
+      color: var(--kawaii-border);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+    pre {
+      background-color: #2d2438;
+      color: #f0e6ff;
+      border: 3px solid var(--kawaii-border);
+      border-radius: var(--kawaii-radius-soft);
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin: 0;
+    }
+    pre .kw  { color: #c9a0ff; font-weight: bold; }
+    pre .fn  { color: #80e8ff; }
+    pre .st  { color: #a8e6a3; }
+    pre .cm  { color: #8a8098; font-style: italic; }
+    pre .ty  { color: #ffc0cb; }
+    code {
+      background: var(--kawaii-white);
+      padding: 2px 8px;
+      border-radius: 8px;
+      border: 2px solid var(--kawaii-border);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__brand-mark"><i class="fa-solid fa-flask-vial"></i></span>
+        <span>Playwright AI Lab</span>
+      </a>
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="primary-nav-links" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="site-nav__links" id="primary-nav-links">
+        <a href="index.html" aria-current="page"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="playwright-mcp.html"><i class="fa-solid fa-plug"></i>Playwright MCP</a>
+        <a href="other-mcp.html"><i class="fa-solid fa-server"></i>Other MCP</a>
+        <a href="subagents.html"><i class="fa-solid fa-robot"></i>Subagents</a>
+        <a href="contexteng.html"><i class="fa-solid fa-brain"></i>Context Eng</a>
+        <a href="loopeng.html"><i class="fa-solid fa-arrows-rotate"></i>Loop Eng</a>
+        <a href="ai-agents.html"><i class="fa-solid fa-users-gear"></i>AI Agents</a>
+        <a href="maintenance.html"><i class="fa-solid fa-screwdriver-wrench"></i>Maintenance</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="home-shell">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-hero__content">
+        <span class="kawaii-badge"><i class="fa-solid fa-vial-circle-check"></i>&nbsp; AI Test Automation</span>
+        <h1 class="home-hero__title" id="home-title">Let an Agent Write (and Fix) Your Playwright Tests</h1>
+        <p class="home-hero__lead">
+          A walkthrough of using AI agents, <strong>Playwright MCP</strong>, and a <strong>local Ollama LLM</strong>
+          to write, extend, and self-heal <strong>TypeScript</strong> Playwright tests — using
+          <code>https://mosubaga.github.io</code> as the target site throughout.
+        </p>
+        <div class="home-hero__actions" aria-label="Featured links">
+          <a class="kawaii-btn" href="playwright-mcp.html"><i class="fa-solid fa-plug"></i>Start with Playwright MCP</a>
+          <a class="kawaii-btn kawaii-btn-alt" href="subagents.html"><i class="fa-solid fa-robot"></i>See the Subagents</a>
+        </div>
+      </div>
+      <div class="home-hero__visual" aria-label="Test agent pipeline diagram">
+        <div class="kawaii-card" style="max-width: none; background-color: var(--kawaii-yellow);">
+          <h3 style="margin-top: 0; color: var(--kawaii-text);"><i class="fa-solid fa-route h-icon"></i>The Agent Loop</h3>
+          <div class="pipeline">
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-comment"></i></span>
+              <span>"Write a test that checks the nav on mosubaga.github.io"</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-plug"></i></span>
+              <span>Ollama calls Playwright MCP to open &amp; inspect the live page</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-mint);"><i class="fa-solid fa-file-code"></i></span>
+              <span>Agent emits a TypeScript <code>*.spec.ts</code> file</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-blue);"><i class="fa-solid fa-vial"></i></span>
+              <span><code>npx playwright test</code> runs it in CI</span>
+            </div>
+            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="pipeline-step">
+              <span class="icon-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-arrows-rotate"></i></span>
+              <span>On a failure, a loop re-inspects the page and heals the test</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="scenario-title">
+      <h2 id="scenario-title"><i class="fa-solid fa-clipboard-list h-icon"></i>The Scenario</h2>
+      <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-blue);">
+        <p style="color: var(--kawaii-text); margin-bottom: 1rem;">
+          You maintain <code>https://mosubaga.github.io</code> and want AI to carry more of the test-writing
+          and test-maintenance load. This site is about how, using:
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-pink); flex-shrink: 0;">1</span>
+            <p style="margin: 0; color: var(--kawaii-text);"><strong>Playwright MCP</strong> so an LLM can navigate, inspect, and screenshot the live site instead of guessing at markup.</p>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-purple); flex-shrink: 0;">2</span>
+            <p style="margin: 0; color: var(--kawaii-text);">A <strong>local Ollama model</strong> as the brain behind the agent — no cloud API required.</p>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-mint); flex-shrink: 0;">3</span>
+            <p style="margin: 0; color: var(--kawaii-text);"><strong>Focused subagents</strong> — a generator, a fixer, a bug hunter, a reviewer — instead of one do-everything prompt.</p>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-blue); flex-shrink: 0;">4</span>
+            <p style="margin: 0; color: var(--kawaii-text);"><strong>Context &amp; loop engineering</strong> to keep the agent's prompts small and let it retry a fix until the suite is green.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem; background-color: var(--kawaii-mint);">
+        <h2 style="margin-top: 0; color: var(--kawaii-text);">
+          <i class="fa-solid fa-list-check h-icon"></i>Assumptions
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white); margin-left: 8px;">Constraints</span>
+        </h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <span class="kawaii-badge" style="background-color: var(--kawaii-pink);"><i class="fa-solid fa-microchip"></i>&nbsp; Local LLM via Ollama</span>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-purple);"><i class="fa-solid fa-download"></i>&nbsp; Model already downloaded</span>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-blue);"><i class="fa-brands fa-square-js"></i>&nbsp; TypeScript throughout</span>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-yellow);"><i class="fa-solid fa-cloud-arrow-up"></i>&nbsp; No cloud API required</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="topics-title">
+      <h2 id="topics-title"><i class="fa-solid fa-puzzle-piece h-icon"></i>Seven Questions, Seven Building Blocks</h2>
+      <p style="max-width: 68ch; margin: 0 0 1.5rem; color: var(--kawaii-text);">
+        Each page below answers one question about building and running this kind of test agent.
+      </p>
+      <div class="topic-grid">
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-yellow);" href="playwright-mcp.html">
+          <i class="fa-solid fa-plug topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q1 · Setup</span>
+          <h3>How do I set up Playwright MCP with a local LLM?</h3>
+          <p>Install the MCP server, wire it to Ollama with a small tool-calling loop, and let the model write tests from a live page.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-purple);" href="other-mcp.html">
+          <i class="fa-solid fa-server topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q2 · Protocol</span>
+          <h3>What other MCP servers help write tests?</h3>
+          <p>Filesystem, Git/GitHub, fetch, and memory servers round out what Playwright MCP alone can't do.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-blue);" href="subagents.html">
+          <i class="fa-solid fa-robot topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q3 · Delegation</span>
+          <h3>What subagents can we build?</h3>
+          <p>A generator, fixer, bug hunter, reviewer, and flake triager — each with a narrow job and toolset.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-mint);" href="contexteng.html">
+          <i class="fa-solid fa-brain topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q4 · Memory</span>
+          <h3>How does Context Engineering fit in?</h3>
+          <p>Trimmed snapshots and a selector knowledge base keep a small local model focused per test file.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-pink);" href="loopeng.html">
+          <i class="fa-solid fa-arrows-rotate topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q5 · Iteration</span>
+          <h3>Can Loop Engineering update tests?</h3>
+          <p>Yes — a bounded run-inspect-patch-rerun loop with guardrails so it can't silently rewrite intent.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-yellow);" href="ai-agents.html">
+          <i class="fa-solid fa-users-gear topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q6 · Ecosystem</span>
+          <h3>What other AI agents can help?</h3>
+          <p>Claude Code, Cursor, GitHub Copilot, and Codex CLI — how each fits the MCP-driven workflow.</p>
+        </a>
+        <a class="kawaii-card topic-card" style="background-color: var(--kawaii-purple);" href="maintenance.html">
+          <i class="fa-solid fa-screwdriver-wrench topic-card__icon"></i>
+          <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Q7 · Upkeep</span>
+          <h3>How does AI maintain tests long-term?</h3>
+          <p>Self-healing selectors, coverage gap-finding, and bug-hunting crawls of the live site.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="sample-title">
+      <h2 id="sample-title"><i class="fa-solid fa-vial h-icon"></i>Nice to Have: A Plain Playwright Test</h2>
+      <p style="max-width: 68ch; margin: 0 0 1rem; color: var(--kawaii-text);">
+        This site isn't a Playwright tutorial, but here's the kind of TypeScript test the agents below read,
+        write, and fix — a real spec against the live homepage.
+      </p>
+      <div class="kawaii-card" style="max-width: 100%; margin-bottom: 2rem;">
+        <div style="margin-bottom: 0.75rem;">
+          <span class="kawaii-badge" style="background-color: #2d2438; color: #f0e6ff; border-color: #2d2438; font-size: 0.75rem;">tests/homepage.spec.ts</span>
+        </div>
+        <pre><span class="kw">import</span> { test, expect } <span class="kw">from</span> <span class="st">'@playwright/test'</span>;
+
+test.<span class="fn">describe</span>(<span class="st">'mosubaga.github.io homepage'</span>, () => {
+  test.<span class="fn">beforeEach</span>(<span class="kw">async</span> ({ page }) => {
+    <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="st">'https://mosubaga.github.io'</span>);
+  });
+
+  test(<span class="st">'loads with the expected title'</span>, <span class="kw">async</span> ({ page }) => {
+    <span class="kw">await</span> expect(page).<span class="fn">toHaveTitle</span>(<span class="cm">/./</span>); <span class="cm">// page has a non-empty &lt;title&gt;</span>
+  });
+
+  test(<span class="st">'primary navigation is visible'</span>, <span class="kw">async</span> ({ page }) => {
+    <span class="kw">const</span> nav = page.<span class="fn">locator</span>(<span class="st">'nav'</span>).<span class="fn">first</span>();
+    <span class="kw">await</span> expect(nav).<span class="fn">toBeVisible</span>();
+  });
+
+  test(<span class="st">'has no obviously broken images'</span>, <span class="kw">async</span> ({ page }) => {
+    <span class="kw">const</span> images = page.<span class="fn">locator</span>(<span class="st">'img'</span>);
+    <span class="kw">const</span> count = <span class="kw">await</span> images.<span class="fn">count</span>();
+    <span class="kw">for</span> (<span class="kw">let</span> i = <span class="ty">0</span>; i &lt; count; i++) {
+      <span class="kw">const</span> naturalWidth = <span class="kw">await</span> images.<span class="fn">nth</span>(i).<span class="fn">evaluate</span>(
+        (img: HTMLImageElement) => img.naturalWidth
+      );
+      expect(naturalWidth).<span class="fn">toBeGreaterThan</span>(<span class="ty">0</span>);
+    }
+  });
+});</pre>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="stack-title" style="padding-bottom: 40px;">
+      <h2 id="stack-title"><i class="fa-solid fa-layer-group h-icon"></i>Tech Stack</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+        <div class="kawaii-card" style="background-color: var(--kawaii-pink);">
+          <i class="fa-solid fa-microchip card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">LLM</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">Ollama running a locally downloaded tool-calling model (e.g. <code>qwen2.5:7b</code>) for planning and code generation.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-blue);">
+          <i class="fa-solid fa-plug card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Browser Tooling</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);"><code>@playwright/mcp</code> exposes navigate/click/snapshot as MCP tools the model can call directly.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-purple);">
+          <i class="fa-solid fa-screwdriver-wrench card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Test Runner</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);"><code>@playwright/test</code> with TypeScript specs, run locally and in CI.</p>
+        </div>
+        <div class="kawaii-card" style="background-color: var(--kawaii-yellow);">
+          <i class="fa-solid fa-clock card-icon"></i>
+          <h3 style="margin-top: 0; color: var(--kawaii-text);">
+            <span class="kawaii-badge" style="background-color: var(--kawaii-white);">Automation</span>
+          </h3>
+          <p style="margin-bottom: 0; color: var(--kawaii-text);">A scheduled or CI-triggered loop reruns the suite and hands failures to the fixer subagent.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/nav.js"></script>
+
+  <script src="js/rain.js"></script>
+  <script src="js/copy.js"></script>
+</body>
+</html>
