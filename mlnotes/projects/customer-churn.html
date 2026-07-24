@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Churn Prediction – ML with scikit-learn</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="site-brand" href="index.html"><i class="fa-solid fa-brain"></i> ML with scikit-learn</a>
+    <ul class="nav-links-center" id="nav-menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="real-estate.html"><i class="fa-solid fa-house-chimney"></i> Real Estate</a></li>
+      <li><a href="fraud-detection.html"><i class="fa-solid fa-shield-halved"></i> Fraud Detection</a></li>
+      <li><a href="image-recognition.html"><i class="fa-solid fa-image"></i> Image Recognition</a></li>
+      <li><a href="customer-churn.html" class="active"><i class="fa-solid fa-users"></i> Customer Churn</a></li>
+      <li><a href="object-detection.html"><i class="fa-solid fa-eye"></i> Object Detection</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="document.getElementById('nav-menu').classList.toggle('open')">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="page-hero hero-content">
+    <span class="eyebrow"><i class="fa-solid fa-users"></i> Binary Classification</span>
+    <h1>Customer Churn Prediction</h1>
+    <p class="lead">Identify customers at risk of leaving before they do. Random Forest combines hundreds of decision trees to produce robust churn scores that drive targeted retention campaigns.</p>
+  </div>
+</div>
+
+<main>
+  <div class="canvas-wrapper" id="churn-canvas"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <h2>Why Random Forest?</h2>
+    </div>
+    <p>Random Forest builds many independent decision trees, each trained on a random bootstrap sample of the data and a random subset of features at each split. The final prediction is a majority vote (classification) or average (regression) across all trees. This <em>bagging</em> strategy reduces variance without significantly increasing bias, making Random Forest robust to overfitting even without careful hyperparameter tuning.</p>
+    <p>For churn prediction, RF excels because it natively handles mixed feature types (continuous tenure, categorical contract type), requires no feature scaling, and provides reliable feature importance scores that help business analysts understand <em>why</em> customers churn — not just <em>who</em> will.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-tree" style="color:#9fb7b8"></i></div>
+        <h4>Ensemble Power</h4>
+        <p>Aggregating hundreds of trees drastically reduces prediction variance.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-chart-bar" style="color:#c9a0b4"></i></div>
+        <h4>Feature Importance</h4>
+        <p>Identify which product features, contract terms, and behaviours drive churn.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-arrows-rotate" style="color:#9fb7b8"></i></div>
+        <h4>Out-of-bag Score</h4>
+        <p>A free validation estimate from samples not used in each tree's training.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-brands fa-python"></i></div>
+      <h2>Full Python Script</h2>
+    </div>
+    <p>Requires <code>pip install scikit-learn pandas matplotlib seaborn</code>.</p>
+
+    <div class="code-block-wrapper">
+      <div class="code-block-header">
+        <span class="lang-label"><i class="fa-brands fa-python"></i> Python</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+      </div>
+      <pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import (
+    classification_report, confusion_matrix,
+    roc_auc_score, roc_curve, average_precision_score,
+)
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ── 1. Generate synthetic telecom churn dataset ───────────────────────────────
+np.random.seed(42)
+n = 5_000
+
+df = pd.DataFrame({
+    "tenure_months":    np.random.randint(1, 73, n),
+    "monthly_charges":  np.random.uniform(20, 120, n),
+    "total_charges":    np.random.uniform(50, 8_500, n),
+    "num_products":     np.random.randint(1, 7, n),
+    "contract_type":    np.random.choice(
+        ["Month-to-Month", "One Year", "Two Year"], n, p=[0.50, 0.30, 0.20]
+    ),
+    "tech_support":     np.random.choice(["Yes", "No"], n),
+    "online_security":  np.random.choice(["Yes", "No"], n),
+    "payment_method":   np.random.choice(
+        ["Electronic check", "Mailed check", "Bank transfer", "Credit card"], n
+    ),
+    "num_support_calls":np.random.poisson(2, n),
+    "satisfaction_score":np.random.randint(1, 6, n),
+})
+
+# Churn probability driven by key risk factors
+churn_score = (
+    0.30 * (df["contract_type"] == "Month-to-Month") +
+    0.22 * (df["satisfaction_score"] <= 2) +
+    0.18 * (df["num_support_calls"] > 4) +
+    0.15 * (df["tenure_months"] &lt; 12) +
+    0.10 * (df["tech_support"] == "No") +
+    0.05 * (df["online_security"] == "No") +
+    np.random.uniform(0, 0.12, n)
+)
+df["churn"] = (churn_score > 0.52).astype(int)
+print(f"Churn rate: {df['churn'].mean():.1%}  |  {df['churn'].sum():,} churned customers")
+
+# ── 2. Encode categorical features ──────────────────────────────────────────
+le = LabelEncoder()
+for col in ["contract_type", "tech_support", "online_security", "payment_method"]:
+    df[col] = le.fit_transform(df[col])
+
+X = df.drop("churn", axis=1)
+y = df["churn"]
+
+# ── 3. Train / test split ────────────────────────────────────────────────────
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# ── 4. Train Random Forest ───────────────────────────────────────────────────
+rf = RandomForestClassifier(
+    n_estimators=400,
+    max_depth=10,
+    min_samples_leaf=8,
+    max_features="sqrt",
+    class_weight="balanced",
+    oob_score=True,        # free OOB validation estimate
+    random_state=42,
+    n_jobs=-1,
+)
+rf.fit(X_train, y_train)
+
+print(f"\nOOB Accuracy : {rf.oob_score_:.4f}")
+
+# ── 5. Cross-validated AUC ───────────────────────────────────────────────────
+cv      = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+cv_aucs = cross_val_score(rf, X_train, y_train, cv=cv, scoring="roc_auc", n_jobs=-1)
+print(f"CV ROC-AUC   : {cv_aucs.mean():.4f} ± {cv_aucs.std():.4f}")
+
+# ── 6. Test-set evaluation ───────────────────────────────────────────────────
+y_pred = rf.predict(X_test)
+y_prob = rf.predict_proba(X_test)[:, 1]
+
+roc_auc  = roc_auc_score(y_test, y_prob)
+avg_prec = average_precision_score(y_test, y_prob)
+
+print(f"\nTest ROC-AUC : {roc_auc:.4f}")
+print(f"Avg Precision: {avg_prec:.4f}")
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=["Retained", "Churned"]))
+
+# ── 7. Feature importance ─────────────────────────────────────────────────────
+imp_df = (
+    pd.DataFrame({"feature": X.columns, "importance": rf.feature_importances_})
+    .sort_values("importance", ascending=True)
+)
+
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+
+imp_df.plot(kind="barh", x="feature", y="importance",
+            color="#9fb7b8", legend=False, ax=axes[0])
+axes[0].set_xlabel("Importance")
+axes[0].set_title("Random Forest – Feature Importance")
+
+# ── 8. ROC curve ─────────────────────────────────────────────────────────────
+fpr, tpr, _ = roc_curve(y_test, y_prob)
+axes[1].plot(fpr, tpr, color="#9fb7b8", lw=2.5,
+             label=f"Random Forest (AUC={roc_auc:.3f})")
+axes[1].plot([0, 1], [0, 1], "k--", lw=1.2)
+axes[1].set_xlabel("False Positive Rate")
+axes[1].set_ylabel("True Positive Rate")
+axes[1].set_title("ROC Curve – Churn Prediction")
+axes[1].legend()
+plt.tight_layout()
+plt.savefig("churn_evaluation.png", dpi=150)
+plt.show()
+
+# ── 9. Score a specific customer ─────────────────────────────────────────────
+new_customer = pd.DataFrame([{
+    "tenure_months":     3,
+    "monthly_charges":   95.0,
+    "total_charges":     285.0,
+    "num_products":      1,
+    "contract_type":     le.transform(["Month-to-Month"])[0],
+    "tech_support":      le.transform(["No"])[0],
+    "online_security":   le.transform(["No"])[0],
+    "payment_method":    le.transform(["Electronic check"])[0],
+    "num_support_calls": 5,
+    "satisfaction_score":2,
+}])
+churn_prob = rf.predict_proba(new_customer)[0, 1]
+print(f"\nCustomer churn probability : {churn_prob:.1%}")
+print(f"Action                     : {'Immediate outreach' if churn_prob > 0.6 else 'Monitor'}")
+</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h2>Interpreting the Results</h2>
+    </div>
+    <p><strong>Feature importance</strong> from Random Forest aggregates how much each feature reduces impurity across all splits in all trees. Contract type and tenure consistently rank highest in telecom churn models, confirming that long-term contract commitment is the strongest retention signal.</p>
+    <p><strong>Out-of-bag (OOB) score</strong> is computed on the ~37% of samples excluded from each tree's bootstrap sample, giving a nearly-free cross-validation estimate without requiring a separate validation set.</p>
+    <p><strong>Threshold optimisation</strong>: setting a churn threshold of 0.4 instead of 0.5 captures more at-risk customers at the cost of more false positives — a worthwhile trade when the lifetime value of a retained customer exceeds the cost of an unnecessary retention offer.</p>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+<script src="js/churn-sketch.js"></script>
+<script>
+  hljs.highlightAll();
+
+  function copyCode(btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        btn.classList.remove('copied');
+      }, 2200);
+    });
+  }
+</script>
+</body>
+</html>

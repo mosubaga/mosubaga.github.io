@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Recognition – ML with scikit-learn</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="site-brand" href="index.html"><i class="fa-solid fa-brain"></i> ML with scikit-learn</a>
+    <ul class="nav-links-center" id="nav-menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="real-estate.html"><i class="fa-solid fa-house-chimney"></i> Real Estate</a></li>
+      <li><a href="fraud-detection.html"><i class="fa-solid fa-shield-halved"></i> Fraud Detection</a></li>
+      <li><a href="image-recognition.html" class="active"><i class="fa-solid fa-image"></i> Image Recognition</a></li>
+      <li><a href="customer-churn.html"><i class="fa-solid fa-users"></i> Customer Churn</a></li>
+      <li><a href="object-detection.html"><i class="fa-solid fa-eye"></i> Object Detection</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="document.getElementById('nav-menu').classList.toggle('open')">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="page-hero hero-content">
+    <span class="eyebrow"><i class="fa-solid fa-image"></i> Multi-class Classification</span>
+    <h1>Image Recognition</h1>
+    <p class="lead">Classify handwritten digits from the MNIST dataset using K-Nearest Neighbors — an intuitive algorithm that predicts by finding the most similar examples in the training set.</p>
+  </div>
+</div>
+
+<main>
+  <div class="canvas-wrapper" id="img-canvas"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <h2>How K-Nearest Neighbors Works</h2>
+    </div>
+    <p>KNN is a <em>lazy learner</em> — it stores all training examples and makes predictions by computing the distance between a new image and every stored example, then taking a majority vote among the k closest neighbours. No explicit training step is required; all the work happens at prediction time.</p>
+    <p>For image data, the 64-dimensional pixel vector (8×8 image = 64 features) is normalised first. Euclidean distance in this pixel space captures visual similarity surprisingly well for digit images. Setting <code>weights='distance'</code> means closer neighbours cast stronger votes, improving boundary accuracy.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-ruler" style="color:#9fb7b8"></i></div>
+        <h4>Distance-based</h4>
+        <p>Prediction relies on geometric proximity in feature space — no parametric assumptions.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-sliders" style="color:#c9a0b4"></i></div>
+        <h4>Tunable k</h4>
+        <p>Cross-validation finds the optimal <em>k</em> that balances bias and variance.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-magnifying-glass" style="color:#9fb7b8"></i></div>
+        <h4>Interpretable</h4>
+        <p>You can inspect the actual neighbours that influenced each prediction.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-brands fa-python"></i></div>
+      <h2>Full Python Script</h2>
+    </div>
+    <p>Uses scikit-learn's bundled Digits dataset (8×8 pixel images, 1797 samples, 10 classes). Requires <code>pip install scikit-learn matplotlib seaborn</code>.</p>
+
+    <div class="code-block-wrapper">
+      <div class="code-block-header">
+        <span class="lang-label"><i class="fa-brands fa-python"></i> Python</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+      </div>
+      <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import (
+    classification_report, confusion_matrix,
+    accuracy_score, ConfusionMatrixDisplay,
+)
+from sklearn.pipeline import Pipeline
+
+# ── 1. Load MNIST-like digits dataset ────────────────────────────────────────
+digits = load_digits()
+X, y   = digits.data, digits.target
+
+print(f"Samples : {X.shape[0]}")
+print(f"Features: {X.shape[1]}  (8×8 pixel images flattened)")
+print(f"Classes : {np.unique(y)}")
+
+# ── 2. Visualise sample images ───────────────────────────────────────────────
+fig, axes = plt.subplots(2, 10, figsize=(14, 3.5))
+for i, ax in enumerate(axes.flat):
+    ax.imshow(digits.images[i], cmap="gray_r", interpolation="nearest")
+    ax.set_title(str(digits.target[i]), fontsize=9)
+    ax.axis("off")
+plt.suptitle("Sample handwritten digits (8×8 pixels)", y=1.03)
+plt.tight_layout()
+plt.savefig("sample_digits.png", dpi=150)
+plt.show()
+
+# ── 3. Train / test split ────────────────────────────────────────────────────
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# ── 4. Find optimal k via 5-fold cross-validation ───────────────────────────
+k_range  = range(1, 21)
+cv_means = []
+
+pipe_template = Pipeline([
+    ("scaler", StandardScaler()),
+    ("knn",    KNeighborsClassifier(metric="euclidean", weights="distance")),
+])
+
+for k in k_range:
+    pipe_template.set_params(knn__n_neighbors=k)
+    scores = cross_val_score(pipe_template, X_train, y_train, cv=5, scoring="accuracy")
+    cv_means.append(scores.mean())
+
+optimal_k = list(k_range)[np.argmax(cv_means)]
+print(f"\nOptimal k = {optimal_k}  (CV accuracy = {max(cv_means):.4f})")
+
+plt.figure(figsize=(8, 4))
+plt.plot(k_range, cv_means, "o-", color="#9fb7b8", lw=2)
+plt.axvline(optimal_k, color="#c9a0b4", linestyle="--", label=f"k={optimal_k}")
+plt.xlabel("k"); plt.ylabel("CV Accuracy"); plt.legend()
+plt.title("Cross-validated accuracy vs k")
+plt.tight_layout()
+plt.savefig("knn_cv_k.png", dpi=150)
+plt.show()
+
+# ── 5. Train final KNN pipeline ──────────────────────────────────────────────
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("knn",    KNeighborsClassifier(
+        n_neighbors=optimal_k,
+        metric="euclidean",
+        weights="distance",
+        n_jobs=-1,
+    )),
+])
+pipe.fit(X_train, y_train)
+
+# ── 6. Evaluate ──────────────────────────────────────────────────────────────
+y_pred   = pipe.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+
+print(f"\nTest accuracy: {accuracy:.4f}")
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# ── 7. Confusion matrix ───────────────────────────────────────────────────────
+fig, ax = plt.subplots(figsize=(10, 8))
+ConfusionMatrixDisplay.from_predictions(y_test, y_pred, ax=ax,
+                                         colorbar=False, cmap="Blues")
+ax.set_title(f"KNN (k={optimal_k}) – Digit Classification Confusion Matrix")
+plt.tight_layout()
+plt.savefig("digit_confusion_matrix.png", dpi=150)
+plt.show()
+
+# ── 8. Show misclassified examples ───────────────────────────────────────────
+wrong_idx = np.where(y_pred != y_test)[0]
+print(f"\nMisclassified: {len(wrong_idx)} / {len(y_test)}")
+
+n_show = min(10, len(wrong_idx))
+fig, axes = plt.subplots(2, n_show // 2, figsize=(14, 5))
+for i, ax in enumerate(axes.flat):
+    if i &lt; len(wrong_idx):
+        idx = wrong_idx[i]
+        ax.imshow(X_test[idx].reshape(8, 8), cmap="gray_r")
+        ax.set_title(f"True: {y_test[idx]}\nPred: {y_pred[idx]}", fontsize=9)
+    ax.axis("off")
+plt.suptitle("Misclassified digits")
+plt.tight_layout()
+plt.savefig("misclassified_digits.png", dpi=150)
+plt.show()
+
+# ── 9. Classify a new digit (flat pixel array) ───────────────────────────────
+# A hand-crafted "7" in 8×8 pixel format
+seven_pixels = np.array([
+    0, 0, 1, 1, 1, 1, 1, 0,
+    0, 0, 0, 0, 0, 1, 1, 0,
+    0, 0, 0, 0, 1, 1, 0, 0,
+    0, 0, 0, 1, 1, 0, 0, 0,
+    0, 0, 0, 1, 1, 0, 0, 0,
+    0, 0, 1, 1, 0, 0, 0, 0,
+    0, 0, 1, 1, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+], dtype=float) * 16   # scale to match dataset range
+
+pred  = pipe.predict([seven_pixels])[0]
+proba = pipe.predict_proba([seven_pixels])[0]
+print(f"\nPredicted digit: {pred}  (confidence: {proba.max():.1%})")
+</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h2>Interpreting the Results</h2>
+    </div>
+    <p><strong>Test accuracy</strong> for KNN on the Digits dataset typically exceeds 98% with the optimal k, competitive with shallow neural networks for this low-resolution benchmark.</p>
+    <p><strong>The confusion matrix</strong> reveals which digit pairs are most often confused — typically 3↔8, 4↔9, and 1↔7, reflecting visual similarity in handwriting styles.</p>
+    <p><strong>Scaling matters</strong>: without <code>StandardScaler</code>, features with higher variance dominate the distance calculation. For pixel data, all features have the same range, but normalisation still removes mean intensity differences between writers.</p>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+<script src="js/image-sketch.js"></script>
+<script>
+  hljs.highlightAll();
+
+  function copyCode(btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        btn.classList.remove('copied');
+      }, 2200);
+    });
+  }
+</script>
+</body>
+</html>

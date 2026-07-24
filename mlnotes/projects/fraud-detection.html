@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fraud Detection – ML with scikit-learn</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="site-brand" href="index.html"><i class="fa-solid fa-brain"></i> ML with scikit-learn</a>
+    <ul class="nav-links-center" id="nav-menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="real-estate.html"><i class="fa-solid fa-house-chimney"></i> Real Estate</a></li>
+      <li><a href="fraud-detection.html" class="active"><i class="fa-solid fa-shield-halved"></i> Fraud Detection</a></li>
+      <li><a href="image-recognition.html"><i class="fa-solid fa-image"></i> Image Recognition</a></li>
+      <li><a href="customer-churn.html"><i class="fa-solid fa-users"></i> Customer Churn</a></li>
+      <li><a href="object-detection.html"><i class="fa-solid fa-eye"></i> Object Detection</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="document.getElementById('nav-menu').classList.toggle('open')">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="page-hero hero-content">
+    <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> Binary Classification</span>
+    <h1>Fraud Detection</h1>
+    <p class="lead">Identify fraudulent credit-card transactions in a highly imbalanced dataset using Logistic Regression — a fast, interpretable model that outputs calibrated probabilities.</p>
+  </div>
+</div>
+
+<main>
+  <div class="canvas-wrapper" id="fraud-canvas"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <h2>Why Logistic Regression?</h2>
+    </div>
+    <p>Logistic Regression models the probability that a transaction is fraudulent using the sigmoid function applied to a linear combination of features. Despite its simplicity, it is highly effective for fraud detection because it produces <em>calibrated probabilities</em> — essential when the cost of false negatives (missed fraud) far outweighs false positives (flagged legitimate transactions).</p>
+    <p>The <code>class_weight='balanced'</code> parameter automatically adjusts loss weights to counter class imbalance, preventing the model from simply predicting "legitimate" for every transaction. L2 regularisation (controlled by <code>C</code>) prevents overfitting on noisy transaction features.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-percent" style="color:#9fb7b8"></i></div>
+        <h4>Probability Output</h4>
+        <p>Returns a fraud probability per transaction, enabling flexible threshold tuning.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-magnifying-glass-chart" style="color:#c9a0b4"></i></div>
+        <h4>Interpretable</h4>
+        <p>Feature coefficients directly show which signals increase fraud likelihood.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-bolt" style="color:#9fb7b8"></i></div>
+        <h4>Blazing Fast</h4>
+        <p>Trains on millions of transactions in seconds — critical for real-time systems.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-brands fa-python"></i></div>
+      <h2>Full Python Script</h2>
+    </div>
+    <p>Requires <code>pip install scikit-learn pandas matplotlib seaborn</code>.</p>
+
+    <div class="code-block-wrapper">
+      <div class="code-block-header">
+        <span class="lang-label"><i class="fa-brands fa-python"></i> Python</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+      </div>
+      <pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import (
+    classification_report, confusion_matrix,
+    roc_auc_score, roc_curve, average_precision_score,
+    precision_recall_curve,
+)
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# ── 1. Generate synthetic credit-card transaction data ────────────────────────
+np.random.seed(42)
+n_legit  = 9_000
+n_fraud  = 1_000
+
+legit = pd.DataFrame({
+    "amount":               np.random.lognormal(4.0, 1.2, n_legit),
+    "hour_of_day":          np.random.randint(6, 23, n_legit),
+    "tx_frequency_7d":      np.random.poisson(5,  n_legit),
+    "merchant_risk_score":  np.random.uniform(0, 0.3, n_legit),
+    "distance_from_home_km":np.random.exponential(20, n_legit),
+    "is_foreign":           np.random.binomial(1, 0.05, n_legit),
+    "label": 0,
+})
+
+fraud = pd.DataFrame({
+    "amount":               np.random.lognormal(5.5, 1.5, n_fraud),
+    "hour_of_day":          np.random.choice([0, 1, 2, 3, 4, 5], n_fraud),
+    "tx_frequency_7d":      np.random.poisson(15, n_fraud),
+    "merchant_risk_score":  np.random.uniform(0.6, 1.0, n_fraud),
+    "distance_from_home_km":np.random.exponential(200, n_fraud),
+    "is_foreign":           np.random.binomial(1, 0.60, n_fraud),
+    "label": 1,
+})
+
+df = pd.concat([legit, fraud], ignore_index=True).sample(frac=1, random_state=42)
+X  = df.drop("label", axis=1)
+y  = df["label"]
+
+print(f"Dataset: {len(df):,} transactions  |  fraud rate: {y.mean():.1%}")
+
+# ── 2. Split and scale ────────────────────────────────────────────────────────
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s  = scaler.transform(X_test)
+
+# ── 3. Train Logistic Regression ─────────────────────────────────────────────
+model = LogisticRegression(
+    class_weight="balanced",   # handles imbalance automatically
+    C=0.1,                     # stronger regularisation
+    solver="lbfgs",
+    max_iter=1_000,
+    random_state=42,
+)
+model.fit(X_train_s, y_train)
+
+# ── 4. Cross-validated ROC-AUC ────────────────────────────────────────────────
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+cv_scores = cross_val_score(model, X_train_s, y_train, cv=cv, scoring="roc_auc")
+print(f"\nCV ROC-AUC: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
+
+# ── 5. Evaluate on held-out test set ─────────────────────────────────────────
+y_pred = model.predict(X_test_s)
+y_prob = model.predict_proba(X_test_s)[:, 1]
+
+roc_auc  = roc_auc_score(y_test, y_prob)
+avg_prec = average_precision_score(y_test, y_prob)
+
+print(f"\nTest ROC-AUC            : {roc_auc:.4f}")
+print(f"Average Precision (PR) : {avg_prec:.4f}")
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=["Legitimate", "Fraudulent"]))
+
+# ── 6. Confusion matrix ───────────────────────────────────────────────────────
+cm = confusion_matrix(y_test, y_pred)
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=axes[0],
+            xticklabels=["Legit", "Fraud"],
+            yticklabels=["Legit", "Fraud"])
+axes[0].set_title("Confusion Matrix")
+axes[0].set_ylabel("Actual"); axes[0].set_xlabel("Predicted")
+
+# ── 7. ROC curve ─────────────────────────────────────────────────────────────
+fpr, tpr, _ = roc_curve(y_test, y_prob)
+axes[1].plot(fpr, tpr, color="#9fb7b8", lw=2.5,
+             label=f"Logistic Regression (AUC={roc_auc:.3f})")
+axes[1].plot([0, 1], [0, 1], "k--", lw=1.2, label="Random baseline")
+axes[1].set_xlabel("False Positive Rate"); axes[1].set_ylabel("True Positive Rate")
+axes[1].set_title("ROC Curve")
+axes[1].legend()
+plt.tight_layout()
+plt.savefig("fraud_evaluation.png", dpi=150)
+plt.show()
+
+# ── 8. Feature coefficients ───────────────────────────────────────────────────
+coef_df = (
+    pd.DataFrame({"feature": X.columns, "coeff": model.coef_[0]})
+    .sort_values("coeff", ascending=True)
+)
+print("\nFeature coefficients (positive ↑ fraud probability):")
+print(coef_df.to_string(index=False))
+
+# ── 9. Score a new transaction ────────────────────────────────────────────────
+new_tx = pd.DataFrame([{
+    "amount":                1_850.0,
+    "hour_of_day":           2,
+    "tx_frequency_7d":       18,
+    "merchant_risk_score":   0.82,
+    "distance_from_home_km": 1_200.0,
+    "is_foreign":            1,
+}])
+new_tx_s = scaler.transform(new_tx)
+prob = model.predict_proba(new_tx_s)[0, 1]
+print(f"\nNew transaction fraud probability: {prob:.1%}  →  {'FRAUD' if prob > 0.5 else 'Legitimate'}")
+</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h2>Interpreting the Results</h2>
+    </div>
+    <p><strong>ROC-AUC</strong> measures the model's ability to rank fraudulent transactions higher than legitimate ones, regardless of threshold. Values above 0.90 indicate an excellent fraud detector.</p>
+    <p><strong>Precision-Recall</strong> is often more informative than ROC for imbalanced datasets. High recall means fewer fraudulent transactions slip through; high precision means fewer legitimate purchases are blocked.</p>
+    <p><strong>Threshold tuning</strong> — the default decision threshold of 0.5 is rarely optimal. In production, operators balance the cost of missed fraud against customer friction from false declines, shifting the threshold accordingly.</p>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+<script src="js/fraud-sketch.js"></script>
+<script>
+  hljs.highlightAll();
+
+  function copyCode(btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        btn.classList.remove('copied');
+      }, 2200);
+    });
+  }
+</script>
+</body>
+</html>

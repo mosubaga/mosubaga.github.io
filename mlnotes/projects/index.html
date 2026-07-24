@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ML with scikit-learn</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="site-brand" href="index.html"><i class="fa-solid fa-brain"></i> ML with scikit-learn</a>
+    <ul class="nav-links-center" id="nav-menu">
+      <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="real-estate.html"><i class="fa-solid fa-house-chimney"></i> Real Estate</a></li>
+      <li><a href="fraud-detection.html"><i class="fa-solid fa-shield-halved"></i> Fraud Detection</a></li>
+      <li><a href="image-recognition.html"><i class="fa-solid fa-image"></i> Image Recognition</a></li>
+      <li><a href="customer-churn.html"><i class="fa-solid fa-users"></i> Customer Churn</a></li>
+      <li><a href="object-detection.html"><i class="fa-solid fa-eye"></i> Object Detection</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="document.getElementById('nav-menu').classList.toggle('open')">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="page-hero hero-content">
+    <span class="eyebrow"><i class="fa-solid fa-flask"></i> Python · scikit-learn</span>
+    <h1>Machine Learning<br>Solving Real Problems</h1>
+    <p class="lead">Discover how scikit-learn's powerful algorithms tackle everyday challenges — from predicting house prices to detecting fraud and classifying images.</p>
+  </div>
+</div>
+
+<main>
+  <!-- Live visualization -->
+  <div class="canvas-wrapper" id="home-canvas"></div>
+
+  <!-- Introduction -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-book-open"></i></div>
+      <h2>What is scikit-learn?</h2>
+    </div>
+    <p>scikit-learn is Python's go-to machine learning library — free, open-source, and trusted by researchers and engineers worldwide. Built on NumPy, SciPy, and matplotlib, it provides simple, consistent APIs for dozens of algorithms spanning classification, regression, clustering, dimensionality reduction, and model evaluation.</p>
+    <p>Whether you're a data science beginner or a seasoned ML practitioner, scikit-learn's clean interface lets you focus on solving problems rather than wrestling with low-level implementation details.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-gauge-high" style="color:#9fb7b8"></i></div>
+        <h4>Fast &amp; Efficient</h4>
+        <p>Optimised C extensions keep training times low even on datasets with millions of rows.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-plug" style="color:#c9a0b4"></i></div>
+        <h4>Consistent API</h4>
+        <p>Every estimator follows the same <code>fit / predict / transform</code> contract, so switching algorithms takes one line.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-shield-check" style="color:#9fb7b8"></i></div>
+        <h4>Battle-tested</h4>
+        <p>Over a decade of production use across finance, healthcare, retail, and scientific research.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Use-case cards -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-map"></i></div>
+      <h2>Explore Use Cases</h2>
+    </div>
+    <p>Each page below walks through a complete, runnable Python script — from raw data to trained model to evaluation metrics.</p>
+
+    <div class="use-case-grid">
+      <a class="use-case-card" href="real-estate.html">
+        <div class="uc-icon"><i class="fa-solid fa-house-chimney"></i></div>
+        <h3>Real Estate Pricing</h3>
+        <p>Predict housing prices from location, bedrooms, square footage, and more using ensemble learning.</p>
+        <span class="algo-tag">Gradient Boosting</span>
+      </a>
+
+      <a class="use-case-card" href="fraud-detection.html">
+        <div class="uc-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Fraud Detection</h3>
+        <p>Identify suspicious credit card transactions in imbalanced datasets with a probabilistic classifier.</p>
+        <span class="algo-tag">Logistic Regression</span>
+      </a>
+
+      <a class="use-case-card" href="image-recognition.html">
+        <div class="uc-icon"><i class="fa-solid fa-image"></i></div>
+        <h3>Image Recognition</h3>
+        <p>Classify handwritten digits from the MNIST dataset by finding the closest training examples.</p>
+        <span class="algo-tag">K-Nearest Neighbors</span>
+      </a>
+
+      <a class="use-case-card" href="customer-churn.html">
+        <div class="uc-icon"><i class="fa-solid fa-users"></i></div>
+        <h3>Customer Churn</h3>
+        <p>Forecast which customers are likely to cancel so retention teams can act proactively.</p>
+        <span class="algo-tag">Random Forest</span>
+      </a>
+
+      <a class="use-case-card" href="object-detection.html">
+        <div class="uc-icon"><i class="fa-solid fa-eye"></i></div>
+        <h3>Object Detection</h3>
+        <p>Detect and locate faces in images and video streams using classical cascade classifiers.</p>
+        <span class="algo-tag">Viola-Jones / Haar</span>
+      </a>
+
+      <div class="use-case-card" style="background:rgba(212,226,226,0.28); cursor:default;">
+        <div class="uc-icon"><i class="fa-solid fa-rocket" style="color:#c9c7ca"></i></div>
+        <h3>Install scikit-learn</h3>
+        <p>Get started in seconds. scikit-learn is available on PyPI and conda-forge.</p>
+        <span class="algo-tag" style="background:var(--gray);">pip install scikit-learn</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+<script src="js/home-sketch.js"></script>
+</body>
+</html>

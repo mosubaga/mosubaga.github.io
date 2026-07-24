@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Estate Pricing – ML with scikit-learn</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="site-brand" href="index.html"><i class="fa-solid fa-brain"></i> ML with scikit-learn</a>
+    <ul class="nav-links-center" id="nav-menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="real-estate.html" class="active"><i class="fa-solid fa-house-chimney"></i> Real Estate</a></li>
+      <li><a href="fraud-detection.html"><i class="fa-solid fa-shield-halved"></i> Fraud Detection</a></li>
+      <li><a href="image-recognition.html"><i class="fa-solid fa-image"></i> Image Recognition</a></li>
+      <li><a href="customer-churn.html"><i class="fa-solid fa-users"></i> Customer Churn</a></li>
+      <li><a href="object-detection.html"><i class="fa-solid fa-eye"></i> Object Detection</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="document.getElementById('nav-menu').classList.toggle('open')">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="page-hero hero-content">
+    <span class="eyebrow"><i class="fa-solid fa-house-chimney"></i> Regression</span>
+    <h1>Real Estate Pricing</h1>
+    <p class="lead">Use Gradient Boosting to predict housing prices from features like location, square footage, and number of bedrooms — achieving accuracy that rivals professional appraisers.</p>
+  </div>
+</div>
+
+<main>
+  <div class="canvas-wrapper" id="re-canvas"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <h2>Why Gradient Boosting?</h2>
+    </div>
+    <p>Gradient Boosting Regressor builds an ensemble of shallow decision trees sequentially. Each new tree corrects the residual errors of the previous ensemble, so the model improves with every iteration. The result is a powerful, non-linear predictor that handles mixed feature types, missing values, and complex interactions with ease.</p>
+    <p>Key hyperparameters to tune: <strong>n_estimators</strong> (number of trees), <strong>learning_rate</strong> (shrinkage applied to each tree's contribution), and <strong>max_depth</strong> (complexity per tree). A lower learning rate with more trees generally yields better generalisation.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-arrows-up-to-line" style="color:#9fb7b8"></i></div>
+        <h4>Handles Non-linearity</h4>
+        <p>Captures complex feature interactions that linear models miss.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-scale-balanced" style="color:#c9a0b4"></i></div>
+        <h4>Feature Importance</h4>
+        <p>Built-in importance scores tell you which attributes drive prices most.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-chart-line" style="color:#9fb7b8"></i></div>
+        <h4>Robust to Outliers</h4>
+        <p>Uses Huber loss internally, making it resilient to luxury outlier prices.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-brands fa-python"></i></div>
+      <h2>Full Python Script</h2>
+    </div>
+    <p>Copy and run this script in any Python environment with scikit-learn installed (<code>pip install scikit-learn pandas matplotlib</code>).</p>
+
+    <div class="code-block-wrapper">
+      <div class="code-block-header">
+        <span class="lang-label"><i class="fa-brands fa-python"></i> Python</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+      </div>
+      <pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+import matplotlib.pyplot as plt
+
+# ── 1. Generate synthetic housing dataset ────────────────────────────────────
+np.random.seed(42)
+n = 1200
+
+X = pd.DataFrame({
+    "location_score":  np.random.uniform(1, 10, n),
+    "bedrooms":        np.random.randint(1, 7, n).astype(float),
+    "bathrooms":       np.random.randint(1, 5, n).astype(float),
+    "sqft":            np.random.uniform(500, 5_000, n),
+    "age_years":       np.random.randint(0, 50, n).astype(float),
+    "garage_spaces":   np.random.randint(0, 4, n).astype(float),
+    "has_pool":        np.random.randint(0, 2, n).astype(float),
+    "school_rating":   np.random.uniform(1, 10, n),
+})
+
+# Target: house price in $k (non-linear relationship)
+noise = np.random.normal(0, 28, n)
+y = (
+    55  * X["location_score"] +
+    32  * X["bedrooms"] +
+    26  * X["bathrooms"] +
+    0.14 * X["sqft"] +
+    -1.8 * X["age_years"] +
+    18  * X["garage_spaces"] +
+    40  * X["has_pool"] +
+    12  * X["school_rating"] ** 1.3 +
+    noise + 80
+)
+
+print(f"Price range: ${y.min():.0f}k – ${y.max():.0f}k")
+print(f"Mean price:  ${y.mean():.0f}k\n")
+
+# ── 2. Train / test split ────────────────────────────────────────────────────
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# ── 3. Train Gradient Boosting Regressor ────────────────────────────────────
+gbr = GradientBoostingRegressor(
+    n_estimators=300,
+    learning_rate=0.05,
+    max_depth=4,
+    min_samples_split=5,
+    min_samples_leaf=4,
+    subsample=0.85,          # stochastic gradient boosting
+    random_state=42,
+)
+gbr.fit(X_train, y_train)
+
+# ── 4. Evaluate ──────────────────────────────────────────────────────────────
+y_pred = gbr.predict(X_test)
+
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+mae  = mean_absolute_error(y_test, y_pred)
+r2   = r2_score(y_test, y_pred)
+
+print(f"RMSE : ${rmse:.1f}k")
+print(f"MAE  : ${mae:.1f}k")
+print(f"R²   : {r2:.4f}\n")
+
+# ── 5. Feature importances ───────────────────────────────────────────────────
+imp_df = (
+    pd.DataFrame({"feature": X.columns, "importance": gbr.feature_importances_})
+    .sort_values("importance", ascending=False)
+    .reset_index(drop=True)
+)
+print("Feature importances:")
+print(imp_df.to_string(index=False))
+
+# ── 6. Predict a single new listing ─────────────────────────────────────────
+new_house = pd.DataFrame([{
+    "location_score": 8.5,
+    "bedrooms":       4.0,
+    "bathrooms":      3.0,
+    "sqft":           2_800.0,
+    "age_years":      8.0,
+    "garage_spaces":  2.0,
+    "has_pool":       1.0,
+    "school_rating":  8.2,
+}])
+
+est_price = gbr.predict(new_house)[0]
+print(f"\nEstimated price for new listing: ${est_price:.0f}k")
+
+# ── 7. Plot: actual vs predicted ─────────────────────────────────────────────
+plt.figure(figsize=(8, 6))
+plt.scatter(y_test, y_pred, alpha=0.45, color="#9fb7b8", edgecolors="none", s=30)
+plt.plot([y_test.min(), y_test.max()],
+         [y_test.min(), y_test.max()],
+         "r--", lw=2, label="Perfect fit")
+plt.xlabel("Actual Price ($k)")
+plt.ylabel("Predicted Price ($k)")
+plt.title(f"Gradient Boosting – Housing Prices  (R²={r2:.3f})")
+plt.legend()
+plt.tight_layout()
+plt.savefig("housing_predictions.png", dpi=150)
+plt.show()
+
+# ── 8. Feature importance bar chart ──────────────────────────────────────────
+fig, ax = plt.subplots(figsize=(8, 5))
+colors = ["#9fb7b8" if i == 0 else "#c9a8b8" for i in range(len(imp_df))]
+ax.barh(imp_df["feature"][::-1], imp_df["importance"][::-1], color=colors[::-1])
+ax.set_xlabel("Importance")
+ax.set_title("Gradient Boosting – Feature Importance")
+plt.tight_layout()
+plt.savefig("feature_importance.png", dpi=150)
+plt.show()
+</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h2>Interpreting the Results</h2>
+    </div>
+    <p><strong>R² score</strong> measures the proportion of variance in house prices explained by the model. A value close to 1.0 indicates excellent fit. Typical gradient boosting models achieve R² &gt; 0.90 on housing datasets.</p>
+    <p><strong>RMSE (Root Mean Squared Error)</strong> is expressed in the same unit as the target — dollars. An RMSE of $28k on homes averaging $400k represents a &lt;7% error, which is competitive with professional appraisals.</p>
+    <p><strong>Feature importance</strong> from gradient boosting uses the total reduction in training loss attributable to each feature across all splits. Location score and square footage typically dominate, reflecting real-world pricing dynamics.</p>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+<script src="js/real-estate-sketch.js"></script>
+<script>
+  hljs.highlightAll();
+
+  function copyCode(btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        btn.classList.remove('copied');
+      }, 2200);
+    });
+  }
+</script>
+</body>
+</html>

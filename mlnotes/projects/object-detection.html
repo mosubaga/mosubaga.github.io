@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Object Detection – ML with scikit-learn</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="site-brand" href="index.html"><i class="fa-solid fa-brain"></i> ML with scikit-learn</a>
+    <ul class="nav-links-center" id="nav-menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="real-estate.html"><i class="fa-solid fa-house-chimney"></i> Real Estate</a></li>
+      <li><a href="fraud-detection.html"><i class="fa-solid fa-shield-halved"></i> Fraud Detection</a></li>
+      <li><a href="image-recognition.html"><i class="fa-solid fa-image"></i> Image Recognition</a></li>
+      <li><a href="customer-churn.html"><i class="fa-solid fa-users"></i> Customer Churn</a></li>
+      <li><a href="object-detection.html" class="active"><i class="fa-solid fa-eye"></i> Object Detection</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="document.getElementById('nav-menu').classList.toggle('open')">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="page-hero hero-content">
+    <span class="eyebrow"><i class="fa-solid fa-eye"></i> Computer Vision</span>
+    <h1>Object Detection</h1>
+    <p class="lead">Detect and locate faces in images and live video using the Viola-Jones Haar Cascade algorithm — a landmark in real-time object detection that laid the groundwork for modern computer vision.</p>
+  </div>
+</div>
+
+<main>
+  <div class="canvas-wrapper" id="det-canvas"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <h2>How Viola-Jones Works</h2>
+    </div>
+    <p>The Viola-Jones algorithm (2001) uses <strong>Haar-like features</strong> — rectangular regions in an image where the difference in pixel intensity encodes edges, lines, and centre-surround patterns characteristic of faces. An integral image precomputation lets any rectangular feature be evaluated in O(1) time.</p>
+    <p>A cascade of <strong>AdaBoost classifiers</strong> (each a weighted sum of weak Haar feature tests) filters candidate windows: early stages quickly reject non-face regions; later stages apply increasingly strict tests to remaining candidates. The result is a detector that runs in real time on 2001-era hardware and remains the gold standard for rapid face localisation.</p>
+    <p>In Python, the pretrained cascade is shipped with <strong>OpenCV</strong> (<code>cv2.CascadeClassifier</code>) and integrates naturally with the scikit-learn Python data science ecosystem.</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-gauge-high" style="color:#9fb7b8"></i></div>
+        <h4>Real-time Speed</h4>
+        <p>Integral image trick evaluates thousands of windows per second, even on CPU.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-layer-group" style="color:#c9a0b4"></i></div>
+        <h4>Cascade Architecture</h4>
+        <p>Early rejection stages discard 99%+ of windows before expensive tests run.</p>
+      </div>
+      <div class="info-card">
+        <div class="card-icon"><i class="fa-solid fa-cubes" style="color:#9fb7b8"></i></div>
+        <h4>Multi-scale Detection</h4>
+        <p>Image pyramid rescaling detects faces of any size in a single pass.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-brands fa-python"></i></div>
+      <h2>Full Python Script</h2>
+    </div>
+    <p>Requires <code>pip install opencv-python matplotlib numpy</code>. The Haar cascade XML files are bundled with OpenCV.</p>
+
+    <div class="code-block-wrapper">
+      <div class="code-block-header">
+        <span class="lang-label"><i class="fa-brands fa-python"></i> Python</span>
+        <button class="copy-btn" onclick="copyCode(this)">
+          <i class="fa-regular fa-copy"></i> Copy
+        </button>
+      </div>
+      <pre><code class="language-python">import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
+
+# ── 1. Load pretrained Haar cascade classifiers ───────────────────────────────
+# These XML files are bundled with every OpenCV installation.
+FACE_CASCADE = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
+EYE_CASCADE = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_eye.xml"
+)
+
+if FACE_CASCADE.empty():
+    raise RuntimeError("Could not load face cascade — check your OpenCV installation.")
+
+
+# ── 2. Detect faces and eyes in a single image ───────────────────────────────
+def detect_faces(
+    image_path: str,
+    scale_factor: float = 1.1,
+    min_neighbors: int = 5,
+    min_size: tuple = (30, 30),
+    detect_eyes: bool = True,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Detect faces (and optionally eyes) in an image.
+
+    Parameters
+    ----------
+    image_path    : path to input image file
+    scale_factor  : how much image size is reduced at each pyramid level
+    min_neighbors : minimum neighbour rectangles a candidate must retain
+    min_size      : minimum face size in pixels (width, height)
+    detect_eyes   : whether to also detect eyes within each face ROI
+
+    Returns
+    -------
+    annotated_image : BGR image with bounding boxes drawn
+    faces           : array of (x, y, w, h) face coordinates
+    """
+    img  = cv2.imread(image_path)
+    if img is None:
+        raise FileNotFoundError(f"Could not read: {image_path}")
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.equalizeHist(gray)   # contrast normalisation
+
+    faces = FACE_CASCADE.detectMultiScale(
+        gray,
+        scaleFactor=scale_factor,
+        minNeighbors=min_neighbors,
+        minSize=min_size,
+        flags=cv2.CASCADE_SCALE_IMAGE,
+    )
+
+    print(f"Detected {len(faces)} face(s) in {Path(image_path).name}")
+
+    for (x, y, w, h) in faces:
+        # Draw face bounding box
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 200, 100), 3)
+        cv2.putText(img, "Face", (x, y - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 200, 100), 2)
+
+        if detect_eyes:
+            roi_gray  = gray[y:y + h, x:x + w]
+            roi_color = img[y:y + h, x:x + w]
+            eyes = EYE_CASCADE.detectMultiScale(
+                roi_gray, scaleFactor=1.05, minNeighbors=8
+            )
+            for (ex, ey, ew, eh) in eyes:
+                cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh),
+                              (100, 150, 230), 2)
+
+    return cv2.cvtColor(img, cv2.COLOR_BGR2RGB), faces
+
+
+# ── 3. Detect faces in a video file or webcam ────────────────────────────────
+def detect_faces_in_video(
+    source=0,
+    output_path: str = "output_detected.avi",
+    max_frames: int = 300,
+    scale_factor: float = 1.1,
+    min_neighbors: int = 5,
+):
+    """
+    Process a video file or live webcam feed and write annotated frames.
+
+    Parameters
+    ----------
+    source        : path to video file OR 0 for the default webcam
+    output_path   : where to save the annotated video
+    max_frames    : stop after this many frames (useful for long files)
+    scale_factor  : Viola-Jones pyramid scale step
+    min_neighbors : minimum accepted neighbour count per detection
+    """
+    cap = cv2.VideoCapture(source)
+    if not cap.isOpened():
+        raise IOError(f"Cannot open video source: {source}")
+
+    width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps    = cap.get(cv2.CAP_PROP_FPS) or 30.0
+
+    fourcc = cv2.VideoWriter_fourcc(*"XVID")
+    writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+    frame_idx   = 0
+    face_counts = []
+
+    while cap.isOpened() and frame_idx &lt; max_frames:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.equalizeHist(gray)
+
+        faces = FACE_CASCADE.detectMultiScale(
+            gray,
+            scaleFactor=scale_factor,
+            minNeighbors=min_neighbors,
+            minSize=(40, 40),
+        )
+        face_counts.append(len(faces))
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 200, 100), 3)
+            cv2.putText(frame, "Face", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 200, 100), 2)
+
+        # HUD overlay
+        cv2.rectangle(frame, (10, 10), (290, 48), (0, 0, 0), -1)
+        cv2.putText(frame, f"Faces: {len(faces)}  |  Frame: {frame_idx}",
+                    (18, 36), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+
+        writer.write(frame)
+        frame_idx += 1
+
+    cap.release()
+    writer.release()
+
+    print(f"Processed {frame_idx} frames → saved to {output_path}")
+    print(f"Average faces per frame : {np.mean(face_counts):.2f}")
+    print(f"Peak faces in one frame : {max(face_counts)}")
+
+    # Plot face count over time
+    plt.figure(figsize=(11, 4))
+    plt.plot(face_counts, color="#9fb7b8", lw=2)
+    plt.fill_between(range(len(face_counts)), face_counts,
+                     alpha=0.25, color="#9fb7b8")
+    plt.xlabel("Frame number")
+    plt.ylabel("Faces detected")
+    plt.title("Viola-Jones Face Detection — Face Count per Frame")
+    plt.tight_layout()
+    plt.savefig("face_count_over_time.png", dpi=150)
+    plt.show()
+
+    return face_counts
+
+
+# ── 4. Example: process an image ─────────────────────────────────────────────
+# Uncomment to run on a real image:
+# annotated, faces = detect_faces("group_photo.jpg")
+# plt.figure(figsize=(10, 7))
+# plt.imshow(annotated)
+# plt.title(f"Detected {len(faces)} face(s)")
+# plt.axis("off")
+# plt.tight_layout()
+# plt.show()
+
+# ── 5. Example: process a video ──────────────────────────────────────────────
+# Uncomment to run on a real video:
+# counts = detect_faces_in_video("meeting.mp4", "annotated_meeting.avi")
+
+# ── 6. Demo on a synthetic test image ────────────────────────────────────────
+# Create a blank canvas and draw simple face-like shapes for a quick demo.
+demo = np.ones((300, 600, 3), dtype=np.uint8) * 245
+
+for (cx, cy, r) in [(150, 150, 60), (450, 150, 55)]:
+    cv2.circle(demo, (cx, cy), r, (200, 180, 190), -1)             # head
+    cv2.circle(demo, (cx - 18, cy - 14), 10, (255, 255, 255), -1) # left eye white
+    cv2.circle(demo, (cx + 18, cy - 14), 10, (255, 255, 255), -1) # right eye white
+    cv2.circle(demo, (cx - 18, cy - 14),  5, (60, 58, 65), -1)    # left pupil
+    cv2.circle(demo, (cx + 18, cy - 14),  5, (60, 58, 65), -1)    # right pupil
+    cv2.ellipse(demo, (cx, cy + 20), (20, 10), 0, 0, 180, (60, 58, 65), 2)  # mouth
+
+cv2.imwrite("synthetic_faces.png", demo)
+
+# Attempt detection (accuracy limited on synthetic data; works on real photos)
+gray_demo = cv2.cvtColor(demo, cv2.COLOR_BGR2GRAY)
+detected  = FACE_CASCADE.detectMultiScale(gray_demo, scaleFactor=1.05,
+                                          minNeighbors=3, minSize=(20, 20))
+print(f"\nDemo detections on synthetic image: {len(detected)}")
+for (x, y, w, h) in detected:
+    cv2.rectangle(demo, (x, y), (x + w, y + h), (0, 200, 100), 3)
+
+plt.imshow(cv2.cvtColor(demo, cv2.COLOR_BGR2RGB))
+plt.title("Synthetic demo — Viola-Jones detection")
+plt.axis("off")
+plt.tight_layout()
+plt.savefig("demo_detection_result.png", dpi=150)
+plt.show()
+</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon"><i class="fa-solid fa-lightbulb"></i></div>
+      <h2>Interpreting the Results</h2>
+    </div>
+    <p><strong>scaleFactor</strong> controls the image pyramid step. A value of 1.05 means the image is shrunk 5% between each level, giving finer multi-scale resolution at the cost of speed. 1.1–1.3 is typical for real-time use.</p>
+    <p><strong>minNeighbors</strong> is the most important quality parameter. Low values (2–3) yield more detections but more false positives. Values of 5–8 are appropriate for group photos where false detections are unacceptable.</p>
+    <p><strong>Limitations</strong>: Viola-Jones is optimised for frontal, upright faces. Profile views, extreme lighting, and occlusions reduce accuracy. Modern deep-learning detectors (MTCNN, RetinaFace) significantly outperform Haar cascades on difficult images while remaining fast on GPU hardware.</p>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+<script src="js/detection-sketch.js"></script>
+<script>
+  hljs.highlightAll();
+
+  function copyCode(btn) {
+    const code = btn.closest('.code-block-wrapper').querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        btn.classList.remove('copied');
+      }, 2200);
+    });
+  }
+</script>
+</body>
+</html>
