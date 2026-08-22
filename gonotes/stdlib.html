@@ -29,7 +29,7 @@
 
     <h3>Key Functions and Types</h3>
     <ul>
-        <li><strong>time.Time:</strong> Represents a specific instant in time with nanosecond precision.</li>
+        <li><strong>time.Time:</strong> Represents a specific instant in time with nanosecond precision; actual clock accuracy varies by system.</li>
         <li><strong>time.Now():</strong> Returns the current local time.</li>
         <li><strong>time.Duration:</strong> Represents the elapsed time between two instants as an <code>int64</code> value in nanoseconds.</li>
     </ul>
@@ -98,7 +98,7 @@ func main() {
     <p>File operations are primarily handled by the <code>os</code> package, while the <code>io</code> and <code>bufio</code> packages provide interfaces and buffering for efficient data transfer.</p>
 
     <h3>Reading Files</h3>
-    <p>The simplest way to read a small file is <code>os.ReadFile</code>, which loads the entire content into memory. For larger files, use <code>os.Open</code> with a buffer or a scanner.</p>
+    <p>The simplest way to read a small file is <code>os.ReadFile</code>, which loads the entire content into memory. For larger files, use <code>os.Open</code> with buffering; <code>bufio.Scanner</code> is convenient for line-oriented input with reasonably sized tokens.</p>
 
     <pre><code class="language-go">// 1. Quick read
 data, err := os.ReadFile("config.json")

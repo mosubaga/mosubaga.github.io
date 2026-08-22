@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>Rust &amp; WebAssembly — Building and Hosting Static Sites</title>
+    <meta name="description"
+        content="Compiling Rust to WebAssembly and the five practical ways to bind it into a static website, plus a deployment checklist for GitHub Pages, Netlify and friends.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly Target</span>
+            <h1>Rust &amp; <span>WebAssembly</span></h1>
+            <p>Compiling fast, sandboxed binaries for the browser — and every practical way to bind them into a static
+                website you can host anywhere.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> On this page</h3>
+            <div class="kp">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span>What the Wasm sandbox does and does not protect you from.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-toolbox" aria-hidden="true"></i>
+                <span>A complete Rust → Wasm walkthrough with <code>wasm-bindgen</code> and
+                    <code>wasm-pack</code>.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-code-branch" aria-hidden="true"></i>
+                <span><strong>Five ways</strong> to bind Wasm into a static site — from one script tag to a full
+                    bundler.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                <span>A deployment checklist for GitHub Pages, Netlify, Cloudflare Pages and plain S3.</span>
+            </div>
+        </div>
+
+        <!-- SECTION 1: MODEL -->
+        <section id="wasm-architecture">
+            <h2><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> The Wasm Sandboxing Model</h2>
+            <p>
+                WebAssembly is a portable binary instruction format designed as a compilation target for languages
+                like Rust, C and C++. It has been supported by every major browser since 2017 and became a W3C
+                recommendation in December 2019. Rust was among the first languages to support it well, and remains
+                one of the very best fits: no garbage collector to ship, no runtime to bootstrap, and a type system
+                that maps cleanly onto Wasm's own.
+            </p>
+            <p>
+                Wasm is not only a browser technology. The same sandbox model makes it a compelling way to run
+                untrusted plugins inside a server process, which is why it shows up in edge platforms and plugin
+                systems as often as in web pages.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-lock" aria-hidden="true"></i> Designed for untrusted code</h3>
+                    <p>
+                        Wasm assumes the module might be hostile. A module can only touch memory the host explicitly
+                        gave it, and can only call functions the host explicitly imported. There is no ambient
+                        authority: no filesystem, no sockets, no clock, unless the embedder hands one over. That makes
+                        it a genuinely useful way to run a third-party plugin you have not audited.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-memory" aria-hidden="true"></i> The linear memory model</h3>
+                    <p>
+                        A module's heap is a single contiguous byte array — in a browser, an ordinary
+                        <code>ArrayBuffer</code> the JavaScript side can see. Every pointer inside the module is just
+                        an offset into that array, and every access is bounds-checked against its length. The module
+                        never learns a real machine address and cannot reach a single byte outside its own buffer.
+                    </p>
+                </div>
+            </div>
+
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> What
+                    the sandbox does <em>not</em> give you</div>
+                <p>
+                    The isolation is between the module and its host — not within the module. A C program compiled to
+                    Wasm can still overflow a buffer and corrupt <em>its own</em> heap; the sandbox only guarantees it
+                    cannot corrupt yours. Two consequences worth remembering: Rust's own safety guarantees are still
+                    doing real work inside the module, and a Wasm module is not automatically safe to hand secrets to
+                    — anything in its linear memory is visible to the page that hosts it.
+                </p>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-globe" aria-hidden="true"></i> Where it runs in
+                    production</div>
+                <p>
+                    Beyond the browser, Wasm is the execution layer for <strong>Fastly Compute</strong> and is
+                    supported by <strong>Cloudflare Workers</strong> for edge computing; <strong>Polkadot</strong>
+                    executes its runtime as Wasm and <strong>CosmWasm</strong> brings Wasm smart contracts to the
+                    Cosmos ecosystem. Standalone runtimes such as <strong>Wasmtime</strong> and
+                    <strong>Wasmer</strong> run <code>.wasm</code> files directly on a server, using
+                    <strong>WASI</strong> and related host APIs to grant controlled access to capabilities such as
+                    files, clocks, environment variables and, where supported, networking.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TARGETS -->
+        <section id="targets">
+            <h2><i class="fa-solid fa-bullseye" aria-hidden="true"></i> Picking the Right Target</h2>
+            <p>
+                Rust ships several WebAssembly targets, and choosing the wrong one produces confusing errors. Install
+                the one you need with <code>rustup target add</code>:
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Target</th>
+                            <th>Environment</th>
+                            <th>Use it for</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>wasm32-unknown-unknown</code></td>
+                            <td>The browser, via JavaScript</td>
+                            <td><strong>Everything on this page.</strong> No operating system is assumed, so
+                                <code>std::fs</code> and <code>std::net</code> are unavailable — the host provides
+                                those through imported functions instead.</td>
+                        </tr>
+                        <tr>
+                            <td><code>wasm32-wasip1</code></td>
+                            <td>A WASI runtime (Wasmtime, Wasmer)</td>
+                            <td>Server-side and CLI Wasm, where files, environment variables and clocks do exist —
+                                but only the ones the runtime grants.</td>
+                        </tr>
+                        <tr>
+                            <td><code>wasm32-wasip2</code></td>
+                            <td>WASI Preview 2 runtimes</td>
+                            <td>The newer component-model flavour of WASI, with richer interface types.</td>
+                        </tr>
+                        <tr>
+                            <td><code>wasm32-unknown-emscripten</code></td>
+                            <td>Emscripten toolchain</td>
+                            <td>Interoperating with an existing C/C++ Emscripten codebase. Rarely the right choice
+                                for new Rust projects.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <pre data-lang="shell">rustup target add wasm32-unknown-unknown</pre>
+        </section>
+
+        <!-- SECTION 3: WALKTHROUGH -->
+        <section id="wasm-samples">
+            <h2><i class="fa-solid fa-code" aria-hidden="true"></i> Rust to Wasm: a Walkthrough</h2>
+            <p>
+                Raw WebAssembly can only pass numbers across its boundary — integers and floats, nothing else. The
+                <code>wasm-bindgen</code> crate closes that gap: it generates the JavaScript glue that copies strings,
+                structs, closures and <code>Vec</code>s in and out of linear memory, so both sides can work with
+                normal values.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="cargo-toml"><i class="fa-solid fa-file-lines"
+                            aria-hidden="true"></i>1. Cargo.toml</button>
+                    <button class="tab-btn" data-tab="lib-rs"><i class="fa-brands fa-rust" aria-hidden="true"></i>2.
+                        lib.rs</button>
+                    <button class="tab-btn" data-tab="html-glue"><i class="fa-brands fa-js" aria-hidden="true"></i>3.
+                        JS / HTML</button>
+                    <button class="tab-btn" data-tab="build-step"><i class="fa-solid fa-hammer"
+                            aria-hidden="true"></i>4. Build</button>
+                </div>
+
+                <div id="cargo-toml" class="tab-content active">
+                    <h3>Configure the manifest</h3>
+                    <p>
+                        The crate must build as a <code>cdylib</code> so the compiler emits a
+                        <code>.wasm</code> object rather than a Rust <code>.rlib</code>. Keeping <code>rlib</code> in
+                        the list as well means <code>cargo test</code> can still run your unit tests natively — a
+                        small thing that saves a lot of friction.
+                    </p>
+                    <pre data-lang="toml"><span class="keyword">[package]</span>
+name = <span class="string">"wasm_math_lib"</span>
+version = <span class="string">"0.1.0"</span>
+edition = <span class="string">"2024"</span>
+
+<span class="keyword">[lib]</span>
+<span class="comment"># cdylib -&gt; the .wasm artifact; rlib -&gt; native `cargo test` still works</span>
+crate-type = [<span class="string">"cdylib"</span>, <span class="string">"rlib"</span>]
+
+<span class="keyword">[dependencies]</span>
+wasm-bindgen = <span class="string">"0.2"</span>
+
+<span class="comment"># Optional but recommended: a much smaller release binary.</span>
+<span class="keyword">[profile.release]</span>
+opt-level = <span class="string">"z"</span>       <span class="comment"># optimise for size rather than speed</span>
+lto = <span class="keyword">true</span>          <span class="comment"># link-time optimisation across crates</span>
+codegen-units = <span class="string">1</span>   <span class="comment"># slower build, smaller output</span>
+panic = <span class="string">"abort"</span>    <span class="comment"># drop the unwinding machinery</span>
+strip = <span class="keyword">true</span>        <span class="comment"># remove debug symbols</span></pre>
+                </div>
+
+                <div id="lib-rs" class="tab-content">
+                    <h3>Write the Rust</h3>
+                    <p>
+                        Annotate anything you want JavaScript to see with <code>#[wasm_bindgen]</code>. It works on
+                        free functions, structs, their methods, and enums.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> wasm_bindgen::prelude::*;
+
+<span class="comment">// A plain numeric function: the cheapest possible boundary crossing.</span>
+<span class="keyword">#[wasm_bindgen]</span>
+<span class="keyword">pub fn</span> <span class="builtin">gcd</span>(a: <span class="type">u32</span>, b: <span class="type">u32</span>) -&gt; <span class="type">u32</span> {
+    <span class="keyword">let</span> (<span class="keyword">mut</span> x, <span class="keyword">mut</span> y) = (a, b);
+    <span class="keyword">while</span> y != <span class="string">0</span> {
+        <span class="keyword">let</span> t = y;
+        y = x % y;
+        x = t;
+    }
+    x
+}
+
+<span class="comment">// Strings are copied across the boundary — cheap for a few words,</span>
+<span class="comment">// worth measuring if you do it in a hot loop.</span>
+<span class="keyword">#[wasm_bindgen]</span>
+<span class="keyword">pub fn</span> <span class="builtin">shout</span>(name: &amp;<span class="type">str</span>) -&gt; <span class="type">String</span> {
+    <span class="builtin">format!</span>(<span class="string">"HELLO, {}!"</span>, name.to_uppercase())
+}
+
+<span class="comment">// A struct becomes a JavaScript class with a real destructor:</span>
+<span class="comment">// call counter.free() when done for deterministic cleanup.</span>
+<span class="keyword">#[wasm_bindgen]</span>
+<span class="keyword">pub struct</span> <span class="type">Counter</span> {
+    value: <span class="type">i32</span>,
+}
+
+<span class="keyword">#[wasm_bindgen]</span>
+<span class="keyword">impl</span> <span class="type">Counter</span> {
+    <span class="comment">// Exposed to JS as `new Counter(start)`</span>
+    <span class="keyword">#[wasm_bindgen(constructor)]</span>
+    <span class="keyword">pub fn</span> <span class="builtin">new</span>(start: <span class="type">i32</span>) -&gt; <span class="type">Counter</span> {
+        <span class="type">Counter</span> { value: start }
+    }
+
+    <span class="keyword">pub fn</span> <span class="builtin">increment</span>(&amp;<span class="keyword">mut</span> self) {
+        self.value += <span class="string">1</span>;
+    }
+
+    <span class="keyword">#[wasm_bindgen(getter)]</span>
+    <span class="keyword">pub fn</span> <span class="builtin">value</span>(&amp;self) -&gt; <span class="type">i32</span> {
+        self.value
+    }
+}
+
+<span class="comment">// Returning Result&lt;T, JsValue&gt; makes the JS call throw on Err.</span>
+<span class="keyword">#[wasm_bindgen]</span>
+<span class="keyword">pub fn</span> <span class="builtin">parse_port</span>(raw: &amp;<span class="type">str</span>) -&gt; <span class="type">Result</span>&lt;<span class="type">u16</span>, JsValue&gt; {
+    raw.parse::&lt;<span class="type">u16</span>&gt;()
+        .map_err(|e| JsValue::from_str(&amp;<span class="builtin">format!</span>(<span class="string">"bad port: {e}"</span>)))
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Reaching
+                            the browser from Rust</div>
+                        <p>
+                            Two companion crates complete the picture. <code>js-sys</code> binds JavaScript's
+                            built-ins (<code>Array</code>, <code>Date</code>, <code>Promise</code>,
+                            <code>Math</code>), and <code>web-sys</code> binds the Web APIs — the DOM,
+                            <code>fetch</code>, Canvas, WebGL, Web Audio. <code>web-sys</code> is enormous, so every
+                            interface sits behind a cargo feature and you enable only the handful you use.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="html-glue" class="tab-content">
+                    <h3>Call it from the page</h3>
+                    <p>
+                        With <code>--target web</code>, <code>wasm-pack</code> emits an ES module whose default export
+                        is an async initialiser. Await it once, then call your functions like any other import.
+                    </p>
+                    <pre data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=<span class="string">"en"</span>&gt;
+&lt;head&gt;
+    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;
+    &lt;title&gt;Wasm Test Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p id=<span class="string">"out"</span>&gt;loading…&lt;/p&gt;
+
+    &lt;script type=<span class="string">"module"</span>&gt;
+        <span class="comment">// The default export boots the module; the named exports are</span>
+        <span class="comment">// your #[wasm_bindgen] items.</span>
+        <span class="keyword">import</span> init, { gcd, shout, Counter } <span class="keyword">from</span> <span class="string">'./pkg/wasm_math_lib.js'</span>;
+
+        <span class="keyword">async function</span> run() {
+            <span class="comment">// Fetches and compiles the .wasm binary. Do this once.</span>
+            <span class="keyword">await</span> init();
+
+            <span class="keyword">const</span> counter = <span class="keyword">new</span> Counter(<span class="string">10</span>);
+            counter.increment();
+
+            document.getElementById(<span class="string">'out'</span>).textContent =
+                `gcd(24, 81) = ${gcd(<span class="string">24</span>, <span class="string">81</span>)} · ` +
+                `${shout(<span class="string">'ferris'</span>)} · counter = ${counter.value}`;
+
+            <span class="comment">// Free exported Rust objects when you know you are done with them.</span>
+            counter.free();
+        }
+
+        run();
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            Prefer explicit <code>free()</code></div>
+                        <p>
+                            A <code>#[wasm_bindgen]</code> struct lives in the Wasm module's linear memory, which the
+                            JavaScript garbage collector does not manage directly. Modern <code>wasm-bindgen</code>
+                            can use <code>FinalizationRegistry</code> / weak references to clean up eventually when
+                            the host supports them, but explicit <code>.free()</code> is still deterministic and works
+                            everywhere. Plain functions taking and returning values have no such lifecycle concern —
+                            this applies to exported object instances and long-lived closures.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="build-step" class="tab-content">
+                    <h3>Build the package</h3>
+                    <pre data-lang="shell"><span class="comment"># One-time setup</span>
+rustup target add wasm32-unknown-unknown
+cargo install wasm-pack
+
+<span class="comment"># Build an ES-module package into ./pkg</span>
+wasm-pack build --target web --release</pre>
+                    <p>You end up with a <code>pkg/</code> directory containing everything the page needs:</p>
+                    <pre data-lang="text">pkg/
+├── wasm_math_lib.js        # ES module: init() + your exports
+├── wasm_math_lib_bg.wasm   # the compiled binary
+├── wasm_math_lib.d.ts      # TypeScript definitions, generated for free
+└── package.json            # so it can be published to npm if you want</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-compress" aria-hidden="true"></i>
+                            <code>wasm-pack</code> optimises for you</div>
+                        <p>
+                            A release build runs <code>wasm-opt</code> (from Binaryen) over the output automatically,
+                            which typically cuts a further 15–30% off the file. You can pass your own flags via
+                            <code>[package.metadata.wasm-pack.profile.release]</code> in
+                            <code>Cargo.toml</code>. To find out what is actually taking up space, run
+                            <code>twiggy top pkg/*.wasm</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION 4: FIVE WAYS -->
+        <section id="binding-approaches">
+            <h2><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Five Ways to Bind Wasm into a Static
+                Site</h2>
+            <p class="lead">
+                "Static site" means no application server: just files on a CDN. Wasm fits that model perfectly — the
+                <code>.wasm</code> file is an ordinary static asset the browser fetches like an image. What differs
+                between the approaches is how the JavaScript side finds and boots it.
+            </p>
+            <p>
+                Here they are from lightest to heaviest. All five produce a folder you can drop on any static host.
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Approach</th>
+                            <th>Build command</th>
+                            <th>Best for</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>ES module</strong></td>
+                            <td><code>wasm-pack build --target web</code></td>
+                            <td>Adding Rust to a hand-written HTML page. <em>The default recommendation.</em></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>Classic script tag</strong></td>
+                            <td><code>wasm-pack build --target no-modules</code></td>
+                            <td>Legacy pages, CMS templates, anywhere <code>type="module"</code> is not an option.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>Trunk</strong></td>
+                            <td><code>trunk build --release</code></td>
+                            <td>A whole application written in Rust (Yew, Leptos, Dioxus, Sycamore).</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><strong>JS bundler</strong></td>
+                            <td><code>wasm-pack build --target bundler</code></td>
+                            <td>Dropping a Rust module into an existing Vite / webpack / Rollup app.</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><strong>No bindgen at all</strong></td>
+                            <td><code>cargo build --target wasm32-unknown-unknown</code></td>
+                            <td>Tiny numeric kernels, and understanding what the tools above are doing.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="bind-web"><i class="fa-solid fa-cube"
+                            aria-hidden="true"></i>1. ES module</button>
+                    <button class="tab-btn" data-tab="bind-nomodules"><i class="fa-solid fa-file-code"
+                            aria-hidden="true"></i>2. Script tag</button>
+                    <button class="tab-btn" data-tab="bind-trunk"><i class="fa-solid fa-truck-fast"
+                            aria-hidden="true"></i>3. Trunk</button>
+                    <button class="tab-btn" data-tab="bind-bundler"><i class="fa-solid fa-box-open"
+                            aria-hidden="true"></i>4. Bundler</button>
+                    <button class="tab-btn" data-tab="bind-raw"><i class="fa-solid fa-microchip"
+                            aria-hidden="true"></i>5. Raw</button>
+                </div>
+
+                <!-- 1 -->
+                <div id="bind-web" class="tab-content active">
+                    <h3>1. ES module — <code>--target web</code></h3>
+                    <p>
+                        The browser loads the generated JavaScript as a native ES module; that module fetches and
+                        instantiates the <code>.wasm</code> next to it. No bundler, no npm, no build step beyond
+                        <code>wasm-pack</code> itself.
+                    </p>
+                    <pre data-lang="shell">wasm-pack build --target web --release --out-dir site/pkg</pre>
+                    <pre data-lang="text">site/                 &lt;- upload this whole folder
+├── index.html
+└── pkg/
+    ├── wasm_math_lib.js
+    └── wasm_math_lib_bg.wasm</pre>
+                    <pre data-lang="html">&lt;script type=<span class="string">"module"</span>&gt;
+    <span class="keyword">import</span> init, { gcd } <span class="keyword">from</span> <span class="string">'./pkg/wasm_math_lib.js'</span>;
+    <span class="keyword">await</span> init();          <span class="comment">// top-level await works in modules</span>
+    console.log(gcd(<span class="string">24</span>, <span class="string">81</span>));
+&lt;/script&gt;</pre>
+                    <ul class="check-list">
+                        <li>Works on every static host with zero configuration.</li>
+                        <li>Generates TypeScript definitions alongside the JavaScript.</li>
+                        <li>Loads lazily — the Wasm is only fetched when the module is imported.</li>
+                    </ul>
+                    <p>
+                        The one constraint is that ES modules require an <code>http://</code> or
+                        <code>https://</code> origin. Opening the file directly from disk will not work; see the
+                        deployment checklist below.
+                    </p>
+                </div>
+
+                <!-- 2 -->
+                <div id="bind-nomodules" class="tab-content">
+                    <h3>2. Classic script tag — <code>--target no-modules</code></h3>
+                    <p>
+                        Sometimes you cannot use <code>type="module"</code>: a CMS that strips the attribute, a legacy
+                        template, or a page that must work in an unusual embedding. This target emits a plain script
+                        that attaches a global <code>wasm_bindgen</code> object.
+                    </p>
+                    <pre data-lang="shell">wasm-pack build --target no-modules --release --out-dir site/pkg</pre>
+                    <pre data-lang="html">&lt;script src=<span class="string">"./pkg/wasm_math_lib.js"</span>&gt;&lt;/script&gt;
+&lt;script&gt;
+    <span class="comment">// Exports hang off the global object the script above created.</span>
+    <span class="keyword">const</span> { gcd } = wasm_bindgen;
+
+    <span class="keyword">async function</span> run() {
+        <span class="keyword">await</span> wasm_bindgen();   <span class="comment">// finds the .wasm next to the script</span>
+        console.log(gcd(<span class="string">24</span>, <span class="string">81</span>));
+    }
+    run();
+&lt;/script&gt;</pre>
+                    <div class="callout">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            Trade-offs</div>
+                        <p>
+                            It pollutes the global namespace, does not support inline JS snippets, and is awkward
+                            inside workers. Use it when option 1 genuinely is not available — otherwise prefer the ES
+                            module. Note that this target still fetches the <code>.wasm</code> over the network, so it
+                            <em>also</em> needs a real HTTP server.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3 -->
+                <div id="bind-trunk" class="tab-content">
+                    <h3>3. Trunk — a build tool for whole Rust web apps</h3>
+                    <p>
+                        <a href="https://trunkrs.dev/" target="_blank" rel="noopener">Trunk</a> inverts the usual
+                        relationship: your <code>index.html</code> <em>is</em> the build manifest. Trunk reads it,
+                        finds the link tags, builds the Rust, hashes the outputs, rewrites the references and writes
+                        a finished static site to <code>dist/</code>. It is the standard tool for Yew, Leptos, Dioxus
+                        and Sycamore apps, but it works just as well for a plain <code>wasm-bindgen</code> crate.
+                    </p>
+                    <pre data-lang="shell">cargo install trunk
+rustup target add wasm32-unknown-unknown
+
+trunk serve            <span class="comment"># dev server on :8080, rebuilds and reloads on save</span>
+trunk build --release  <span class="comment"># production output in dist/</span></pre>
+                    <p>The source <code>index.html</code> at the crate root:</p>
+                    <pre data-lang="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=<span class="string">"en"</span>&gt;
+&lt;head&gt;
+    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;
+    &lt;title&gt;My Rust App&lt;/title&gt;
+
+    <span class="comment">&lt;!-- Trunk builds this crate to Wasm and injects the loader --&gt;</span>
+    &lt;link data-trunk rel=<span class="string">"rust"</span>&gt;
+
+    <span class="comment">&lt;!-- It will also compile Sass and copy static assets --&gt;</span>
+    &lt;link data-trunk rel=<span class="string">"scss"</span> href=<span class="string">"styles/main.scss"</span>&gt;
+    &lt;link data-trunk rel=<span class="string">"copy-dir"</span> href=<span class="string">"assets"</span>&gt;
+&lt;/head&gt;
+&lt;body&gt;&lt;/body&gt;
+&lt;/html&gt;</pre>
+                    <ul class="check-list">
+                        <li>Content-hashed filenames, so you can cache aggressively and never serve a stale binary.
+                        </li>
+                        <li>A live-reloading dev server that already sets the right MIME types.</li>
+                        <li><code>--public-url /repo-name/</code> fixes asset paths for a GitHub Pages subdirectory in
+                            one flag.</li>
+                        <li>Runs <code>wasm-opt</code> on release builds.</li>
+                    </ul>
+                </div>
+
+                <!-- 4 -->
+                <div id="bind-bundler" class="tab-content">
+                    <h3>4. Through a JavaScript bundler — <code>--target bundler</code></h3>
+                    <p>
+                        If your site is already built by Vite, webpack or Rollup, this target produces a package the
+                        bundler treats as an ordinary dependency. Import it and the bundler handles fetching,
+                        instantiation and asset fingerprinting for you — the Wasm becomes just another hashed file in
+                        your output directory.
+                    </p>
+                    <pre data-lang="shell">wasm-pack build --target bundler --release</pre>
+                    <pre data-lang="js"><span class="comment">// With Vite, add the vite-plugin-wasm plugin, then:</span>
+<span class="keyword">import</span> { gcd, shout } <span class="keyword">from</span> <span class="string">'./pkg/wasm_math_lib.js'</span>;
+
+<span class="comment">// No explicit init() — the bundler wires up instantiation.</span>
+console.log(gcd(<span class="string">24</span>, <span class="string">81</span>));</pre>
+                    <p>
+                        The output is a normal npm package, so a shared Rust library can be published to npm and
+                        consumed by several front-ends. Static hosting still applies: the bundler's
+                        <code>dist/</code> is a folder of files with no server behind it.
+                    </p>
+                </div>
+
+                <!-- 5 -->
+                <div id="bind-raw" class="tab-content">
+                    <h3>5. No wasm-bindgen at all</h3>
+                    <p>
+                        You do not actually need any tooling. <code>cargo</code> can emit a <code>.wasm</code> file on
+                        its own, and the browser's <code>WebAssembly</code> API can load it. The catch is the one
+                        mentioned at the top of this page: only numbers cross the boundary. No strings, no structs,
+                        no automatic memory management.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// src/lib.rs — no dependencies whatsoever</span>
+
+<span class="comment">// `no_mangle` keeps the symbol name intact; `extern "C"` gives it</span>
+<span class="comment">// the calling convention Wasm exports use.</span>
+<span class="keyword">#[unsafe(no_mangle)]</span>
+<span class="keyword">pub extern</span> <span class="string">"C"</span> <span class="keyword">fn</span> <span class="builtin">gcd</span>(a: <span class="type">u32</span>, b: <span class="type">u32</span>) -&gt; <span class="type">u32</span> {
+    <span class="keyword">let</span> (<span class="keyword">mut</span> x, <span class="keyword">mut</span> y) = (a, b);
+    <span class="keyword">while</span> y != <span class="string">0</span> {
+        <span class="keyword">let</span> t = y;
+        y = x % y;
+        x = t;
+    }
+    x
+}</pre>
+                    <pre data-lang="toml"><span class="keyword">[lib]</span>
+crate-type = [<span class="string">"cdylib"</span>]</pre>
+                    <pre data-lang="shell">cargo build --release --target wasm32-unknown-unknown
+cp target/wasm32-unknown-unknown/release/tiny.wasm site/</pre>
+                    <pre data-lang="html">&lt;script type=<span class="string">"module"</span>&gt;
+    <span class="comment">// instantiateStreaming compiles while the file is still downloading,</span>
+    <span class="comment">// but it REQUIRES the Content-Type: application/wasm header.</span>
+    <span class="keyword">const</span> { instance } = <span class="keyword">await</span> WebAssembly.instantiateStreaming(
+        fetch(<span class="string">'./tiny.wasm'</span>)
+    );
+
+    console.log(instance.exports.gcd(<span class="string">24</span>, <span class="string">81</span>)); <span class="comment">// 3</span>
+&lt;/script&gt;</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Why this
+                            is worth trying once</div>
+                        <p>
+                            The resulting file can be a couple of kilobytes, and building it makes the rest obvious:
+                            <code>wasm-bindgen</code>'s entire job is writing the glue that copies non-numeric data in
+                            and out of <code>instance.exports.memory</code>. Once you have done it by hand, the
+                            generated JavaScript stops looking like magic.
+                        </p>
+                    </div>
+                    <p>
+                        A middle path also exists: build with plain <code>cargo</code>, then run the
+                        <code>wasm-bindgen</code> CLI over the artifact yourself
+                        (<code>cargo install wasm-bindgen-cli</code>, then
+                        <code>wasm-bindgen --target web --out-dir pkg target/…/app.wasm</code>). That is exactly what
+                        <code>wasm-pack</code> automates, and it is useful when you need to slot the step into an
+                        existing build pipeline.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: DEPLOYMENT -->
+        <section id="deployment">
+            <h2><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Hosting the Result</h2>
+            <p>
+                Once built, a Rust Wasm site is just files. Everything that can go wrong from here is a server
+                configuration issue, and there are only a few of them.
+            </p>
+
+            <div class="callout danger">
+                <div class="callout-title"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> You cannot open
+                    it with <code>file://</code></div>
+                <p>
+                    Double-clicking <code>index.html</code> will fail every time. ES modules are blocked by the
+                    same-origin policy on <code>file://</code>, and <code>fetch</code> cannot read local files either.
+                    You need an HTTP server even for local testing — which is a five-second problem, not a real one:
+                </p>
+                <pre data-lang="shell"><span class="comment"># Any one of these, from the folder you want to serve</span>
+python3 -m http.server 8080
+
+npx serve .
+
+cargo install miniserve &amp;&amp; miniserve . --index index.html
+
+trunk serve   <span class="comment"># if you are using Trunk</span></pre>
+            </div>
+
+            <h3>The MIME type</h3>
+            <p>
+                <code>WebAssembly.instantiateStreaming</code> refuses to compile a response that is not served as
+                <code>Content-Type: application/wasm</code>. Most modern hosts and Python 3.10+ already do this
+                correctly; older Apache and nginx installations may not. If you see an error about an
+                "incorrect response MIME type", this is why.
+            </p>
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-server" aria-hidden="true"></i> nginx</h3>
+                    <pre data-lang="nginx">types {
+    application/wasm  wasm;
+}
+
+<span class="comment"># Compresses well — often 2-4x smaller</span>
+gzip_types application/wasm;</pre>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-server" aria-hidden="true"></i> Apache (.htaccess)</h3>
+                    <pre data-lang="apache">AddType application/wasm .wasm
+
+&lt;IfModule mod_deflate.c&gt;
+    AddOutputFilterByType DEFLATE application/wasm
+&lt;/IfModule&gt;</pre>
+                </div>
+            </div>
+            <p>
+                As a fallback that works regardless of headers, use
+                <code>WebAssembly.instantiate(await (await fetch(url)).arrayBuffer())</code>. It buffers the whole
+                file before compiling — slightly slower to start, but immune to a misconfigured MIME type.
+            </p>
+
+            <h3>Platform notes</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Host</th>
+                            <th>What to know</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GitHub Pages</strong></td>
+                            <td>Serves <code>.wasm</code> correctly. Two gotchas: the site lives under
+                                <code>/repo-name/</code>, so build with
+                                <code>trunk build --release --public-url /repo-name/</code> or use relative paths
+                                throughout; and add an empty <code>.nojekyll</code> file so Jekyll does not discard
+                                files and folders whose names begin with an underscore.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Netlify / Vercel</strong></td>
+                            <td>Correct MIME type out of the box. Point the build command at
+                                <code>trunk build --release</code> or <code>wasm-pack build --target web</code> and
+                                publish <code>dist/</code>. Extra headers go in <code>_headers</code> or
+                                <code>vercel.json</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cloudflare Pages</strong></td>
+                            <td>Works as-is, with Brotli compression applied automatically — usually the smallest
+                                over-the-wire size of the options here.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>S3 + CloudFront</strong></td>
+                            <td>S3 guesses <code>application/octet-stream</code> for unknown extensions, so set the
+                                type explicitly on upload:
+                                <code>aws s3 cp app.wasm s3://bucket/ --content-type application/wasm</code>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Caching and load time</h3>
+            <ul class="check-list">
+                <li><strong>Fingerprint the filename.</strong> Trunk and JS bundlers do this automatically. With plain
+                    <code>wasm-pack</code>, use <code>--out-name app-v3</code> or add a query string, then serve with
+                    <code>Cache-Control: public, max-age=31536000, immutable</code>.</li>
+                <li><strong>Always compress.</strong> Wasm is a binary format that gzips and brotlis extremely well.
+                    Serving it uncompressed can easily triple the download.</li>
+                <li><strong>Preload the binary.</strong>
+                    <code>&lt;link rel="preload" href="app_bg.wasm" as="fetch" crossorigin&gt;</code> starts the
+                    download in parallel with the JavaScript instead of after it.</li>
+                <li><strong>Show something first.</strong> Instantiation is fast but not instant. Render static HTML,
+                    then swap in the Wasm-driven content once <code>init()</code> resolves — the same reasoning as
+                    any other progressive-enhancement decision.</li>
+                <li><strong>Keep it small.</strong> The release profile from the walkthrough above,
+                    <code>wasm-opt</code>, and avoiding heavyweight dependencies matter far more than any
+                    micro-optimisation inside your Rust.</li>
+            </ul>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> If you need
+                    threads</div>
+                <p>
+                    Wasm threads use <code>SharedArrayBuffer</code>, which browsers only expose to cross-origin
+                    isolated pages. That means serving two extra headers —
+                    <code>Cross-Origin-Opener-Policy: same-origin</code> and
+                    <code>Cross-Origin-Embedder-Policy: require-corp</code> — which some static hosts do not let you
+                    set, and which will break embedded third-party content. Single-threaded Wasm needs none of this,
+                    so only take it on when you have measured that you need it.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 6: BOUNDARY -->
+        <section id="boundary">
+            <h2><i class="fa-solid fa-right-left" aria-hidden="true"></i> Thinking About the Boundary</h2>
+            <p>
+                The most common disappointment with Rust in the browser is a rewrite that turns out no faster than the
+                JavaScript it replaced. Almost always, the cause is the boundary rather than the Rust.
+            </p>
+            <ul>
+                <li><strong>Numbers are free; everything else is copied.</strong> Passing an <code>f64</code> is a
+                    machine instruction. Passing a <code>String</code> allocates in linear memory, copies the bytes,
+                    and copies them back out again. Calling a Rust function a million times in a JavaScript loop pays
+                    that cost a million times.</li>
+                <li><strong>Move the loop into Rust.</strong> Instead of calling <code>process(pixel)</code> per
+                    pixel, pass the whole buffer once and return the whole result. One crossing beats a million.</li>
+                <li><strong>Share the buffer instead of copying it.</strong> For large numeric data, hand JavaScript a
+                    view onto the module's memory (<code>Uint8Array</code> over
+                    <code>instance.exports.memory.buffer</code> at the right offset) so both sides read the same
+                    bytes. Remember that growing the Wasm heap detaches existing views — re-create them after any
+                    allocation.</li>
+                <li><strong>Play to Wasm's strengths.</strong> It wins decisively on sustained numeric work: image and
+                    audio processing, compression, parsing, physics, cryptography, simulation. It rarely wins on DOM
+                    manipulation, because every DOM call goes back through JavaScript anyway.</li>
+            </ul>
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-flask" aria-hidden="true"></i> Measure, then decide
+                </div>
+                <p>
+                    Build the JavaScript version first and profile it. If the hot spot is a self-contained numeric
+                    loop, Rust will likely make it several times faster. If the time is going on DOM updates or
+                    network waits, Wasm will not help — and you will have added a build step for nothing.
+                </p>
+            </div>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="httpreq.html">
+                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Previous</span>
+                    <span class="page-nav-title">HTTP Requests</span>
+                </span>
+            </a>
+            <a href="index.html">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Back to</span>
+                    <span class="page-nav-title">Introduction &amp; Learning Path</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>List every compilation target your toolchain can produce with <code>rustup target list</code>, and read
+            the definitive guides at
+            <a href="https://rustwasm.github.io/docs/book/" target="_blank" rel="noopener">the Rust and WebAssembly
+                book</a> and
+            <a href="https://wasm-bindgen.github.io/wasm-bindgen/" target="_blank" rel="noopener">the wasm-bindgen
+                guide</a>.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+
+</html>

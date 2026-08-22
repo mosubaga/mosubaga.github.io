@@ -242,6 +242,30 @@ pre:hover .copy-btn,
     box-shadow: 0 4px 16px rgba(233, 30, 150, 0.06);
 }
 
+.go-art-panel {
+    width: 100%;
+    min-height: 280px;
+    margin: 28px 0 34px;
+    overflow: hidden;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 16px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(245, 240, 255, 0.76)),
+        radial-gradient(circle at 20% 18%, rgba(0, 168, 150, 0.18), transparent 34%),
+        radial-gradient(circle at 85% 24%, rgba(255, 143, 214, 0.2), transparent 32%);
+    box-shadow: 0 14px 34px rgba(139, 90, 157, 0.12);
+}
+
+#go-artwork {
+    min-height: 280px;
+}
+
+#go-artwork canvas {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+}
+
 .pattern-box,
 .summary-box {
     border: 1px solid var(--background-modifier-border);
@@ -322,6 +346,11 @@ pre:hover .copy-btn,
 
     pre {
         padding-top: 42px;
+    }
+
+    .go-art-panel,
+    #go-artwork {
+        min-height: 220px;
     }
 
     .copy-btn {

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>Rust Collections &amp; Iterators — Vectors, Slices, Maps and Zero-Cost Pipelines</title>
+    <meta name="description"
+        content="How Rust's collections are laid out in memory, how iterators compile away to nothing, and the adapter vocabulary that replaces most hand-written loops.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections &amp;
+                Iteration</span>
+            <h1>Collections &amp; Iterators in <span>Rust</span></h1>
+            <p>How vectors, slices and maps are laid out in memory — and why chaining iterator adapters costs nothing
+                at runtime.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> On this page</h3>
+            <div class="kp">
+                <i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
+                <span>Which collection to pick, and what each one actually costs.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-memory" aria-hidden="true"></i>
+                <span>Slices versus vectors: fat pointers, capacity, and what happens on reallocation.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                <span>Why lazy iterator pipelines compile down to the same machine code as a hand-written loop.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <span>An adapter vocabulary you can reach for instead of writing another <code>for</code> loop.</span>
+            </div>
+        </div>
+
+        <!-- SECTION 1: PICKING A COLLECTION -->
+        <section id="picking">
+            <h2><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i> Picking a Collection</h2>
+            <p class="lead">
+                Most Rust programs need exactly two: <code>Vec</code> for a sequence and <code>HashMap</code> for a
+                lookup table. Start there, and move to something else only when you can name the reason.
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Shape</th>
+                            <th>Good at</th>
+                            <th>Reach for it when…</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Vec&lt;T&gt;</code></td>
+                            <td>Growable contiguous array</td>
+                            <td>Push/pop at the end and index access, both <code>O(1)</code> amortised</td>
+                            <td>Nearly always. Contiguity makes it enormously cache-friendly.</td>
+                        </tr>
+                        <tr>
+                            <td><code>VecDeque&lt;T&gt;</code></td>
+                            <td>Ring buffer</td>
+                            <td><code>O(1)</code> push and pop at <em>both</em> ends</td>
+                            <td>Queues and sliding windows, where <code>Vec::remove(0)</code> would be
+                                <code>O(n)</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HashMap&lt;K, V&gt;</code></td>
+                            <td>Open-addressed hash table</td>
+                            <td><code>O(1)</code> average lookup, insert and remove</td>
+                            <td>Key/value lookup where iteration order does not matter.</td>
+                        </tr>
+                        <tr>
+                            <td><code>BTreeMap&lt;K, V&gt;</code></td>
+                            <td>B-tree</td>
+                            <td><code>O(log n)</code> lookup, and iteration in <strong>sorted key order</strong></td>
+                            <td>You need ordering, range queries, or deterministic iteration.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HashSet&lt;T&gt;</code> / <code>BTreeSet&lt;T&gt;</code></td>
+                            <td>The maps, without values</td>
+                            <td>Membership tests; union, intersection, difference</td>
+                            <td>You care whether something is present, not what it maps to.</td>
+                        </tr>
+                        <tr>
+                            <td><code>BinaryHeap&lt;T&gt;</code></td>
+                            <td>Max-heap</td>
+                            <td><code>O(1)</code> peek at the largest, <code>O(log n)</code> push and pop</td>
+                            <td>Priority queues and scheduling. Wrap items in <code>Reverse</code> for a min-heap.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><code>String</code> / <code>&amp;str</code></td>
+                            <td>UTF-8 bytes</td>
+                            <td>Owned and borrowed text</td>
+                            <td>Always, for text. Neither can be indexed by character position — see the note below.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Strings are not
+                    arrays of characters</div>
+                <p>
+                    A <code>String</code> is a <code>Vec&lt;u8&gt;</code> guaranteed to hold valid UTF-8. Because one
+                    character can occupy one to four bytes, <code>s[3]</code> does not compile at all — there is no
+                    meaningful answer. Use <code>s.chars().nth(3)</code> for the fourth character,
+                    <code>s.len()</code> for the byte length, and <code>s.chars().count()</code> for the character
+                    count. That the two lengths differ is a fact about text, not a quirk of Rust.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ITERATOR FOUNDATION -->
+        <section id="foundation">
+            <h2><i class="fa-solid fa-circle-nodes" aria-hidden="true"></i> The Iterator Foundation</h2>
+            <p>
+                An iterator in Rust is any type implementing the <code>Iterator</code> trait. The trait is remarkably
+                small: one associated type and one required method.
+            </p>
+            <pre data-lang="rust"><span class="keyword">pub trait</span> <span class="type">Iterator</span> {
+    <span class="keyword">type</span> <span class="type">Item</span>;
+    <span class="keyword">fn</span> <span class="builtin">next</span>(&amp;<span class="keyword">mut</span> self) -&gt; <span class="type">Option</span>&lt;<span class="type">Self</span>::<span class="type">Item</span>&gt;;
+
+    <span class="comment">// …and around eighty provided methods, all built on next().</span>
+}</pre>
+            <p>
+                Implement <code>next</code> and you get <code>map</code>, <code>filter</code>, <code>zip</code>,
+                <code>sum</code>, <code>collect</code> and the rest for free. Collections implement the companion
+                <code>IntoIterator</code> trait, which is what a <code>for</code> loop actually calls:
+            </p>
+            <pre data-lang="rust"><span class="comment">// What you write</span>
+<span class="keyword">for</span> item <span class="keyword">in</span> collection {
+    <span class="builtin">println!</span>(<span class="string">"{item}"</span>);
+}
+
+<span class="comment">// Roughly what the compiler expands it into</span>
+<span class="keyword">let mut</span> iter = <span class="type">IntoIterator</span>::into_iter(collection);
+<span class="keyword">while let</span> <span class="type">Some</span>(item) = iter.next() {
+    <span class="builtin">println!</span>(<span class="string">"{item}"</span>);
+}</pre>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Iterators are
+                    lazy</div>
+                <p>
+                    Calling <code>map()</code> or <code>filter()</code> does <strong>no work at all</strong>. It
+                    builds a new struct that remembers the closure. Nothing runs until something calls
+                    <code>next()</code> — a <code>for</code> loop, or a consuming method like <code>collect()</code>,
+                    <code>sum()</code> or <code>count()</code>. This is why the compiler warns about an unused
+                    iterator: an adapter chain you never consume genuinely does nothing.
+                </p>
+            </div>
+
+            <h3>Three ways to iterate, three levels of access</h3>
+            <p>
+                This distinction accounts for a large share of early borrow-checker friction, and it is the same
+                shared / exclusive / owned choice that governs everything else in Rust.
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Call</th>
+                            <th>Yields</th>
+                            <th>What happens to the collection</th>
+                            <th><code>for</code> loop equivalent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>.iter()</code></td>
+                            <td><code>&amp;T</code></td>
+                            <td>Shared borrow — read-only, still yours afterwards</td>
+                            <td><code>for x in &amp;c</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>.iter_mut()</code></td>
+                            <td><code>&amp;mut T</code></td>
+                            <td>Exclusive borrow — edit in place, still yours afterwards</td>
+                            <td><code>for x in &amp;mut c</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>.into_iter()</code></td>
+                            <td><code>T</code></td>
+                            <td>Consumed — the collection is moved and gone</td>
+                            <td><code>for x in c</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="callout">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> One arrays
+                    footnote</div>
+                <p>
+                    Since Rust 1.53, arrays implement <code>IntoIterator</code> by value, so
+                    <code>for x in [1, 2, 3]</code> and <code>IntoIterator::into_iter(array)</code> yield owned
+                    <code>T</code> values. The method call <code>array.into_iter()</code> kept its old
+                    reference-yielding behaviour in the 2015 and 2018 editions for compatibility, and yields owned
+                    values in the 2021 edition and later.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: WHY SPECIAL -->
+        <section id="what-makes-it-special">
+            <h2><i class="fa-solid fa-bolt" aria-hidden="true"></i> Why Rust's Iterators Are Different</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Zero-cost abstraction <span
+                            class="tag perf">Performance</span></h3>
+                    <p>
+                        Adapters are generic structs, so the compiler <strong>monomorphises</strong> them: it
+                        generates a concrete version for your exact types, then inlines the <code>next()</code> calls
+                        into one another. A chain of five adapters collapses into a single loop body with no closures,
+                        no virtual dispatch and no intermediate collections. The generated assembly is routinely
+                        identical to a hand-written loop — sometimes better, because the shape is easier for the
+                        optimiser to vectorise.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> No bounds check to elide <span
+                            class="tag perf">Performance</span></h3>
+                    <p>
+                        Indexing with <code>v[i]</code> compiles to a length comparison and a conditional panic on
+                        every access. An iterator does not index at all — it walks a pointer it already proved is in
+                        range, so there is no check to generate in the first place. This is why idiomatic iteration is
+                        both the safe option and the fast one, rather than a trade-off between them.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-lock" aria-hidden="true"></i> Invalidation is impossible <span
+                            class="tag safe">Safety</span></h3>
+                    <p>
+                        In C++, mutating a container while iterating it is undefined behaviour. In Java it throws
+                        <code>ConcurrentModificationException</code> at runtime. In Python, mutating a dict during
+                        iteration raises, while mutating a list can silently skip elements. Rust rejects the whole
+                        class at compile time: the iterator holds a borrow, so the collection is frozen until that
+                        borrow ends.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Composition without cost <span
+                            class="tag info">Ergonomics</span></h3>
+                    <p>
+                        Because iterators are lazy and generic, chaining is free. There is no intermediate
+                        <code>Vec</code> between a <code>filter</code> and a <code>map</code>, and no reason to fuse
+                        stages by hand for performance. You can write the pipeline that reads clearest and trust the
+                        compiler to collapse it.
+                    </p>
+                </div>
+            </div>
+
+            <pre data-lang="rust"><span class="keyword">let</span> numbers = [<span class="string">1</span>, <span class="string">2</span>, <span class="string">3</span>, <span class="string">4</span>, <span class="string">5</span>, <span class="string">6</span>];
+
+<span class="comment">// Reads as: take the even numbers, square them, add them up.</span>
+<span class="comment">// Compiles to: one loop, no allocation, no intermediate collection.</span>
+<span class="keyword">let</span> sum_of_even_squares: <span class="type">u32</span> = numbers
+    .iter()                      <span class="comment">// yields &amp;u32</span>
+    .filter(|&amp;&amp;n| n % <span class="string">2</span> == <span class="string">0</span>)   <span class="comment">// closure sees &amp;&amp;u32; && destructures it</span>
+    .map(|&amp;n| n * n)             <span class="comment">// &amp;u32 -&gt; u32, then square</span>
+    .sum();
+
+<span class="builtin">assert_eq!</span>(sum_of_even_squares, <span class="string">56</span>); <span class="comment">// 4 + 16 + 36</span>
+
+<span class="comment">// `.copied()` avoids the reference-pattern noise entirely.</span>
+<span class="keyword">let</span> same: <span class="type">u32</span> = numbers
+    .iter()
+    .copied()                    <span class="comment">// &amp;u32 -&gt; u32 from here on</span>
+    .filter(|n| n % <span class="string">2</span> == <span class="string">0</span>)
+    .map(|n| n * n)
+    .sum();</pre>
+        </section>
+
+        <!-- SECTION 4: MEMORY -->
+        <section id="memory">
+            <h2><i class="fa-solid fa-memory" aria-hidden="true"></i> Slices, Vectors and Reallocation</h2>
+            <p>
+                Understanding the memory layout is what makes the borrow checker's complaints predictable rather than
+                arbitrary.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-ruler-combined" aria-hidden="true"></i> Slices are fat pointers
+                        (<code>&amp;[T]</code>)</h3>
+                    <p>
+                        A slice <code>[T]</code> is a <strong>dynamically sized type</strong>: its length is not part
+                        of its type, so it cannot be stored on its own. You always handle it behind a reference, and
+                        that reference is <strong>two words wide</strong> — 16 bytes on a 64-bit platform:
+                    </p>
+                    <ul>
+                        <li><strong>Pointer</strong> — the address of the first element in the view.</li>
+                        <li><strong>Length</strong> — a <code>usize</code> count of elements.</li>
+                    </ul>
+                    <p>
+                        A slice owns nothing. It is a cheap, non-copying window onto an array, a <code>Vec</code>, or
+                        part of either. That is why <code>&amp;[T]</code> is the right parameter type for a function
+                        that just reads a sequence: it accepts all of them.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-box-open" aria-hidden="true"></i> Vectors own a heap buffer
+                        (<code>Vec&lt;T&gt;</code>)</h3>
+                    <p>
+                        A <code>Vec</code> is <strong>three words</strong> stored wherever the binding lives, pointing
+                        at a heap allocation it owns:
+                    </p>
+                    <ul>
+                        <li><strong>Pointer</strong> — the heap buffer's address.</li>
+                        <li><strong>Capacity</strong> — how many elements fit before it must grow.</li>
+                        <li><strong>Length</strong> — how many are actually initialised.</li>
+                    </ul>
+                    <p>
+                        When <code>push</code> hits the capacity, the vector allocates a larger buffer (typically
+                        double), moves the existing elements across, frees the old one, and updates its pointer. The
+                        cost is amortised <code>O(1)</code> — but <strong>every existing address into the old buffer
+                            is now invalid</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="callout danger">
+                <div class="callout-title"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> The bug this
+                    prevents</div>
+                <p>
+                    In C++ that reallocation is the classic dangling-iterator crash: you hold a pointer into a vector,
+                    the vector grows, the old buffer is freed, and your pointer now reads memory that belongs to
+                    something else. It is undefined behaviour, and it may not crash until much later.
+                </p>
+                <p>
+                    Rust removes it at compile time. Taking a slice or starting an iteration acquires a
+                    <strong>shared borrow</strong> of the vector. While that borrow is alive, the vector is read-only —
+                    and <code>push</code>, <code>remove</code>, <code>clear</code> and friends all require an
+                    <strong>exclusive borrow</strong>, which the compiler will not grant.
+                </p>
+            </div>
+
+            <pre data-lang="rust"><span class="keyword">let mut</span> v = <span class="builtin">vec!</span>[<span class="string">1</span>, <span class="string">2</span>, <span class="string">3</span>];
+
+<span class="keyword">let</span> first = &amp;v[<span class="string">0</span>];      <span class="comment">// shared borrow of v starts here</span>
+<span class="comment">// v.push(4);          // ERROR[E0502]: cannot borrow `v` as mutable
+//                    // because it is also borrowed as immutable</span>
+<span class="builtin">println!</span>(<span class="string">"{first}"</span>);   <span class="comment">// borrow is last used here, so it ends here</span>
+
+v.push(<span class="string">4</span>);              <span class="comment">// now fine — nothing is borrowing v any more</span>
+
+<span class="comment">// Reserve up front when you know the size: one allocation, no</span>
+<span class="comment">// repeated copying as the vector grows.</span>
+<span class="keyword">let mut</span> ready = <span class="type">Vec</span>::with_capacity(<span class="string">1_000</span>);
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">0</span>..<span class="string">1_000</span> {
+    ready.push(i);
+}</pre>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Borrows end at
+                    last use, not at the closing brace</div>
+                <p>
+                    Since Rust 2018 the borrow checker has used <strong>non-lexical lifetimes</strong>: a borrow ends
+                    where it is last used, not at the end of the enclosing block. In the snippet above,
+                    moving <code>println!("{first}")</code> above the <code>push</code> would make the code compile.
+                    Many "the borrow checker is fighting me" moments are really "move that line up".
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ADAPTERS -->
+        <section id="adapters">
+            <h2><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> The Adapter Vocabulary</h2>
+            <p>
+                Learning the adapter names is the single highest-return investment in becoming productive with Rust.
+                Almost every loop you were about to write already has a name.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="ad-transform"><i class="fa-solid fa-shuffle"
+                            aria-hidden="true"></i>Transform</button>
+                    <button class="tab-btn" data-tab="ad-consume"><i class="fa-solid fa-compress"
+                            aria-hidden="true"></i>Consume</button>
+                    <button class="tab-btn" data-tab="ad-collect"><i class="fa-solid fa-box-archive"
+                            aria-hidden="true"></i>Collect</button>
+                    <button class="tab-btn" data-tab="ad-real"><i class="fa-solid fa-flask"
+                            aria-hidden="true"></i>In practice</button>
+                </div>
+
+                <div id="ad-transform" class="tab-content active">
+                    <h3>Adapters that produce another iterator</h3>
+                    <p>All of these are lazy — they build a pipeline and wait.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Adapter</th>
+                                    <th>Does</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>map(f)</code></td>
+                                    <td>Applies <code>f</code> to every item.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>filter(p)</code></td>
+                                    <td>Keeps items where <code>p</code> returns <code>true</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>filter_map(f)</code></td>
+                                    <td>Both at once: <code>f</code> returns <code>Option</code>, and
+                                        <code>None</code> drops the item.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>enumerate()</code></td>
+                                    <td>Pairs each item with its index: <code>(usize, T)</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>zip(other)</code></td>
+                                    <td>Walks two iterators in lockstep; stops at the shorter one.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>chain(other)</code></td>
+                                    <td>Runs one iterator, then the next.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>rev()</code></td>
+                                    <td>Iterates backwards (needs a double-ended iterator).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>take(n)</code> / <code>skip(n)</code></td>
+                                    <td>First <code>n</code> items / everything after the first <code>n</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>take_while(p)</code> / <code>skip_while(p)</code></td>
+                                    <td>The same, but bounded by a predicate rather than a count.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>flatten()</code> / <code>flat_map(f)</code></td>
+                                    <td>Flattens nested iterators into one stream.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>copied()</code> / <code>cloned()</code></td>
+                                    <td>Turns <code>&amp;T</code> into <code>T</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>peekable()</code></td>
+                                    <td>Adds <code>peek()</code> to look at the next item without consuming it.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>inspect(f)</code></td>
+                                    <td>Runs <code>f</code> on each item and passes it through — ideal for debugging a
+                                        pipeline.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="ad-consume" class="tab-content">
+                    <h3>Consumers that end the pipeline</h3>
+                    <p>These call <code>next()</code> and produce a final value.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Consumer</th>
+                                    <th>Produces</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>sum()</code> / <code>product()</code></td>
+                                    <td>The total or the product.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>count()</code></td>
+                                    <td>How many items there were.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>min()</code> / <code>max()</code></td>
+                                    <td><code>Option&lt;T&gt;</code> — <code>None</code> for an empty iterator.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>min_by_key(f)</code> / <code>max_by_key(f)</code></td>
+                                    <td>The same, comparing a derived key.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>fold(init, f)</code></td>
+                                    <td>Accumulates from a starting value — the most general consumer.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>reduce(f)</code></td>
+                                    <td><code>fold</code> using the first item as the initial value.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>any(p)</code> / <code>all(p)</code></td>
+                                    <td><code>bool</code>. Both short-circuit as soon as the answer is known.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>find(p)</code> / <code>position(p)</code></td>
+                                    <td>The first matching item / its index, as an <code>Option</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>last()</code> / <code>nth(n)</code></td>
+                                    <td>A single item by position.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>for_each(f)</code></td>
+                                    <td>Nothing — runs <code>f</code> for its side effects.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>collect()</code></td>
+                                    <td>A whole new collection. See the next tab.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="ad-collect" class="tab-content">
+                    <h3><code>collect()</code> is more flexible than it looks</h3>
+                    <p>
+                        <code>collect</code> builds any type implementing <code>FromIterator</code>. The target type
+                        is what decides the behaviour, which is why you often need to name it.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::collections::{HashMap, HashSet, BTreeMap};
+
+<span class="keyword">let</span> words = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"apple"</span>, <span class="string">"cherry"</span>];
+
+<span class="comment">// …into a Vec (the turbofish and the annotation are equivalent)</span>
+<span class="keyword">let</span> upper: <span class="type">Vec</span>&lt;<span class="type">String</span>&gt; = words.iter().map(|w| w.to_uppercase()).collect();
+<span class="keyword">let</span> upper = words.iter().map(|w| w.to_uppercase()).collect::&lt;<span class="type">Vec</span>&lt;_&gt;&gt;();
+
+<span class="comment">// …into a set, which deduplicates for free</span>
+<span class="keyword">let</span> unique: HashSet&lt;&amp;<span class="type">str</span>&gt; = words.iter().copied().collect();
+<span class="builtin">assert_eq!</span>(unique.len(), <span class="string">3</span>);
+
+<span class="comment">// …into a map, from an iterator of pairs</span>
+<span class="keyword">let</span> lengths: HashMap&lt;&amp;<span class="type">str</span>, <span class="type">usize</span>&gt; = words
+    .iter()
+    .map(|w| (*w, w.len()))
+    .collect();
+
+<span class="comment">// …into a sorted map, just by changing the target type</span>
+<span class="keyword">let</span> sorted: BTreeMap&lt;&amp;<span class="type">str</span>, <span class="type">usize</span>&gt; = words
+    .iter()
+    .map(|w| (*w, w.len()))
+    .collect();
+
+<span class="comment">// …into a String</span>
+<span class="keyword">let</span> joined: <span class="type">String</span> = words.iter().copied().collect::&lt;<span class="type">Vec</span>&lt;_&gt;&gt;().join(<span class="string">", "</span>);</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                            The trick worth remembering</div>
+                        <p>
+                            An iterator of <code>Result</code>s collects into a
+                            <code>Result&lt;Vec&lt;_&gt;, E&gt;</code>: it stops at the first error and returns it,
+                            or gives you the whole vector if everything succeeded. One line replaces a loop, an
+                            accumulator and an early return. The same works for <code>Option</code>.
+                        </p>
+                        <pre data-lang="rust"><span class="keyword">let</span> inputs = [<span class="string">"1"</span>, <span class="string">"2"</span>, <span class="string">"three"</span>, <span class="string">"4"</span>];
+
+<span class="comment">// Err on the first failure</span>
+<span class="keyword">let</span> all: <span class="type">Result</span>&lt;<span class="type">Vec</span>&lt;<span class="type">i32</span>&gt;, _&gt; = inputs.iter().map(|s| s.parse::&lt;<span class="type">i32</span>&gt;()).collect();
+<span class="builtin">assert!</span>(all.is_err());
+
+<span class="comment">// Or skip the failures and keep what parsed</span>
+<span class="keyword">let</span> good: <span class="type">Vec</span>&lt;<span class="type">i32</span>&gt; = inputs.iter().filter_map(|s| s.parse().ok()).collect();
+<span class="builtin">assert_eq!</span>(good, <span class="builtin">vec!</span>[<span class="string">1</span>, <span class="string">2</span>, <span class="string">4</span>]);</pre>
+                    </div>
+                </div>
+
+                <div id="ad-real" class="tab-content">
+                    <h3>Patterns you will use constantly</h3>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::collections::HashMap;
+
+<span class="comment">// ---- Counting occurrences with the entry API --------------------</span>
+<span class="comment">// `entry` looks the key up once, whether or not it is present.</span>
+<span class="keyword">let</span> text = <span class="string">"the quick brown fox jumps over the lazy dog the end"</span>;
+<span class="keyword">let mut</span> counts: HashMap&lt;&amp;<span class="type">str</span>, <span class="type">u32</span>&gt; = HashMap::new();
+
+<span class="keyword">for</span> word <span class="keyword">in</span> text.split_whitespace() {
+    *counts.entry(word).or_insert(<span class="string">0</span>) += <span class="string">1</span>;
+}
+<span class="builtin">assert_eq!</span>(counts[<span class="string">"the"</span>], <span class="string">3</span>);
+
+<span class="comment">// ---- Grouping into buckets --------------------------------------</span>
+<span class="keyword">let</span> names = [<span class="string">"alice"</span>, <span class="string">"bob"</span>, <span class="string">"anna"</span>, <span class="string">"carl"</span>];
+<span class="keyword">let mut</span> by_initial: HashMap&lt;<span class="type">char</span>, <span class="type">Vec</span>&lt;&amp;<span class="type">str</span>&gt;&gt; = HashMap::new();
+
+<span class="keyword">for</span> name <span class="keyword">in</span> names {
+    <span class="keyword">if let</span> <span class="type">Some</span>(first) = name.chars().next() {
+        by_initial.entry(first).or_default().push(name);
+    }
+}
+
+<span class="comment">// ---- Sorting ----------------------------------------------------</span>
+<span class="keyword">let mut</span> scores = <span class="builtin">vec!</span>[(<span class="string">"bob"</span>, <span class="string">72</span>), (<span class="string">"alice"</span>, <span class="string">91</span>), (<span class="string">"carl"</span>, <span class="string">91</span>)];
+
+<span class="comment">// sort_by_key is stable: equal keys keep their original order.</span>
+scores.sort_by_key(|&amp;(_, score)| std::cmp::Reverse(score));
+
+<span class="comment">// sort_unstable_by is faster and allocates nothing, but may reorder</span>
+<span class="comment">// equal elements. Prefer it when ties genuinely do not matter.</span>
+scores.sort_unstable_by(|a, b| b.<span class="string">1</span>.cmp(&amp;a.<span class="string">1</span>));
+
+<span class="comment">// ---- Editing a Vec in place -------------------------------------</span>
+<span class="keyword">let mut</span> values = <span class="builtin">vec!</span>[<span class="string">1</span>, <span class="string">2</span>, <span class="string">2</span>, <span class="string">3</span>, <span class="string">4</span>, <span class="string">5</span>, <span class="string">6</span>];
+values.retain(|&amp;n| n % <span class="string">2</span> == <span class="string">0</span>);   <span class="comment">// keep only the evens</span>
+values.dedup();                    <span class="comment">// drop consecutive duplicates</span>
+
+<span class="comment">// ---- Windows and chunks over a slice ----------------------------</span>
+<span class="keyword">let</span> readings = [<span class="string">10</span>, <span class="string">12</span>, <span class="string">11</span>, <span class="string">15</span>, <span class="string">14</span>];
+
+<span class="comment">// Overlapping pairs, for deltas or moving averages</span>
+<span class="keyword">let</span> deltas: <span class="type">Vec</span>&lt;<span class="type">i32</span>&gt; = readings.windows(<span class="string">2</span>).map(|w| w[<span class="string">1</span>] - w[<span class="string">0</span>]).collect();
+<span class="builtin">assert_eq!</span>(deltas, <span class="builtin">vec!</span>[<span class="string">2</span>, <span class="string">-1</span>, <span class="string">4</span>, <span class="string">-1</span>]);
+
+<span class="comment">// Non-overlapping batches, e.g. for a batched insert</span>
+<span class="keyword">for</span> batch <span class="keyword">in</span> readings.chunks(<span class="string">2</span>) {
+    <span class="builtin">println!</span>(<span class="string">"{batch:?}"</span>);
+}
+
+<span class="comment">// ---- Splitting a pipeline in two --------------------------------</span>
+<span class="keyword">let</span> (even, odd): (<span class="type">Vec</span>&lt;<span class="type">i32</span>&gt;, <span class="type">Vec</span>&lt;<span class="type">i32</span>&gt;) =
+    (<span class="string">1</span>..=<span class="string">10</span>).partition(|n| n % <span class="string">2</span> == <span class="string">0</span>);</pre>
+                </div>
+            </div>
+
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> When
+                    <em>not</em> to use an iterator chain</div>
+                <p>
+                    Iterators are not a moral obligation. A plain <code>for</code> loop is clearer when the body has
+                    early returns, uses <code>?</code>, mutates several things at once, or is simply long. Deeply
+                    nested <code>flat_map</code> chains and closures that need three lines each are harder to read
+                    than the loop they replaced — and the compiler produces the same code either way. Choose the one a
+                    colleague will understand faster.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 6: MAPS -->
+        <section id="maps">
+            <h2><i class="fa-solid fa-table" aria-hidden="true"></i> A Closer Look at Maps</h2>
+            <p>
+                <code>HashMap</code> and <code>BTreeMap</code> offer the same interface with different guarantees, and
+                the choice usually comes down to one question: do you need order?
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th><code>HashMap&lt;K, V&gt;</code></th>
+                            <th><code>BTreeMap&lt;K, V&gt;</code></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Structure</strong></td>
+                            <td>Open-addressed hash table (the SwissTable design, via <code>hashbrown</code>)</td>
+                            <td>B-tree — many keys per node, so far better cache locality than a binary tree</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lookup</strong></td>
+                            <td><code>O(1)</code> average</td>
+                            <td><code>O(log n)</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Iteration order</strong></td>
+                            <td>Unspecified, and deliberately varies between runs</td>
+                            <td>Always sorted by key</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Key requirement</strong></td>
+                            <td><code>Hash + Eq</code></td>
+                            <td><code>Ord</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Range queries</strong></td>
+                            <td>Not supported</td>
+                            <td><code>map.range("a".."m")</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Why the
+                    default hasher is not the fastest one</div>
+                <p>
+                    <code>HashMap</code> uses <strong>SipHash 1-3</strong> with a per-instance random seed. That is
+                    not the quickest hash available, and the choice is deliberate: it makes hash-collision
+                    denial-of-service attacks impractical, which matters when keys come from untrusted input. For
+                    internal maps with trusted keys you can swap in a faster hasher such as <code>ahash</code> or
+                    <code>rustc-hash</code> and often win a noticeable amount — but make that an informed decision
+                    rather than a default.
+                </p>
+            </div>
+
+            <pre data-lang="rust"><span class="keyword">use</span> std::collections::HashMap;
+
+<span class="keyword">let mut</span> capitals = HashMap::new();
+capitals.insert(<span class="string">"Tonga"</span>, <span class="string">"Nuku'alofa"</span>);
+capitals.insert(<span class="string">"Fiji"</span>, <span class="string">"Suva"</span>);
+
+<span class="comment">// get() returns Option&lt;&amp;V&gt; — no panic on a missing key.</span>
+<span class="keyword">if let</span> <span class="type">Some</span>(city) = capitals.get(<span class="string">"Fiji"</span>) {
+    <span class="builtin">println!</span>(<span class="string">"Fiji: {city}"</span>);
+}
+
+<span class="comment">// Indexing with [] panics if absent — convenient in tests, risky elsewhere.</span>
+<span class="builtin">println!</span>(<span class="string">"{}"</span>, capitals[<span class="string">"Tonga"</span>]);
+
+<span class="comment">// Iterating by shared reference yields (&amp;K, &amp;V).</span>
+<span class="keyword">for</span> (country, city) <span class="keyword">in</span> &amp;capitals {
+    <span class="builtin">println!</span>(<span class="string">"The capital of {country} is {city}"</span>);
+}
+
+<span class="comment">// Mutable iteration yields (&amp;K, &amp;mut V): values can change, keys cannot.</span>
+<span class="comment">// Mutating a key would invalidate its hash and corrupt the table, so the</span>
+<span class="comment">// type system simply does not offer it.</span>
+<span class="keyword">let mut</span> tallies: HashMap&lt;&amp;<span class="type">str</span>, <span class="type">i32</span>&gt; = HashMap::new();
+tallies.insert(<span class="string">"a"</span>, <span class="string">1</span>);
+<span class="keyword">for</span> (_key, value) <span class="keyword">in</span> &amp;<span class="keyword">mut</span> tallies {
+    *value *= <span class="string">10</span>;
+}</pre>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="controlflow.html">
+                <i class="fa-solid fa-code-branch" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Previous</span>
+                    <span class="page-nav-title">Control Flow</span>
+                </span>
+            </a>
+            <a href="stdlib.html">
+                <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Next</span>
+                    <span class="page-nav-title">Files &amp; I/O</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>The full list of adapters lives in the
+            <a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html" target="_blank" rel="noopener">Iterator
+                trait documentation</a> — it is genuinely worth reading end to end once.
+            Offline: <code>rustup doc --std</code>.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+
+</html>

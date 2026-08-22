@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>Rust Control Flow — Variables, Branching, Loops, Matching and Async</title>
+    <meta name="description"
+        content="How Rust binds variables, branches, loops, matches and awaits — an expression-oriented tour of the language's control flow, from the semicolon rule to async/await and cancellation.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Language Reference</span>
+            <h1>Control Flow in <span>Rust</span></h1>
+            <p>Variables, branching, looping, pattern matching and async/await in a language where almost
+                everything is an expression.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> On this page</h3>
+            <div class="kp">
+                <i class="fa-solid fa-equals" aria-hidden="true"></i>
+                <span>Why <code>if</code>, <code>match</code> and <code>loop</code> produce values instead of just
+                    doing things.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-key" aria-hidden="true"></i>
+                <span>How variable bindings work — immutability, inference, shadowing, move and copy.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-repeat" aria-hidden="true"></i>
+                <span>All three loop forms, loop labels, and the <code>while let</code> pattern.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                <span>Pattern matching, and the way Rust handles errors without exceptions.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                <span>Async: why futures are lazy, how to run several at once, and what cancellation really
+                    is.</span>
+            </div>
+        </div>
+
+        <!-- SECTION 1: EXPRESSIONS -->
+        <section id="expression-concept">
+            <h2><i class="fa-solid fa-equals" aria-hidden="true"></i> The Expression-Based Paradigm</h2>
+            <p>
+                In C, Java or Python there is a firm line between <strong>statements</strong>, which do something, and
+                <strong>expressions</strong>, which evaluate to a value. Rust moves that line: nearly every construct
+                in the language — <code>if</code>, <code>match</code>, a bare block, even <code>loop</code> — is an
+                expression that produces a value you can bind or return.
+            </p>
+            <pre data-lang="rust"><span class="keyword">let</span> condition = <span class="keyword">true</span>;
+
+<span class="comment">// The whole if/else evaluates to one value, bound to `number`.</span>
+<span class="keyword">let</span> number = <span class="keyword">if</span> condition { <span class="string">5</span> } <span class="keyword">else</span> { <span class="string">10</span> };
+
+<span class="comment">// A plain block is an expression too — handy for scoping temporaries.</span>
+<span class="keyword">let</span> area = {
+    <span class="keyword">let</span> width = <span class="string">4</span>;
+    <span class="keyword">let</span> height = <span class="string">7</span>;
+    width * height   <span class="comment">// no semicolon: this is the block's value</span>
+};
+
+<span class="builtin">println!</span>(<span class="string">"{number} and {area}"</span>); <span class="comment">// 5 and 28</span></pre>
+
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> The
+                    semicolon rule</div>
+                <p>
+                    Leaving the semicolon off the final line of a block makes that line the block's value. Adding one
+                    turns it into a statement, and the block evaluates to the <strong>unit type
+                        <code>()</code></strong> instead. That single character is behind a large share of "expected
+                    <code>i32</code>, found <code>()</code>" errors in your first week — and the compiler will usually
+                    tell you to remove it.
+                </p>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Every branch
+                    must agree</div>
+                <p>
+                    Because <code>if</code> is an expression, all of its arms must produce the <em>same type</em>.
+                    <code>let x = if c { 5 } else { "five" };</code> does not compile. Nor does an <code>if</code> with
+                    no <code>else</code> used as a value — the missing branch would yield <code>()</code>.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: VARIABLES -->
+        <section id="variables">
+            <h2><i class="fa-solid fa-key" aria-hidden="true"></i> Variables and Bindings</h2>
+            <p class="lead">
+                Rust calls this <strong>variable binding</strong> rather than assignment, and the distinction matters:
+                a binding associates a name with a value <em>and</em> with responsibility for that value's memory.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-lock" aria-hidden="true"></i> 1. Immutable by default <span
+                            class="tag safe">Safety</span></h3>
+                    <p>
+                        Bindings cannot be reassigned unless declared <code class="keyword">mut</code>. Mutability is
+                        also <em>inherited</em>: marking a struct binding <code>mut</code> makes all of its fields
+                        mutable through that binding.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> x = <span class="string">5</span>;
+<span class="comment">// x += 1;
+// ERROR: cannot assign twice to
+//        immutable variable `x`</span>
+
+<span class="keyword">let mut</span> y = <span class="string">5</span>;
+y += <span class="string">1</span>;    <span class="comment">// fine</span></pre>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> 2. Static typing with
+                        inference <span class="tag info">Ergonomics</span></h3>
+                    <p>
+                        Every value has a type known at compile time, but you rarely write it down. The compiler
+                        infers types from how a value is used — including across function boundaries within a body.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> deduced = <span class="string">10</span>;          <span class="comment">// i32 by default</span>
+<span class="keyword">let</span> explicit: <span class="type">u64</span> = <span class="string">100</span>;
+<span class="keyword">let</span> pi = <span class="string">3.14</span>;              <span class="comment">// f64 by default</span>
+
+<span class="comment">// Sometimes inference needs a hint —</span>
+<span class="comment">// parse() could produce many types:</span>
+<span class="keyword">let</span> n: <span class="type">i32</span> = <span class="string">"42"</span>.parse().unwrap();
+<span class="keyword">let</span> m = <span class="string">"42"</span>.parse::&lt;<span class="type">i32</span>&gt;().unwrap();</pre>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> 3. No uninitialised reads <span
+                            class="tag safe">Safety</span></h3>
+                    <p>
+                        In C, reading an uninitialised variable is undefined behaviour. Rust's compiler tracks
+                        initialisation through every path and refuses to compile a read that might happen first.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> value: <span class="type">i32</span>;   <span class="comment">// declared, not set</span>
+
+<span class="comment">// println!("{value}");
+// ERROR: used binding `value` is
+//        possibly-uninitialized</span>
+
+value = <span class="string">42</span>;         <span class="comment">// initialised here</span>
+<span class="builtin">println!</span>(<span class="string">"{value}"</span>); <span class="comment">// now fine</span></pre>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-layer-group" aria-hidden="true"></i> 4. Shadowing <span
+                            class="tag info">Ergonomics</span></h3>
+                    <p>
+                        You may declare a new binding with an existing name. The old value is shadowed — not mutated —
+                        so the new one can have a completely different type. It saves inventing names like
+                        <code>input_str</code> and <code>input_parsed</code>.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> data_len = <span class="string">"81"</span>;        <span class="comment">// &amp;str</span>
+<span class="keyword">let</span> data_len: <span class="type">usize</span> =
+    data_len.parse().unwrap(); <span class="comment">// usize</span>
+
+<span class="builtin">println!</span>(<span class="string">"{data_len}"</span>);      <span class="comment">// 81</span></pre>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-right-left" aria-hidden="true"></i> 5. Move versus copy <span
+                            class="tag safe">Ownership</span></h3>
+                    <p>
+                        Assigning a heap-owning value <strong>moves</strong> it: ownership transfers and the source
+                        binding becomes unusable. Small types that live entirely on the stack implement
+                        <code>Copy</code> and are duplicated bitwise instead.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// MOVE</span>
+<span class="keyword">let</span> s1 = <span class="type">String</span>::from(<span class="string">"ramen"</span>);
+<span class="keyword">let</span> s2 = s1;
+<span class="comment">// println!("{s1}"); // ERROR:
+//   borrow of moved value: `s1`</span>
+
+<span class="comment">// COPY</span>
+<span class="keyword">let</span> n1: <span class="type">i32</span> = <span class="string">36</span>;
+<span class="keyword">let</span> n2 = n1;
+<span class="builtin">println!</span>(<span class="string">"{n1} {n2}"</span>); <span class="comment">// both live</span></pre>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-globe" aria-hidden="true"></i> 6. <code>const</code> versus
+                        <code>static</code> <span class="tag neutral">Scope</span></h3>
+                    <p>
+                        Both live outside functions and both need an explicit type. A <code>const</code> is evaluated
+                        at compile time and inlined at each use site; a <code>static</code> is a single fixed location
+                        in memory with a <code>'static</code> lifetime.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">const</span> BUFFER_SIZE: <span class="type">usize</span> = <span class="string">1024</span>;
+<span class="keyword">static</span> APP_NAME: &amp;<span class="type">str</span> = <span class="string">"widget"</span>;
+
+<span class="comment">// Mutable global state uses an atomic
+// or a Mutex — see the note below.</span>
+<span class="keyword">use</span> std::sync::atomic::{AtomicBool, Ordering};
+<span class="keyword">static</span> IN_ERROR: AtomicBool =
+    AtomicBool::new(<span class="keyword">false</span>);
+
+IN_ERROR.store(<span class="keyword">true</span>, Ordering::Relaxed);</pre>
+                </div>
+            </div>
+
+            <div class="callout danger">
+                <div class="callout-title"><i class="fa-solid fa-ban" aria-hidden="true"></i> Do not reach for
+                    <code>static mut</code></div>
+                <p>
+                    You will still find <code>static mut</code> in older tutorials. It is genuinely dangerous —
+                    unsynchronised access from multiple threads is undefined behaviour — and Rust has been closing it off: in the
+                    <strong>2024 edition, creating a reference to a <code>static mut</code> is a hard error</strong>,
+                    and reading or writing one directly still requires <code>unsafe</code>. Use
+                    <code>AtomicUsize</code> / <code>AtomicBool</code> for counters and flags,
+                    <code>Mutex&lt;T&gt;</code> or <code>RwLock&lt;T&gt;</code> for anything larger, and
+                    <code>OnceLock&lt;T&gt;</code> for a value initialised once and then only read.
+                </p>
+            </div>
+
+            <h3>The primitive types worth memorising</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Types</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Signed integers</td>
+                            <td><code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>,
+                                <code>i128</code>, <code>isize</code></td>
+                            <td><code>i32</code> is the default and usually the fastest choice.</td>
+                        </tr>
+                        <tr>
+                            <td>Unsigned integers</td>
+                            <td><code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>,
+                                <code>u128</code>, <code>usize</code></td>
+                            <td><code>usize</code> matches the pointer width and is what indexing and
+                                <code>.len()</code> use.</td>
+                        </tr>
+                        <tr>
+                            <td>Floating point</td>
+                            <td><code>f32</code>, <code>f64</code></td>
+                            <td><code>f64</code> is the default.</td>
+                        </tr>
+                        <tr>
+                            <td>Boolean</td>
+                            <td><code>bool</code></td>
+                            <td>Only <code>true</code> and <code>false</code>. No integer ever converts implicitly.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Character</td>
+                            <td><code>char</code></td>
+                            <td>Four bytes, holding one Unicode scalar value — so <code>'ß'</code>, <code>'あ'</code>
+                                and <code>'🦀'</code> are each a single <code>char</code>.</td>
+                        </tr>
+                        <tr>
+                            <td>Compound</td>
+                            <td><code>(T, U)</code>, <code>[T; N]</code></td>
+                            <td>Tuples group different types; arrays hold <code>N</code> values of one type, with
+                                <code>N</code> fixed at compile time.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Overflow behaves
+                    differently per profile</div>
+                <p>
+                    In a debug build, integer overflow <strong>panics</strong>. In a release build it wraps using
+                    two's complement, because the check costs performance. Neither is undefined behaviour. When the
+                    behaviour matters, say so explicitly with <code>wrapping_add</code>,
+                    <code>checked_add</code> (returns <code>Option</code>), <code>saturating_add</code> or
+                    <code>overflowing_add</code>.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: BRANCHING -->
+        <section id="branching">
+            <h2><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Conditional Branching</h2>
+            <p>
+                <code>if</code>, <code>else if</code> and <code>else</code> look familiar, with two rules enforced
+                that most languages leave loose:
+            </p>
+            <ul>
+                <li><strong>No implicit truthiness.</strong> The condition must be a <code>bool</code>. A non-zero
+                    integer, a non-empty string and a non-null pointer are all rejected — write the comparison you
+                    mean.</li>
+                <li><strong>Braces are required, parentheses are not.</strong> <code>if x &gt; 3 { … }</code>. Because
+                    every block is braced, the dangling-else and "I added a second line to the body" bug classes
+                    simply cannot occur.</li>
+            </ul>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="if-else-tab"><i class="fa-solid fa-code-branch"
+                            aria-hidden="true"></i>if / else</button>
+                    <button class="tab-btn" data-tab="if-let-tab"><i class="fa-solid fa-filter"
+                            aria-hidden="true"></i>if let</button>
+                    <button class="tab-btn" data-tab="let-else-tab"><i class="fa-solid fa-door-open"
+                            aria-hidden="true"></i>let … else</button>
+                </div>
+
+                <div id="if-else-tab" class="tab-content active">
+                    <h3>Ordinary branching</h3>
+                    <pre data-lang="rust"><span class="keyword">let</span> x = <span class="string">15</span>;
+
+<span class="keyword">if</span> x % <span class="string">15</span> == <span class="string">0</span> {
+    <span class="builtin">println!</span>(<span class="string">"FizzBuzz"</span>);
+} <span class="keyword">else if</span> x % <span class="string">3</span> == <span class="string">0</span> {
+    <span class="builtin">println!</span>(<span class="string">"Fizz"</span>);
+} <span class="keyword">else if</span> x % <span class="string">5</span> == <span class="string">0</span> {
+    <span class="builtin">println!</span>(<span class="string">"Buzz"</span>);
+} <span class="keyword">else</span> {
+    <span class="builtin">println!</span>(<span class="string">"{x}"</span>);
+}
+
+<span class="comment">// The same thing as an expression — note every arm is a &amp;str.</span>
+<span class="keyword">let</span> label = <span class="keyword">if</span> x % <span class="string">15</span> == <span class="string">0</span> { <span class="string">"FizzBuzz"</span> }
+    <span class="keyword">else if</span> x % <span class="string">3</span> == <span class="string">0</span> { <span class="string">"Fizz"</span> }
+    <span class="keyword">else if</span> x % <span class="string">5</span> == <span class="string">0</span> { <span class="string">"Buzz"</span> }
+    <span class="keyword">else</span> { <span class="string">"none"</span> };</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> When a
+                            chain gets long, reach for <code>match</code></div>
+                        <p>
+                            Four or more <code>else if</code> branches over the same value is usually a
+                            <code>match</code> waiting to be written — and <code>match</code> brings exhaustiveness
+                            checking with it, so the compiler tells you when you forget a case.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="if-let-tab" class="tab-content">
+                    <h3>Matching one variant with <code>if let</code></h3>
+                    <p>
+                        When you care about exactly one pattern and want to ignore everything else, a full
+                        <code>match</code> is noisy. <code>if let</code> is the shorthand.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> possible_value: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = <span class="type">Some</span>(<span class="string">42</span>);
+
+<span class="comment">// If it matches Some, bind the inner value to `val` and run the block.</span>
+<span class="keyword">if let</span> <span class="type">Some</span>(val) = possible_value {
+    <span class="builtin">println!</span>(<span class="string">"unwrapped: {val}"</span>);
+}
+
+<span class="comment">// An else arm handles the other cases.</span>
+<span class="keyword">if let</span> <span class="type">Ok</span>(port) = <span class="string">"8080"</span>.parse::&lt;<span class="type">u16</span>&gt;() {
+    <span class="builtin">println!</span>(<span class="string">"listening on {port}"</span>);
+} <span class="keyword">else</span> {
+    <span class="builtin">eprintln!</span>(<span class="string">"not a valid port number"</span>);
+}
+
+<span class="comment">// It is an expression too, so it can produce a value.</span>
+<span class="keyword">let</span> doubled = <span class="keyword">if let</span> <span class="type">Some</span>(v) = possible_value { v * <span class="string">2</span> } <span class="keyword">else</span> { <span class="string">0</span> };</pre>
+                </div>
+
+                <div id="let-else-tab" class="tab-content">
+                    <h3>Early return with <code>let … else</code></h3>
+                    <p>
+                        Stabilised in Rust 1.65, <code>let … else</code> solves the awkward case where you want to
+                        bind a value on the happy path and bail out otherwise — without the rightward drift of nested
+                        <code>if let</code> blocks. The <code>else</code> block must diverge:
+                        <code>return</code>, <code>break</code>, <code>continue</code> or <code>panic!</code>.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// Without let-else: the real work drifts further right each time.</span>
+<span class="keyword">fn</span> <span class="builtin">describe_old</span>(input: <span class="type">Option</span>&lt;&amp;<span class="type">str</span>&gt;) -&gt; <span class="type">String</span> {
+    <span class="keyword">if let</span> <span class="type">Some</span>(text) = input {
+        <span class="keyword">if let</span> <span class="type">Ok</span>(n) = text.parse::&lt;<span class="type">i32</span>&gt;() {
+            <span class="builtin">format!</span>(<span class="string">"got {n}"</span>)
+        } <span class="keyword">else</span> {
+            <span class="string">"not a number"</span>.to_string()
+        }
+    } <span class="keyword">else</span> {
+        <span class="string">"nothing"</span>.to_string()
+    }
+}
+
+<span class="comment">// With let-else: the failures leave early and the happy path stays flat.</span>
+<span class="keyword">fn</span> <span class="builtin">describe</span>(input: <span class="type">Option</span>&lt;&amp;<span class="type">str</span>&gt;) -&gt; <span class="type">String</span> {
+    <span class="keyword">let</span> <span class="type">Some</span>(text) = input <span class="keyword">else</span> {
+        <span class="keyword">return</span> <span class="string">"nothing"</span>.to_string();
+    };
+
+    <span class="keyword">let</span> <span class="type">Ok</span>(n) = text.parse::&lt;<span class="type">i32</span>&gt;() <span class="keyword">else</span> {
+        <span class="keyword">return</span> <span class="string">"not a number"</span>.to_string();
+    };
+
+    <span class="comment">// `text` and `n` are in scope for the rest of the function.</span>
+    <span class="builtin">format!</span>(<span class="string">"got {n}"</span>)
+}</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Guard
+                            clauses, the Rust way</div>
+                        <p>
+                            This is the idiom to reach for when validating inputs at the top of a function. Each
+                            failure gets its own two lines, the happy path never indents, and you keep the bindings
+                            afterwards.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: LOOPS -->
+        <section id="loops">
+            <h2><i class="fa-solid fa-repeat" aria-hidden="true"></i> The Three Loops</h2>
+            <p>
+                Rust has exactly three looping constructs, and idiomatic code uses <code>for</code> for the
+                overwhelming majority of cases.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="loop-tab"><i class="fa-solid fa-infinity"
+                            aria-hidden="true"></i>loop</button>
+                    <button class="tab-btn" data-tab="while-tab"><i class="fa-solid fa-hourglass-half"
+                            aria-hidden="true"></i>while</button>
+                    <button class="tab-btn" data-tab="for-tab"><i class="fa-solid fa-list-ol"
+                            aria-hidden="true"></i>for</button>
+                    <button class="tab-btn" data-tab="whilelet-tab"><i class="fa-solid fa-filter"
+                            aria-hidden="true"></i>while let</button>
+                </div>
+
+                <div id="loop-tab" class="tab-content active">
+                    <h3><code>loop</code> — infinite until you say otherwise</h3>
+                    <p>
+                        <code>loop</code> repeats until a <code>break</code>. It is preferred over
+                        <code>while true</code> because the compiler knows it runs at least once, which keeps
+                        initialisation analysis happy downstream. Its distinguishing feature: <code>break</code> can
+                        carry a value out.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let mut</span> counter = <span class="string">0</span>;
+
+<span class="keyword">let</span> result = <span class="keyword">loop</span> {
+    counter += <span class="string">1</span>;
+    <span class="keyword">if</span> counter == <span class="string">10</span> {
+        <span class="keyword">break</span> counter * <span class="string">2</span>; <span class="comment">// the loop evaluates to 20</span>
+    }
+};
+
+<span class="builtin">println!</span>(<span class="string">"{result}"</span>); <span class="comment">// 20</span></pre>
+                    <p>
+                        This makes <code>loop</code> the natural shape for retry-until-success: keep trying, and
+                        <code>break</code> out with whatever you eventually got.
+                    </p>
+                </div>
+
+                <div id="while-tab" class="tab-content">
+                    <h3><code>while</code> — repeat while a condition holds</h3>
+                    <pre data-lang="rust"><span class="keyword">let mut</span> n = <span class="string">5</span>;
+
+<span class="keyword">while</span> n != <span class="string">0</span> {
+    <span class="builtin">println!</span>(<span class="string">"{n}..."</span>);
+    n -= <span class="string">1</span>;
+}
+
+<span class="builtin">println!</span>(<span class="string">"Liftoff!"</span>);</pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            Do not use <code>while</code> to walk a collection</div>
+                        <p>
+                            The <code>while i &lt; v.len() { … v[i] … }</code> pattern is where off-by-one and
+                            out-of-bounds bugs live. Rust turns the latter into a panic rather than memory corruption,
+                            but the bug is still a bug. Use <code>for</code>, which cannot go out of bounds at all.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="for-tab" class="tab-content">
+                    <h3><code>for</code> — the one you will actually use</h3>
+                    <p>
+                        <code>for</code> works with anything implementing <code>IntoIterator</code>, which the
+                        compiler calls to obtain an iterator and then drives with <code>next()</code>. No index
+                        variable exists, so no index can be wrong.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// 1. An exclusive range 0..5, or an inclusive one 1..=5</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">1</span>..=<span class="string">5</span> {
+    <span class="builtin">println!</span>(<span class="string">"range value: {i}"</span>);
+}
+
+<span class="keyword">let</span> fruits = <span class="builtin">vec!</span>[<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>];
+
+<span class="comment">// 2. Borrow the collection: it stays usable afterwards.</span>
+<span class="keyword">for</span> item <span class="keyword">in</span> &amp;fruits {
+    <span class="builtin">println!</span>(<span class="string">"read-only: {item}"</span>);
+}
+
+<span class="comment">// 3. Borrow mutably to change elements in place.</span>
+<span class="keyword">let mut</span> counts = <span class="builtin">vec!</span>[<span class="string">1</span>, <span class="string">2</span>, <span class="string">3</span>];
+<span class="keyword">for</span> n <span class="keyword">in</span> &amp;<span class="keyword">mut</span> counts {
+    *n *= <span class="string">10</span>;  <span class="comment">// `n` is &amp;mut i32, so dereference to assign</span>
+}
+
+<span class="comment">// 4. Take ownership: `fruits` is consumed and gone after this.</span>
+<span class="keyword">for</span> item <span class="keyword">in</span> fruits {
+    <span class="builtin">println!</span>(<span class="string">"owned: {item}"</span>);
+}
+
+<span class="comment">// Need the index after all? Ask the iterator for it.</span>
+<span class="keyword">for</span> (i, n) <span class="keyword">in</span> counts.iter().enumerate() {
+    <span class="builtin">println!</span>(<span class="string">"{i}: {n}"</span>);
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> The
+                            three flavours are a type-level choice</div>
+                        <p>
+                            <code>&amp;collection</code>, <code>&amp;mut collection</code> and <code>collection</code>
+                            select shared borrow, exclusive borrow and ownership respectively — the same distinction
+                            as <code>iter()</code>, <code>iter_mut()</code> and <code>into_iter()</code>. Getting this
+                            wrong is the most common early borrow-checker complaint, and there is much more on it
+                            on the <a href="iterators.html">Collections &amp; Iterators</a> page.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="whilelet-tab" class="tab-content">
+                    <h3><code>while let</code> — loop as long as a pattern matches</h3>
+                    <p>
+                        The looping counterpart of <code>if let</code>. It is the natural way to drain a collection,
+                        read from a channel, or consume an iterator by hand.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let mut</span> stack = <span class="builtin">vec!</span>[<span class="string">1</span>, <span class="string">2</span>, <span class="string">3</span>];
+
+<span class="comment">// pop() returns Option&lt;i32&gt;: Some until empty, then None ends the loop.</span>
+<span class="keyword">while let</span> <span class="type">Some</span>(top) = stack.pop() {
+    <span class="builtin">println!</span>(<span class="string">"{top}"</span>); <span class="comment">// 3, 2, 1</span>
+}
+
+<span class="comment">// Reading lines until end of input follows exactly the same shape.</span>
+<span class="keyword">let mut</span> chars = <span class="string">"rust"</span>.chars();
+<span class="keyword">while let</span> <span class="type">Some</span>(c) = chars.next() {
+    <span class="builtin">print!</span>(<span class="string">"[{c}]"</span>);
+}</pre>
+                </div>
+            </div>
+
+            <h3>Nested loops and labels</h3>
+            <p>
+                Rust has no <code>goto</code>. To break out of more than the innermost loop, give the outer one a
+                label — an identifier with a leading apostrophe — and name it in the <code>break</code> or
+                <code>continue</code>.
+            </p>
+            <pre data-lang="rust"><span class="comment">// Breaks out of the entire nested structure, not just the inner loop.</span>
+<span class="keyword">'outer</span>: <span class="keyword">for</span> x <span class="keyword">in</span> <span class="string">0</span>..<span class="string">10</span> {
+    <span class="keyword">for</span> y <span class="keyword">in</span> <span class="string">0</span>..<span class="string">10</span> {
+        <span class="keyword">if</span> x * y &gt; <span class="string">50</span> {
+            <span class="builtin">println!</span>(<span class="string">"stopping at {x} x {y}"</span>);
+            <span class="keyword">break</span> <span class="keyword">'outer</span>;
+        }
+        <span class="keyword">if</span> y == <span class="string">3</span> {
+            <span class="keyword">continue</span> <span class="keyword">'outer</span>; <span class="comment">// next x, skipping the rest of this y</span>
+        }
+    }
+}
+
+<span class="comment">// Labels also work on plain blocks, giving a scoped early exit</span>
+<span class="comment">// that carries a value out — stable since Rust 1.65.</span>
+<span class="keyword">let</span> found = <span class="keyword">'search</span>: {
+    <span class="keyword">for</span> (i, c) <span class="keyword">in</span> <span class="string">"hello world"</span>.chars().enumerate() {
+        <span class="keyword">if</span> c == <span class="string">' '</span> {
+            <span class="keyword">break</span> <span class="keyword">'search</span> <span class="type">Some</span>(i);
+        }
+    }
+    <span class="type">None</span>
+};
+
+<span class="builtin">println!</span>(<span class="string">"{found:?}"</span>); <span class="comment">// Some(5)</span></pre>
+        </section>
+
+        <!-- SECTION 5: FUNCTIONS -->
+        <section id="functions">
+            <h2><i class="fa-solid fa-cube" aria-hidden="true"></i> Functions and Methods</h2>
+            <p>
+                Functions are declared with <code>fn</code>, named in <code>snake_case</code>, and always annotate
+                their parameter and return types — type inference stops at the function boundary, which is what keeps
+                error messages local and readable.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-code" aria-hidden="true"></i> Anatomy</h3>
+                    <p>
+                        Parameters go in parentheses, the return type after <code>-&gt;</code>. Omitting the return
+                        type means the function returns the unit type <code>()</code> — Rust's equivalent of
+                        <code>void</code>.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">greet</span>(name: &amp;<span class="type">str</span>) {
+    <span class="builtin">println!</span>(<span class="string">"Hello, {name}!"</span>);
+}
+
+<span class="keyword">fn</span> <span class="builtin">square</span>(n: <span class="type">i32</span>) -&gt; <span class="type">i32</span> {
+    n * n   <span class="comment">// no semicolon = return value</span>
+}</pre>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-arrow-turn-up" aria-hidden="true"></i> Returning</h3>
+                    <p>
+                        The last expression without a semicolon is the return value. <code>return</code> exists for
+                        early exits, but idiomatic Rust leaves the final value bare.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">classify</span>(score: <span class="type">u32</span>) -&gt; &amp;<span class="keyword">'static</span> <span class="type">str</span> {
+    <span class="keyword">if</span> score &gt; <span class="string">100</span> {
+        <span class="keyword">return</span> <span class="string">"invalid"</span>; <span class="comment">// early exit</span>
+    }
+
+    <span class="keyword">if</span> score &gt;= <span class="string">70</span> {
+        <span class="string">"pass"</span>
+    } <span class="keyword">else</span> {
+        <span class="string">"retry"</span>
+    }
+}</pre>
+                </div>
+            </div>
+
+            <h3>Passing values: move, copy, borrow</h3>
+            <p>
+                Parameters obey the same ownership rules as bindings. This is the single most important thing to get
+                right when designing a function signature, so it is worth seeing all four cases side by side.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="copy-param-tab"><i class="fa-solid fa-copy"
+                            aria-hidden="true"></i>Copy</button>
+                    <button class="tab-btn" data-tab="move-param-tab"><i class="fa-solid fa-right-long"
+                            aria-hidden="true"></i>Move</button>
+                    <button class="tab-btn" data-tab="borrow-param-tab"><i class="fa-solid fa-eye"
+                            aria-hidden="true"></i>Borrow</button>
+                    <button class="tab-btn" data-tab="mut-borrow-param-tab"><i class="fa-solid fa-pen"
+                            aria-hidden="true"></i>Mutable borrow</button>
+                </div>
+
+                <div id="copy-param-tab" class="tab-content active">
+                    <h3>Copy: the caller keeps the original</h3>
+                    <p>Scalars, <code>char</code>, <code>bool</code> and tuples of them implement <code>Copy</code>,
+                        so passing one duplicates it.</p>
+                    <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">double</span>(x: <span class="type">i32</span>) -&gt; <span class="type">i32</span> {
+    x * <span class="string">2</span>
+}
+
+<span class="keyword">let</span> n = <span class="string">21</span>;
+<span class="keyword">let</span> result = double(n);
+<span class="builtin">println!</span>(<span class="string">"n is still {n}, result is {result}"</span>);</pre>
+                </div>
+
+                <div id="move-param-tab" class="tab-content">
+                    <h3>Move: the function takes ownership</h3>
+                    <p>Use this when the function is genuinely consuming the value — storing it, transforming it, or
+                        destroying it.</p>
+                    <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">consume</span>(text: <span class="type">String</span>) {
+    <span class="builtin">println!</span>(<span class="string">"consumed: {text}"</span>);
+}   <span class="comment">// `text` is dropped here — the buffer is freed</span>
+
+<span class="keyword">let</span> message = <span class="type">String</span>::from(<span class="string">"rust"</span>);
+consume(message);
+<span class="comment">// println!("{message}"); // ERROR: message was moved</span></pre>
+                </div>
+
+                <div id="borrow-param-tab" class="tab-content">
+                    <h3>Borrow: read without taking</h3>
+                    <p>
+                        The default choice for a function that only reads. Prefer <code>&amp;str</code> over
+                        <code>&amp;String</code> and <code>&amp;[T]</code> over <code>&amp;Vec&lt;T&gt;</code> — the
+                        slice forms accept strictly more callers at no extra cost.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">word_count</span>(text: &amp;<span class="type">str</span>) -&gt; <span class="type">usize</span> {
+    text.split_whitespace().count()
+}
+
+<span class="keyword">let</span> message = <span class="type">String</span>::from(<span class="string">"safe fast productive"</span>);
+<span class="keyword">let</span> count = word_count(&amp;message);  <span class="comment">// &amp;String coerces to &amp;str</span>
+<span class="builtin">println!</span>(<span class="string">"{count} words in {message}"</span>); <span class="comment">// message still owned here</span></pre>
+                </div>
+
+                <div id="mut-borrow-param-tab" class="tab-content">
+                    <h3>Mutable borrow: change it in place</h3>
+                    <p>
+                        Exclusive for the duration of the call. While this borrow is live, nothing else — including
+                        the caller — can read or write the value.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">normalize_name</span>(name: &amp;<span class="keyword">mut</span> <span class="type">String</span>) {
+    name.make_ascii_lowercase();
+    name.push_str(<span class="string">".rs"</span>);
+}
+
+<span class="keyword">let mut</span> crate_name = <span class="type">String</span>::from(<span class="string">"MY_TOOL"</span>);
+normalize_name(&amp;<span class="keyword">mut</span> crate_name);  <span class="comment">// &amp;mut is explicit at the call site too</span>
+<span class="builtin">println!</span>(<span class="string">"{crate_name}"</span>);           <span class="comment">// my_tool.rs</span></pre>
+                </div>
+            </div>
+
+            <h3>Associated functions and methods</h3>
+            <p>
+                An <code>impl</code> block attaches functions to a type. One that does not take <code>self</code> is
+                an <strong>associated function</strong>, called as <code>Type::name()</code> — this is how
+                constructors are written, since Rust has no dedicated constructor syntax. One that does take
+                <code>self</code> is a <strong>method</strong>, called with a dot.
+            </p>
+            <pre data-lang="rust"><span class="keyword">struct</span> <span class="type">Counter</span> {
+    value: <span class="type">u32</span>,
+}
+
+<span class="keyword">impl</span> <span class="type">Counter</span> {
+    <span class="comment">// Associated function: no self. `Self` means `Counter` here.</span>
+    <span class="keyword">fn</span> <span class="builtin">new</span>() -&gt; <span class="type">Self</span> {
+        <span class="type">Self</span> { value: <span class="string">0</span> }
+    }
+
+    <span class="comment">// &amp;mut self — needs exclusive access to change the field.</span>
+    <span class="keyword">fn</span> <span class="builtin">increment</span>(&amp;<span class="keyword">mut</span> self) {
+        self.value += <span class="string">1</span>;
+    }
+
+    <span class="comment">// &amp;self — only reads, so many callers can share it.</span>
+    <span class="keyword">fn</span> <span class="builtin">current</span>(&amp;self) -&gt; <span class="type">u32</span> {
+        self.value
+    }
+
+    <span class="comment">// self by value — consumes the Counter and returns its contents.</span>
+    <span class="keyword">fn</span> <span class="builtin">into_inner</span>(self) -&gt; <span class="type">u32</span> {
+        self.value
+    }
+}
+
+<span class="keyword">let mut</span> counter = <span class="type">Counter</span>::new();
+counter.increment();
+<span class="builtin">println!</span>(<span class="string">"{}"</span>, counter.current()); <span class="comment">// 1</span>
+<span class="keyword">let</span> final_value = counter.into_inner(); <span class="comment">// counter is gone after this</span></pre>
+        </section>
+
+        <!-- SECTION 6: PATTERN MATCHING -->
+        <section id="pattern-matching">
+            <h2><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Pattern Matching</h2>
+            <p>
+                <code>match</code> is Rust's <code>switch</code>, except that it matches on structure rather than
+                equality, binds the pieces it finds, and refuses to compile if you miss a case. It comes from the ML
+                family of languages, and once it clicks you will miss it everywhere else.
+            </p>
+            <ul>
+                <li><strong>Exhaustive.</strong> Every possible value must be covered by some arm. Add a variant to an
+                    enum and the compiler immediately lists every <code>match</code> that now needs updating — which
+                    is what makes refactoring Rust so much less frightening than it might be.</li>
+                <li><strong>No fall-through.</strong> Arms do not run into each other; no <code>break</code> is
+                    needed, and forgetting one cannot silently change behaviour.</li>
+                <li><strong>Wildcards.</strong> <code>_</code> matches anything and discards it; a bare name matches
+                    anything and binds it.</li>
+                <li><strong>An expression.</strong> A <code>match</code> produces a value, so it can sit on the
+                    right-hand side of a <code>let</code> or be a function's final line.</li>
+            </ul>
+
+            <pre data-lang="rust"><span class="keyword">enum</span> <span class="type">Status</span> {
+    Pending,
+    Active { since: <span class="type">u64</span> },
+    Error(<span class="type">String</span>),
+}
+
+<span class="keyword">fn</span> <span class="builtin">describe</span>(status: &amp;<span class="type">Status</span>) -&gt; <span class="type">String</span> {
+    <span class="keyword">match</span> status {
+        <span class="type">Status</span>::Pending =&gt; <span class="string">"waiting to start"</span>.to_string(),
+
+        <span class="comment">// Struct variants destructure by field name.</span>
+        <span class="type">Status</span>::Active { since } =&gt; <span class="builtin">format!</span>(<span class="string">"running since {since}"</span>),
+
+        <span class="comment">// A match guard: an extra `if` condition on the arm.</span>
+        <span class="comment">// Guards are checked in order, so put the specific case first.</span>
+        <span class="type">Status</span>::Error(msg) <span class="keyword">if</span> msg.is_empty() =&gt;
+            <span class="string">"unknown error"</span>.to_string(),
+
+        <span class="type">Status</span>::Error(msg) =&gt; <span class="builtin">format!</span>(<span class="string">"error: {msg}"</span>),
+    }
+}</pre>
+
+            <h3>Patterns worth knowing</h3>
+            <pre data-lang="rust"><span class="keyword">let</span> pair = (<span class="string">3</span>, <span class="string">-3</span>);
+
+<span class="keyword">match</span> pair {
+    <span class="comment">// Destructure a tuple, matching a literal in one position.</span>
+    (<span class="string">0</span>, y) =&gt; <span class="builtin">println!</span>(<span class="string">"first is zero, second is {y}"</span>),
+
+    <span class="comment">// Or-patterns: several alternatives in one arm.</span>
+    (<span class="string">1</span> | <span class="string">2</span>, _) =&gt; <span class="builtin">println!</span>(<span class="string">"first is one or two"</span>),
+
+    <span class="comment">// Ranges (inclusive only, in patterns).</span>
+    (n @ <span class="string">3</span>..=<span class="string">9</span>, _) =&gt; <span class="builtin">println!</span>(<span class="string">"first is {n}, between 3 and 9"</span>),
+    <span class="comment">//  ^ the @ binding captures the value AND tests the pattern</span>
+
+    <span class="comment">// A guard comparing two bound values.</span>
+    (x, y) <span class="keyword">if</span> x + y == <span class="string">0</span> =&gt; <span class="builtin">println!</span>(<span class="string">"they cancel out"</span>),
+
+    <span class="comment">// Catch-all. Required here, because the guard above is not</span>
+    <span class="comment">// something the compiler can prove exhaustive.</span>
+    _ =&gt; <span class="builtin">println!</span>(<span class="string">"something else"</span>),
+}
+
+<span class="comment">// Patterns work in `let` too, when they cannot fail.</span>
+<span class="keyword">struct</span> <span class="type">Point</span> { x: <span class="type">i32</span>, y: <span class="type">i32</span> }
+<span class="keyword">let</span> <span class="type">Point</span> { x, y } = <span class="type">Point</span> { x: <span class="string">1</span>, y: <span class="string">2</span> };
+<span class="builtin">println!</span>(<span class="string">"{x}, {y}"</span>);
+
+<span class="comment">// And in function parameters and closures.</span>
+<span class="keyword">let</span> distances: <span class="type">Vec</span>&lt;<span class="type">f64</span>&gt; = <span class="builtin">vec!</span>[(<span class="string">3.0</span>, <span class="string">4.0</span>)]
+    .iter()
+    .map(|(dx, dy)| (dx * dx + dy * dy).sqrt())
+    .collect();
+
+<span class="comment">// `matches!` is a compact boolean test built on the same machinery.</span>
+<span class="keyword">let</span> status = <span class="type">Status</span>::Pending;
+<span class="keyword">if</span> <span class="builtin">matches!</span>(status, <span class="type">Status</span>::Pending) {
+    <span class="builtin">println!</span>(<span class="string">"still pending"</span>);
+}</pre>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Let the
+                    exhaustiveness check work for you</div>
+                <p>
+                    It is tempting to end every <code>match</code> on an enum with <code>_ =&gt; {}</code>. Resist it.
+                    A wildcard silently absorbs any variant added later; listing the variants explicitly turns that
+                    future addition into a compile error that points at every place needing attention. Save
+                    <code>_</code> for genuinely open-ended values like integers and strings.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 7: ERROR CONTROL FLOW -->
+        <section id="error-flow">
+            <h2><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Control Flow for Errors</h2>
+            <p>
+                Rust has no exceptions. A function that can fail says so in its return type, and the caller must deal
+                with it — which makes error handling part of control flow rather than something layered on top.
+            </p>
+            <ul>
+                <li><code>Option&lt;T&gt;</code> is <code>Some(T)</code> or <code>None</code>: a value that may be
+                    absent. This is Rust's replacement for <code>null</code>.</li>
+                <li><code>Result&lt;T, E&gt;</code> is <code>Ok(T)</code> or <code>Err(E)</code>: an operation that
+                    may fail, carrying a reason when it does.</li>
+            </ul>
+            <p>
+                Both are ordinary enums, so everything in the previous section applies to them. What makes them
+                pleasant to use is the <code>?</code> operator:
+            </p>
+            <pre data-lang="rust"><span class="keyword">use</span> std::num::ParseIntError;
+
+<span class="comment">// The long way, spelled out.</span>
+<span class="keyword">fn</span> <span class="builtin">parse_verbose</span>(raw: &amp;<span class="type">str</span>) -&gt; <span class="type">Result</span>&lt;<span class="type">u16</span>, ParseIntError&gt; {
+    <span class="keyword">let</span> port = <span class="keyword">match</span> raw.parse::&lt;<span class="type">u16</span>&gt;() {
+        <span class="type">Ok</span>(value) =&gt; value,
+        <span class="type">Err</span>(e) =&gt; <span class="keyword">return</span> <span class="type">Err</span>(e), <span class="comment">// propagate</span>
+    };
+    <span class="type">Ok</span>(port)
+}
+
+<span class="comment">// The same thing with `?`: on Ok it unwraps, on Err it returns early.</span>
+<span class="keyword">fn</span> <span class="builtin">parse_port</span>(raw: &amp;<span class="type">str</span>) -&gt; <span class="type">Result</span>&lt;<span class="type">u16</span>, <span class="type">String</span>&gt; {
+    <span class="keyword">let</span> port: <span class="type">u16</span> = raw
+        .parse()
+        .map_err(|_| <span class="builtin">format!</span>(<span class="string">"'{raw}' is not a port number"</span>))?;
+
+    <span class="keyword">if</span> port == <span class="string">0</span> {
+        <span class="type">Err</span>(<span class="string">"port cannot be zero"</span>.to_string())
+    } <span class="keyword">else</span> {
+        <span class="type">Ok</span>(port)
+    }
+}</pre>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Handling the values</h3>
+                    <pre data-lang="rust"><span class="keyword">let</span> maybe: <span class="type">Option</span>&lt;<span class="type">i32</span>&gt; = <span class="type">Some</span>(<span class="string">5</span>);
+
+<span class="comment">// Supply a fallback</span>
+<span class="keyword">let</span> a = maybe.unwrap_or(<span class="string">0</span>);
+<span class="keyword">let</span> b = maybe.unwrap_or_else(|| expensive());
+<span class="keyword">let</span> c = maybe.unwrap_or_default();
+
+<span class="comment">// Transform without unwrapping</span>
+<span class="keyword">let</span> d = maybe.map(|n| n * <span class="string">2</span>);
+<span class="keyword">let</span> e = maybe.filter(|n| *n &gt; <span class="string">3</span>);
+
+<span class="comment">// Convert between the two</span>
+<span class="keyword">let</span> f: <span class="type">Result</span>&lt;<span class="type">i32</span>, &amp;<span class="type">str</span>&gt; =
+    maybe.ok_or(<span class="string">"was empty"</span>);</pre>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-ban" aria-hidden="true"></i> When to unwrap</h3>
+                    <p>
+                        <code>unwrap()</code> panics on <code>None</code> or <code>Err</code> and tells you nothing
+                        about why. <code>expect("…")</code> panics too, but with your message attached.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// Fine: tests, prototypes, and cases</span>
+<span class="comment">// you can prove cannot fail.</span>
+<span class="keyword">let</span> n: <span class="type">i32</span> = <span class="string">"42"</span>.parse().unwrap();
+
+<span class="comment">// Better everywhere else: say why</span>
+<span class="comment">// you believe it cannot fail.</span>
+<span class="keyword">let</span> config = load_config()
+    .expect(<span class="string">"config.toml must exist"</span>);
+
+<span class="comment">// Best in library code: hand the</span>
+<span class="comment">// decision back to the caller.</span>
+<span class="keyword">let</span> config = load_config()?;</pre>
+                </div>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Panics are for
+                    bugs, not for failures</div>
+                <p>
+                    The dividing line is worth internalising early. A file that is missing, a network that is down, or
+                    input that is malformed are <em>expected</em> conditions — return a <code>Result</code>. An index
+                    that is out of bounds or an invariant your own code violated is a <em>bug</em> — panicking is
+                    correct, because continuing would produce nonsense. <code>Result</code> for the world's problems,
+                    panic for yours.
+                </p>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION 8: ASYNC -->
+        <section id="async">
+            <h2><i class="fa-solid fa-clock" aria-hidden="true"></i> Asynchronous Control Flow</h2>
+            <p class="lead">
+                Everything so far runs straight through: a statement finishes before the next one starts. Async adds a
+                fourth kind of control flow to the three loops and the branches — the ability for a function to
+                <strong>pause in the middle</strong>, hand control back, and be resumed later exactly where it left
+                off.
+            </p>
+
+            <h3>The problem it solves</h3>
+            <p>
+                Most programs spend most of their time doing nothing. A web server waits on sockets; a scraper waits on
+                DNS and TLS; a batch job waits on a database. The traditional answer is one thread per job, and it
+                works well — until you want ten thousand of them, at which point the stacks and the operating system's
+                scheduling become the bottleneck rather than the work.
+            </p>
+            <p>
+                Async is the other answer: a small number of threads, each juggling many jobs, switching between them
+                at the exact points where they would otherwise sit idle.
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Threads (<code>std::thread</code>)</th>
+                            <th>Async tasks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cost of one</strong></td>
+                            <td>Its own stack, plus OS scheduling</td>
+                            <td>Roughly a struct — often a few hundred bytes, no OS involvement</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Switching</strong></td>
+                            <td>The kernel preempts whenever it likes</td>
+                            <td>Cooperative — only at an <code>.await</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best at</strong></td>
+                            <td>CPU-bound work, and a handful of long-lived jobs</td>
+                            <td>I/O-bound work, and thousands of concurrent waits</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Needs a library?</strong></td>
+                            <td>No — it is in <code>std</code></td>
+                            <td>Yes — <code>std</code> has no executor</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Blocking is</strong></td>
+                            <td>Normal and fine</td>
+                            <td>A bug — see below</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> The rule of
+                    thumb</div>
+                <p>
+                    If your program is <em>waiting</em>, async pays. If it is <em>computing</em>, threads pay — and
+                    <a href="https://docs.rs/rayon" target="_blank" rel="noopener">rayon</a> pays even better. A CLI
+                    tool that makes four HTTP calls does not need async at all; four blocking calls on four threads is
+                    simpler and just as fast. Async earns its complexity somewhere around "hundreds of concurrent
+                    connections".
+                </p>
+            </div>
+
+            <h3>Two keywords, and one surprise</h3>
+            <p>
+                <code class="keyword">async</code> marks a function as pausable. <code class="keyword">await</code>
+                marks the point where it may pause. The surprise is what <code>async fn</code> actually does when you
+                call it:
+            </p>
+            <pre data-lang="rust"><span class="comment">// An async fn does not return a String. It returns an anonymous type</span>
+<span class="comment">// implementing Future&lt;Output = Result&lt;String, Error&gt;&gt;.</span>
+<span class="keyword">async fn</span> <span class="builtin">fetch</span>(url: &amp;<span class="type">str</span>) -&gt; <span class="type">Result</span>&lt;<span class="type">String</span>, reqwest::Error&gt; {
+    reqwest::get(url).<span class="keyword">await</span>?.text().<span class="keyword">await</span>
+}
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() {
+    <span class="comment">// Calling it runs NONE of the body. No socket is opened, no DNS</span>
+    <span class="comment">// lookup happens. All this does is build a state machine and hand</span>
+    <span class="comment">// it to you as a value.</span>
+    <span class="keyword">let</span> future = fetch(<span class="string">"https://example.com"</span>);
+
+    <span class="comment">// `future` is dropped here. The request was never made, and the</span>
+    <span class="comment">// compiler warns you about exactly that.</span>
+}</pre>
+
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Futures are
+                    lazy — this is the big difference from other languages</div>
+                <p>
+                    A JavaScript <code>Promise</code>, a C# <code>Task</code> and a Python coroutine scheduled with
+                    <code>create_task</code> all begin running the moment they are created. A Rust
+                    <code>Future</code> does <strong>nothing at all</strong> until something polls it — normally by
+                    <code>.await</code>-ing it or handing it to the runtime.
+                </p>
+                <p>
+                    This is why the compiler emits <em>"unused implementer of <code>Future</code> that must be
+                    used"</em> with the note <em>"futures do nothing unless you <code>.await</code> or poll them"</em>.
+                    In most languages a forgotten <code>await</code> means the work still happens, just unordered. In
+                    Rust it means the work never happened.
+                </p>
+            </div>
+
+            <h3>You have to bring a runtime</h3>
+            <p>
+                <code>std</code> defines the <code>Future</code> trait and the <code>async</code>/<code>await</code>
+                syntax, and stops there. There is no executor in the standard library — the same deliberate split you
+                will find for <a href="httpreq.html">HTTP</a> and <a href="db.html">databases</a>. Two runtimes matter
+                in practice:
+            </p>
+            <ul>
+                <li><strong><code>tokio</code></strong> — the default choice by a wide margin. Nearly every async
+                    crate you will want (<code>reqwest</code>, <code>sqlx</code>, <code>axum</code>) assumes it.</li>
+                <li><strong><code>smol</code></strong> — small, explicit, and pleasant when you do not need the
+                    ecosystem.</li>
+            </ul>
+            <div class="callout danger">
+                <div class="callout-title"><i class="fa-solid fa-ban" aria-hidden="true"></i> Ignore tutorials that
+                    recommend <code>async-std</code></div>
+                <p>
+                    <code>async-std</code> was for years the main alternative to Tokio, and it appears throughout
+                    older blog posts and books. It was <strong>discontinued in 2025</strong> and now carries a
+                    RustSec advisory (RUSTSEC-2025-0052) marking it unmaintained. Its own maintainers
+                    recommend moving to <code>smol</code>; for ecosystem reach, use <code>tokio</code>.
+                </p>
+            </div>
+
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+tokio = { version = <span class="string">"1"</span>, features = [<span class="string">"macros"</span>, <span class="string">"rt-multi-thread"</span>, <span class="string">"time"</span>] }</pre>
+
+            <pre data-lang="rust"><span class="comment">// #[tokio::main] is a macro that rewrites this into an ordinary</span>
+<span class="comment">// synchronous main which starts a runtime and blocks on your async</span>
+<span class="comment">// body. It is the bridge from the normal world into the async one.</span>
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; {
+    <span class="keyword">let</span> body = fetch(<span class="string">"https://www.rust-lang.org"</span>).<span class="keyword">await</span>?;
+    <span class="builtin">println!</span>(<span class="string">"{} bytes"</span>, body.len());
+    <span class="type">Ok</span>(())
+}
+
+<span class="comment">// Roughly what it expands to:</span>
+<span class="comment">//   fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {</span>
+<span class="comment">//       tokio::runtime::Runtime::new()?.block_on(async { ... })</span>
+<span class="comment">//   }</span></pre>
+
+            <h3>Doing several things at once</h3>
+            <p>
+                Marking a function <code>async</code> does not make anything concurrent by itself. Concurrency comes
+                from how you combine futures — and getting this wrong is the most common async mistake there is.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="async-join"><i class="fa-solid fa-arrows-left-right"
+                            aria-hidden="true"></i>join</button>
+                    <button class="tab-btn" data-tab="async-spawn"><i class="fa-solid fa-code-fork"
+                            aria-hidden="true"></i>spawn</button>
+                    <button class="tab-btn" data-tab="async-select"><i class="fa-solid fa-forward-fast"
+                            aria-hidden="true"></i>select</button>
+                    <button class="tab-btn" data-tab="async-cancel"><i class="fa-solid fa-scissors"
+                            aria-hidden="true"></i>Cancellation</button>
+                </div>
+
+                <div id="async-join" class="tab-content active">
+                    <h3>Awaiting in a row is still sequential</h3>
+                    <p>
+                        <code>.await</code> means "wait here". Three awaits in a row wait three times, one after the
+                        other — exactly like blocking code, just without tying up the thread.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// THREE SECONDS if each request takes one. Each await must finish</span>
+<span class="comment">// before the next line is even reached. `async` bought nothing here.</span>
+<span class="keyword">let</span> a = fetch(url_a).<span class="keyword">await</span>?;
+<span class="keyword">let</span> b = fetch(url_b).<span class="keyword">await</span>?;
+<span class="keyword">let</span> c = fetch(url_c).<span class="keyword">await</span>?;
+
+<span class="comment">// ONE SECOND. join! polls all three futures on this one task,</span>
+<span class="comment">// advancing whichever is ready, and finishes when all are done.</span>
+<span class="keyword">let</span> (a, b, c) = tokio::join!(
+    fetch(url_a),
+    fetch(url_b),
+    fetch(url_c),
+);
+
+<span class="comment">// try_join! is the Result-aware version: it short-circuits and</span>
+<span class="comment">// returns the first Err instead of collecting three of them.</span>
+<span class="keyword">let</span> (a, b, c) = tokio::try_join!(
+    fetch(url_a),
+    fetch(url_b),
+    fetch(url_c),
+)?;</pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            The same trap wearing a loop</div>
+                        <p>
+                            <code>for url in &amp;urls { results.push(fetch(url).await?); }</code> is sequential too,
+                            however many URLs there are — and it is far easier to write by accident than the
+                            three-line version above. When the count is dynamic, use the bounded-concurrency pattern
+                            on the <a href="httpreq.html">HTTP page</a>, which keeps a fixed number of requests in
+                            flight rather than launching all of them at once.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="async-spawn" class="tab-content">
+                    <h3><code>spawn</code>: hand the task to the runtime</h3>
+                    <p>
+                        <code>join!</code> runs its futures on the <em>current</em> task — concurrent, but all on one
+                        thread. <code>tokio::spawn</code> gives the future to the runtime, which may run it on a
+                        different thread entirely. That is the difference between concurrency and parallelism.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// Starts running immediately, in the background. Unlike a bare</span>
+<span class="comment">// future, a spawned task does not need you to await it to progress.</span>
+<span class="keyword">let</span> handle = tokio::spawn(<span class="keyword">async move</span> {
+    fetch(&amp;url).<span class="keyword">await</span>
+});
+
+<span class="comment">// ... get on with something else here, genuinely at the same time ...</span>
+
+<span class="comment">// Two layers of failure, so two question marks:</span>
+<span class="comment">//   the outer ? is JoinError  — the task panicked or was aborted</span>
+<span class="comment">//   the inner ? is your error — the fetch itself failed</span>
+<span class="keyword">let</span> body = handle.<span class="keyword">await</span>??;
+
+<span class="comment">// Many tasks, collected as they finish, with a handle on each:</span>
+<span class="keyword">let mut</span> set = tokio::task::JoinSet::new();
+<span class="keyword">for</span> url <span class="keyword">in</span> urls {
+    set.spawn(<span class="keyword">async move</span> { fetch(&amp;url).<span class="keyword">await</span> });
+}
+<span class="keyword">while let</span> <span class="type">Some</span>(result) = set.join_next().<span class="keyword">await</span> {
+    <span class="keyword">match</span> result {
+        <span class="type">Ok</span>(<span class="type">Ok</span>(body)) =&gt; <span class="builtin">println!</span>(<span class="string">"{} bytes"</span>, body.len()),
+        <span class="type">Ok</span>(<span class="type">Err</span>(e))   =&gt; <span class="builtin">eprintln!</span>(<span class="string">"request failed: {e}"</span>),
+        <span class="type">Err</span>(e)       =&gt; <span class="builtin">eprintln!</span>(<span class="string">"task failed: {e}"</span>),
+    }
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Why
+                            <code>spawn</code> demands <code>Send + 'static</code></div>
+                        <p>
+                            The runtime may move the task to another thread, so everything it holds across an
+                            <code>.await</code> must be <code>Send</code>; and it may outlive the function that
+                            spawned it, so it cannot borrow local variables. That is why spawned blocks are almost
+                            always <code>async move</code>, and why shared state gets wrapped in
+                            <code>Arc</code> rather than passed by reference.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="async-select" class="tab-content">
+                    <h3><code>select!</code>: whichever finishes first</h3>
+                    <p>
+                        Where <code>join!</code> waits for everything, <code>select!</code> waits for the
+                        <em>first</em> branch to complete and drops the rest. It is how timeouts, shutdown signals and
+                        races are expressed.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> tokio::time::{sleep, Duration};
+
+tokio::select! {
+    result = fetch(url) =&gt; {
+        <span class="builtin">println!</span>(<span class="string">"finished first: {result:?}"</span>);
+    }
+    _ = sleep(Duration::from_secs(<span class="string">5</span>)) =&gt; {
+        <span class="builtin">println!</span>(<span class="string">"gave up waiting"</span>);
+    }
+    _ = shutdown_signal() =&gt; {
+        <span class="builtin">println!</span>(<span class="string">"asked to stop"</span>);
+    }
+}</pre>
+                    <p>That timeout pattern is common enough to have its own helper:</p>
+                    <pre data-lang="rust"><span class="keyword">use</span> tokio::time::{timeout, Duration};
+
+<span class="comment">// Three outcomes, and the type system makes you name all three.</span>
+<span class="keyword">match</span> timeout(Duration::from_secs(<span class="string">5</span>), fetch(url)).<span class="keyword">await</span> {
+    <span class="type">Ok</span>(<span class="type">Ok</span>(body))  =&gt; <span class="builtin">println!</span>(<span class="string">"{} bytes"</span>, body.len()),
+    <span class="type">Ok</span>(<span class="type">Err</span>(e))    =&gt; <span class="builtin">eprintln!</span>(<span class="string">"the request itself failed: {e}"</span>),
+    <span class="type">Err</span>(_elapsed) =&gt; <span class="builtin">eprintln!</span>(<span class="string">"the five seconds ran out"</span>),
+}</pre>
+                </div>
+
+                <div id="async-cancel" class="tab-content">
+                    <h3>Cancellation is just <code>drop</code></h3>
+                    <p>
+                        This is one of the genuinely elegant parts of the design, and one of the sharpest edges.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// A future you simply stop awaiting is a future that stops running.</span>
+<span class="comment">// select! cancels its losing branches by dropping them — there is no</span>
+<span class="comment">// cancellation protocol, no flag, no exception.</span>
+
+<span class="keyword">let</span> handle = tokio::spawn(long_running_job());
+
+<span class="comment">// Stops the task at its next .await point.</span>
+handle.abort();
+
+<span class="comment">// Awaiting an aborted task tells you it was cancelled.</span>
+<span class="keyword">match</span> handle.<span class="keyword">await</span> {
+    <span class="type">Err</span>(e) <span class="keyword">if</span> e.is_cancelled() =&gt; <span class="builtin">println!</span>(<span class="string">"aborted"</span>),
+    other =&gt; <span class="builtin">println!</span>(<span class="string">"{other:?}"</span>),
+}</pre>
+                    <div class="callout danger">
+                        <div class="callout-title"><i class="fa-solid fa-scissors" aria-hidden="true"></i> Nothing
+                            after the await point runs</div>
+                        <p>
+                            When a future is dropped, execution stops dead at its last <code>.await</code>. Any code
+                            <em>after</em> that await — including your tidy-up — never happens.
+                        </p>
+                        <pre data-lang="rust"><span class="keyword">async fn</span> <span class="builtin">risky</span>() {
+    <span class="keyword">let</span> lock = acquire().<span class="keyword">await</span>;
+    do_work().<span class="keyword">await</span>;   <span class="comment">// &lt;- if cancelled here…</span>
+    release(lock);      <span class="comment">// &lt;- …this line never runs</span>
+}</pre>
+                        <p>
+                            The fix is the same as everywhere else in Rust: put the cleanup in a
+                            <code>Drop</code> implementation, which <em>does</em> run when the future is dropped, and
+                            let ownership handle it. This is also why library authors talk about
+                            <strong>cancellation safety</strong> — whether a future can be dropped mid-flight and
+                            retried without losing data. It is documented per-method for anything used inside
+                            <code>select!</code>, and worth reading before you put a method there.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>The four rules that catch everyone</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Never block inside async.</strong> <code>std::thread::sleep</code>, a blocking database
+                    driver, or a long CPU loop will freeze an entire runtime worker thread and everything scheduled on
+                    it. Use <code>tokio::time::sleep</code> for delays, and hand genuinely blocking work to
+                    <code>tokio::task::spawn_blocking</code>, which has its own thread pool for exactly this. The
+                    <a href="db.html">Databases</a> page has the same warning for a reason.
+                </li>
+                <li>
+                    <strong>Do not hold a <code>std::sync::MutexGuard</code> across an <code>.await</code>.</strong>
+                    The guard is not <code>Send</code>, so the whole future stops being <code>Send</code>, so
+                    <code>tokio::spawn</code> rejects it with an error message that points at the guard. Either end
+                    the borrow before awaiting — often just an extra <code>{ }</code> block — or use
+                    <code>tokio::sync::Mutex</code>, which is designed to be held across yield points.
+                </li>
+                <li>
+                    <strong><code>Rc</code> and <code>RefCell</code> do not survive a spawn either.</strong> Same
+                    reason: not <code>Send</code>. Reach for <code>Arc</code>, and <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>
+                    when the shared thing also needs mutating.
+                </li>
+                <li>
+                    <strong>Async spreads.</strong> Only an <code>async fn</code> can <code>.await</code>, so making
+                    one function async tends to make its callers async, all the way up to <code>main</code>. This is
+                    the "function colouring" complaint you will see argued about online, and it is real. It is also
+                    the main reason to decide early whether a project is async rather than converting it later.
+                </li>
+            </ol>
+
+            <div class="callout">
+                <div class="callout-title"><i class="fa-solid fa-microchip" aria-hidden="true"></i> What
+                    <code>async</code> compiles into</div>
+                <p>
+                    The compiler rewrites an <code>async fn</code> body into a <strong>state machine</strong>: an enum
+                    whose variants are the stretches of code between <code>.await</code> points, with every local
+                    that has to survive a pause stored as a field. <code>.await</code> becomes "record which state I
+                    am in, and return control to the caller".
+                </p>
+                <p>
+                    That single fact explains most of async Rust's behaviour. Futures are plain values, so you can
+                    store them, pass them and drop them. There is no stack to unwind on cancellation, so dropping
+                    really does stop the work. And a task costs about what its largest set of live locals costs —
+                    which is why a runtime can hold hundreds of thousands of them.
+                </p>
+            </div>
+
+            <h3>Two conveniences worth knowing about</h3>
+            <ul>
+                <li>
+                    <strong><code>async fn</code> in traits</strong> — stable since Rust 1.75, so a trait can declare
+                    <code>async fn get(&amp;self) -&gt; Result&lt;String, Error&gt;</code> directly. One caveat: the
+                    returned future has no automatic <code>Send</code> bound, so for traits whose implementations get
+                    spawned across threads the <code>async-trait</code> crate — which boxes the future — is still
+                    widely used.
+                </li>
+                <li>
+                    <strong>Async closures</strong> — stable since Rust 1.85, alongside the
+                    <code>AsyncFn</code>, <code>AsyncFnMut</code> and <code>AsyncFnOnce</code> traits in the prelude.
+                    <code>async || { … }</code> can borrow from its captures inside the async body, which the old
+                    <code>|| async { … }</code> workaround could not.
+                </li>
+            </ul>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-signs-post" aria-hidden="true"></i> Where to see this
+                    in use</div>
+                <p>
+                    Async stops being abstract as soon as it is doing real work. The
+                    <a href="httpreq.html">HTTP page</a> uses it to run hundreds of requests with a bounded number in
+                    flight, and the <a href="db.html">Databases page</a> covers the async drivers and connection
+                    pools — including the blocking-inside-async trap from rule 1 above.
+                </p>
+            </div>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="index.html">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Previous</span>
+                    <span class="page-nav-title">Introduction to Rust</span>
+                </span>
+            </a>
+            <a href="iterators.html">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Next</span>
+                    <span class="page-nav-title">Collections &amp; Iterators</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>Try any snippet on this page without installing anything at
+            <a href="https://play.rust-lang.org/" target="_blank" rel="noopener">play.rust-lang.org</a>, or read the
+            chapters behind it in <a href="https://doc.rust-lang.org/book/" target="_blank" rel="noopener">The Rust
+                Programming Language</a>. Offline: <code>rustup doc --book</code>.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+
+</html>

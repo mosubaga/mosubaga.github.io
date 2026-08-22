@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>Rust Standard Library — Files, Paths and I/O</title>
+    <meta name="description"
+        content="Safe, cross-platform filesystem work in Rust: the Path and PathBuf types, buffered reading and writing, directory operations, and handling I/O errors properly.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Standard Library</span>
+            <h1>Files &amp; I/O in <span>Rust</span></h1>
+            <p>Safe, portable filesystem work with <code>std::fs</code>, <code>std::path</code> and
+                <code>std::io</code> — and the error handling that makes it trustworthy.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> On this page</h3>
+            <div class="kp">
+                <i class="fa-solid fa-signs-post" aria-hidden="true"></i>
+                <span>Why paths are their own type, and never plain <code>String</code>s.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-file-import" aria-hidden="true"></i>
+                <span>Reading whole files, and streaming ones too big to hold in memory.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-file-export" aria-hidden="true"></i>
+                <span>Writing, appending, buffering — and what actually reaches the disk.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                <span>Handling <code>io::Error</code> in a way that tells the user something useful.</span>
+            </div>
+        </div>
+
+        <!-- SECTION 1: PATHS -->
+        <section id="path-design">
+            <h2><i class="fa-solid fa-signs-post" aria-hidden="true"></i> Paths Are Not Strings</h2>
+            <p class="lead">
+                Most languages treat a filesystem path as a string. Rust does not, and the reason is that operating
+                systems disagree about what a filename even is.
+            </p>
+            <p>
+                On Unix, a filename is an arbitrary sequence of bytes — anything except a null byte or a slash — and
+                is <em>not</em> required to be valid UTF-8. On Windows, a filename is a sequence of 16-bit code units
+                that is usually, but not always, valid UTF-16; unpaired surrogates are legal on disk. Neither maps
+                cleanly onto Rust's <code>String</code>, which guarantees valid UTF-8. So the standard library
+                provides a parallel family of types:
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Purpose</th>
+                            <th>Borrowed (unsized)</th>
+                            <th>Owned (heap)</th>
+                            <th>Encoding guarantee</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Text</strong></td>
+                            <td><code>str</code></td>
+                            <td><code>String</code></td>
+                            <td>Always valid UTF-8</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OS string</strong></td>
+                            <td><code>OsStr</code></td>
+                            <td><code>OsString</code></td>
+                            <td>Whatever the platform permits</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Filesystem path</strong></td>
+                            <td><code>Path</code></td>
+                            <td><code>PathBuf</code></td>
+                            <td>An <code>OsStr</code>, plus path-aware methods</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                The pairing mirrors <code>str</code>/<code>String</code> exactly: <code>Path</code> is a borrowed view
+                and <code>PathBuf</code> is the growable owned form. In practice you take <code>&amp;Path</code> (or
+                better, <code>impl AsRef&lt;Path&gt;</code>) as a parameter and return <code>PathBuf</code>.
+            </p>
+
+            <pre data-lang="rust"><span class="keyword">use</span> std::path::{Path, PathBuf};
+
+<span class="keyword">let</span> path = Path::new(<span class="string">"projects/rust/readme.md"</span>);
+
+<span class="comment">// Inspecting the parts — each returns an Option, because not every</span>
+<span class="comment">// path has a parent, a file name, or an extension.</span>
+<span class="builtin">assert_eq!</span>(path.parent(),         <span class="type">Some</span>(Path::new(<span class="string">"projects/rust"</span>)));
+<span class="builtin">assert_eq!</span>(path.file_name(),      <span class="type">Some</span>(<span class="string">"readme.md"</span>.as_ref()));
+<span class="builtin">assert_eq!</span>(path.file_stem(),      <span class="type">Some</span>(<span class="string">"readme"</span>.as_ref()));
+<span class="builtin">assert_eq!</span>(path.extension(),      <span class="type">Some</span>(<span class="string">"md"</span>.as_ref()));
+
+<span class="comment">// Building paths: join() inserts the platform's separator for you.</span>
+<span class="comment">// Never concatenate path strings by hand — that is how a program</span>
+<span class="comment">// works on your machine and breaks on someone else's.</span>
+<span class="keyword">let mut</span> target = PathBuf::from(<span class="string">"output"</span>);
+target.push(<span class="string">"2026"</span>);
+target.push(<span class="string">"report.csv"</span>);
+<span class="comment">// or, as one expression:</span>
+<span class="keyword">let</span> target = Path::new(<span class="string">"output"</span>).join(<span class="string">"2026"</span>).join(<span class="string">"report.csv"</span>);
+
+<span class="comment">// Queries that touch the filesystem (and so can be wrong a moment later)</span>
+<span class="keyword">let</span> exists = path.exists();
+<span class="keyword">let</span> is_file = path.is_file();
+
+<span class="comment">// Printing: a path may not be valid UTF-8, so it does not implement</span>
+<span class="comment">// Display directly. `display()` gives a lossy but printable view.</span>
+<span class="builtin">println!</span>(<span class="string">"{}"</span>, path.display());</pre>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Accept
+                    <code>AsRef&lt;Path&gt;</code> in your own functions</div>
+                <p>
+                    Every <code>std::fs</code> function is generic over <code>AsRef&lt;Path&gt;</code>, which is why
+                    you can pass a <code>&amp;str</code>, a <code>String</code>, a <code>&amp;Path</code> or a
+                    <code>PathBuf</code> interchangeably. Do the same in your own code and callers never have to
+                    convert:
+                </p>
+                <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">load</span>&lt;P: <span class="type">AsRef</span>&lt;Path&gt;&gt;(path: P) -&gt; std::io::Result&lt;<span class="type">String</span>&gt; {
+    std::fs::read_to_string(path)
+}
+
+load(<span class="string">"config.toml"</span>)?;                     <span class="comment">// &amp;str</span>
+load(<span class="type">String</span>::from(<span class="string">"config.toml"</span>))?;       <span class="comment">// String</span>
+load(Path::new(<span class="string">"config.toml"</span>))?;          <span class="comment">// &amp;Path</span></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 2: READING -->
+        <section id="reading-files">
+            <h2><i class="fa-solid fa-file-import" aria-hidden="true"></i> Reading Files</h2>
+            <p>
+                The right approach depends entirely on one question: do you know the file is small?
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="bulk-read"><i class="fa-solid fa-box-archive"
+                            aria-hidden="true"></i>Whole file</button>
+                    <button class="tab-btn" data-tab="buffered-read"><i class="fa-solid fa-water"
+                            aria-hidden="true"></i>Line by line</button>
+                    <button class="tab-btn" data-tab="bytes-read"><i class="fa-solid fa-microchip"
+                            aria-hidden="true"></i>Raw bytes</button>
+                    <button class="tab-btn" data-tab="stdin-read"><i class="fa-solid fa-terminal"
+                            aria-hidden="true"></i>Standard input</button>
+                </div>
+
+                <div id="bulk-read" class="tab-content active">
+                    <h3>Read it all into memory</h3>
+                    <p>
+                        For a config file, a template or a small data file, one call does everything: open, read to
+                        the end, validate the UTF-8, and close.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::fs;
+
+<span class="keyword">fn</span> <span class="builtin">read_config</span>() -&gt; std::io::Result&lt;<span class="type">String</span>&gt; {
+    <span class="comment">// `?` propagates a missing file, a permission error, or invalid UTF-8.</span>
+    <span class="keyword">let</span> contents = fs::read_to_string(<span class="string">"config.toml"</span>)?;
+    <span class="type">Ok</span>(contents)
+}
+
+<span class="comment">// The file is closed automatically when the internal File handle is</span>
+<span class="comment">// dropped at the end of read_to_string. There is nothing to remember</span>
+<span class="comment">// to close, and no `finally` block to get wrong.</span></pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            Know the size before you do this</div>
+                        <p>
+                            <code>read_to_string</code> allocates enough memory to hold the entire file. On a
+                            multi-gigabyte log, or on any file whose size is chosen by someone else, that is a
+                            straightforward way to have your process killed. If the size is not bounded by something
+                            you control, use the streaming approach in the next tab.
+                        </p>
+                    </div>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Files
+                            known at compile time</div>
+                        <p>
+                            For data that ships <em>with</em> the binary — a default config, a lookup table, an SQL
+                            schema — <code>include_str!("default.toml")</code> embeds the file's contents as a
+                            <code>&amp;'static str</code> at compile time. No I/O at runtime, and no way for the file
+                            to go missing. <code>include_bytes!</code> does the same for binary data.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="buffered-read" class="tab-content">
+                    <h3>Stream it with <code>BufReader</code></h3>
+                    <p>
+                        A bare <code>File</code> is unbuffered: every small read is a system call, and system calls
+                        are expensive. Wrapping it in a <code>BufReader</code> reads a block at a time (8 KiB by
+                        default) and serves your reads from that buffer.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::fs::File;
+<span class="keyword">use</span> std::io::{BufRead, BufReader};
+<span class="keyword">use</span> std::path::Path;
+
+<span class="keyword">fn</span> <span class="builtin">count_matching</span>(path: &amp;Path, needle: &amp;<span class="type">str</span>) -&gt; std::io::Result&lt;<span class="type">usize</span>&gt; {
+    <span class="keyword">let</span> file = File::open(path)?;
+    <span class="keyword">let</span> reader = BufReader::new(file);
+    <span class="keyword">let mut</span> hits = <span class="string">0</span>;
+
+    <span class="comment">// lines() yields io::Result&lt;String&gt; — one allocation per line, and</span>
+    <span class="comment">// the trailing \n (or \r\n) is stripped for you.</span>
+    <span class="keyword">for</span> line <span class="keyword">in</span> reader.lines() {
+        <span class="keyword">let</span> line = line?;     <span class="comment">// an I/O error mid-file is still possible</span>
+        <span class="keyword">if</span> line.contains(needle) {
+            hits += <span class="string">1</span>;
+        }
+    }
+
+    <span class="type">Ok</span>(hits)
+}</pre>
+                    <p>
+                        Because <code>lines()</code> is an iterator, everything from the
+                        <a href="iterators.html">Collections &amp; Iterators</a> page applies — memory stays flat no
+                        matter how large the file is:
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> total: <span class="type">f64</span> = BufReader::new(File::open(path)?)
+    .lines()
+    .filter_map(|line| line.ok())
+    .filter(|line| !line.starts_with(<span class="string">'#'</span>))
+    .filter_map(|line| line.trim().parse::&lt;<span class="type">f64</span>&gt;().ok())
+    .sum();</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Reuse one
+                            buffer for the hottest loops</div>
+                        <p>
+                            <code>lines()</code> allocates a fresh <code>String</code> per line. When that shows up in
+                            a profile, switch to <code>reader.read_line(&amp;mut buf)</code> with a single
+                            <code>String</code> you <code>clear()</code> each time — the same trick as reusing a
+                            <code>StringRecord</code> on the <a href="db.html">CSV</a> page.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="bytes-read" class="tab-content">
+                    <h3>When it is not text</h3>
+                    <p>
+                        Images, archives and binary formats are just bytes, and forcing them through a UTF-8 check
+                        would fail. Use the <code>Vec&lt;u8&gt;</code> variants.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::fs::File;
+<span class="keyword">use</span> std::io::{BufReader, Read};
+
+<span class="comment">// Whole file as bytes — the binary counterpart of read_to_string.</span>
+<span class="keyword">let</span> data: <span class="type">Vec</span>&lt;<span class="type">u8</span>&gt; = std::fs::read(<span class="string">"logo.png"</span>)?;
+
+<span class="comment">// A fixed-size header, without loading the rest.</span>
+<span class="keyword">let mut</span> reader = BufReader::new(File::open(<span class="string">"logo.png"</span>)?);
+<span class="keyword">let mut</span> magic = [<span class="string">0u8</span>; <span class="string">8</span>];
+reader.read_exact(&amp;<span class="keyword">mut</span> magic)?;   <span class="comment">// errors if the file is shorter</span>
+
+<span class="keyword">if</span> &amp;magic == <span class="string">b"\x89PNG\r\n\x1a\n"</span> {
+    <span class="builtin">println!</span>(<span class="string">"this really is a PNG"</span>);
+}
+
+<span class="comment">// Streaming in fixed-size chunks, for hashing or copying.</span>
+<span class="keyword">let mut</span> buffer = [<span class="string">0u8</span>; <span class="string">8192</span>];
+<span class="keyword">loop</span> {
+    <span class="keyword">let</span> n = reader.read(&amp;<span class="keyword">mut</span> buffer)?;
+    <span class="keyword">if</span> n == <span class="string">0</span> {
+        <span class="keyword">break</span>; <span class="comment">// 0 bytes read means end of file</span>
+    }
+    process(&amp;buffer[..n]); <span class="comment">// only the first n bytes are valid</span>
+}</pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <code>read</code> may return fewer bytes than you asked for</div>
+                        <p>
+                            A short read is not an error — it is normal, especially on pipes and sockets. Always use
+                            the returned count to slice the buffer, and use <code>read_exact</code> when you genuinely
+                            need a specific number of bytes.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="stdin-read" class="tab-content">
+                    <h3>Reading from standard input</h3>
+                    <p>
+                        A Unix-style tool should read a file when given one and standard input when not. Rust makes
+                        that natural, because <code>Read</code> is a trait rather than a concrete type.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::io::{<span class="keyword">self</span>, BufRead, BufReader, Read};
+<span class="keyword">use</span> std::fs::File;
+
+<span class="comment">// Return a boxed reader so the caller does not care which it got.</span>
+<span class="keyword">fn</span> <span class="builtin">open_input</span>(path: <span class="type">Option</span>&lt;&amp;<span class="type">str</span>&gt;) -&gt; io::Result&lt;<span class="type">Box</span>&lt;<span class="keyword">dyn</span> BufRead&gt;&gt; {
+    <span class="keyword">match</span> path {
+        <span class="type">Some</span>(<span class="string">"-"</span>) | <span class="type">None</span> =&gt; <span class="type">Ok</span>(<span class="type">Box</span>::new(BufReader::new(io::stdin()))),
+        <span class="type">Some</span>(p)          =&gt; <span class="type">Ok</span>(<span class="type">Box</span>::new(BufReader::new(File::open(p)?))),
+    }
+}
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; io::Result&lt;()&gt; {
+    <span class="comment">// args().nth(1) is the first argument; nth(0) is the program name.</span>
+    <span class="keyword">let</span> arg = std::env::args().nth(<span class="string">1</span>);
+    <span class="keyword">let</span> reader = open_input(arg.as_deref())?;
+
+    <span class="keyword">for</span> line <span class="keyword">in</span> reader.lines() {
+        <span class="builtin">println!</span>(<span class="string">"{}"</span>, line?.to_uppercase());
+    }
+    <span class="type">Ok</span>(())
+}</pre>
+                    <p>
+                        Now <code>cargo run -- notes.txt</code> and <code>cat notes.txt | cargo run</code> both work,
+                        and the body of the program never had to know the difference.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: WRITING -->
+        <section id="writing-files">
+            <h2><i class="fa-solid fa-file-export" aria-hidden="true"></i> Writing Files</h2>
+            <p>
+                <code>File::create</code> opens a file write-only, creating it if needed and
+                <strong>truncating it to zero bytes if it already exists</strong>. That last part surprises people, so
+                say it out loud: <code>File::create</code> on an existing file destroys its contents. When you need
+                anything else, use <code>OpenOptions</code>.
+            </p>
+
+            <pre data-lang="rust"><span class="keyword">use</span> std::fs::{<span class="keyword">self</span>, File, OpenOptions};
+<span class="keyword">use</span> std::io::{BufWriter, Write};
+
+<span class="comment">// The one-liner: create (or truncate) and write, all at once.</span>
+fs::write(<span class="string">"greeting.txt"</span>, <span class="string">"Hello, world!\n"</span>)?;
+
+<span class="comment">// Appending, with OpenOptions' builder API.</span>
+<span class="keyword">fn</span> <span class="builtin">append_log</span>(message: &amp;<span class="type">str</span>) -&gt; std::io::Result&lt;()&gt; {
+    <span class="keyword">let mut</span> file = OpenOptions::new()
+        .create(<span class="keyword">true</span>)   <span class="comment">// make it if it does not exist</span>
+        .append(<span class="keyword">true</span>)   <span class="comment">// every write goes to the end (implies .write(true))</span>
+        .open(<span class="string">"system.log"</span>)?;
+
+    <span class="builtin">writeln!</span>(file, <span class="string">"{message}"</span>)?; <span class="comment">// like println!, but to a writer</span>
+    <span class="type">Ok</span>(())
+}</pre>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><code>OpenOptions</code> flag</th>
+                            <th>Effect</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>.read(true)</code></td>
+                            <td>Allow reading from the handle.</td>
+                        </tr>
+                        <tr>
+                            <td><code>.write(true)</code></td>
+                            <td>Allow writing, starting at the beginning.</td>
+                        </tr>
+                        <tr>
+                            <td><code>.append(true)</code></td>
+                            <td>Every write goes to the end, regardless of seeking. Implies <code>write</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>.truncate(true)</code></td>
+                            <td>Empty the file on open. Requires <code>write</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>.create(true)</code></td>
+                            <td>Create it if absent, open it if present.</td>
+                        </tr>
+                        <tr>
+                            <td><code>.create_new(true)</code></td>
+                            <td>Create it, and <strong>fail if it already exists</strong>. Atomic, so it is the safe
+                                way to claim a lock file or avoid clobbering someone else's output.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Buffering, flushing, and what "saved" means</h3>
+            <p>
+                Writing many small pieces to a bare <code>File</code> means one system call each. Wrap it in a
+                <code>BufWriter</code> and they are batched. But buffering introduces a question that matters:
+                <em>when is the data actually safe?</em>
+            </p>
+            <pre data-lang="rust"><span class="keyword">use</span> std::fs::File;
+<span class="keyword">use</span> std::io::{BufWriter, Write};
+
+<span class="keyword">fn</span> <span class="builtin">write_report</span>(rows: &amp;[(<span class="type">String</span>, <span class="type">u32</span>)]) -&gt; std::io::Result&lt;()&gt; {
+    <span class="keyword">let</span> file = File::create(<span class="string">"report.txt"</span>)?;
+    <span class="keyword">let mut</span> out = BufWriter::new(file);
+
+    <span class="keyword">for</span> (name, score) <span class="keyword">in</span> rows {
+        <span class="builtin">writeln!</span>(out, <span class="string">"{name}\t{score}"</span>)?;   <span class="comment">// into the buffer, usually no syscall</span>
+    }
+
+    <span class="comment">// Flush EXPLICITLY. BufWriter also flushes when dropped, but a drop</span>
+    <span class="comment">// cannot return an error — so a disk-full failure at the very end</span>
+    <span class="comment">// would be silently discarded. Calling flush() surfaces it here.</span>
+    out.flush()?;
+    <span class="type">Ok</span>(())
+}</pre>
+
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-hard-drive" aria-hidden="true"></i> <code>flush</code>
+                    is not <code>fsync</code></div>
+                <p>
+                    <code>flush()</code> pushes your program's user-space buffer into the operating system. It does
+                    <strong>not</strong> guarantee the bytes reached the physical disk — the OS still has its own page
+                    cache, and a power cut can lose them. (On a bare <code>File</code>, which has no user-space
+                    buffer, <code>flush()</code> does nothing at all.) When durability genuinely matters, call
+                    <code>file.sync_all()</code>, which asks the operating system to commit the data and metadata to
+                    storage before returning.
+                </p>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Writing a file
+                    without ever leaving it half-written</div>
+                <p>
+                    If your program dies mid-write, a reader may find a truncated file. The standard fix is
+                    write-then-rename: on the same filesystem, a rename is atomic, so a reader sees either the old
+                    file or the complete new one, never something in between. Replacing an existing file with
+                    <code>std::fs::rename</code> is platform-specific, though: Unix replaces the destination, while
+                    Windows fails if the destination already exists.
+                </p>
+                <pre data-lang="rust"><span class="keyword">use</span> std::fs;
+<span class="keyword">use</span> std::io::Write;
+
+<span class="keyword">fn</span> <span class="builtin">save_atomically</span>(path: &amp;<span class="type">str</span>, contents: &amp;<span class="type">str</span>) -&gt; std::io::Result&lt;()&gt; {
+    <span class="keyword">let</span> temp = <span class="builtin">format!</span>(<span class="string">"{path}.tmp"</span>);
+
+    {
+        <span class="keyword">let mut</span> file = fs::File::create(&amp;temp)?;
+        file.write_all(contents.as_bytes())?;
+        file.sync_all()?;   <span class="comment">// data is on disk before we swap it in</span>
+    }                       <span class="comment">// file closed here</span>
+
+    fs::rename(&amp;temp, path) <span class="comment">// atomic on the same filesystem; see Windows caveat above</span>
+}</pre>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DIRECTORIES -->
+        <section id="directory-manipulation">
+            <h2><i class="fa-solid fa-folder-tree" aria-hidden="true"></i> Directories and Metadata</h2>
+            <p>
+                <code>std::fs</code> wraps the platform's directory system calls behind one portable API.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-list-ul" aria-hidden="true"></i> Listing a directory</h3>
+                    <p>
+                        <code>fs::read_dir</code> returns an iterator of <code>io::Result&lt;DirEntry&gt;</code> — the
+                        inner <code>Result</code> is there because a single entry can fail even after the directory
+                        opened successfully. The <code>.</code> and <code>..</code> entries are never yielded.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::fs;
+
+<span class="keyword">fn</span> <span class="builtin">list_rust_files</span>() -&gt; std::io::Result&lt;()&gt; {
+    <span class="keyword">for</span> entry <span class="keyword">in</span> fs::read_dir(<span class="string">"src"</span>)? {
+        <span class="keyword">let</span> entry = entry?;
+        <span class="keyword">let</span> path = entry.path();
+
+        <span class="comment">// file_type() can avoid a second stat() call on platforms that expose it</span>
+        <span class="keyword">if</span> entry.file_type()?.is_file()
+            &amp;&amp; path.extension() == <span class="type">Some</span>(<span class="string">"rs"</span>.as_ref())
+        {
+            <span class="builtin">println!</span>(<span class="string">"{}"</span>, path.display());
+        }
+    }
+    <span class="type">Ok</span>(())
+}</pre>
+                    <p>
+                        <code>read_dir</code> is <strong>not</strong> recursive and the order is unspecified. For a
+                        recursive walk, sort the entries yourself or use the <code>walkdir</code> crate, which also
+                        handles symlink loops and depth limits.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fa-solid fa-gears" aria-hidden="true"></i> Common operations</h3>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::fs;
+
+<span class="keyword">fn</span> <span class="builtin">housekeeping</span>() -&gt; std::io::Result&lt;()&gt; {
+    <span class="comment">// Create a directory and any missing parents.</span>
+    <span class="comment">// Unlike create_dir, this is not an error if it exists.</span>
+    fs::create_dir_all(<span class="string">"backup/logs"</span>)?;
+
+    <span class="comment">// Copy a file; returns the number of bytes copied.</span>
+    <span class="keyword">let</span> bytes = fs::copy(<span class="string">"system.log"</span>, <span class="string">"backup/logs/system.log"</span>)?;
+    <span class="builtin">println!</span>(<span class="string">"copied {bytes} bytes"</span>);
+
+    <span class="comment">// Rename, or move. Atomic within one filesystem; across</span>
+    <span class="comment">// filesystems it fails, and you must copy then delete.</span>
+    fs::rename(<span class="string">"draft.txt"</span>, <span class="string">"backup/final.txt"</span>)?;
+
+    <span class="comment">// Delete a single file…</span>
+    fs::remove_file(<span class="string">"system.log"</span>)?;
+
+    <span class="comment">// …an empty directory…</span>
+    fs::remove_dir(<span class="string">"empty_folder"</span>)?;
+
+    <span class="comment">// …or a directory and everything inside it. No confirmation,</span>
+    <span class="comment">// no undo. Be certain the path is what you think it is.</span>
+    fs::remove_dir_all(<span class="string">"backup/old"</span>)?;
+
+    <span class="type">Ok</span>(())
+}</pre>
+                </div>
+            </div>
+
+            <h3>Metadata</h3>
+            <pre data-lang="rust"><span class="keyword">use</span> std::fs;
+
+<span class="keyword">let</span> meta = fs::metadata(<span class="string">"report.txt"</span>)?;   <span class="comment">// follows symlinks</span>
+
+<span class="builtin">println!</span>(<span class="string">"size:      {} bytes"</span>, meta.len());
+<span class="builtin">println!</span>(<span class="string">"directory: {}"</span>, meta.is_dir());
+<span class="builtin">println!</span>(<span class="string">"read-only: {}"</span>, meta.permissions().readonly());
+
+<span class="comment">// Timestamps are Option-like: not every platform records every one.</span>
+<span class="keyword">if let</span> <span class="type">Ok</span>(modified) = meta.modified() {
+    <span class="builtin">println!</span>(<span class="string">"modified:  {modified:?}"</span>);
+}
+
+<span class="comment">// symlink_metadata describes the link itself rather than its target.</span>
+<span class="keyword">let</span> link_meta = fs::symlink_metadata(<span class="string">"shortcut"</span>)?;
+<span class="builtin">println!</span>(<span class="string">"is a symlink: {}"</span>, link_meta.file_type().is_symlink());</pre>
+        </section>
+
+        <!-- SECTION 5: ERRORS -->
+        <section id="io-errors">
+            <h2><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Handling I/O Errors Well</h2>
+            <p>
+                Every fallible operation here returns <code>std::io::Result&lt;T&gt;</code>, which is just
+                <code>Result&lt;T, std::io::Error&gt;</code>. Propagating it with <code>?</code> is the right default —
+                but the error carries a <code>kind()</code>, and using it is what separates a useful program from one
+                that only says "error".
+            </p>
+            <pre data-lang="rust"><span class="keyword">use</span> std::fs::File;
+<span class="keyword">use</span> std::io::{<span class="keyword">self</span>, ErrorKind};
+
+<span class="keyword">fn</span> <span class="builtin">open_or_create</span>(path: &amp;<span class="type">str</span>) -&gt; io::Result&lt;File&gt; {
+    <span class="keyword">match</span> File::open(path) {
+        <span class="type">Ok</span>(file) =&gt; <span class="type">Ok</span>(file),
+
+        <span class="type">Err</span>(e) =&gt; <span class="keyword">match</span> e.kind() {
+            <span class="comment">// Absent is fine — make it.</span>
+            ErrorKind::NotFound =&gt; File::create(path),
+
+            <span class="comment">// Present but unreadable is worth a clearer message.</span>
+            ErrorKind::PermissionDenied =&gt; <span class="type">Err</span>(io::Error::new(
+                ErrorKind::PermissionDenied,
+                <span class="builtin">format!</span>(<span class="string">"cannot read {path}: check the file's permissions"</span>),
+            )),
+
+            <span class="comment">// Anything else: pass it along untouched.</span>
+            _ =&gt; <span class="type">Err</span>(e),
+        },
+    }
+}</pre>
+
+            <div class="callout danger">
+                <div class="callout-title"><i class="fa-solid fa-stopwatch" aria-hidden="true"></i> Do not check, then
+                    act</div>
+                <p>
+                    <code>if path.exists() { File::open(path) }</code> looks careful but is a race: the file can be
+                    deleted, created or replaced between the two calls. This is the classic
+                    <strong>time-of-check to time-of-use</strong> bug, and on a shared directory it is a security
+                    problem, not just a flaky one. Just perform the operation and handle its error — the operating
+                    system does the check and the action together, atomically.
+                </p>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i> Say
+                    <em>which</em> file failed</div>
+                <p>
+                    An <code>io::Error</code> knows the reason but not the path, so a bare propagation gives the user
+                    "No such file or directory" with no clue which one. Add context at the point where you still know
+                    it — the <code>anyhow</code> crate makes this a one-liner:
+                </p>
+                <pre data-lang="rust"><span class="keyword">use</span> anyhow::{Context, Result};
+
+<span class="keyword">fn</span> <span class="builtin">load_settings</span>(path: &amp;<span class="type">str</span>) -&gt; Result&lt;<span class="type">String</span>&gt; {
+    std::fs::read_to_string(path)
+        .with_context(|| <span class="builtin">format!</span>(<span class="string">"failed to read settings from {path}"</span>))
+}
+
+<span class="comment">// The user now sees:</span>
+<span class="comment">//   Error: failed to read settings from /etc/app/settings.toml</span>
+<span class="comment">//   Caused by: No such file or directory (os error 2)</span></pre>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <code>main</code> can return a <code>Result</code></div>
+                <p>
+                    Writing <code>fn main() -&gt; std::io::Result&lt;()&gt;</code> lets you use <code>?</code> at the
+                    top level. On an <code>Err</code>, Rust prints the error's <code>Debug</code> form to standard
+                    error and exits with a non-zero status — exactly what a shell script calling your tool expects.
+                </p>
+            </div>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="iterators.html">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Previous</span>
+                    <span class="page-nav-title">Collections &amp; Iterators</span>
+                </span>
+            </a>
+            <a href="topic.html">
+                <i class="fa-solid fa-code" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Next</span>
+                    <span class="page-nav-title">JSON &amp; Text</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>Full API details for everything on this page:
+            <a href="https://doc.rust-lang.org/std/fs/" target="_blank" rel="noopener">std::fs</a>,
+            <a href="https://doc.rust-lang.org/std/io/" target="_blank" rel="noopener">std::io</a> and
+            <a href="https://doc.rust-lang.org/std/path/" target="_blank" rel="noopener">std::path</a>.
+            Offline: <code>rustup doc --std</code>.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+
+</html>

@@ -29,7 +29,7 @@
     <h3>Rules for Packages:</h3>
     <ul>
         <li><strong>Main Package:</strong> The <code>main</code> package is special and indicates that the compiler should produce an executable program.</li>
-        <li><strong>Visibility (Exporting):</strong> Identifiers starting with an <strong>uppercase letter</strong> are exported (public); those starting with a lowercase letter are unexported (private).</li>
+        <li><strong>Visibility (Exporting):</strong> Identifiers starting with an <strong>uppercase letter</strong> are exported; those starting with a lowercase letter are unexported and visible only within the same package.</li>
         <li><strong>Naming:</strong> By convention, package names match their directory name and should be short, lowercase, single words.</li>
     </ul>
 
@@ -41,7 +41,7 @@ func Add(a, b int) int {
     return a + b
 }
 
-// subtract is private to this package
+// subtract is unexported and only visible inside this package
 func subtract(a, b int) int {
     return a - b
 }</code></pre>
@@ -60,7 +60,8 @@ func subtract(a, b int) int {
     <h3>Directives in go.mod:</h3>
     <ul>
         <li><code>module</code>: Declares the module path.</li>
-        <li><code>go</code>: Specifies the minimum Go version required for the module.</li>
+        <li><code>go</code>: Sets the language version and, since Go 1.21, the minimum Go toolchain version required for the module.</li>
+        <li><code>toolchain</code>: Suggests a Go toolchain to use when working in the module directly.</li>
         <li><code>require</code>: Lists specific versions of dependencies.</li>
         <li><code>replace</code>: Overrides a dependency path, often used for local development.</li>
         <li><code>exclude</code>: Prevents specific versions of a module from being used.</li>
@@ -69,19 +70,21 @@ func subtract(a, b int) int {
     <div class="file-label">go.mod</div>
 <pre><code class="language-plaintext">module github.com/username/myproject // The module path
 
-go 1.26 // Minimum Go language version
+go 1.26.0 // Minimum Go version required by this module
+
+toolchain go1.27.0 // Suggested toolchain for direct development
 
 require (
     github.com/google/uuid v1.6.0 // Direct dependency
-    golang.org/x/text v0.14.0 // Direct dependency
-    github.com/mattn/go-sqlite3 v1.14.17 // indirect
+    golang.org/x/text v0.40.0 // Direct dependency
+    github.com/mattn/go-sqlite3 v1.14.49 // indirect
 )
 
 // The replace directive points a dependency to a local folder
 replace github.com/username/othermodule =&gt; ../local-version</code></pre>
 
     <div class="note">
-        <strong>Security Tip:</strong> Alongside <code>go.mod</code>, Go maintains a <code>go.sum</code> file. It contains cryptographic checksums to ensure that your dependencies haven't been tampered with and that every developer gets the exact same code.
+        <strong>Security Tip:</strong> Alongside <code>go.mod</code>, Go maintains a <code>go.sum</code> file. It contains cryptographic checksums to verify downloaded module content and help every developer build from the same selected module versions.
     </div>
 
     <h2>4. Common Module Commands</h2>
@@ -94,7 +97,7 @@ replace github.com/username/othermodule =&gt; ../local-version</code></pre>
     </ul>
 
     <h2>5. Practical Code Example: Using Internal Packages</h2>
-    <p>When you have code that should not be visible to external users of your module, place it in an <code>internal/</code> directory. The Go compiler forbids other modules from importing packages within an internal directory.</p>
+    <p>When you have code that should not be imported widely, place it in an <code>internal/</code> directory. The Go compiler allows imports of an internal package only from code within the parent tree of that <code>internal</code> directory.</p>
 
     <h3>Project Structure:</h3>
 <pre><code class="language-plaintext">myproject/

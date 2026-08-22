@@ -21,11 +21,11 @@
 
     <h1>Network and Web Services in Go</h1>
 
-    <p>Go is an ideal language for building massively scalable backend systems and RESTful APIs. The standard library package <code>net/http</code> provides the foundational layer for writing both web servers and clients with a focus on simplicity and reliability.</p>
+    <p>Go is widely used for backend systems and RESTful APIs. The standard library package <code>net/http</code> provides the foundational layer for writing both web servers and clients with a focus on simplicity and reliability.</p>
 
     <!-- SECTION 1: HTTP SERVERS -->
     <h2>1. Developing HTTP Servers</h2>
-    <p>A Go application typically receives connections directly from clients using its built-in web server, meaning no intermediate application server is required. The server logic is organized around <strong>handlers</strong> and <strong>multiplexers</strong>.</p>
+    <p>A Go application can receive connections using its built-in web server, often behind a reverse proxy or load balancer but without requiring a separate application server. The server logic is organized around <strong>handlers</strong> and <strong>multiplexers</strong>.</p>
 
     <h3>Basic Server with Handlers</h3>
     <p>A handler is a type that implements the <code>ServeHTTP</code> method, which is responsible for writing headers and bodies into the HTTP response. The simplest way to define endpoints is using <code>http.HandleFunc</code>.</p>
@@ -53,14 +53,14 @@ func main() {
 }</code></pre>
 
     <h3>Request Multiplexing (ServeMux)</h3>
-    <p>The <code>http.ServeMux</code> acts as an HTTP request router, comparing incoming URIs against predefined patterns to execute the associated handler. A more specific pattern takes precedence over a more general one.</p>
+    <p>The <code>http.ServeMux</code> acts as an HTTP request router, comparing incoming requests against predefined patterns to execute the associated handler. Since Go 1.22, patterns can include HTTP methods and path wildcards such as <code>GET /articles/{id}</code>; more specific patterns take precedence, while conflicting patterns cause registration to panic.</p>
 
     <!-- SECTION 2: HTTP CLIENTS -->
     <h2>2. Developing HTTP Clients</h2>
     <p>Go's <code>net/http</code> package offers straightforward functions like <code>http.Get()</code> and <code>http.NewRequest()</code> for clients to interact with web services.</p>
 
     <h3>Simple GET Request</h3>
-    <p>For quick requests where advanced configuration isn't needed, the shared <code>DefaultClient</code> can be used.</p>
+    <p>For quick requests where advanced configuration isn't needed, the shared <code>DefaultClient</code> can be used. Production clients usually set explicit timeouts with a custom <code>http.Client</code>.</p>
 
     <pre><code class="language-go">package main
 import (
@@ -70,12 +70,12 @@ import (
 )
 
 func main() {
-    url := "https://www.golang.org"
+    url := "https://go.dev"
     response, err := http.Get(url)
     if err != nil {
         panic(err)
     }
-    defer response.Body.Close() // Mandatory to prevent memory leaks
+    defer response.Body.Close() // Release the response body resource when done
 
     body, err := io.ReadAll(response.Body)
     if err != nil {
@@ -133,7 +133,7 @@ type Person struct {
 
     <!-- SECTION 4: BUILDING REST APIS -->
     <h2>4. Building REST APIs</h2>
-    <p>REST (Representational State Transfer) is an architectural style designed for standardized data access. RESTful services primarily focus on defining Go structures and using marshaling/unmarshaling to exchange JSON data between clients and servers.</p>
+    <p>REST (Representational State Transfer) is an architectural style for resource-oriented systems that use HTTP methods, URLs, status codes, and representations such as JSON. In Go, structs and marshaling/unmarshaling are common implementation tools for those representations.</p>
 
     <h3>Standard REST Verbs</h3>
     <ul>
@@ -144,7 +144,7 @@ type Person struct {
     </ul>
 
     <h3>Routing with go-chi</h3>
-    <p><a href="https://github.com/go-chi/chi">go-chi</a> is a lightweight, idiomatic router that is fully compatible with <code>net/http</code>. It supports URL parameters, middleware chaining, and composable subrouters, making it the popular choice for production REST APIs.</p>
+    <p><a href="https://github.com/go-chi/chi">go-chi</a> is a lightweight, idiomatic router that is fully compatible with <code>net/http</code>. It supports URL parameters, middleware chaining, and composable subrouters, making it a popular choice for production REST APIs.</p>
 
     <pre><code class="language-go">// Install: go get github.com/go-chi/chi/v5
 import (
@@ -202,7 +202,7 @@ func deleteArticleHandler(w http.ResponseWriter, r *http.Request) {
 }</code></pre>
 
     <div class="note">
-        <p><strong>Security Tip:</strong> Always close the <code>response.Body</code> when finished to prevent the server from reserving resources indefinitely. For production services, always implement timeouts for both reading and writing processes.</p>
+        <p><strong>Security Tip:</strong> Always close the <code>response.Body</code> when finished to prevent client-side resource leaks and allow connection reuse. For production services, configure appropriate client and server timeouts.</p>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

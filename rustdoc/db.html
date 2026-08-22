@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>Rust Databases &amp; CSV — PostgreSQL, MySQL and Tabular Data</title>
+    <meta name="description"
+        content="How Rust connects to PostgreSQL and MySQL, runs queries safely, pools connections, and reads and writes CSV files with the csv crate.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-solid fa-database" aria-hidden="true"></i> Data Access</span>
+            <h1>Databases &amp; CSV in <span>Rust</span></h1>
+            <p>Connecting to PostgreSQL and MySQL, running queries that cannot be injected into, and moving tabular
+                data in and out of your program.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> On this page</h3>
+            <div class="kp">
+                <i class="fa-solid fa-database" aria-hidden="true"></i>
+                <span><strong>PostgreSQL</strong> with <code>tokio-postgres</code> (async) and <code>postgres</code>
+                    (blocking).</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-server" aria-hidden="true"></i>
+                <span><strong>MySQL</strong> and MariaDB with the <code>mysql</code> and <code>mysql_async</code>
+                    crates.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <span><strong>SQLx</strong> — one API for both engines, with queries checked at compile time.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
+                <span><strong>CSV</strong> — reading, writing, streaming huge files, and bulk-loading into a
+                    database.</span>
+            </div>
+        </div>
+
+        <!-- SECTION 1: THE LANDSCAPE -->
+        <section id="landscape">
+            <h2><i class="fa-solid fa-compass" aria-hidden="true"></i> How Rust Talks to a Database</h2>
+            <p class="lead">
+                Rust's standard library has no database support at all — no JDBC, no DB-API, no built-in driver. That
+                is deliberate: database access lives in crates, which can evolve at their own pace. What you get in
+                exchange is a set of libraries that are unusually good at pushing errors and type mismatches to compile
+                time.
+            </p>
+            <p>
+                Before writing any code, pick a layer. All four of these are mature and widely used in production:
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Layer</th>
+                            <th>Crates</th>
+                            <th>What you write</th>
+                            <th>Reach for it when…</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Native driver</strong></td>
+                            <td><code>tokio-postgres</code>, <code>postgres</code>, <code>mysql</code>,
+                                <code>mysql_async</code></td>
+                            <td>SQL strings plus bound parameters</td>
+                            <td>You want the thinnest possible layer, or need engine-specific features like Postgres
+                                <code>COPY</code> or <code>LISTEN</code>/<code>NOTIFY</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Async toolkit</strong></td>
+                            <td><code>sqlx</code></td>
+                            <td>SQL, optionally verified against a live schema at compile time</td>
+                            <td>You want one API across PostgreSQL, MySQL and SQLite, plus pooling and migrations
+                                included.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ORM / query builder</strong></td>
+                            <td><code>diesel</code>, <code>sea-orm</code></td>
+                            <td>Rust expressions that compile into SQL</td>
+                            <td>Your schema is large and you want the type system to catch a renamed column
+                                everywhere it is used.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Embedded</strong></td>
+                            <td><code>rusqlite</code></td>
+                            <td>SQL against a local SQLite file</td>
+                            <td>You need a database with no server — tests, desktop apps, CLI tools.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Not sure? Start
+                    with SQLx</div>
+                <p>
+                    If you have no strong preference, <code>sqlx</code> is the easiest place to begin. It speaks plain
+                    SQL — so everything you already know transfers — and it hands you a connection pool, a migration
+                    runner and optional compile-time query checking without any extra setup.
+                </p>
+            </div>
+
+            <h3>Async or blocking?</h3>
+            <p>
+                Rust has two worlds, and database crates come in both flavours. Choosing the wrong one is the most
+                common first stumble.
+            </p>
+            <ul>
+                <li><strong>Blocking</strong> (<code>postgres</code>, <code>mysql</code>, <code>rusqlite</code>): each
+                    call occupies the current thread until the database answers. Simplest to read and debug — the
+                    right default for CLI tools, batch jobs and scripts.</li>
+                <li><strong>Async</strong> (<code>tokio-postgres</code>, <code>mysql_async</code>, <code>sqlx</code>):
+                    every call is a <code>.await</code> point, so one thread can keep thousands of queries in flight.
+                    The right default for web servers and anything handling many concurrent connections.</li>
+            </ul>
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Never
+                    block inside an async task</div>
+                <p>
+                    Calling a blocking driver from inside an <code>async fn</code> stalls the whole runtime worker
+                    thread and can deadlock your server under load. If you must use a blocking library from async
+                    code, hand it to <code>tokio::task::spawn_blocking</code>, which runs it on a separate thread pool
+                    built for exactly that.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: POSTGRES -->
+        <section id="postgres">
+            <h2><i class="fa-solid fa-database" aria-hidden="true"></i> PostgreSQL</h2>
+            <p>
+                The <code>tokio-postgres</code> crate is a pure-Rust implementation of the PostgreSQL wire protocol —
+                there is no <code>libpq</code> to install and nothing to link against. The <code>postgres</code> crate
+                is a thin blocking wrapper around it, so the two share types and behaviour.
+            </p>
+            <p>Every example below assumes this table:</p>
+            <pre data-lang="sql"><span class="keyword">CREATE TABLE</span> products (
+    id    <span class="type">SERIAL</span> <span class="keyword">PRIMARY KEY</span>,
+    name  <span class="type">TEXT</span> <span class="keyword">NOT NULL</span>,
+    price <span class="type">DOUBLE PRECISION</span> <span class="keyword">NOT NULL</span>
+);</pre>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="pg-async"><i class="fa-solid fa-bolt"
+                            aria-hidden="true"></i>Async driver</button>
+                    <button class="tab-btn" data-tab="pg-sync"><i class="fa-solid fa-terminal"
+                            aria-hidden="true"></i>Blocking driver</button>
+                    <button class="tab-btn" data-tab="pg-tx"><i class="fa-solid fa-shield-halved"
+                            aria-hidden="true"></i>Transactions</button>
+                    <button class="tab-btn" data-tab="pg-types"><i class="fa-solid fa-table"
+                            aria-hidden="true"></i>Type mapping</button>
+                </div>
+
+                <div id="pg-async" class="tab-content active">
+                    <h3>tokio-postgres: connect, query, read rows</h3>
+                    <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+tokio = { version = <span class="string">"1"</span>, features = [<span class="string">"macros"</span>, <span class="string">"rt-multi-thread"</span>] }
+tokio-postgres = <span class="string">"0.7"</span></pre>
+                    <pre data-lang="rust"><span class="keyword">use</span> tokio_postgres::{NoTls, Error};
+
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), Error&gt; {
+    <span class="comment">// `connect` hands back two halves: a `client` you send queries through,</span>
+    <span class="comment">// and a `connection` future that performs the actual socket I/O.</span>
+    <span class="keyword">let</span> (client, connection) = tokio_postgres::connect(
+        <span class="string">"host=localhost user=app password=secret dbname=shop"</span>,
+        NoTls,
+    ).<span class="keyword">await</span>?;
+
+    <span class="comment">// The connection must be driven on its own task or nothing will move.</span>
+    tokio::spawn(<span class="keyword">async move</span> {
+        <span class="keyword">if let</span> <span class="type">Err</span>(e) = connection.<span class="keyword">await</span> {
+            <span class="builtin">eprintln!</span>(<span class="string">"connection error: {e}"</span>);
+        }
+    });
+
+    <span class="comment">// $1 is a bound parameter, NOT string interpolation. The value is sent</span>
+    <span class="comment">// separately from the SQL text, so injection is impossible.</span>
+    <span class="keyword">let</span> rows = client
+        .query(
+            <span class="string">"SELECT id, name, price FROM products WHERE price &lt; $1 ORDER BY price"</span>,
+            &amp;[&amp;<span class="string">25.0_f64</span>],
+        )
+        .<span class="keyword">await</span>?;
+
+    <span class="keyword">for</span> row <span class="keyword">in</span> &amp;rows {
+        <span class="keyword">let</span> id: <span class="type">i32</span> = row.get(<span class="string">"id"</span>);
+        <span class="keyword">let</span> name: <span class="type">String</span> = row.get(<span class="string">"name"</span>);
+        <span class="keyword">let</span> price: <span class="type">f64</span> = row.get(<span class="string">"price"</span>);
+        <span class="builtin">println!</span>(<span class="string">"{id:&gt;4}  {name:&lt;20} {price:&gt;8.2}"</span>);
+    }
+
+    <span class="comment">// INSERT / UPDATE / DELETE use `execute`, which returns the row count.</span>
+    <span class="keyword">let</span> affected = client
+        .execute(
+            <span class="string">"INSERT INTO products (name, price) VALUES ($1, $2)"</span>,
+            &amp;[&amp;<span class="string">"Mechanical Keyboard"</span>, &amp;<span class="string">89.5_f64</span>],
+        )
+        .<span class="keyword">await</span>?;
+    <span class="builtin">println!</span>(<span class="string">"inserted {affected} row(s)"</span>);
+
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <code>get</code> panics, <code>try_get</code> does not</div>
+                        <p>
+                            <code>row.get()</code> panics if the column does not exist or the Rust type does not match
+                            the SQL type. In library code, or anywhere the schema might drift, use
+                            <code>row.try_get::&lt;_, i32&gt;("id")?</code> instead and handle the error.
+                        </p>
+                    </div>
+                    <p>
+                        For a single expected row use <code>query_one</code>; for zero-or-one use
+                        <code>query_opt</code>, which returns <code>Option&lt;Row&gt;</code>. Both save you writing the
+                        "exactly one result" check by hand.
+                    </p>
+                </div>
+
+                <div id="pg-sync" class="tab-content">
+                    <h3>postgres: the same thing, without async</h3>
+                    <p>
+                        If your program has no reason to be asynchronous, the blocking crate removes the runtime, the
+                        spawned connection task and every <code>.await</code>.
+                    </p>
+                    <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+postgres = <span class="string">"0.19"</span></pre>
+                    <pre data-lang="rust"><span class="keyword">use</span> postgres::{Client, NoTls, Error};
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), Error&gt; {
+    <span class="keyword">let mut</span> client = Client::connect(
+        <span class="string">"host=localhost user=app password=secret dbname=shop"</span>,
+        NoTls,
+    )?;
+
+    client.execute(
+        <span class="string">"INSERT INTO products (name, price) VALUES ($1, $2)"</span>,
+        &amp;[&amp;<span class="string">"Trackball"</span>, &amp;<span class="string">42.0_f64</span>],
+    )?;
+
+    <span class="keyword">for</span> row <span class="keyword">in</span> client.query(<span class="string">"SELECT id, name FROM products ORDER BY id"</span>, &amp;[])? {
+        <span class="keyword">let</span> id: <span class="type">i32</span> = row.get(<span class="string">0</span>);   <span class="comment">// by position…</span>
+        <span class="keyword">let</span> name: <span class="type">String</span> = row.get(<span class="string">"name"</span>); <span class="comment">// …or by name</span>
+        <span class="builtin">println!</span>(<span class="string">"{id}: {name}"</span>);
+    }
+
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-lock" aria-hidden="true"></i> Turning on TLS
+                        </div>
+                        <p>
+                            <code>NoTls</code> means exactly what it says — fine for a local socket, wrong for a
+                            managed database over the internet. Add the <code>postgres-native-tls</code> or
+                            <code>postgres-rustls</code> companion crate and pass its connector in place of
+                            <code>NoTls</code>. The rest of your code does not change.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="pg-tx" class="tab-content">
+                    <h3>Transactions that cannot be forgotten</h3>
+                    <p>
+                        A <code>Transaction</code> owns a mutable borrow of the client, so the compiler will not let
+                        you use the client for anything else until it is finished. Better still, its
+                        <code>Drop</code> implementation issues a <strong>rollback</strong> — if an error propagates
+                        with <code>?</code> and the transaction is never committed, the database is not left in a half
+                        applied state.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> postgres::{Client, NoTls, Error};
+
+<span class="keyword">fn</span> <span class="builtin">transfer</span>(client: &amp;<span class="keyword">mut</span> Client, from: <span class="type">i32</span>, to: <span class="type">i32</span>, amount: <span class="type">f64</span>) -&gt; <span class="type">Result</span>&lt;(), Error&gt; {
+    <span class="keyword">let mut</span> tx = client.transaction()?;
+
+    tx.execute(
+        <span class="string">"UPDATE accounts SET balance = balance - $1 WHERE id = $2"</span>,
+        &amp;[&amp;amount, &amp;from],
+    )?;
+    tx.execute(
+        <span class="string">"UPDATE accounts SET balance = balance + $1 WHERE id = $2"</span>,
+        &amp;[&amp;amount, &amp;to],
+    )?;
+
+    <span class="comment">// If either statement above returned Err, `?` exits this function and</span>
+    <span class="comment">// `tx` is dropped — which rolls back. Nothing partial is committed.</span>
+    tx.commit()
+}</pre>
+                    <p>
+                        This is ownership doing real work: the "did you remember to roll back?" bug is not something
+                        you can write. The same pattern applies to <code>tokio_postgres::Transaction</code> and to
+                        <code>sqlx::Transaction</code>.
+                    </p>
+                </div>
+
+                <div id="pg-types" class="tab-content">
+                    <h3>Mapping SQL types to Rust types</h3>
+                    <p>
+                        Getting a column into the wrong Rust type is the most common runtime error with these crates.
+                        The mapping is exact, not lenient:
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>PostgreSQL</th>
+                                    <th>Rust</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>SMALLINT</code> / <code>INT</code> / <code>BIGINT</code></td>
+                                    <td><code>i16</code> / <code>i32</code> / <code>i64</code></td>
+                                    <td><code>SERIAL</code> is an <code>INT</code>, so it is <code>i32</code> — not
+                                        <code>u32</code>. Postgres has no unsigned integers.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>REAL</code> / <code>DOUBLE PRECISION</code></td>
+                                    <td><code>f32</code> / <code>f64</code></td>
+                                    <td>Straightforward.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>NUMERIC</code> / <code>DECIMAL</code></td>
+                                    <td><code>rust_decimal::Decimal</code></td>
+                                    <td>Needs an optional feature. Do <em>not</em> read money as <code>f64</code>.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>TEXT</code> / <code>VARCHAR</code></td>
+                                    <td><code>String</code> or <code>&amp;str</code></td>
+                                    <td><code>&amp;str</code> borrows from the <code>Row</code>, so it cannot outlive
+                                        it.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>BOOLEAN</code></td>
+                                    <td><code>bool</code></td>
+                                    <td>—</td>
+                                </tr>
+                                <tr>
+                                    <td><code>TIMESTAMPTZ</code></td>
+                                    <td><code>chrono::DateTime&lt;Utc&gt;</code></td>
+                                    <td>Enable the <code>with-chrono-0_4</code> feature.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>UUID</code></td>
+                                    <td><code>uuid::Uuid</code></td>
+                                    <td>Enable the <code>with-uuid-1</code> feature.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>JSON</code> / <code>JSONB</code></td>
+                                    <td><code>serde_json::Value</code></td>
+                                    <td>Enable <code>with-serde_json-1</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td>any <em>nullable</em> column</td>
+                                    <td><code>Option&lt;T&gt;</code></td>
+                                    <td>The single most important row in this table.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            <code>NULL</code> is <code>Option</code>, always</div>
+                        <p>
+                            Reading a nullable column into a plain <code>String</code> panics the moment a
+                            <code>NULL</code> arrives. Read it as <code>Option&lt;String&gt;</code> and Rust forces you
+                            to decide what an absent value means — which is the whole point of not having
+                            <code>null</code> in the language.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: MYSQL -->
+        <section id="mysql">
+            <h2><i class="fa-solid fa-server" aria-hidden="true"></i> MySQL &amp; MariaDB</h2>
+            <p>
+                The <code>mysql</code> crate is the established blocking client, and <code>mysql_async</code> is its
+                asynchronous sibling. Both are pure Rust, both work with MariaDB, and both use <code>?</code> as the
+                parameter placeholder rather than PostgreSQL's <code>$1</code>.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="my-sync"><i class="fa-solid fa-terminal"
+                            aria-hidden="true"></i>Blocking</button>
+                    <button class="tab-btn" data-tab="my-async"><i class="fa-solid fa-bolt"
+                            aria-hidden="true"></i>Async</button>
+                    <button class="tab-btn" data-tab="my-batch"><i class="fa-solid fa-layer-group"
+                            aria-hidden="true"></i>Batches &amp; transactions</button>
+                </div>
+
+                <div id="my-sync" class="tab-content active">
+                    <h3>mysql: pool, query, map into a struct</h3>
+                    <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+mysql = <span class="string">"28"</span></pre>
+                    <pre data-lang="rust"><span class="keyword">use</span> mysql::*;
+<span class="keyword">use</span> mysql::prelude::*;
+
+<span class="keyword">#[derive(Debug)]</span>
+<span class="keyword">struct</span> <span class="type">Product</span> {
+    id: <span class="type">i32</span>,
+    name: <span class="type">String</span>,
+    price: <span class="type">f64</span>,
+}
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; {
+    <span class="comment">// A Pool is cheap to clone and safe to share between threads.</span>
+    <span class="keyword">let</span> url = <span class="string">"mysql://app:secret@localhost:3306/shop"</span>;
+    <span class="keyword">let</span> pool = Pool::new(url)?;
+    <span class="keyword">let mut</span> conn = pool.get_conn()?;
+
+    <span class="comment">// `?` placeholders; the tuple supplies the values. `exec_drop` is for</span>
+    <span class="comment">// statements that return no rows.</span>
+    conn.exec_drop(
+        <span class="string">"INSERT INTO products (name, price) VALUES (?, ?)"</span>,
+        (<span class="string">"Mechanical Keyboard"</span>, <span class="string">89.5_f64</span>),
+    )?;
+
+    <span class="comment">// exec_map turns each row tuple into whatever you like.</span>
+    <span class="comment">// Note the trailing comma: (value,) is a one-element tuple.</span>
+    <span class="keyword">let</span> products = conn.exec_map(
+        <span class="string">"SELECT id, name, price FROM products WHERE price &lt; ? ORDER BY price"</span>,
+        (<span class="string">25.0_f64</span>,),
+        |(id, name, price)| <span class="type">Product</span> { id, name, price },
+    )?;
+
+    <span class="keyword">for</span> p <span class="keyword">in</span> &amp;products {
+        <span class="builtin">println!</span>(<span class="string">"{:&gt;4}  {:&lt;20} {:&gt;8.2}"</span>, p.id, p.name, p.price);
+    }
+
+    <span class="comment">// For a single scalar, exec_first returns Option&lt;T&gt;.</span>
+    <span class="keyword">let</span> total: <span class="type">Option</span>&lt;<span class="type">i64</span>&gt; = conn.exec_first(<span class="string">"SELECT COUNT(*) FROM products"</span>, ())?;
+    <span class="builtin">println!</span>(<span class="string">"{} products in total"</span>, total.unwrap_or(<span class="string">0</span>));
+
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Watch
+                            the unsigned columns</div>
+                        <p>
+                            Unlike PostgreSQL, MySQL <em>does</em> have unsigned integers. A column declared
+                            <code>INT UNSIGNED</code> must be read as <code>u32</code>, not <code>i32</code>, or
+                            conversion will fail at runtime. <code>BIGINT UNSIGNED</code> maps to <code>u64</code>.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="my-async" class="tab-content">
+                    <h3>mysql_async: the same shape, awaited</h3>
+                    <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+tokio = { version = <span class="string">"1"</span>, features = [<span class="string">"macros"</span>, <span class="string">"rt-multi-thread"</span>] }
+mysql_async = <span class="string">"0.37"</span></pre>
+                    <pre data-lang="rust"><span class="keyword">use</span> mysql_async::prelude::*;
+<span class="keyword">use</span> mysql_async::{Pool, Row};
+
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; {
+    <span class="keyword">let</span> pool = Pool::new(<span class="string">"mysql://app:secret@localhost:3306/shop"</span>);
+    <span class="keyword">let mut</span> conn = pool.get_conn().<span class="keyword">await</span>?;
+
+    <span class="keyword">let</span> rows: <span class="type">Vec</span>&lt;(<span class="type">i32</span>, <span class="type">String</span>, <span class="type">f64</span>)&gt; = <span class="string">"SELECT id, name, price FROM products"</span>
+        .with(())
+        .fetch(&amp;<span class="keyword">mut</span> conn)
+        .<span class="keyword">await</span>?;
+
+    <span class="keyword">for</span> (id, name, price) <span class="keyword">in</span> rows {
+        <span class="builtin">println!</span>(<span class="string">"{id:&gt;4}  {name:&lt;20} {price:&gt;8.2}"</span>);
+    }
+
+    <span class="comment">// Return the connection, then shut the pool down cleanly.</span>
+    <span class="keyword">drop</span>(conn);
+    pool.disconnect().<span class="keyword">await</span>?;
+    <span class="type">Ok</span>(())
+}</pre>
+                    <p>
+                        <code>mysql_async</code> deliberately mirrors the blocking crate's vocabulary
+                        (<code>exec_drop</code>, <code>exec_map</code>, <code>exec_first</code>), so porting between
+                        the two is mostly a matter of adding <code>.await</code>.
+                    </p>
+                </div>
+
+                <div id="my-batch" class="tab-content">
+                    <h3>Inserting many rows at once</h3>
+                    <p>
+                        Executing one <code>INSERT</code> per row across a network is slow no matter how fast your
+                        language is. <code>exec_batch</code> prepares the statement once and reuses it, and wrapping
+                        the whole thing in a transaction turns thousands of round-trip commits into one.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> mysql::*;
+<span class="keyword">use</span> mysql::prelude::*;
+
+<span class="keyword">struct</span> <span class="type">NewProduct</span> {
+    name: <span class="type">String</span>,
+    price: <span class="type">f64</span>,
+}
+
+<span class="keyword">fn</span> <span class="builtin">insert_all</span>(conn: &amp;<span class="keyword">mut</span> PooledConn, items: &amp;[<span class="type">NewProduct</span>]) -&gt; <span class="type">Result</span>&lt;(), Error&gt; {
+    <span class="keyword">let mut</span> tx = conn.start_transaction(TxOpts::default())?;
+
+    tx.exec_batch(
+        <span class="string">"INSERT INTO products (name, price) VALUES (?, ?)"</span>,
+        items.iter().map(|item| (item.name.as_str(), item.price)),
+    )?;
+
+    tx.commit()<span class="comment">   // dropping `tx` without this would roll back</span>
+}</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Order of
+                            magnitude, not percentages</div>
+                        <p>
+                            Batching plus a single transaction routinely turns a multi-minute import into a few
+                            seconds. If a data load feels slow, check how many transactions you are committing before
+                            you start profiling Rust code.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SQLX -->
+        <section id="sqlx">
+            <h2><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> SQLx: One API, Both Engines</h2>
+            <p>
+                <code>sqlx</code> is worth its own section because of a trick nothing else on this page does: it can
+                connect to your database <em>while compiling</em>, run your query through the server's planner, and
+                fail the build if a column name is wrong or a Rust type does not line up with the schema. Typos in SQL
+                become compiler errors.
+            </p>
+
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+tokio = { version = <span class="string">"1"</span>, features = [<span class="string">"macros"</span>, <span class="string">"rt-multi-thread"</span>] }
+sqlx  = { version = <span class="string">"0.9"</span>, features = [<span class="string">"runtime-tokio"</span>, <span class="string">"tls-rustls-ring-webpki"</span>, <span class="string">"macros"</span>, <span class="string">"postgres"</span>, <span class="string">"mysql"</span>] }</pre>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="sqlx-pg"><i class="fa-solid fa-database"
+                            aria-hidden="true"></i>PostgreSQL</button>
+                    <button class="tab-btn" data-tab="sqlx-my"><i class="fa-solid fa-server"
+                            aria-hidden="true"></i>MySQL</button>
+                    <button class="tab-btn" data-tab="sqlx-checked"><i class="fa-solid fa-square-check"
+                            aria-hidden="true"></i>Compile-time checking</button>
+                    <button class="tab-btn" data-tab="sqlx-stream"><i class="fa-solid fa-water"
+                            aria-hidden="true"></i>Streaming</button>
+                </div>
+
+                <div id="sqlx-pg" class="tab-content active">
+                    <h3>PostgreSQL — <code>$1</code> placeholders</h3>
+                    <pre data-lang="rust"><span class="keyword">use</span> sqlx::postgres::PgPoolOptions;
+
+<span class="keyword">#[derive(Debug, sqlx::FromRow)]</span>
+<span class="keyword">struct</span> <span class="type">Product</span> {
+    id: <span class="type">i32</span>,
+    name: <span class="type">String</span>,
+    price: <span class="type">f64</span>,
+}
+
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), sqlx::Error&gt; {
+    <span class="comment">// Read credentials from the environment — never hard-code them.</span>
+    <span class="keyword">let</span> url = std::env::var(<span class="string">"DATABASE_URL"</span>)
+        .expect(<span class="string">"set DATABASE_URL, e.g. postgres://app:secret@localhost/shop"</span>);
+
+    <span class="keyword">let</span> pool = PgPoolOptions::new()
+        .max_connections(<span class="string">5</span>)
+        .connect(&amp;url)
+        .<span class="keyword">await</span>?;
+
+    <span class="keyword">let</span> products = sqlx::query_as::&lt;_, <span class="type">Product</span>&gt;(
+        <span class="string">"SELECT id, name, price FROM products WHERE price &lt; $1 ORDER BY price"</span>,
+    )
+    .bind(<span class="string">25.0_f64</span>)
+    .fetch_all(&amp;pool)
+    .<span class="keyword">await</span>?;
+
+    <span class="keyword">for</span> p <span class="keyword">in</span> &amp;products {
+        <span class="builtin">println!</span>(<span class="string">"{:&gt;4}  {:&lt;20} {:&gt;8.2}"</span>, p.id, p.name, p.price);
+    }
+
+    <span class="comment">// Writes go through `query` + `execute`.</span>
+    sqlx::query(<span class="string">"INSERT INTO products (name, price) VALUES ($1, $2)"</span>)
+        .bind(<span class="string">"Trackball"</span>)
+        .bind(<span class="string">42.0_f64</span>)
+        .execute(&amp;pool)
+        .<span class="keyword">await</span>?;
+
+    <span class="type">Ok</span>(())
+}</pre>
+                </div>
+
+                <div id="sqlx-my" class="tab-content">
+                    <h3>MySQL — identical, apart from the placeholders</h3>
+                    <p>
+                        Swap <code>PgPoolOptions</code> for <code>MySqlPoolOptions</code> and <code>$1</code> for
+                        <code>?</code>. Everything else — the struct, <code>FromRow</code>, <code>bind</code>,
+                        <code>fetch_all</code> — is unchanged.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> sqlx::mysql::MySqlPoolOptions;
+
+<span class="keyword">#[derive(Debug, sqlx::FromRow)]</span>
+<span class="keyword">struct</span> <span class="type">Product</span> {
+    id: <span class="type">i32</span>,
+    name: <span class="type">String</span>,
+    price: <span class="type">f64</span>,
+}
+
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), sqlx::Error&gt; {
+    <span class="keyword">let</span> url = std::env::var(<span class="string">"DATABASE_URL"</span>)
+        .expect(<span class="string">"set DATABASE_URL, e.g. mysql://app:secret@localhost/shop"</span>);
+
+    <span class="keyword">let</span> pool = MySqlPoolOptions::new()
+        .max_connections(<span class="string">5</span>)
+        .connect(&amp;url)
+        .<span class="keyword">await</span>?;
+
+    <span class="keyword">let</span> products = sqlx::query_as::&lt;_, <span class="type">Product</span>&gt;(
+        <span class="string">"SELECT id, name, price FROM products WHERE price &lt; ? ORDER BY price"</span>,
+    )
+    .bind(<span class="string">25.0_f64</span>)
+    .fetch_all(&amp;pool)
+    .<span class="keyword">await</span>?;
+
+    <span class="builtin">println!</span>(<span class="string">"{products:#?}"</span>);
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="callout">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> SQL is
+                            still SQL</div>
+                        <p>
+                            SQLx unifies the <em>API</em>, not the dialects. Placeholder syntax, <code>RETURNING</code>
+                            (PostgreSQL only), auto-increment syntax and date functions still differ. If you truly
+                            need one binary to target both engines, keep the SQL behind a small trait with one
+                            implementation per database.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="sqlx-checked" class="tab-content">
+                    <h3>Queries verified by the compiler</h3>
+                    <p>
+                        Swap the function <code>query_as</code> for the macro <code>query_as!</code> and SQLx checks
+                        the statement against a real schema during <code>cargo build</code>. Misspell a column, or
+                        declare <code>price</code> as <code>i32</code> when the column is
+                        <code>DOUBLE PRECISION</code>, and the build fails with a pointed message.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">#[derive(Debug)]</span>
+<span class="keyword">struct</span> <span class="type">Product</span> {
+    id: <span class="type">i32</span>,
+    name: <span class="type">String</span>,
+    price: <span class="type">f64</span>,
+}
+
+<span class="comment">// Checked at COMPILE time against $DATABASE_URL.</span>
+<span class="comment">// No `.bind()` — parameters are ordinary Rust expressions, also checked.</span>
+<span class="keyword">let</span> products = sqlx::query_as!(
+    <span class="type">Product</span>,
+    <span class="string">"SELECT id, name, price FROM products WHERE price &lt; $1 ORDER BY price"</span>,
+    <span class="string">25.0_f64</span>
+)
+.fetch_all(&amp;pool)
+.<span class="keyword">await</span>?;</pre>
+                    <p>To make this work you need two things:</p>
+                    <ol class="step-list">
+                        <li>A <code>DATABASE_URL</code> available at build time — put it in a <code>.env</code> file
+                            at the project root, which SQLx reads automatically. Add that file to
+                            <code>.gitignore</code>.</li>
+                        <li>For CI and for builds without a database, run
+                            <code>cargo sqlx prepare</code> (from <code>cargo install sqlx-cli</code>). It caches the
+                            query metadata into a <code>.sqlx/</code> directory that you commit, so offline builds
+                            stay fully checked.</li>
+                    </ol>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+                            Migrations come in the box</div>
+                        <p>
+                            <code>sqlx migrate add create_products</code> writes a timestamped SQL file into
+                            <code>migrations/</code>; <code>sqlx migrate run</code> applies the pending ones. You can
+                            also embed them in the binary with <code>sqlx::migrate!().run(&amp;pool).await?</code>, so
+                            deploying the app and migrating the schema become one step.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="sqlx-stream" class="tab-content">
+                    <h3>Reading a result set that will not fit in memory</h3>
+                    <p>
+                        <code>fetch_all</code> allocates a <code>Vec</code> containing every row. For a million-row
+                        table that is exactly what you do not want. <code>fetch</code> returns a
+                        <strong>stream</strong> instead — rows arrive one at a time and peak memory stays flat.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> futures::TryStreamExt; <span class="comment">// futures = "0.3"</span>
+
+<span class="keyword">let mut</span> rows = sqlx::query_as::&lt;_, <span class="type">Product</span>&gt;(<span class="string">"SELECT id, name, price FROM products"</span>)
+    .fetch(&amp;pool);
+
+<span class="keyword">let mut</span> total = <span class="string">0.0</span>;
+<span class="keyword">while let</span> <span class="type">Some</span>(product) = rows.try_next().<span class="keyword">await</span>? {
+    total += product.price;
+}
+<span class="builtin">println!</span>(<span class="string">"inventory value: {total:.2}"</span>);</pre>
+                    <p>
+                        The same choice exists in every driver here: <code>fetch_all</code> versus a cursor or stream.
+                        Reach for the streaming variant whenever the row count is unbounded or comes from user input.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: SAFETY -->
+        <section id="db-safety">
+            <h2><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Writing Queries That Stay Safe</h2>
+            <p>
+                Rust's memory safety says nothing about SQL injection — that is a logic bug, not a memory bug. The good
+                news is that every crate on this page makes the safe path the convenient one.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Never build SQL with
+                        <code>format!</code></h3>
+                    <pre data-lang="rust"><span class="comment">// DANGEROUS — a name of `'; DROP TABLE products; --`</span>
+<span class="comment">// becomes part of the statement.</span>
+<span class="keyword">let</span> sql = <span class="builtin">format!</span>(
+    <span class="string">"SELECT * FROM products WHERE name = '{name}'"</span>
+);
+client.query(&amp;sql, &amp;[]).<span class="keyword">await</span>?;</pre>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Bind parameters instead</h3>
+                    <pre data-lang="rust"><span class="comment">// SAFE — the value travels in a separate protocol field</span>
+<span class="comment">// and is never parsed as SQL.</span>
+client.query(
+    <span class="string">"SELECT * FROM products WHERE name = $1"</span>,
+    &amp;[&amp;name],
+).<span class="keyword">await</span>?;</pre>
+                </div>
+            </div>
+
+            <ul class="check-list">
+                <li><strong>Parameters are values, not identifiers.</strong> You cannot bind a table or column name.
+                    If one must be dynamic, match it against a fixed allow-list of known-good strings.</li>
+                <li><strong>Keep credentials out of the source tree.</strong> Read a <code>DATABASE_URL</code> from
+                    the environment (the <code>dotenvy</code> crate loads a local <code>.env</code> in development)
+                    and take the real value from your platform's secret store in production.</li>
+                <li><strong>Use a pool, and give it a ceiling.</strong> Opening a connection costs a TCP handshake, TLS
+                    and authentication. A pool amortises that and — just as importantly — caps how many connections
+                    your service can demand from the database at once.</li>
+                <li><strong>Set timeouts.</strong> <code>acquire_timeout</code> on the pool and a statement timeout on
+                    the server turn "the app hangs forever" into a clean, loggable error.</li>
+                <li><strong>Let <code>Result</code> do its job.</strong> Resist <code>.unwrap()</code> on query
+                    results outside of tests. Propagate with <code>?</code> and add context with
+                    <code>anyhow</code> or a <code>thiserror</code> enum.</li>
+            </ul>
+        </section>
+
+        <hr class="divider">
+
+        <!-- SECTION 6: CSV -->
+        <section id="csv">
+            <h2><i class="fa-solid fa-file-csv" aria-hidden="true"></i> Working with CSV Files</h2>
+            <p class="lead">
+                CSV is the format every system can export and no two systems agree on. The <code>csv</code> crate
+                handles the awkward parts — quoted fields containing commas, embedded newlines, BOMs, inconsistent
+                line endings — and is fast enough to parse hundreds of megabytes per second. Paired with
+                <code>serde</code>, a row becomes a typed struct in one line.
+            </p>
+
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+csv   = <span class="string">"1.4"</span>
+serde = { version = <span class="string">"1"</span>, features = [<span class="string">"derive"</span>] }</pre>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="csv-read"><i class="fa-solid fa-file-import"
+                            aria-hidden="true"></i>Read</button>
+                    <button class="tab-btn" data-tab="csv-write"><i class="fa-solid fa-file-export"
+                            aria-hidden="true"></i>Write</button>
+                    <button class="tab-btn" data-tab="csv-big"><i class="fa-solid fa-gauge-high"
+                            aria-hidden="true"></i>Large files</button>
+                    <button class="tab-btn" data-tab="csv-odd"><i class="fa-solid fa-gears"
+                            aria-hidden="true"></i>Awkward files</button>
+                </div>
+
+                <div id="csv-read" class="tab-content active">
+                    <h3>Reading rows straight into structs</h3>
+                    <p>Given <code>products.csv</code>:</p>
+                    <pre data-lang="csv">id,name,unit_price,in_stock
+1,Mechanical Keyboard,89.50,true
+2,"Cable, braided 2m",12.00,true
+3,Trackball,42.00,false</pre>
+                    <p>
+                        Note row 2: the field is quoted because it contains a comma. Splitting on commas by hand would
+                        get this wrong — which is the reason to use a real parser.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde::Deserialize;
+<span class="keyword">use</span> std::error::Error;
+
+<span class="keyword">#[derive(Debug, Deserialize)]</span>
+<span class="keyword">struct</span> <span class="type">Product</span> {
+    id: <span class="type">u32</span>,
+    name: <span class="type">String</span>,
+    <span class="comment">// The header says `unit_price`; call the field whatever you like.</span>
+    <span class="keyword">#[serde(rename = "unit_price")]</span>
+    price: <span class="type">f64</span>,
+    in_stock: <span class="type">bool</span>,
+}
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> Error&gt;&gt; {
+    <span class="comment">// from_path treats the first line as a header row by default.</span>
+    <span class="keyword">let mut</span> reader = csv::Reader::from_path(<span class="string">"products.csv"</span>)?;
+
+    <span class="keyword">let mut</span> in_stock_total = <span class="string">0.0</span>;
+
+    <span class="comment">// deserialize() yields Result&lt;Product, csv::Error&gt; per row, so a</span>
+    <span class="comment">// single malformed line cannot silently corrupt your totals.</span>
+    <span class="keyword">for</span> result <span class="keyword">in</span> reader.deserialize() {
+        <span class="keyword">let</span> product: <span class="type">Product</span> = result?;
+        <span class="keyword">if</span> product.in_stock {
+            in_stock_total += product.price;
+        }
+        <span class="builtin">println!</span>(<span class="string">"{:&gt;4}  {:&lt;24} {:&gt;8.2}"</span>, product.id, product.name, product.price);
+    }
+
+    <span class="builtin">println!</span>(<span class="string">"value in stock: {in_stock_total:.2}"</span>);
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Missing
+                            and messy fields</div>
+                        <p>
+                            Declare a field as <code>Option&lt;f64&gt;</code> and an empty cell deserialises to
+                            <code>None</code> instead of failing. Add
+                            <code>#[serde(default)]</code> to fall back to the type's default, and
+                            <code>#[serde(rename_all = "PascalCase")]</code> on the struct when the exporter used a
+                            different naming convention throughout.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="csv-write" class="tab-content">
+                    <h3>Writing CSV</h3>
+                    <p>
+                        <code>Writer</code> quotes and escapes for you — if a value contains the delimiter, a quote or
+                        a newline, the output stays valid without you thinking about it.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde::Serialize;
+<span class="keyword">use</span> std::error::Error;
+
+<span class="keyword">#[derive(Serialize)]</span>
+<span class="keyword">struct</span> <span class="type">Row</span>&lt;<span class="keyword">'a</span>&gt; {
+    id: <span class="type">u32</span>,
+    name: &amp;<span class="keyword">'a</span> <span class="type">str</span>,
+    unit_price: <span class="type">f64</span>,
+}
+
+<span class="keyword">fn</span> <span class="builtin">export</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> Error&gt;&gt; {
+    <span class="keyword">let mut</span> writer = csv::Writer::from_path(<span class="string">"export.csv"</span>)?;
+
+    <span class="comment">// The header row is derived from the struct's field names,</span>
+    <span class="comment">// and written automatically before the first record.</span>
+    writer.serialize(<span class="type">Row</span> { id: <span class="string">1</span>, name: <span class="string">"Mechanical Keyboard"</span>, unit_price: <span class="string">89.5</span> })?;
+    writer.serialize(<span class="type">Row</span> { id: <span class="string">2</span>, name: <span class="string">"Cable, braided 2m"</span>, unit_price: <span class="string">12.0</span> })?;
+
+    <span class="comment">// Or write raw fields without serde:</span>
+    writer.write_record(&amp;[<span class="string">"3"</span>, <span class="string">"Trackball"</span>, <span class="string">"42.00"</span>])?;
+
+    <span class="comment">// IMPORTANT: the writer buffers. Flushing surfaces any I/O error</span>
+    <span class="comment">// here, where you can still handle it — a silent flush on drop</span>
+    <span class="comment">// would throw that error away.</span>
+    writer.flush()?;
+    <span class="type">Ok</span>(())
+}</pre>
+                    <p>
+                        To write to standard output instead of a file — useful for a Unix-style tool that pipes into
+                        another — swap the constructor for
+                        <code>csv::Writer::from_writer(std::io::stdout())</code>.
+                    </p>
+                </div>
+
+                <div id="csv-big" class="tab-content">
+                    <h3>Files bigger than memory</h3>
+                    <p>
+                        The reader is already streaming: it never loads the whole file. The remaining cost is one
+                        allocation per row, and you can remove even that by reusing a single record buffer.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::error::Error;
+
+<span class="keyword">fn</span> <span class="builtin">sum_column</span>(path: &amp;<span class="type">str</span>) -&gt; <span class="type">Result</span>&lt;<span class="type">f64</span>, <span class="type">Box</span>&lt;<span class="keyword">dyn</span> Error&gt;&gt; {
+    <span class="keyword">let mut</span> reader = csv::Reader::from_path(path)?;
+
+    <span class="comment">// One buffer, reused for every row: no per-row allocation at all.</span>
+    <span class="keyword">let mut</span> record = csv::StringRecord::new();
+    <span class="keyword">let mut</span> total = <span class="string">0.0</span>;
+    <span class="keyword">let mut</span> line = <span class="string">1</span>; <span class="comment">// header</span>
+
+    <span class="keyword">while</span> reader.read_record(&amp;<span class="keyword">mut</span> record)? {
+        line += <span class="string">1</span>;
+        <span class="comment">// Report which line was bad rather than just "invalid float".</span>
+        total += record[<span class="string">2</span>]
+            .parse::&lt;<span class="type">f64</span>&gt;()
+            .map_err(|e| <span class="builtin">format!</span>(<span class="string">"line {line}, column 3: {e}"</span>))?;
+    }
+
+    <span class="type">Ok</span>(total)
+}</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> Two more
+                            speed levers</div>
+                        <p>
+                            Use <code>ByteRecord</code> instead of <code>StringRecord</code> to skip UTF-8 validation
+                            when the data is known-good bytes. And remember that a debug build is not a measurement —
+                            benchmark CSV work with <code>cargo run --release</code>.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="csv-odd" class="tab-content">
+                    <h3>When the file is not really CSV</h3>
+                    <p>
+                        Semicolon-separated European exports, tab-separated dumps, files with no header, files with a
+                        ragged number of columns — <code>ReaderBuilder</code> covers all of them.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let mut</span> reader = csv::ReaderBuilder::new()
+    .delimiter(<span class="string">b';'</span>)        <span class="comment">// semicolon-separated</span>
+    .has_headers(<span class="keyword">false</span>)    <span class="comment">// first line is data, not a header</span>
+    .flexible(<span class="keyword">true</span>)        <span class="comment">// tolerate rows with differing field counts</span>
+    .comment(<span class="type">Some</span>(<span class="string">b'#'</span>))   <span class="comment">// skip lines beginning with #</span>
+    .trim(csv::Trim::All)  <span class="comment">// strip surrounding whitespace from every field</span>
+    .from_path(<span class="string">"export.tsv"</span>)?;</pre>
+                    <p>
+                        Two encoding notes that catch people out. First, the <code>csv</code> crate expects UTF-8; for
+                        a Windows-1252 or Shift-JIS file, decode it first with the <code>encoding_rs</code> crate.
+                        Second, spreadsheets often write a UTF-8 byte-order mark, which turns your first header into
+                        <code>"\u{feff}id"</code> and breaks the matching field name — strip it before parsing, or
+                        wrap the file in <code>encoding_rs_io::DecodeReaderBytes</code>, which removes it for you.
+                    </p>
+                </div>
+            </div>
+
+            <h3>Loading a CSV file into a database</h3>
+            <p>
+                This is the job that ties the whole page together, and the naive version — one <code>INSERT</code> per
+                line, each in its own transaction — is the classic performance trap. Both engines offer a much better
+                route.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-database" aria-hidden="true"></i> PostgreSQL: <code>COPY</code></h3>
+                    <p>
+                        <code>COPY … FROM STDIN</code> is by far the fastest bulk-load path, and the driver exposes it
+                        as an ordinary <code>Write</code> sink. You can stream the file straight through:
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> postgres::{Client, NoTls};
+<span class="keyword">use</span> std::io::copy;
+<span class="keyword">use</span> std::fs::File;
+
+<span class="keyword">fn</span> <span class="builtin">bulk_load</span>(client: &amp;<span class="keyword">mut</span> Client)
+    -&gt; <span class="type">Result</span>&lt;<span class="type">u64</span>, <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt;
+{
+    <span class="keyword">let mut</span> file = File::open(<span class="string">"products.csv"</span>)?;
+
+    <span class="keyword">let mut</span> writer = client.copy_in(
+        <span class="string">"COPY products (name, price) FROM STDIN \
+          WITH (FORMAT csv, HEADER true)"</span>,
+    )?;
+
+    <span class="comment">// Streams the file in chunks — memory stays flat.</span>
+    copy(&amp;<span class="keyword">mut</span> file, &amp;<span class="keyword">mut</span> writer)?;
+
+    <span class="comment">// finish() returns the number of rows the server accepted.</span>
+    <span class="type">Ok</span>(writer.finish()?)
+}</pre>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-server" aria-hidden="true"></i> MySQL: parse, then batch</h3>
+                    <p>
+                        MySQL's <code>LOAD DATA LOCAL INFILE</code> is often disabled by server or client policy, so
+                        the portable approach is to parse in Rust and insert in prepared batches:
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> mysql::prelude::*;
+<span class="keyword">use</span> mysql::{PooledConn, TxOpts};
+<span class="keyword">use</span> serde::Deserialize;
+
+<span class="keyword">#[derive(Deserialize)]</span>
+<span class="keyword">struct</span> <span class="type">Row</span> { name: <span class="type">String</span>, price: <span class="type">f64</span> }
+
+<span class="keyword">fn</span> <span class="builtin">bulk_load</span>(conn: &amp;<span class="keyword">mut</span> PooledConn)
+    -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt;
+{
+    <span class="keyword">let mut</span> reader = csv::Reader::from_path(<span class="string">"products.csv"</span>)?;
+    <span class="keyword">let</span> rows: <span class="type">Vec</span>&lt;<span class="type">Row</span>&gt; = reader
+        .deserialize()
+        .collect::&lt;<span class="type">Result</span>&lt;_, _&gt;&gt;()?; <span class="comment">// first error wins</span>
+
+    <span class="keyword">let mut</span> tx = conn.start_transaction(TxOpts::default())?;
+    tx.exec_batch(
+        <span class="string">"INSERT INTO products (name, price) VALUES (?, ?)"</span>,
+        rows.iter().map(|r| (r.name.as_str(), r.price)),
+    )?;
+    tx.commit()?;
+    <span class="type">Ok</span>(())
+}</pre>
+                </div>
+            </div>
+
+            <div class="callout">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> One small detail
+                    worth stealing</div>
+                <p>
+                    <code>.collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()?</code> in the example above is a genuinely
+                    lovely piece of Rust: collecting an iterator of <code>Result</code>s into a
+                    <code>Result&lt;Vec&lt;_&gt;&gt;</code> stops at the first error and returns it. One line replaces
+                    a loop, a mutable accumulator and an early return. There is more of this on the
+                    <a href="iterators.html">Collections &amp; Iterators</a> page.
+                </p>
+            </div>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="topic.html">
+                <i class="fa-solid fa-code" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Previous</span>
+                    <span class="page-nav-title">JSON &amp; Text</span>
+                </span>
+            </a>
+            <a href="httpreq.html">
+                <i class="fa-solid fa-globe" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Next</span>
+                    <span class="page-nav-title">HTTP Requests</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>Crate versions shown here were current when this page was written. Check
+            <a href="https://crates.io" target="_blank" rel="noopener">crates.io</a> — or just run
+            <code>cargo add</code>, which always picks the latest compatible release.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+
+</html>

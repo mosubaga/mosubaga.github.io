@@ -55,7 +55,7 @@ func main() {
     <p><strong>Structs</strong> (short for structures) are user-defined types that group together related data fields into a single entity. They are essential for modeling real-world objects.</p>
 
     <h3>Declaration and Visibility</h3>
-    <p>Fields starting with an <strong>uppercase letter</strong> are <strong>exported</strong> (public) and accessible outside the package; those starting with lowercase are <strong>unexported</strong> (private).</p>
+    <p>Fields starting with an <strong>uppercase letter</strong> are <strong>exported</strong> and accessible outside the package; those starting with lowercase are <strong>unexported</strong> and visible only within the same package.</p>
 
     <pre><code class="language-go">type Product struct {
     Name     string  // Exported field

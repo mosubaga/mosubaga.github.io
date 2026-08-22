@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>Rust JSON &amp; Text — Serde, Regular Expressions and String Handling</title>
+    <meta name="description"
+        content="How Rust handles JSON with serde and serde_json, how the regex crate works and why it guarantees linear-time matching, and the string methods that replace most regular expressions.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-solid fa-code" aria-hidden="true"></i> Data &amp; Text</span>
+            <h1>JSON &amp; Text Handling in <span>Rust</span></h1>
+            <p>Turning JSON into typed structs with serde, matching patterns in linear time with the regex crate, and
+                the string methods that make most regexes unnecessary.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> On this page</h3>
+            <div class="kp">
+                <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <span><strong>serde</strong> — add two derives to a struct and JSON parsing and generation come for
+                    free.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+                <span><strong>Strings</strong> — <code>String</code> vs <code>&amp;str</code>, UTF-8, and the method
+                    vocabulary.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <span><strong>regex</strong> — captures, replacement, and a guarantee no backtracking engine can
+                    make.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-puzzle-piece" aria-hidden="true"></i>
+                <span>A worked example that parses a log file with regex and emits JSON.</span>
+            </div>
+        </div>
+
+        <!-- =====================================================
+             SECTION 1 — JSON
+             ===================================================== -->
+        <section id="json">
+            <h2><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> JSON with Serde</h2>
+            <p class="lead">
+                Rust has no JSON support in its standard library, and once again that turns out well. The ecosystem
+                converged on <strong>serde</strong> — a serialisation <em>framework</em> — plus
+                <strong>serde_json</strong>, one of its many format backends. The split matters: the work you do to
+                describe your data is not JSON-specific, so the same struct also reads TOML, CBOR, MessagePack or CSV
+                by swapping one crate.
+            </p>
+
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+serde      = { version = <span class="string">"1"</span>, features = [<span class="string">"derive"</span>] }
+serde_json = <span class="string">"1"</span></pre>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> The
+                    <code>derive</code> feature is not optional in practice</div>
+                <p>
+                    Without <code>features = ["derive"]</code> you get the traits but not the
+                    <code>#[derive(Serialize, Deserialize)]</code> macros, and every example below fails to compile
+                    with a confusing "cannot find derive macro" error. It is the single most common serde setup
+                    mistake.
+                </p>
+            </div>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="json-typed"><i class="fa-solid fa-cube"
+                            aria-hidden="true"></i>Typed structs</button>
+                    <button class="tab-btn" data-tab="json-value"><i class="fa-solid fa-shuffle"
+                            aria-hidden="true"></i>Untyped Value</button>
+                    <button class="tab-btn" data-tab="json-attrs"><i class="fa-solid fa-sliders"
+                            aria-hidden="true"></i>Attributes</button>
+                    <button class="tab-btn" data-tab="json-enums"><i class="fa-solid fa-code-branch"
+                            aria-hidden="true"></i>Enums</button>
+                    <button class="tab-btn" data-tab="json-errors"><i class="fa-solid fa-triangle-exclamation"
+                            aria-hidden="true"></i>Errors &amp; streams</button>
+                </div>
+
+                <!-- TYPED -->
+                <div id="json-typed" class="tab-content active">
+                    <h3>Describe the shape once, get both directions</h3>
+                    <p>
+                        <code>Serialize</code> turns your type into JSON; <code>Deserialize</code> builds it back. The
+                        derive macros generate code at compile time, so there is no reflection and no runtime cost for
+                        the convenience.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde::{Deserialize, Serialize};
+
+<span class="keyword">#[derive(Debug, Serialize, Deserialize)]</span>
+<span class="keyword">struct</span> <span class="type">Package</span> {
+    name: <span class="type">String</span>,
+    version: <span class="type">String</span>,
+
+    <span class="comment">// Absent in the JSON? Use the type's Default — here, an empty Vec.</span>
+    <span class="keyword">#[serde(default)]</span>
+    keywords: <span class="type">Vec</span>&lt;<span class="type">String</span>&gt;,
+
+    <span class="comment">// Option fields are optional automatically: a missing key, or an</span>
+    <span class="comment">// explicit JSON null, both become None. No #[serde(default)] needed.</span>
+    description: <span class="type">Option</span>&lt;<span class="type">String</span>&gt;,
+}
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), serde_json::Error&gt; {
+    <span class="comment">// r#"..."# is a raw string: no escaping of the inner quotes.</span>
+    <span class="keyword">let</span> data = <span class="string">r#"{
+        "name": "serde_json",
+        "version": "1.0.151",
+        "keywords": ["json", "serde"]
+    }"#</span>;
+
+    <span class="keyword">let</span> pkg: <span class="type">Package</span> = serde_json::from_str(data)?;
+
+    <span class="builtin">println!</span>(<span class="string">"{} v{}"</span>, pkg.name, pkg.version);
+    <span class="builtin">println!</span>(<span class="string">"{:?}"</span>, pkg.description); <span class="comment">// None — the key was absent</span>
+
+    <span class="comment">// And back out again.</span>
+    <span class="builtin">println!</span>(<span class="string">"{}"</span>, serde_json::to_string(&amp;pkg)?);        <span class="comment">// compact</span>
+    <span class="builtin">println!</span>(<span class="string">"{}"</span>, serde_json::to_string_pretty(&amp;pkg)?); <span class="comment">// indented</span>
+
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Input / output</th>
+                                    <th>Use for</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>from_str</code></td>
+                                    <td><code>&amp;str</code> → <code>T</code></td>
+                                    <td>The usual case, and the fastest.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>from_slice</code></td>
+                                    <td><code>&amp;[u8]</code> → <code>T</code></td>
+                                    <td>Bytes straight from a socket or file, with no UTF-8 check of your own.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>from_reader</code></td>
+                                    <td><code>impl Read</code> → <code>T</code></td>
+                                    <td>Streams whose length you do not know. See the warning below.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>to_string</code> / <code>to_vec</code></td>
+                                    <td><code>&amp;T</code> → <code>String</code> / <code>Vec&lt;u8&gt;</code></td>
+                                    <td>Compact output for the wire.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>to_string_pretty</code></td>
+                                    <td><code>&amp;T</code> → <code>String</code></td>
+                                    <td>Config files and anything a human will read.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>to_writer</code></td>
+                                    <td><code>&amp;T</code> → <code>impl Write</code></td>
+                                    <td>Writing straight to a file or response body.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+                            <code>from_reader</code> is usually the <em>slow</em> option</div>
+                        <p>
+                            This surprises people, and serde_json's own documentation says so plainly:
+                            <code>from_reader</code> "is usually slower than reading a file completely into memory and
+                            then applying <code>from_str</code> or <code>from_slice</code> on it." It also does not
+                            buffer, so passing a bare <code>File</code> means one syscall per few bytes — wrap it in a
+                            <code>BufReader</code> at minimum. For anything that fits in memory, read it first and use
+                            <code>from_str</code>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- VALUE -->
+                <div id="json-value" class="tab-content">
+                    <h3>When you do not know the shape: <code>Value</code></h3>
+                    <p>
+                        <code>serde_json::Value</code> is an enum covering everything JSON can express —
+                        <code>Null</code>, <code>Bool</code>, <code>Number</code>, <code>String</code>,
+                        <code>Array</code> and <code>Object</code>. Use it to explore an unfamiliar API, to pass data
+                        through untouched, or to handle genuinely dynamic documents.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde_json::{json, Value};
+
+<span class="keyword">let</span> raw = <span class="string">r#"{"server": {"host": "localhost", "port": 8080}, "debug": true}"#</span>;
+<span class="keyword">let mut</span> config: Value = serde_json::from_str(raw)?;
+
+<span class="comment">// Indexing never panics on read: a missing key yields Value::Null,</span>
+<span class="comment">// so you can walk deep paths without a chain of checks.</span>
+<span class="builtin">println!</span>(<span class="string">"{}"</span>, config[<span class="string">"server"</span>][<span class="string">"port"</span>]);    <span class="comment">// 8080</span>
+<span class="builtin">println!</span>(<span class="string">"{}"</span>, config[<span class="string">"nope"</span>][<span class="string">"deeper"</span>]);    <span class="comment">// null</span>
+
+<span class="comment">// Typed accessors return Option, so a wrong type is your decision,</span>
+<span class="comment">// not a panic.</span>
+<span class="keyword">let</span> port = config[<span class="string">"server"</span>][<span class="string">"port"</span>].as_u64().unwrap_or(<span class="string">8080</span>);
+<span class="keyword">let</span> host = config[<span class="string">"server"</span>][<span class="string">"host"</span>].as_str().unwrap_or(<span class="string">"127.0.0.1"</span>);
+<span class="keyword">let</span> debug = config[<span class="string">"debug"</span>].as_bool().unwrap_or(<span class="keyword">false</span>);
+
+<span class="comment">// Writing through an index works, but panics if the parent is not an</span>
+<span class="comment">// object or array — check with .is_object() when unsure.</span>
+config[<span class="string">"server"</span>][<span class="string">"port"</span>] = json!(<span class="string">9090</span>);
+
+<span class="comment">// json! builds a Value with ordinary JSON syntax, and interpolates</span>
+<span class="comment">// any Rust expression that implements Serialize.</span>
+<span class="keyword">let</span> payload = json!({
+    <span class="string">"user"</span>:   { <span class="string">"id"</span>: <span class="string">42</span>, <span class="string">"name"</span>: host },
+    <span class="string">"active"</span>: <span class="keyword">true</span>,
+    <span class="string">"scores"</span>: [<span class="string">1</span>, <span class="string">2</span>, <span class="string">3</span>],
+    <span class="string">"meta"</span>:   <span class="type">Value</span>::Null,
+});
+
+<span class="comment">// Iterate an object when you really do not know the keys.</span>
+<span class="keyword">if let</span> <span class="type">Some</span>(map) = config.as_object() {
+    <span class="keyword">for</span> (key, value) <span class="keyword">in</span> map {
+        <span class="builtin">println!</span>(<span class="string">"{key} = {value}"</span>);
+    }
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Use it as
+                            a scout, not a destination</div>
+                        <p>
+                            <code>Value</code> is the right tool for exploring and for pass-through. It is the wrong
+                            tool for the core of an application: every access becomes an <code>Option</code> you have
+                            to handle, and you lose the compile-time checking that made the typed version worth it.
+                            Explore with <code>Value</code>, then write the struct.
+                        </p>
+                        <p>
+                            You can also mix the two — <code>#[serde(flatten)] extra: HashMap&lt;String, Value&gt;</code>
+                            on a typed struct captures every key you did not name, which is handy for APIs that add
+                            fields over time.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ATTRIBUTES -->
+                <div id="json-attrs" class="tab-content">
+                    <h3>Bending the mapping with attributes</h3>
+                    <p>
+                        Real APIs rarely match Rust naming conventions. Serde's attributes bridge the gap without
+                        writing any conversion code by hand.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde::{Deserialize, Serialize};
+
+<span class="keyword">#[derive(Serialize, Deserialize)]</span>
+<span class="comment">// Every field is camelCase on the wire, snake_case in Rust.</span>
+<span class="keyword">#[serde(rename_all = "camelCase")]</span>
+<span class="keyword">struct</span> <span class="type">User</span> {
+    user_id: <span class="type">u64</span>,             <span class="comment">// &lt;-&gt; "userId"</span>
+    display_name: <span class="type">String</span>,     <span class="comment">// &lt;-&gt; "displayName"</span>
+
+    <span class="comment">// One field named differently from the rule.</span>
+    <span class="keyword">#[serde(rename = "e-mail")]</span>
+    email: <span class="type">String</span>,
+
+    <span class="comment">// Accept an old key too, when reading. Serialising still uses</span>
+    <span class="comment">// the primary name.</span>
+    <span class="keyword">#[serde(alias = "handle")]</span>
+    username: <span class="type">String</span>,
+
+    <span class="comment">// Leave the key out of the output entirely when it is None,</span>
+    <span class="comment">// instead of emitting "bio": null.</span>
+    <span class="keyword">#[serde(skip_serializing_if = "Option::is_none")]</span>
+    bio: <span class="type">Option</span>&lt;<span class="type">String</span>&gt;,
+
+    <span class="comment">// Never appears in JSON in either direction.</span>
+    <span class="keyword">#[serde(skip)]</span>
+    cached_avatar: <span class="type">Option</span>&lt;<span class="type">Vec</span>&lt;<span class="type">u8</span>&gt;&gt;,
+
+    <span class="comment">// Missing key -&gt; call this function instead of failing.</span>
+    <span class="keyword">#[serde(default = "default_role")]</span>
+    role: <span class="type">String</span>,
+}
+
+<span class="keyword">fn</span> <span class="builtin">default_role</span>() -&gt; <span class="type">String</span> {
+    <span class="string">"member"</span>.to_string()
+}</pre>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Attribute</th>
+                                    <th>What it does</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>#[serde(rename_all = "…")]</code></td>
+                                    <td>Applies a naming convention to every field: <code>camelCase</code>,
+                                        <code>PascalCase</code>, <code>kebab-case</code>, <code>SCREAMING_SNAKE_CASE</code>
+                                        and others.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(rename = "…")]</code></td>
+                                    <td>Renames one field or variant.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(alias = "…")]</code></td>
+                                    <td>Extra accepted name when reading. Repeatable.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(default)]</code></td>
+                                    <td>Missing key uses <code>Default::default()</code>, or a named function.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(skip)]</code></td>
+                                    <td>Field is ignored in both directions; needs a <code>Default</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(skip_serializing_if = "…")]</code></td>
+                                    <td>Omit the key from output when the predicate is true.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(flatten)]</code></td>
+                                    <td>Inline a nested struct's fields, or collect unknown keys into a map.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(deny_unknown_fields)]</code></td>
+                                    <td>Error on any key you did not declare — see the warning below.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>#[serde(with = "module")]</code></td>
+                                    <td>Custom conversion for one field, e.g. a date format.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            Unknown keys are ignored by default</div>
+                        <p>
+                            If the JSON has fields your struct never mentions, serde silently drops them. That is
+                            usually what you want for an API that keeps growing — but it also means a typo in a
+                            config file (<code>"prot": 8080</code>) is silently ignored rather than reported. For
+                            config you control, add <code>#[serde(deny_unknown_fields)]</code> and turn that silence
+                            into an error.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ENUMS -->
+                <div id="json-enums" class="tab-content">
+                    <h3>Enums, and the four ways to put one in JSON</h3>
+                    <p>
+                        JSON has no notion of a tagged union, so serde offers four encodings. Picking the one that
+                        matches the API you are talking to is often the whole job.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde::{Deserialize, Serialize};
+
+<span class="keyword">#[derive(Serialize, Deserialize)]</span>
+<span class="keyword">enum</span> <span class="type">Event</span> {
+    Click { x: <span class="type">i32</span>, y: <span class="type">i32</span> },
+    KeyPress(<span class="type">char</span>),
+    Close,
+}</pre>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Representation</th>
+                                    <th>Attribute</th>
+                                    <th><code>Click { x: 3, y: 9 }</code> becomes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Externally tagged</strong> (default)</td>
+                                    <td>— none —</td>
+                                    <td><code>{"Click": {"x": 3, "y": 9}}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Internally tagged</strong></td>
+                                    <td><code>#[serde(tag = "type")]</code></td>
+                                    <td><code>{"type": "Click", "x": 3, "y": 9}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Adjacently tagged</strong></td>
+                                    <td><code>#[serde(tag = "t", content = "c")]</code></td>
+                                    <td><code>{"t": "Click", "c": {"x": 3, "y": 9}}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Untagged</strong></td>
+                                    <td><code>#[serde(untagged)]</code></td>
+                                    <td><code>{"x": 3, "y": 9}</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        <strong>Internally tagged</strong> is what most web APIs use — a <code>"type"</code> or
+                        <code>"kind"</code> discriminator sitting alongside the data. It cannot represent newtype
+                        variants holding a non-object, so <code>KeyPress(char)</code> above would need the adjacent or
+                        external form.
+                    </p>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <code>untagged</code> costs you your error messages</div>
+                        <p>
+                            An untagged enum is tried one variant at a time until one fits. When none does, serde can
+                            only report <code>"data did not match any variant"</code> — it cannot tell you
+                            <em>which</em> variant nearly matched or why, because it has no way to know which one you
+                            intended. Use it when the format genuinely has no discriminator, and prefer a tagged form
+                            whenever you have the choice.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- ERRORS -->
+                <div id="json-errors" class="tab-content">
+                    <h3>Errors that point at the problem</h3>
+                    <p>
+                        <code>serde_json::Error</code> carries the location and the category, which is what turns
+                        "invalid JSON" into a message someone can act on.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">match</span> serde_json::from_str::&lt;<span class="type">Package</span>&gt;(data) {
+    <span class="type">Ok</span>(pkg) =&gt; <span class="builtin">println!</span>(<span class="string">"{pkg:?}"</span>),
+    <span class="type">Err</span>(e) =&gt; {
+        <span class="comment">// Both are 1-based and point into the input text.</span>
+        <span class="builtin">eprintln!</span>(<span class="string">"line {}, column {}: {e}"</span>, e.line(), e.column());
+
+        <span class="keyword">if</span> e.is_syntax() {
+            <span class="builtin">eprintln!</span>(<span class="string">"  the text is not valid JSON at all"</span>);
+        } <span class="keyword">else if</span> e.is_data() {
+            <span class="builtin">eprintln!</span>(<span class="string">"  valid JSON, but not the shape Package expects"</span>);
+        } <span class="keyword">else if</span> e.is_eof() {
+            <span class="builtin">eprintln!</span>(<span class="string">"  the input ended in the middle of a value"</span>);
+        }
+    }
+}</pre>
+                    <h3>Reading more JSON than fits in memory</h3>
+                    <p>
+                        Two shapes come up constantly. <strong>JSON Lines</strong> — one document per line — is the
+                        simpler and more common of the two, and needs nothing special:
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::fs::File;
+<span class="keyword">use</span> std::io::{BufRead, BufReader};
+
+<span class="keyword">let</span> reader = BufReader::new(File::open(<span class="string">"events.jsonl"</span>)?);
+
+<span class="keyword">for</span> line <span class="keyword">in</span> reader.lines() {
+    <span class="keyword">let</span> line = line?;
+    <span class="keyword">if</span> line.trim().is_empty() { <span class="keyword">continue</span>; }
+
+    <span class="keyword">let</span> event: <span class="type">Event</span> = serde_json::from_str(&amp;line)?;
+    handle(event);
+}</pre>
+                    <p>
+                        For a stream of concatenated JSON values with no line structure, serde_json has a dedicated
+                        iterator:
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::io::BufReader;
+
+<span class="keyword">let</span> reader = BufReader::new(File::open(<span class="string">"stream.json"</span>)?);
+
+<span class="comment">// Yields Result&lt;Event, Error&gt; one document at a time; peak memory</span>
+<span class="comment">// stays proportional to a single document, not the whole file.</span>
+<span class="keyword">let</span> stream = serde_json::Deserializer::from_reader(reader).into_iter::&lt;<span class="type">Event</span>&gt;();
+
+<span class="keyword">for</span> item <span class="keyword">in</span> stream {
+    handle(item?);
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Large
+                            integers deserve a thought</div>
+                        <p>
+                            JSON's spec puts no limit on numbers, but many producers are JavaScript, where integers
+                            above 2<sup>53</sup> silently lose precision. serde_json itself handles full
+                            <code>u64</code> and <code>i64</code> ranges correctly, and the
+                            <code>arbitrary_precision</code> feature keeps the exact text of any number. If you are
+                            exchanging large IDs with a JavaScript client, the usual fix is to send them as strings.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-object-group" aria-hidden="true"></i> One derive,
+                    many formats</div>
+                <p>
+                    Because serde is format-agnostic, the same <code>#[derive(Serialize, Deserialize)]</code> already
+                    works with <code>toml</code> for config files, <code>rmp-serde</code> for MessagePack,
+                    <code>ciborium</code> for CBOR, <code>bincode</code> for a compact binary form, and the
+                    <code>csv</code> crate on the <a href="db.html">Databases &amp; CSV</a> page. It is also what
+                    <code>reqwest</code>'s <code>.json()</code> uses on the <a href="httpreq.html">HTTP</a> page.
+                    Describing your data once and reusing it everywhere is the whole point of the design.
+                </p>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- =====================================================
+             SECTION 2 — STRINGS
+             ===================================================== -->
+        <section id="strings">
+            <h2><i class="fa-solid fa-quote-left" aria-hidden="true"></i> Strings Before You Reach for Regex</h2>
+            <p class="lead">
+                Rust's string handling is strict in ways that feel obstructive for a week and then quietly prevent a
+                whole category of bugs. It is also rich enough that a surprising share of "I need a regex here"
+                moments turn out not to.
+            </p>
+
+            <h3>Two types, one job</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th><code>String</code></th>
+                            <th><code>&amp;str</code></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Owns its bytes?</strong></td>
+                            <td>Yes — a heap buffer it will free</td>
+                            <td>No — a borrowed view</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Growable?</strong></td>
+                            <td>Yes: <code>push_str</code>, <code>push</code></td>
+                            <td>No, fixed length</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Layout</strong></td>
+                            <td>Pointer + capacity + length (3 words)</td>
+                            <td>Pointer + length (2 words)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Where it comes from</strong></td>
+                            <td><code>String::from</code>, <code>format!</code>, <code>.to_string()</code></td>
+                            <td>Literals, slicing, <code>&amp;my_string</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Use in a parameter</strong></td>
+                            <td>Only when the function keeps it</td>
+                            <td><strong>Almost always</strong> — a <code>&amp;String</code> coerces to it
+                                automatically</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>
+                The relationship is exactly <code>Vec&lt;T&gt;</code> to <code>&amp;[T]</code> from the
+                <a href="iterators.html">Collections</a> page — and a <code>String</code> really is a
+                <code>Vec&lt;u8&gt;</code> with one extra promise: its bytes are always valid UTF-8.
+            </p>
+
+            <h3>That promise has consequences</h3>
+            <pre data-lang="rust"><span class="keyword">let</span> s = <span class="string">"Grüße, Jürgen ❤"</span>;
+
+<span class="comment">// len() counts BYTES, not characters. It always has.</span>
+<span class="builtin">assert_eq!</span>(s.len(), <span class="string">20</span>);
+<span class="builtin">assert_eq!</span>(s.chars().count(), <span class="string">15</span>);
+
+<span class="comment">// You cannot index a string by character position — there is no</span>
+<span class="comment">// O(1) answer, so Rust does not offer a misleading one.</span>
+<span class="comment">// let c = s[3];        // does not compile</span>
+<span class="keyword">let</span> c = s.chars().nth(<span class="string">3</span>);  <span class="comment">// Option&lt;char&gt;, and it walks the string</span>
+
+<span class="comment">// Slicing uses BYTE offsets and panics if one lands mid-character.</span>
+<span class="keyword">let</span> word = <span class="string">"café"</span>;          <span class="comment">// 5 bytes: c a f + 2 for é</span>
+<span class="builtin">assert_eq!</span>(&amp;word[<span class="string">0</span>..<span class="string">3</span>], <span class="string">"caf"</span>);
+<span class="comment">// let bad = &amp;word[0..4];  // PANIC: byte index 4 is inside 'é'</span>
+
+<span class="comment">// Three ways to walk it, three different answers:</span>
+<span class="keyword">for</span> b <span class="keyword">in</span> word.bytes()       { <span class="comment">/* 5 iterations, u8   */</span> }
+<span class="keyword">for</span> c <span class="keyword">in</span> word.chars()       { <span class="comment">/* 4 iterations, char */</span> }
+<span class="keyword">for</span> (i, c) <span class="keyword">in</span> word.char_indices() { <span class="comment">/* byte offset + char */</span> }</pre>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> A
+                    <code>char</code> is still not "what a user sees"</div>
+                <p>
+                    A <code>char</code> is one Unicode scalar value, four bytes wide. That is not the same as a
+                    <em>grapheme cluster</em> — the thing a reader would call a character. <code>"é"</code> may be one
+                    scalar or two (<code>e</code> + combining accent), and a flag emoji is several. When you need to
+                    count or truncate the way a human would, use the <code>unicode-segmentation</code> crate's
+                    <code>.graphemes(true)</code>. Truncating a display name by bytes or chars is how you end up
+                    printing half an emoji.
+                </p>
+            </div>
+
+            <h3>The method vocabulary</h3>
+            <p>
+                Learn this table and most of your pattern-matching needs disappear — these are faster than a regex,
+                cannot fail to compile at runtime, and read better.
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Does</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>trim()</code>, <code>trim_start()</code>, <code>trim_end()</code></td>
+                            <td>Remove surrounding whitespace. <code>trim_matches(char)</code> removes something
+                                else.</td>
+                        </tr>
+                        <tr>
+                            <td><code>split(pat)</code>, <code>splitn(n, pat)</code></td>
+                            <td>Iterator of pieces. The pattern can be a <code>char</code>, a <code>&amp;str</code>,
+                                or a closure over <code>char</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>split_once(pat)</code> / <code>rsplit_once(pat)</code></td>
+                            <td>Split into exactly two at the first / last occurrence. Returns
+                                <code>Option&lt;(&amp;str, &amp;str)&gt;</code> — perfect for
+                                <code>key=value</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>split_whitespace()</code>, <code>lines()</code></td>
+                            <td>The two splits you want most often, handling runs of spaces and
+                                <code>\r\n</code> correctly.</td>
+                        </tr>
+                        <tr>
+                            <td><code>strip_prefix(p)</code> / <code>strip_suffix(p)</code></td>
+                            <td>Remove it and return <code>Some(rest)</code>, or <code>None</code> if it was not
+                                there. Tests and removes in one step.</td>
+                        </tr>
+                        <tr>
+                            <td><code>starts_with</code>, <code>ends_with</code>, <code>contains</code></td>
+                            <td>Boolean tests.</td>
+                        </tr>
+                        <tr>
+                            <td><code>find(pat)</code> / <code>rfind(pat)</code></td>
+                            <td><code>Option&lt;usize&gt;</code> — a <em>byte</em> offset, ready for slicing.</td>
+                        </tr>
+                        <tr>
+                            <td><code>replace(from, to)</code> / <code>replacen(from, to, n)</code></td>
+                            <td>New <code>String</code> with substitutions.</td>
+                        </tr>
+                        <tr>
+                            <td><code>to_lowercase()</code> / <code>to_uppercase()</code></td>
+                            <td>Unicode-correct, and allocates. <code>to_ascii_lowercase()</code> is cheaper when the
+                                input really is ASCII.</td>
+                        </tr>
+                        <tr>
+                            <td><code>parse::&lt;T&gt;()</code></td>
+                            <td>Text to any type implementing <code>FromStr</code>, returning a
+                                <code>Result</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>repeat(n)</code>, <code>concat()</code>, <code>join(sep)</code></td>
+                            <td>Building strings from pieces.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <pre data-lang="rust"><span class="comment">// Parsing a config line — no regex required.</span>
+<span class="keyword">for</span> line <span class="keyword">in</span> text.lines() {
+    <span class="keyword">let</span> line = line.trim();
+
+    <span class="comment">// Skip blanks and comments.</span>
+    <span class="keyword">if</span> line.is_empty() || line.starts_with(<span class="string">'#'</span>) {
+        <span class="keyword">continue</span>;
+    }
+
+    <span class="comment">// split_once handles "key = value with = signs in it" correctly,</span>
+    <span class="comment">// because it splits only at the FIRST separator.</span>
+    <span class="keyword">let</span> <span class="type">Some</span>((key, value)) = line.split_once(<span class="string">'='</span>) <span class="keyword">else</span> {
+        <span class="builtin">eprintln!</span>(<span class="string">"skipping malformed line: {line}"</span>);
+        <span class="keyword">continue</span>;
+    };
+
+    <span class="builtin">println!</span>(<span class="string">"{} = {}"</span>, key.trim(), value.trim());
+}
+
+<span class="comment">// Stripping a flag prefix, testing and removing in one move.</span>
+<span class="keyword">if let</span> <span class="type">Some</span>(name) = arg.strip_prefix(<span class="string">"--"</span>) {
+    <span class="builtin">println!</span>(<span class="string">"long option: {name}"</span>);
+}</pre>
+
+            <h3>Building strings without waste</h3>
+            <pre data-lang="rust"><span class="keyword">use</span> std::fmt::Write; <span class="comment">// needed for write!/writeln! into a String</span>
+
+<span class="comment">// SLOW: `out + w` consumes and reallocates on every iteration.</span>
+<span class="keyword">let mut</span> out = <span class="type">String</span>::new();
+<span class="keyword">for</span> w <span class="keyword">in</span> &amp;words { out = out + w + <span class="string">" "</span>; }
+
+<span class="comment">// GOOD: one buffer, sized up front, appended in place.</span>
+<span class="keyword">let mut</span> out = <span class="type">String</span>::with_capacity(words.len() * <span class="string">8</span>);
+<span class="keyword">for</span> w <span class="keyword">in</span> &amp;words {
+    out.push_str(w);
+    out.push(<span class="string">' '</span>);
+}
+
+<span class="comment">// BEST when a separator is all you need — one allocation, no loop.</span>
+<span class="keyword">let</span> out = words.join(<span class="string">" "</span>);
+
+<span class="comment">// Formatting into an existing buffer instead of allocating per line.</span>
+<span class="keyword">let mut</span> report = <span class="type">String</span>::new();
+<span class="keyword">for</span> (name, score) <span class="keyword">in</span> &amp;results {
+    <span class="builtin">writeln!</span>(report, <span class="string">"{name:&lt;20} {score:&gt;6.1}"</span>).unwrap(); <span class="comment">// cannot fail for String</span>
+}</pre>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-feather" aria-hidden="true"></i> <code>Cow</code>: pay
+                    only when you change something</div>
+                <p>
+                    A function that <em>might</em> need to modify a string can return
+                    <code>Cow&lt;str&gt;</code> — "clone on write" — and allocate only in the branch that actually
+                    does. This is not an exotic type: it is what <code>Regex::replace_all</code> returns in the next
+                    section, which is why replacing nothing costs nothing.
+                </p>
+                <pre data-lang="rust"><span class="keyword">use</span> std::borrow::Cow;
+
+<span class="keyword">fn</span> <span class="builtin">slugify</span>(input: &amp;<span class="type">str</span>) -&gt; Cow&lt;<span class="keyword">'_</span>, <span class="type">str</span>&gt; {
+    <span class="keyword">if</span> input.contains(<span class="string">' '</span>) {
+        Cow::Owned(input.replace(<span class="string">' '</span>, <span class="string">"-"</span>))  <span class="comment">// allocates, but only here</span>
+    } <span class="keyword">else</span> {
+        Cow::Borrowed(input)                <span class="comment">// no allocation at all</span>
+    }
+}</pre>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- =====================================================
+             SECTION 3 — REGEX
+             ===================================================== -->
+        <section id="regex">
+            <h2><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Regular Expressions</h2>
+            <p class="lead">
+                Regular expressions are not in the standard library either. The <code>regex</code> crate is the de
+                facto standard, maintained by the same author as <code>ripgrep</code> — and it makes a promise that
+                most other regex engines cannot.
+            </p>
+
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+regex = <span class="string">"1"</span></pre>
+
+            <div class="callout">
+                <div class="callout-title"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> The linear-time
+                    guarantee</div>
+                <p>
+                    The crate documents a hard complexity bound: searching is
+                    <strong><code>O(m × n)</code></strong>, where <code>m</code> is the size of the pattern and
+                    <code>n</code> the size of the text. It compiles patterns to finite automata rather than
+                    backtracking, so <strong>catastrophic backtracking cannot happen</strong>. The pattern
+                    <code>(a+)+$</code> against a long string of <code>a</code>s followed by a non-<code>a</code> —
+                    a classic exponential-time near miss in backtracking engines — still runs in linear time here.
+                </p>
+                <p>
+                    That matters beyond curiosity: it means a regex applied to untrusted input is not a
+                    denial-of-service vector. Catastrophic-backtracking ReDoS, an entire vulnerability class
+                    elsewhere, simply does not exist in this crate.
+                </p>
+            </div>
+
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> What that
+                    guarantee costs</div>
+                <p>
+                    Linear time is only achievable by giving up features that require backtracking. The
+                    <code>regex</code> crate therefore has <strong>no lookaround</strong>
+                    (<code>(?=…)</code>, <code>(?!…)</code>, <code>(?&lt;=…)</code>, <code>(?&lt;!…)</code>) and
+                    <strong>no backreferences</strong> (<code>\1</code>). <code>Regex::new</code> returns an
+                    <code>Err</code> if you use them, rather than failing mysteriously later.
+                </p>
+                <p>
+                    When you genuinely need those, the <code>fancy-regex</code> crate wraps this one and adds a
+                    backtracking engine for the constructs it cannot handle — accepting the exponential worst case in
+                    exchange. Most of the time, restructuring the pattern or doing one extra check in Rust is the
+                    better answer.
+                </p>
+            </div>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="re-match"><i class="fa-solid fa-magnifying-glass"
+                            aria-hidden="true"></i>Match &amp; find</button>
+                    <button class="tab-btn" data-tab="re-captures"><i class="fa-solid fa-object-group"
+                            aria-hidden="true"></i>Captures</button>
+                    <button class="tab-btn" data-tab="re-replace"><i class="fa-solid fa-pen"
+                            aria-hidden="true"></i>Replace</button>
+                    <button class="tab-btn" data-tab="re-compile"><i class="fa-solid fa-gauge-high"
+                            aria-hidden="true"></i>Compile once</button>
+                    <button class="tab-btn" data-tab="re-more"><i class="fa-solid fa-sliders"
+                            aria-hidden="true"></i>Flags &amp; sets</button>
+                </div>
+
+                <!-- MATCH -->
+                <div id="re-match" class="tab-content active">
+                    <h3>Testing and locating</h3>
+                    <pre data-lang="rust"><span class="keyword">use</span> regex::Regex;
+
+<span class="comment">// ALWAYS use a raw string r"..." for patterns. In a normal string,</span>
+<span class="comment">// \d is an unknown escape and will not compile.</span>
+<span class="keyword">let</span> re = Regex::new(<span class="string">r"^\d{4}-\d{2}-\d{2}$"</span>).unwrap();
+
+<span class="builtin">assert!</span>(re.is_match(<span class="string">"2026-08-20"</span>));
+<span class="builtin">assert!</span>(!re.is_match(<span class="string">"20 August 2026"</span>));
+
+<span class="comment">// find() gives the first match, with its byte offsets.</span>
+<span class="keyword">let</span> words = Regex::new(<span class="string">r"\b\w{5,}\b"</span>).unwrap();
+<span class="keyword">let</span> hay = <span class="string">"the borrow checker prevents dangling pointers"</span>;
+
+<span class="keyword">if let</span> <span class="type">Some</span>(m) = words.find(hay) {
+    <span class="builtin">println!</span>(<span class="string">"{:?} at bytes {}..{}"</span>, m.as_str(), m.start(), m.end());
+    <span class="comment">// "borrow" at bytes 4..10</span>
+}
+
+<span class="comment">// find_iter() walks every non-overlapping match.</span>
+<span class="keyword">let</span> found: <span class="type">Vec</span>&lt;&amp;<span class="type">str</span>&gt; = words.find_iter(hay).map(|m| m.as_str()).collect();
+<span class="builtin">assert_eq!</span>(found, <span class="builtin">vec!</span>[<span class="string">"borrow"</span>, <span class="string">"checker"</span>, <span class="string">"prevents"</span>, <span class="string">"dangling"</span>, <span class="string">"pointers"</span>]);
+
+<span class="comment">// Splitting on a pattern rather than a fixed separator.</span>
+<span class="keyword">let</span> sep = Regex::new(<span class="string">r"[\s,]+"</span>).unwrap();
+<span class="keyword">let</span> fields: <span class="type">Vec</span>&lt;&amp;<span class="type">str</span>&gt; = sep.split(<span class="string">"a, b ,c   d"</span>).collect();
+<span class="builtin">assert_eq!</span>(fields, <span class="builtin">vec!</span>[<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>]);</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            <code>new</code> returns a <code>Result</code> for a reason</div>
+                        <p>
+                            A pattern is compiled at runtime, so an invalid one is a runtime error. In the examples
+                            here <code>.unwrap()</code> is fine because the pattern is a literal that either always
+                            works or never does — you will find out the first time you run the program. If the
+                            pattern comes from a user or a config file, handle the <code>Err</code> properly and show
+                            them what was wrong.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CAPTURES -->
+                <div id="re-captures" class="tab-content">
+                    <h3>Pulling the pieces out</h3>
+                    <p>
+                        Capture groups are what turn a regex from a test into a parser. Name them — positional
+                        indices become unreadable as soon as the pattern grows.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> regex::Regex;
+
+<span class="comment">// (?&lt;name&gt;...) names a group. (?:...) groups WITHOUT capturing,</span>
+<span class="comment">// which is what you want for grouping used only by an alternation.</span>
+<span class="keyword">let</span> re = Regex::new(<span class="string">r"(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})"</span>).unwrap();
+<span class="keyword">let</span> hay = <span class="string">"released 2026-08-20, patched 2026-09-01"</span>;
+
+<span class="keyword">if let</span> <span class="type">Some</span>(caps) = re.captures(hay) {
+    <span class="comment">// Group 0 is always the whole match.</span>
+    <span class="builtin">println!</span>(<span class="string">"matched: {}"</span>, &amp;caps[<span class="string">0</span>]);
+
+    <span class="comment">// Indexing by name is concise but PANICS if the group did not</span>
+    <span class="comment">// participate in the match.</span>
+    <span class="builtin">println!</span>(<span class="string">"year: {}"</span>, &amp;caps[<span class="string">"year"</span>]);
+
+    <span class="comment">// .name() returns Option&lt;Match&gt; and never panics — the right</span>
+    <span class="comment">// choice for any group inside an alternation or a `?`.</span>
+    <span class="keyword">if let</span> <span class="type">Some</span>(m) = caps.name(<span class="string">"month"</span>) {
+        <span class="builtin">println!</span>(<span class="string">"month {} at bytes {}..{}"</span>, m.as_str(), m.start(), m.end());
+    }
+}
+
+<span class="comment">// Every match, with its groups.</span>
+<span class="keyword">for</span> caps <span class="keyword">in</span> re.captures_iter(hay) {
+    <span class="builtin">println!</span>(<span class="string">"{}/{}/{}"</span>, &amp;caps[<span class="string">"day"</span>], &amp;caps[<span class="string">"month"</span>], &amp;caps[<span class="string">"year"</span>]);
+}
+<span class="comment">// 20/08/2026</span>
+<span class="comment">// 01/09/2026</span></pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            A matched group is still just text</div>
+                        <p>
+                            <code>\d{4}</code> guarantees four digits, not a valid year — and certainly not an
+                            <code>i32</code>. You still have to <code>.parse()</code>, and you still have to handle
+                            the failure. A regex validates <em>shape</em>; your code validates <em>meaning</em>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- REPLACE -->
+                <div id="re-replace" class="tab-content">
+                    <h3>Rewriting text</h3>
+                    <pre data-lang="rust"><span class="keyword">use</span> regex::Regex;
+
+<span class="keyword">let</span> re = Regex::new(<span class="string">r"(?&lt;y&gt;\d{4})-(?&lt;m&gt;\d{2})-(?&lt;d&gt;\d{2})"</span>).unwrap();
+
+<span class="comment">// $name (or $1, $2…) expands a capture group in the replacement.</span>
+<span class="keyword">let</span> out = re.replace_all(<span class="string">"due 2026-08-20"</span>, <span class="string">"$m/$d/$y"</span>);
+<span class="builtin">assert_eq!</span>(out, <span class="string">"due 08/20/2026"</span>);
+
+<span class="comment">// Use ${name} when the next character could be read as part of the</span>
+<span class="comment">// name: "$mX" looks for a group called "mX", "${m}X" does not.</span>
+<span class="keyword">let</span> out = re.replace_all(<span class="string">"due 2026-08-20"</span>, <span class="string">"${m}-${d}"</span>);
+
+<span class="comment">// replace() changes only the first match; replace_all() changes all;</span>
+<span class="comment">// replacen(hay, n, rep) changes the first n.</span>
+
+<span class="comment">// A closure gets the Captures, for anything the pattern cannot say.</span>
+<span class="keyword">let</span> masked = re.replace_all(<span class="string">"born 1984-04-01"</span>, |caps: &amp;regex::Captures| {
+    <span class="builtin">format!</span>(<span class="string">"{}-**-**"</span>, &amp;caps[<span class="string">"y"</span>])
+});
+<span class="builtin">assert_eq!</span>(masked, <span class="string">"born 1984-**-**"</span>);</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-feather" aria-hidden="true"></i> Replacing
+                            nothing allocates nothing</div>
+                        <p>
+                            <code>replace_all</code> returns <code>Cow&lt;str&gt;</code> — the type from the previous
+                            section. When the pattern does not match, you get <code>Cow::Borrowed</code> pointing at
+                            the original text and no allocation happens at all. It only builds a new
+                            <code>String</code> when there is genuinely something to change.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- COMPILE ONCE -->
+                <div id="re-compile" class="tab-content">
+                    <h3>Compile the pattern once, not once per call</h3>
+                    <p>
+                        This is the single most important performance rule for the crate, and the easiest to get
+                        wrong. <code>Regex::new</code> builds a state machine — an expensive operation, frequently far
+                        more expensive than the search you are about to perform.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> regex::Regex;
+
+<span class="comment">// SLOW: recompiles the pattern on every single call. In a loop this</span>
+<span class="comment">// can dominate the runtime completely.</span>
+<span class="keyword">fn</span> <span class="builtin">is_email_slow</span>(candidate: &amp;<span class="type">str</span>) -&gt; <span class="type">bool</span> {
+    Regex::new(<span class="string">r"^[^@\s]+@[^@\s]+\.[^@\s]+$"</span>).unwrap().is_match(candidate)
+}</pre>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::sync::LazyLock;
+<span class="keyword">use</span> regex::Regex;
+
+<span class="comment">// FAST: compiled on first use, then shared for the life of the</span>
+<span class="comment">// program. LazyLock is in std as of Rust 1.80 — no crate needed.</span>
+<span class="keyword">static</span> EMAIL: LazyLock&lt;Regex&gt; = LazyLock::new(|| {
+    Regex::new(<span class="string">r"^[^@\s]+@[^@\s]+\.[^@\s]+$"</span>).unwrap()
+});
+
+<span class="keyword">fn</span> <span class="builtin">is_email</span>(candidate: &amp;<span class="type">str</span>) -&gt; <span class="type">bool</span> {
+    EMAIL.is_match(candidate)
+}</pre>
+                    <p>
+                        A <code>Regex</code> is <code>Send + Sync</code>, so one <code>static</code> is safely shared
+                        across every thread — no locking, no per-thread copy. Before Rust 1.80 the same pattern used
+                        <code>once_cell::sync::Lazy</code>, which you will still see in older code and which works
+                        identically.
+                    </p>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            And do not build a pattern from user input by hand</div>
+                        <p>
+                            <code>format!("^{user_input}$")</code> lets someone inject regex syntax — the same
+                            category of mistake as string-concatenating SQL on the
+                            <a href="db.html">Databases</a> page. Escape it with
+                            <code>regex::escape(user_input)</code>, which returns a pattern matching that text
+                            literally.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- MORE -->
+                <div id="re-more" class="tab-content">
+                    <h3>Flags</h3>
+                    <p>
+                        Flags go inside the pattern as <code>(?flags)</code> at the start, or scoped to a group as
+                        <code>(?flags:…)</code>.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Flag</th>
+                                    <th>Effect</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>(?i)</code></td>
+                                    <td>Case-insensitive, and Unicode-aware about it.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>(?m)</code></td>
+                                    <td>Multi-line: <code>^</code> and <code>$</code> match at line boundaries.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>(?s)</code></td>
+                                    <td>Let <code>.</code> match a newline as well.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>(?x)</code></td>
+                                    <td>Verbose: ignore whitespace in the pattern and allow <code>#</code> comments.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>(?U)</code></td>
+                                    <td>Swap greedy and lazy, so <code>*</code> becomes lazy and <code>*?</code>
+                                        greedy.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        The verbose flag is worth adopting as a habit. A commented pattern is reviewable; a dense one
+                        is not.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> phone = Regex::new(<span class="string">r"(?x)
+    (?&lt;area&gt;\d{3})     # area code
+    [\s.\-]?           # optional separator
+    (?&lt;prefix&gt;\d{3})   # exchange
+    [\s.\-]?
+    (?&lt;line&gt;\d{4})     # subscriber number
+"</span>).unwrap();</pre>
+
+                    <h3>Testing many patterns at once</h3>
+                    <p>
+                        <code>RegexSet</code> checks a whole list of patterns in a single pass over the text, rather
+                        than running each one separately. It tells you <em>which</em> matched, not where.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> regex::RegexSet;
+
+<span class="keyword">let</span> set = RegexSet::new([
+    <span class="string">r"^GET "</span>,
+    <span class="string">r"\.css$"</span>,
+    <span class="string">r"\d{3}$"</span>,
+]).unwrap();
+
+<span class="keyword">let</span> hits: <span class="type">Vec</span>&lt;<span class="type">usize</span>&gt; = set.matches(<span class="string">"GET /style.css"</span>).into_iter().collect();
+<span class="builtin">assert_eq!</span>(hits, <span class="builtin">vec!</span>[<span class="string">0</span>, <span class="string">1</span>]); <span class="comment">// patterns 0 and 1 matched, 2 did not</span></pre>
+
+                    <h3>Two variants worth knowing</h3>
+                    <ul>
+                        <li><strong><code>regex::bytes::Regex</code></strong> — searches <code>&amp;[u8]</code>
+                            instead of <code>&amp;str</code>, for data that is not guaranteed to be valid UTF-8. Same
+                            API, byte-oriented matches.</li>
+                        <li><strong><code>regex-lite</code></strong> — a separate crate with the same core API, far
+                            fewer dependencies and a much smaller binary, at the cost of speed and Unicode features.
+                            Worth considering for the <a href="wasm.html">WebAssembly</a> target, where binary size is
+                            the thing you are optimising.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="callout danger">
+                <div class="callout-title"><i class="fa-solid fa-ban" aria-hidden="true"></i> When not to use a regex
+                    at all</div>
+                <p>
+                    A regex describes a <em>regular</em> language. Nested structures are not regular, and no amount of
+                    cleverness makes them so:
+                </p>
+                <ul>
+                    <li><strong>JSON</strong> → <code>serde_json</code>, at the top of this page.</li>
+                    <li><strong>HTML or XML</strong> → <code>scraper</code>, <code>html5ever</code>,
+                        <code>quick-xml</code>. Never a regex.</li>
+                    <li><strong>CSV</strong> → the <code>csv</code> crate on the <a href="db.html">Databases &amp;
+                            CSV</a> page. Quoted fields containing commas and newlines defeat the obvious
+                        pattern.</li>
+                    <li><strong>URLs</strong> → the <code>url</code> crate, which implements the actual spec.</li>
+                    <li><strong>Dates</strong> → <code>chrono</code> or <code>time</code>, which know that
+                        <code>2026-02-30</code> is shaped correctly and still wrong.</li>
+                    <li><strong>A fixed prefix, suffix or separator</strong> → <code>strip_prefix</code>,
+                        <code>split_once</code> and friends from the previous section. Faster, clearer, and they
+                        cannot fail to compile.</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- =====================================================
+             SECTION 4 — TOGETHER
+             ===================================================== -->
+        <section id="together">
+            <h2><i class="fa-solid fa-puzzle-piece" aria-hidden="true"></i> Putting It Together</h2>
+            <p>
+                Here is the whole page in one program: read semi-structured text, pull it apart with a named-group
+                regex compiled exactly once, and emit clean JSON. This is a large share of what real data-plumbing
+                code does.
+            </p>
+
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+regex      = <span class="string">"1"</span>
+serde      = { version = <span class="string">"1"</span>, features = [<span class="string">"derive"</span>] }
+serde_json = <span class="string">"1"</span></pre>
+
+            <pre data-lang="rust"><span class="keyword">use</span> regex::Regex;
+<span class="keyword">use</span> serde::Serialize;
+<span class="keyword">use</span> std::sync::LazyLock;
+
+<span class="comment">// Compiled once, on first use. The (?x) flag lets the pattern be</span>
+<span class="comment">// laid out and commented like ordinary code.</span>
+<span class="keyword">static</span> LOG_LINE: LazyLock&lt;Regex&gt; = LazyLock::new(|| {
+    Regex::new(
+        <span class="string">r#"(?x)
+        ^(?&lt;ip&gt;\S+)\s+            # client address
+        \S+\s+\S+\s+              # identity and user, usually "-"
+        \[(?&lt;time&gt;[^\]]+)\]\s+    # timestamp in brackets
+        "(?&lt;method&gt;[A-Z]+)\s      # request method
+        (?&lt;path&gt;\S+)[^"]*"\s+     # path, then the protocol we ignore
+        (?&lt;status&gt;\d{3})\s+       # status code
+        (?&lt;bytes&gt;\d+)$            # response size
+        "#</span>,
+    )
+    .expect(<span class="string">"the log pattern is a literal and must compile"</span>)
+});
+
+<span class="comment">// The struct borrows from the input line rather than copying it —</span>
+<span class="comment">// Match::as_str() hands back a slice tied to the original text.</span>
+<span class="keyword">#[derive(Debug, Serialize)]</span>
+<span class="keyword">struct</span> <span class="type">Entry</span>&lt;<span class="keyword">'a</span>&gt; {
+    ip: &amp;<span class="keyword">'a</span> <span class="type">str</span>,
+    time: &amp;<span class="keyword">'a</span> <span class="type">str</span>,
+    method: &amp;<span class="keyword">'a</span> <span class="type">str</span>,
+    path: &amp;<span class="keyword">'a</span> <span class="type">str</span>,
+    status: <span class="type">u16</span>,
+    bytes: <span class="type">u64</span>,
+}
+
+<span class="comment">// Returning Option lets `?` skip any line that does not fit,</span>
+<span class="comment">// without a single explicit `if`.</span>
+<span class="keyword">fn</span> <span class="builtin">parse_line</span>(line: &amp;<span class="type">str</span>) -&gt; <span class="type">Option</span>&lt;<span class="type">Entry</span>&lt;<span class="keyword">'_</span>&gt;&gt; {
+    <span class="keyword">let</span> caps = LOG_LINE.captures(line)?;
+
+    <span class="type">Some</span>(<span class="type">Entry</span> {
+        ip: caps.name(<span class="string">"ip"</span>)?.as_str(),
+        time: caps.name(<span class="string">"time"</span>)?.as_str(),
+        method: caps.name(<span class="string">"method"</span>)?.as_str(),
+        path: caps.name(<span class="string">"path"</span>)?.as_str(),
+        <span class="comment">// Matching \d{3} proves the shape; parsing proves the value.</span>
+        status: caps[<span class="string">"status"</span>].parse().ok()?,
+        bytes: caps[<span class="string">"bytes"</span>].parse().ok()?,
+    })
+}
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; {
+    <span class="keyword">let</span> log = <span class="string">r#"10.0.0.7 - - [20/Aug/2026:13:55:36 +0000] "GET /index.html HTTP/1.1" 200 5120
+10.0.0.9 - - [20/Aug/2026:13:55:41 +0000] "POST /api/login HTTP/1.1" 401 96
+this line is not a log entry at all
+10.0.0.7 - - [20/Aug/2026:13:56:02 +0000] "GET /style.css HTTP/1.1" 200 1840"#</span>;
+
+    <span class="comment">// filter_map drops the lines that did not parse and keeps the rest.</span>
+    <span class="keyword">let</span> entries: <span class="type">Vec</span>&lt;<span class="type">Entry</span>&gt; = log.lines().filter_map(parse_line).collect();
+
+    <span class="builtin">println!</span>(<span class="string">"parsed {} of {} lines"</span>, entries.len(), log.lines().count());
+
+    <span class="comment">// Serialize the whole batch as a JSON array.</span>
+    <span class="builtin">println!</span>(<span class="string">"{}"</span>, serde_json::to_string_pretty(&amp;entries)?);
+
+    <span class="comment">// Or as JSON Lines, which streams and appends nicely.</span>
+    <span class="keyword">for</span> entry <span class="keyword">in</span> &amp;entries {
+        <span class="builtin">println!</span>(<span class="string">"{}"</span>, serde_json::to_string(entry)?);
+    }
+
+    <span class="type">Ok</span>(())
+}</pre>
+
+            <p>Output of the pretty-printed array:</p>
+            <pre data-lang="json">[
+  {
+    <span class="string">"ip"</span>: <span class="string">"10.0.0.7"</span>,
+    <span class="string">"time"</span>: <span class="string">"20/Aug/2026:13:55:36 +0000"</span>,
+    <span class="string">"method"</span>: <span class="string">"GET"</span>,
+    <span class="string">"path"</span>: <span class="string">"/index.html"</span>,
+    <span class="string">"status"</span>: <span class="string">200</span>,
+    <span class="string">"bytes"</span>: <span class="string">5120</span>
+  },
+  <span class="comment">/* … two more entries … */</span>
+]</pre>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Three details
+                    worth stealing</div>
+                <ul>
+                    <li><strong><code>Entry&lt;'a&gt;</code> borrows.</strong> No <code>String</code> is allocated per
+                        field. <code>Serialize</code> works perfectly well on borrowed data, so the JSON output costs
+                        one allocation rather than six per line.</li>
+                    <li><strong><code>Option</code> plus <code>filter_map</code>.</strong> A line that does not match
+                        returns <code>None</code> and disappears. No sentinel values, no flags, no nested
+                        <code>if</code>.</li>
+                    <li><strong>The pattern is data, the parsing is code.</strong> The regex extracts substrings;
+                        <code>parse()</code> turns them into numbers and reports failure. Keeping that boundary clean
+                        is what stops a pattern from growing into something unreadable.</li>
+                </ul>
+            </div>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="stdlib.html">
+                <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Previous</span>
+                    <span class="page-nav-title">Files &amp; I/O</span>
+                </span>
+            </a>
+            <a href="db.html">
+                <i class="fa-solid fa-database" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Next</span>
+                    <span class="page-nav-title">Databases &amp; CSV</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>Reference documentation:
+            <a href="https://docs.rs/serde_json/" target="_blank" rel="noopener">serde_json</a>,
+            <a href="https://serde.rs/" target="_blank" rel="noopener">the serde guide</a> (its attribute list is the
+            page to bookmark), and
+            <a href="https://docs.rs/regex/" target="_blank" rel="noopener">the regex crate</a>, whose module docs
+            double as a complete syntax reference.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+
+</html>

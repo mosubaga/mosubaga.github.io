@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>HTTP Requests in Rust — Clients, JSON and Concurrency</title>
+    <meta name="description"
+        content="How Rust makes HTTP requests: what the standard library does and does not provide, choosing between reqwest and ureq, parsing JSON, handling errors and running many requests concurrently.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-solid fa-globe" aria-hidden="true"></i> Networking</span>
+            <h1>HTTP Requests in <span>Rust</span></h1>
+            <p>From a hand-written request over a raw socket to a pooled, typed, concurrent API client — and every
+                useful step in between.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> On this page</h3>
+            <div class="kp">
+                <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
+                <span>What <code>std</code> actually gives you — and why every real project reaches for a crate.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                <span><code>reqwest</code> for async work and <code>ureq</code> when you want no runtime at all.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-code" aria-hidden="true"></i>
+                <span>Turning JSON responses into typed structs, and typed structs into request bodies.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-stopwatch" aria-hidden="true"></i>
+                <span>Timeouts, retries, error handling and running hundreds of requests at once.</span>
+            </div>
+        </div>
+
+        <!-- SECTION 1: NO HTTP IN STD -->
+        <section id="no-http-in-std">
+            <h2><i class="fa-solid fa-network-wired" aria-hidden="true"></i> There Is No HTTP in the Standard
+                Library</h2>
+            <p class="lead">
+                Rust's standard library stops at TCP. <code>std::net::TcpStream</code> gives you a byte pipe;
+                everything above it — request framing, headers, chunked transfer encoding, redirects, compression,
+                TLS, connection pooling, HTTP/2 — lives in crates.
+            </p>
+            <p>
+                That surprises people arriving from Python or Go. The reasoning is the same as for databases: HTTP is
+                a large, fast-moving target, and pinning an implementation to the language's six-week release train
+                would freeze it. Instead the ecosystem settled on a shared foundation — the <code>http</code> crate
+                for types, <code>hyper</code> for the protocol — that almost every client and server is built on, so
+                they interoperate cleanly.
+            </p>
+            <p>
+                It is still worth writing one request by hand, once. HTTP/1.1 is a text protocol, and seeing it makes
+                every library that follows less mysterious:
+            </p>
+            <pre data-lang="rust"><span class="keyword">use</span> std::io::{Read, Write};
+<span class="keyword">use</span> std::net::TcpStream;
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; std::io::Result&lt;()&gt; {
+    <span class="comment">// Port 80 — plain HTTP. Anything with TLS would need a crate here.</span>
+    <span class="keyword">let mut</span> stream = TcpStream::connect(<span class="string">"example.com:80"</span>)?;
+
+    <span class="comment">// Every line ends with CRLF, and a blank line terminates the head.</span>
+    <span class="comment">// HTTP/1.1 requires Host; `Connection: close` tells the server to</span>
+    <span class="comment">// hang up when done, so read_to_string knows where the body ends.</span>
+    <span class="keyword">let</span> request = <span class="string">"GET / HTTP/1.1\r\n\</span>
+<span class="string">                   Host: example.com\r\n\</span>
+<span class="string">                   Connection: close\r\n\</span>
+<span class="string">                   \r\n"</span>;
+
+    stream.write_all(request.as_bytes())?;
+
+    <span class="keyword">let mut</span> response = <span class="type">String</span>::new();
+    stream.read_to_string(&amp;<span class="keyword">mut</span> response)?;
+
+    <span class="keyword">for</span> line <span class="keyword">in</span> response.lines().take(<span class="string">8</span>) {
+        <span class="builtin">println!</span>(<span class="string">"{line}"</span>);
+    }
+    <span class="type">Ok</span>(())
+}</pre>
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Read
+                    it, then never ship it</div>
+                <p>
+                    The snippet above has no TLS, no redirect handling, no chunked-encoding support, no timeout and no
+                    protection against a response large enough to exhaust memory. It is a teaching aid. Real code uses
+                    a client crate — and so does every example below.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: CHOOSING -->
+        <section id="choosing">
+            <h2><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Choosing a Client</h2>
+            <p>Three crates cover essentially every case:</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Crate</th>
+                            <th>Style</th>
+                            <th>Strengths</th>
+                            <th>Choose it when…</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong><code>reqwest</code></strong></td>
+                            <td>Async (with an optional blocking API)</td>
+                            <td>Batteries included: JSON, cookies, redirects, proxies, gzip/brotli, HTTP/2, multipart,
+                                connection pooling. Also compiles to WebAssembly.</td>
+                            <td>Almost always — especially in anything already using Tokio.</td>
+                        </tr>
+                        <tr>
+                            <td><strong><code>ureq</code></strong></td>
+                            <td>Blocking only</td>
+                            <td>No async runtime, few dependencies, fast to compile, small binaries.</td>
+                            <td>CLI tools, build scripts and small utilities where pulling in Tokio would be the
+                                largest thing in the project.</td>
+                        </tr>
+                        <tr>
+                            <td><strong><code>hyper</code></strong></td>
+                            <td>Low-level async</td>
+                            <td>The protocol implementation that <code>reqwest</code> itself is built on. Total
+                                control over connections and bodies.</td>
+                            <td>You are writing a proxy, a load balancer, or your own client library.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> The one-line
+                    decision rule</div>
+                <p>
+                    Does your program already have an async runtime, or will it make more than a handful of requests
+                    at a time? Use <code>reqwest</code>. Otherwise use <code>ureq</code> and enjoy the shorter compile
+                    times. You can switch later; the shapes are very similar.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: REQWEST -->
+        <section id="reqwest">
+            <h2><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Making Requests with reqwest</h2>
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+tokio   = { version = <span class="string">"1"</span>, features = [<span class="string">"macros"</span>, <span class="string">"rt-multi-thread"</span>, <span class="string">"fs"</span>, <span class="string">"io-util"</span>, <span class="string">"time"</span>] }
+reqwest = { version = <span class="string">"0.13"</span>, features = [<span class="string">"json"</span>, <span class="string">"query"</span>, <span class="string">"form"</span>, <span class="string">"stream"</span>] }
+serde   = { version = <span class="string">"1"</span>, features = [<span class="string">"derive"</span>] }
+futures = <span class="string">"0.3"</span></pre>
+            <p>
+                <code>reqwest</code> keeps most conveniences behind feature flags so a project that only needs plain
+                bodies does not pay for JSON, forms or multipart. TLS via <code>rustls</code> is on by default, so
+                <code>https://</code> works out of the box with nothing to install on the host.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="rq-get"><i class="fa-solid fa-cloud-arrow-down"
+                            aria-hidden="true"></i>GET</button>
+                    <button class="tab-btn" data-tab="rq-json"><i class="fa-solid fa-code"
+                            aria-hidden="true"></i>JSON</button>
+                    <button class="tab-btn" data-tab="rq-post"><i class="fa-solid fa-paper-plane"
+                            aria-hidden="true"></i>POST</button>
+                    <button class="tab-btn" data-tab="rq-client"><i class="fa-solid fa-gears"
+                            aria-hidden="true"></i>Reusing a Client</button>
+                    <button class="tab-btn" data-tab="rq-stream"><i class="fa-solid fa-download"
+                            aria-hidden="true"></i>Downloads</button>
+                </div>
+
+                <!-- GET -->
+                <div id="rq-get" class="tab-content active">
+                    <h3>The shortest thing that works</h3>
+                    <pre data-lang="rust"><span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), reqwest::Error&gt; {
+    <span class="keyword">let</span> body = reqwest::get(<span class="string">"https://www.rust-lang.org"</span>)
+        .<span class="keyword">await</span>?   <span class="comment">// 1. connect, send, and receive the response HEAD</span>
+        .text()
+        .<span class="keyword">await</span>?;  <span class="comment">// 2. read the BODY to completion</span>
+
+    <span class="builtin">println!</span>(<span class="string">"{} bytes"</span>, body.len());
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="callout info">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Why two
+                            <code>.await</code>s?</div>
+                        <p>
+                            The first resolves once the status line and headers have arrived; the body may still be
+                            streaming in. That split is what lets you check the status, inspect a
+                            <code>Content-Length</code>, or abandon a 404 <em>without</em> downloading its body. It is
+                            not ceremony — it is a genuinely useful place to make a decision.
+                        </p>
+                    </div>
+                    <h3>Checking what came back</h3>
+                    <p>
+                        A 404 or a 500 is a perfectly successful HTTP exchange, so <code>send()</code> returns
+                        <code>Ok</code> for both. Deciding whether the status counts as a failure is your call:
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">let</span> response = client.get(url).send().<span class="keyword">await</span>?;
+
+<span class="builtin">println!</span>(<span class="string">"status: {}"</span>, response.status());          <span class="comment">// e.g. 200 OK</span>
+<span class="builtin">println!</span>(<span class="string">"type:   {:?}"</span>, response.headers().get(<span class="string">"content-type"</span>));
+<span class="builtin">println!</span>(<span class="string">"length: {:?}"</span>, response.content_length());
+
+<span class="keyword">match</span> response.status().as_u16() {
+    <span class="string">200</span>..=<span class="string">299</span> =&gt; <span class="builtin">println!</span>(<span class="string">"success"</span>),
+    <span class="string">429</span>      =&gt; <span class="builtin">println!</span>(<span class="string">"rate limited — back off and retry"</span>),
+    <span class="string">404</span>      =&gt; <span class="builtin">println!</span>(<span class="string">"not found"</span>),
+    <span class="keyword">_</span>        =&gt; <span class="builtin">println!</span>(<span class="string">"unexpected status"</span>),
+}
+
+<span class="comment">// Or, to turn any 4xx/5xx straight into an Err and use `?`:</span>
+<span class="keyword">let</span> response = client.get(url).send().<span class="keyword">await</span>?.error_for_status()?;</pre>
+                </div>
+
+                <!-- JSON -->
+                <div id="rq-json" class="tab-content">
+                    <h3>JSON in, typed structs out</h3>
+                    <p>
+                        This is where Rust starts to feel like an advantage rather than a cost. Describe the shape you
+                        expect as a struct, and <code>serde</code> validates the response as it parses. A field that
+                        changed type upstream becomes a clear error at the boundary, not a mysterious
+                        <code>undefined</code> three modules later.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde::Deserialize;
+<span class="keyword">use</span> std::time::Duration;
+
+<span class="keyword">#[derive(Debug, Deserialize)]</span>
+<span class="keyword">struct</span> <span class="type">CrateInfo</span> {
+    name: <span class="type">String</span>,
+    max_stable_version: <span class="type">String</span>,
+    downloads: <span class="type">u64</span>,
+    <span class="comment">// Fields the API may omit go in an Option.</span>
+    description: <span class="type">Option</span>&lt;<span class="type">String</span>&gt;,
+}
+
+<span class="keyword">#[derive(Debug, Deserialize)]</span>
+<span class="keyword">struct</span> <span class="type">CrateResponse</span> {
+    <span class="comment">// `crate` is a Rust keyword, so rename the field.</span>
+    <span class="comment">// (The alternative is the raw identifier `r#crate`.)</span>
+    <span class="keyword">#[serde(rename = "crate")]</span>
+    krate: <span class="type">CrateInfo</span>,
+}
+
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; {
+    <span class="keyword">let</span> client = reqwest::Client::builder()
+        <span class="comment">// Many APIs reject anonymous clients. Identify yourself.</span>
+        .user_agent(<span class="string">"rust-intro-example/0.1 (you@example.com)"</span>)
+        .timeout(Duration::from_secs(<span class="string">10</span>))
+        .build()?;
+
+    <span class="keyword">let</span> info: <span class="type">CrateResponse</span> = client
+        .get(<span class="string">"https://crates.io/api/v1/crates/serde"</span>)
+        .send()
+        .<span class="keyword">await</span>?
+        .error_for_status()?  <span class="comment">// 4xx / 5xx become Err here</span>
+        .json()
+        .<span class="keyword">await</span>?;         <span class="comment">// body -&gt; CrateResponse, validated by serde</span>
+
+    <span class="builtin">println!</span>(<span class="string">"{} v{} — {} downloads"</span>,
+        info.krate.name, info.krate.max_stable_version, info.krate.downloads);
+    <span class="type">Ok</span>(())
+}</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> You only
+                            declare what you use</div>
+                        <p>
+                            <code>serde</code> ignores JSON fields your struct does not mention, so a 60-field API
+                            response needs a three-field struct if that is all you care about. When the shape is
+                            genuinely unknown, deserialize into <code>serde_json::Value</code> and explore — then
+                            write the struct once you know. The <a href="topic.html">JSON &amp; Text</a> page covers
+                            serde's attributes, enum representations and error reporting in full.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- POST -->
+                <div id="rq-post" class="tab-content">
+                    <h3>Sending data</h3>
+                    <p>
+                        The builder handles the boring parts: <code>.json()</code> serialises the value
+                        <em>and</em> sets <code>Content-Type: application/json</code>; <code>.query()</code> encodes
+                        and appends parameters without you touching a URL string.
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> serde::{Deserialize, Serialize};
+
+<span class="keyword">#[derive(Serialize)]</span>
+<span class="keyword">struct</span> <span class="type">NewIssue</span>&lt;<span class="keyword">'a</span>&gt; {
+    title: &amp;<span class="keyword">'a</span> <span class="type">str</span>,
+    body: &amp;<span class="keyword">'a</span> <span class="type">str</span>,
+    labels: <span class="type">Vec</span>&lt;&amp;<span class="keyword">'a</span> <span class="type">str</span>&gt;,
+}
+
+<span class="keyword">#[derive(Deserialize)]</span>
+<span class="keyword">struct</span> <span class="type">CreatedIssue</span> {
+    number: <span class="type">u64</span>,
+    html_url: <span class="type">String</span>,
+}
+
+<span class="keyword">let</span> created: <span class="type">CreatedIssue</span> = client
+    .post(<span class="string">"https://api.example.com/repos/acme/widget/issues"</span>)
+    .bearer_auth(&amp;token)                    <span class="comment">// Authorization: Bearer …</span>
+    .header(<span class="string">"X-Request-Id"</span>, request_id)
+    .json(&amp;<span class="type">NewIssue</span> {
+        title: <span class="string">"Borrow checker ate my homework"</span>,
+        body: <span class="string">"Steps to reproduce…"</span>,
+        labels: <span class="builtin">vec!</span>[<span class="string">"bug"</span>],
+    })
+    .send()
+    .<span class="keyword">await</span>?
+    .error_for_status()?
+    .json()
+    .<span class="keyword">await</span>?;
+
+<span class="builtin">println!</span>(<span class="string">"opened #{} at {}"</span>, created.number, created.html_url);</pre>
+                    <p>Other body types, all built the same way:</p>
+                    <pre data-lang="rust"><span class="comment">// Query string: ?q=rust&amp;per_page=20   (needs the "query" feature)</span>
+client.get(url).query(&amp;[(<span class="string">"q"</span>, <span class="string">"rust"</span>), (<span class="string">"per_page"</span>, <span class="string">"20"</span>)])
+
+<span class="comment">// Form encoding                        (needs the "form" feature)</span>
+client.post(url).form(&amp;[(<span class="string">"user"</span>, <span class="string">"ferris"</span>), (<span class="string">"remember"</span>, <span class="string">"1"</span>)])
+
+<span class="comment">// Plain text or raw bytes              (no extra feature)</span>
+client.put(url).body(<span class="string">"a plain string body"</span>)
+client.put(url).body(<span class="builtin">vec!</span>[<span class="string">0u8</span>, <span class="string">1</span>, <span class="string">2</span>, <span class="string">3</span>])
+
+<span class="comment">// Basic auth (password is an Option, because some schemes omit it)</span>
+client.get(url).basic_auth(<span class="string">"ferris"</span>, <span class="type">Some</span>(<span class="string">"hunter2"</span>))</pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-key" aria-hidden="true"></i> Keep secrets out
+                            of the binary</div>
+                        <p>
+                            A token written as a string literal ends up verbatim inside your compiled executable and
+                            in your git history. Read it from the environment with
+                            <code>std::env::var("API_TOKEN")?</code>, and make sure your error and debug logging never
+                            prints the header back out.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CLIENT -->
+                <div id="rq-client" class="tab-content">
+                    <h3>Build one Client and keep it</h3>
+                    <p>
+                        This is the single most common performance mistake with <code>reqwest</code>. A
+                        <code>Client</code> owns a connection pool and the configuration used to build new
+                        connections. Constructing one per request throws the pool away and often pays for a fresh TCP
+                        and TLS handshake every time — more expensive than the request itself.
+                    </p>
+                    <pre data-lang="rust"><span class="comment">// WRONG — a new pool, and a new TLS handshake, for every call</span>
+<span class="keyword">async fn</span> <span class="builtin">fetch</span>(url: &amp;<span class="type">str</span>) -&gt; <span class="type">Result</span>&lt;<span class="type">String</span>, reqwest::Error&gt; {
+    reqwest::Client::new().get(url).send().<span class="keyword">await</span>?.text().<span class="keyword">await</span>
+}
+
+<span class="comment">// RIGHT — build once, share everywhere. Client is internally</span>
+<span class="comment">// reference-counted, so `.clone()` is cheap and shares the pool.</span>
+<span class="keyword">async fn</span> <span class="builtin">fetch</span>(client: &amp;reqwest::Client, url: &amp;<span class="type">str</span>) -&gt; <span class="type">Result</span>&lt;<span class="type">String</span>, reqwest::Error&gt; {
+    client.get(url).send().<span class="keyword">await</span>?.text().<span class="keyword">await</span>
+}</pre>
+                    <p>A client configured the way most production code wants it:</p>
+                    <pre data-lang="rust"><span class="keyword">use</span> std::time::Duration;
+
+<span class="keyword">let</span> client = reqwest::Client::builder()
+    .user_agent(<span class="builtin">concat!</span>(<span class="builtin">env!</span>(<span class="string">"CARGO_PKG_NAME"</span>), <span class="string">"/"</span>, <span class="builtin">env!</span>(<span class="string">"CARGO_PKG_VERSION"</span>)))
+    .timeout(Duration::from_secs(<span class="string">30</span>))            <span class="comment">// whole request, including body</span>
+    .connect_timeout(Duration::from_secs(<span class="string">5</span>))      <span class="comment">// just the TCP + TLS handshake</span>
+    .pool_idle_timeout(Duration::from_secs(<span class="string">90</span>))
+    .redirect(reqwest::redirect::Policy::limited(<span class="string">5</span>))
+    .build()?;</pre>
+                    <div class="callout">
+                        <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Where to
+                            keep it</div>
+                        <p>
+                            In a web service, put the <code>Client</code> in your shared application state and hand
+                            out clones. In a CLI, build it in <code>main</code> and pass a <code>&amp;Client</code>
+                            down. Reach for a global <code>OnceLock&lt;Client&gt;</code> only when threading the
+                            parameter through would be genuinely painful.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- STREAM -->
+                <div id="rq-stream" class="tab-content">
+                    <h3>Downloading a large file</h3>
+                    <p>
+                        <code>.bytes()</code> and <code>.text()</code> buffer the entire body in memory. For a file of
+                        unknown size that is a denial-of-service waiting to happen. Read it chunk by chunk instead and
+                        memory stays flat regardless of how big the download is:
+                    </p>
+                    <pre data-lang="rust"><span class="keyword">use</span> tokio::io::AsyncWriteExt;
+
+<span class="keyword">async fn</span> <span class="builtin">download</span>(client: &amp;reqwest::Client, url: &amp;<span class="type">str</span>, path: &amp;<span class="type">str</span>)
+    -&gt; <span class="type">Result</span>&lt;<span class="type">u64</span>, <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt;
+{
+    <span class="keyword">let mut</span> response = client.get(url).send().<span class="keyword">await</span>?.error_for_status()?;
+
+    <span class="comment">// Content-Length is a hint, not a promise — servers may omit it.</span>
+    <span class="keyword">let</span> expected = response.content_length();
+    <span class="keyword">let mut</span> file = tokio::fs::File::create(path).<span class="keyword">await</span>?;
+    <span class="keyword">let mut</span> written = <span class="string">0u64</span>;
+
+    <span class="comment">// chunk() yields the next piece as it arrives, None at the end.</span>
+    <span class="keyword">while let</span> <span class="type">Some</span>(chunk) = response.chunk().<span class="keyword">await</span>? {
+        file.write_all(&amp;chunk).<span class="keyword">await</span>?;
+        written += chunk.len() <span class="keyword">as</span> <span class="type">u64</span>;
+
+        <span class="keyword">if let</span> <span class="type">Some</span>(total) = expected {
+            <span class="builtin">print!</span>(<span class="string">"\r{:.1}%"</span>, written <span class="keyword">as</span> <span class="type">f64</span> / total <span class="keyword">as</span> <span class="type">f64</span> * <span class="string">100.0</span>);
+        }
+    }
+
+    file.flush().<span class="keyword">await</span>?;
+    <span class="type">Ok</span>(written)
+}</pre>
+                    <p>
+                        If you would rather work with the body as a <code>Stream</code> — to compose it with other
+                        iterator-like adapters — enable the <code>stream</code> feature and use
+                        <code>response.bytes_stream()</code> instead.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: UREQ -->
+        <section id="ureq">
+            <h2><i class="fa-solid fa-feather" aria-hidden="true"></i> ureq: HTTP Without a Runtime</h2>
+            <p>
+                Sometimes async is simply not worth it. A build script, a one-shot CLI, a cron job — these make a
+                handful of requests and then exit. <code>ureq</code> is blocking, has a small dependency tree and
+                compiles quickly, while still bringing TLS, redirects, gzip and connection pooling.
+            </p>
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+ureq  = { version = <span class="string">"3"</span>, features = [<span class="string">"json"</span>] }
+serde = { version = <span class="string">"1"</span>, features = [<span class="string">"derive"</span>] }</pre>
+            <pre data-lang="rust"><span class="keyword">use</span> serde::{Deserialize, Serialize};
+
+<span class="keyword">#[derive(Deserialize)]</span>
+<span class="keyword">struct</span> <span class="type">Status</span> { ok: <span class="type">bool</span>, version: <span class="type">String</span> }
+
+<span class="keyword">#[derive(Serialize)]</span>
+<span class="keyword">struct</span> <span class="type">Ping</span> { from: <span class="type">String</span> }
+
+<span class="keyword">fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; {
+    <span class="comment">// No runtime, no .await — the call simply blocks until it finishes.</span>
+    <span class="keyword">let</span> text: <span class="type">String</span> = ureq::get(<span class="string">"https://www.rust-lang.org"</span>)
+        .header(<span class="string">"Accept"</span>, <span class="string">"text/html"</span>)
+        .call()?
+        .body_mut()
+        .read_to_string()?;
+    <span class="builtin">println!</span>(<span class="string">"{} bytes"</span>, text.len());
+
+    <span class="comment">// POST some JSON and deserialize the reply in the same expression.</span>
+    <span class="keyword">let</span> status: <span class="type">Status</span> = ureq::post(<span class="string">"https://api.example.com/ping"</span>)
+        .send_json(&amp;<span class="type">Ping</span> { from: <span class="string">"ferris"</span>.into() })?
+        .body_mut()
+        .read_json::&lt;<span class="type">Status</span>&gt;()?;
+
+    <span class="builtin">println!</span>(<span class="string">"ok={} version={}"</span>, status.ok, status.version);
+    <span class="type">Ok</span>(())
+}</pre>
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Reuse an
+                    <code>Agent</code></div>
+                <p>
+                    The free functions <code>ureq::get</code> / <code>ureq::post</code> are conveniences. For repeated
+                    calls build a <code>ureq::Agent</code> — the direct equivalent of a <code>reqwest::Client</code>,
+                    holding the connection pool and optional cookie store — and call methods on that instead.
+                </p>
+            </div>
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-right-left" aria-hidden="true"></i> Two differences
+                    from reqwest worth noting</div>
+                <p>
+                    <strong>Status codes <em>are</em> errors here.</strong> Unlike <code>reqwest</code>, ureq treats
+                    4xx and 5xx as <code>Err(Error::StatusCode)</code> by default, so <code>?</code> already covers
+                    them and you do not need an <code>error_for_status()</code> step. If you would rather inspect the
+                    status yourself, set <code>http_status_as_error(false)</code> on the agent's config.
+                </p>
+                <p>
+                    <strong>Bodies are capped.</strong> <code>read_to_string()</code> and
+                    <code>read_to_vec()</code> stop at 10&nbsp;MB by default, so a hostile or misbehaving server
+                    cannot exhaust your memory. Raise it deliberately with
+                    <code>.with_config().limit(n)</code> when you know you need to.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 5: CONCURRENCY -->
+        <section id="concurrency">
+            <h2><i class="fa-solid fa-bolt" aria-hidden="true"></i> Many Requests at Once</h2>
+            <p>
+                Fetching a hundred URLs one after another spends nearly all of its time waiting on the network. Async
+                Rust turns that wait into throughput, and because the ownership rules still apply, the concurrent
+                version is no harder to get right than the sequential one.
+            </p>
+            <p>
+                The naive fix — spawning all hundred at once — will get you rate-limited or will exhaust file
+                descriptors. <code>buffer_unordered</code> keeps a fixed number in flight and starts the next as each
+                one finishes:
+            </p>
+            <pre data-lang="rust"><span class="keyword">use</span> futures::stream::{self, StreamExt}; <span class="comment">// futures = "0.3"</span>
+
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() -&gt; <span class="type">Result</span>&lt;(), <span class="type">Box</span>&lt;<span class="keyword">dyn</span> std::error::Error&gt;&gt; {
+    <span class="keyword">let</span> client = reqwest::Client::new();
+    <span class="keyword">let</span> urls = <span class="builtin">vec!</span>[
+        <span class="string">"https://crates.io/api/v1/crates/serde"</span>,
+        <span class="string">"https://crates.io/api/v1/crates/tokio"</span>,
+        <span class="string">"https://crates.io/api/v1/crates/reqwest"</span>,
+    ];
+
+    <span class="keyword">let</span> results = stream::iter(urls)
+        .map(|url| {
+            <span class="comment">// Cloning a Client is cheap: it shares the same pool.</span>
+            <span class="keyword">let</span> client = client.clone();
+            <span class="keyword">async move</span> {
+                <span class="keyword">let</span> body = client.get(url).send().<span class="keyword">await</span>?.text().<span class="keyword">await</span>?;
+                <span class="type">Ok</span>::&lt;_, reqwest::Error&gt;((url, body.len()))
+            }
+        })
+        .buffer_unordered(<span class="string">8</span>) <span class="comment">// at most 8 requests in flight at any moment</span>
+        .collect::&lt;<span class="type">Vec</span>&lt;_&gt;&gt;()
+        .<span class="keyword">await</span>;
+
+    <span class="comment">// Each result is handled individually — one failure does not lose the rest.</span>
+    <span class="keyword">for</span> result <span class="keyword">in</span> results {
+        <span class="keyword">match</span> result {
+            <span class="type">Ok</span>((url, len)) =&gt; <span class="builtin">println!</span>(<span class="string">"{len:&gt;8} bytes  {url}"</span>),
+            <span class="type">Err</span>(e)         =&gt; <span class="builtin">eprintln!</span>(<span class="string">"failed: {e}"</span>),
+        }
+    }
+    <span class="type">Ok</span>(())
+}</pre>
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Two smaller
+                    patterns worth knowing</div>
+                <p>
+                    For a fixed set of <em>different</em> requests, <code>tokio::try_join!(a, b, c)</code> runs them
+                    together and gives you a tuple of results — perfect for a page that needs three API calls before
+                    it can render. And when you want each request to be cancellable or to outlive the current
+                    function, <code>tokio::task::JoinSet</code> gives you a handle per task.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 6: RELIABILITY -->
+        <section id="reliability">
+            <h2><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Making It Reliable</h2>
+            <p>
+                Networks fail. Rust will not let you forget that a request can fail — <code>send()</code> returns a
+                <code>Result</code> — but it cannot decide what "failure" means for your program. A few habits cover
+                almost everything:
+            </p>
+            <ul class="check-list">
+                <li><strong>Always set a timeout.</strong> The default in most clients is "wait forever", which turns
+                    one unresponsive server into a hung process. Set both a connect timeout and a total timeout.</li>
+                <li><strong>Retry only what is safe to retry.</strong> <code>GET</code>, <code>HEAD</code> and
+                    <code>PUT</code> are idempotent; retrying a <code>POST</code> may create the same order twice.
+                    Retry on connection errors, timeouts, <code>429</code> and <code>5xx</code> — never on
+                    <code>4xx</code>, which will fail identically forever.</li>
+                <li><strong>Back off exponentially, with jitter.</strong> A tight retry loop is how a brief blip
+                    becomes an outage. Double the delay each attempt and add a small random offset so a fleet of
+                    clients does not synchronise.</li>
+                <li><strong>Respect <code>Retry-After</code>.</strong> When a server sends that header with a
+                    <code>429</code> or <code>503</code>, it is telling you exactly how long to wait.</li>
+                <li><strong>Distinguish the failure kinds.</strong> <code>reqwest::Error</code> answers
+                    <code>is_timeout()</code>, <code>is_connect()</code>, <code>is_decode()</code> and
+                    <code>is_status()</code> so you can react differently to "the server is down" and "the JSON did
+                    not match my struct".</li>
+            </ul>
+            <pre data-lang="rust"><span class="keyword">use</span> std::time::Duration;
+<span class="keyword">use</span> tokio::time::sleep;
+
+<span class="keyword">async fn</span> <span class="builtin">get_with_retry</span>(client: &amp;reqwest::Client, url: &amp;<span class="type">str</span>, attempts: <span class="type">u32</span>)
+    -&gt; <span class="type">Result</span>&lt;reqwest::Response, reqwest::Error&gt;
+{
+    <span class="keyword">let mut</span> delay = Duration::from_millis(<span class="string">200</span>);
+
+    <span class="keyword">for</span> attempt <span class="keyword">in</span> <span class="string">1</span>..=attempts {
+        <span class="keyword">match</span> client.get(url).send().<span class="keyword">await</span> {
+            <span class="comment">// Success, or a client error that retrying cannot fix.</span>
+            <span class="type">Ok</span>(response) <span class="keyword">if</span> response.status().is_success()
+                || response.status().is_client_error() =&gt; <span class="keyword">return</span> <span class="type">Ok</span>(response),
+
+            <span class="comment">// A 5xx, or a transport failure: worth another go.</span>
+            <span class="type">Ok</span>(_) <span class="keyword">if</span> attempt &lt; attempts =&gt; {}
+            <span class="type">Err</span>(e) <span class="keyword">if</span> attempt &lt; attempts &amp;&amp; (e.is_timeout() || e.is_connect()) =&gt; {}
+
+            <span class="comment">// Out of attempts — hand the last outcome back to the caller.</span>
+            <span class="type">Ok</span>(response) =&gt; <span class="keyword">return</span> <span class="type">Ok</span>(response),
+            <span class="type">Err</span>(e) =&gt; <span class="keyword">return</span> <span class="type">Err</span>(e),
+        }
+
+        sleep(delay).<span class="keyword">await</span>;
+        delay *= <span class="string">2</span>; <span class="comment">// add a little randomness here in production</span>
+    }
+
+    <span class="builtin">unreachable!</span>(<span class="string">"loop always returns on the final attempt"</span>)
+}</pre>
+            <div class="callout">
+                <div class="callout-title"><i class="fa-solid fa-box-open" aria-hidden="true"></i> Or let a crate do
+                    it</div>
+                <p>
+                    Retry policies are a solved problem. <code>reqwest-middleware</code> together with
+                    <code>reqwest-retry</code> adds backoff to an existing client without touching your call sites,
+                    and <code>backon</code> wraps any fallible async operation in a retry strategy. Write the loop
+                    once to understand it, then use a library.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 7: SERVER -->
+        <section id="serving">
+            <h2><i class="fa-solid fa-server" aria-hidden="true"></i> The Other Direction: Answering Requests</h2>
+            <p>
+                Everything above is about being an HTTP <em>client</em>. Serving HTTP in Rust is just as approachable
+                — <code>axum</code> is built on the same <code>hyper</code> and <code>tokio</code> foundations, so the
+                two halves of a system share types and a runtime.
+            </p>
+            <pre data-lang="toml"><span class="keyword">[dependencies]</span>
+axum  = <span class="string">"0.8"</span>
+tokio = { version = <span class="string">"1"</span>, features = [<span class="string">"macros"</span>, <span class="string">"rt-multi-thread"</span>] }
+serde = { version = <span class="string">"1"</span>, features = [<span class="string">"derive"</span>] }</pre>
+            <pre data-lang="rust"><span class="keyword">use</span> axum::{extract::Path, routing::get, Json, Router};
+<span class="keyword">use</span> serde::Serialize;
+
+<span class="keyword">#[derive(Serialize)]</span>
+<span class="keyword">struct</span> <span class="type">Greeting</span> {
+    message: <span class="type">String</span>,
+}
+
+<span class="comment">// A handler is an ordinary async fn. Its parameters are "extractors":</span>
+<span class="comment">// axum pulls them out of the request and rejects it if they do not fit.</span>
+<span class="keyword">async fn</span> <span class="builtin">greet</span>(Path(name): Path&lt;<span class="type">String</span>&gt;) -&gt; Json&lt;<span class="type">Greeting</span>&gt; {
+    Json(<span class="type">Greeting</span> { message: <span class="builtin">format!</span>(<span class="string">"Hello, {name}!"</span>) })
+}
+
+<span class="keyword">#[tokio::main]</span>
+<span class="keyword">async fn</span> <span class="builtin">main</span>() {
+    <span class="keyword">let</span> app = Router::new()
+        .route(<span class="string">"/"</span>, get(|| <span class="keyword">async</span> { <span class="string">"Hello from Rust"</span> }))
+        .route(<span class="string">"/hello/{name}"</span>, get(greet));
+
+    <span class="keyword">let</span> listener = tokio::net::TcpListener::bind(<span class="string">"0.0.0.0:3000"</span>).<span class="keyword">await</span>.unwrap();
+    <span class="builtin">println!</span>(<span class="string">"listening on http://{}"</span>, listener.local_addr().unwrap());
+
+    axum::serve(listener, app).<span class="keyword">await</span>.unwrap();
+}</pre>
+            <p>
+                Run it with <code>cargo run</code> and visit
+                <code>http://localhost:3000/hello/ferris</code>. That is a complete, production-capable JSON server in
+                under thirty lines — and the same <code>Serialize</code> derive that built the request bodies earlier
+                on this page is building the response here.
+            </p>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="db.html">
+                <i class="fa-solid fa-database" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Previous</span>
+                    <span class="page-nav-title">Databases &amp; CSV</span>
+                </span>
+            </a>
+            <a href="wasm.html">
+                <i class="fa-solid fa-cube" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Next</span>
+                    <span class="page-nav-title">Rust &amp; WebAssembly</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>Crate APIs move faster than prose. When something here does not match, the crate's own docs on
+            <a href="https://docs.rs" target="_blank" rel="noopener">docs.rs</a> are the authority — they are
+            generated from the exact version you depend on.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+
+</html>

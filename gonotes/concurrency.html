@@ -21,11 +21,11 @@
 
     <h1>Mastering Go Concurrency</h1>
 
-    <p>Concurrency is the ability to run and make progress on multiple smaller components of a larger program simultaneously. Go implements concurrency using <strong>goroutines</strong> and <strong>channels</strong> based on the Communicating Sequential Processes (CSP) model.</p>
+    <p>Concurrency is the ability to structure a program so multiple smaller components can make progress over overlapping periods; it is related to, but not the same as, parallel execution. Go implements concurrency using <strong>goroutines</strong> and <strong>channels</strong> inspired by the Communicating Sequential Processes (CSP) model.</p>
 
     <!-- SECTION 1: GOROUTINES -->
     <h2>1. Goroutines: Lightweight Threads</h2>
-    <p>A goroutine is the smallest executable entity in Go. They are managed by the Go runtime and are extremely resource-efficient, requiring only a few kilobytes of stack space that can grow or shrink as needed.</p>
+    <p>A goroutine is a lightweight function execution managed by the Go runtime. Goroutines are resource-efficient, starting with small stacks that can grow or shrink as needed.</p>
     
     <h3>Launching a Goroutine</h3>
     <p>You create a goroutine by prefixing a function call with the <code>go</code> keyword. This causes the function to run asynchronously in the background.</p>
@@ -78,10 +78,10 @@ func main() {
 
     <!-- SECTION 3: CHANNELS -->
     <h2>3. Channels: Communication Pipes</h2>
-    <p>Channels act as the "glue" that allows goroutines to exchange data safely without explicit locking.</p>
+    <p>Channels act as the "glue" that allows goroutines to communicate and coordinate ownership of data. Channel operations are safe for concurrent use, but shared memory referenced by sent values still needs synchronization.</p>
     <ul>
         <li><strong>Unbuffered Channels:</strong> Synchronous; the sender blocks until a receiver is ready.</li>
-        <li><strong>Buffered Channels:</strong> Asynchronous; they can hold a limited number of values before blocking the sender.</li>
+        <li><strong>Buffered Channels:</strong> Hold a limited number of values; senders block when the buffer is full, and receivers block when it is empty.</li>
     </ul>
 
     <pre><code class="language-go">func main() {
@@ -162,7 +162,7 @@ func fanIn(sources ...&lt;-chan string) &lt;-chan string {
 
     <!-- SECTION 5: COMBINING WAITS AND CHANNELS -->
     <h2>5. Combining Waits and Channels for Efficiency</h2>
-    <p>The most efficient processes often combine <code>WaitGroup</code> for tracking lifecycle and <code>channels</code> for result collection. Using them together prevents race conditions and ensures "clean" termination where no result is lost.</p>
+    <p>The most efficient processes often combine <code>WaitGroup</code> for tracking lifecycle and <code>channels</code> for result collection. Using them together helps coordinate clean termination where no result is lost, but shared memory still needs its own synchronization.</p>
 
     <div class="pattern-box">
         <h3>The "Result Aggregator" Pattern</h3>
@@ -212,7 +212,7 @@ case &lt;-time.After(time.Second): // Timeout pattern
     <p>Understanding how Go manages concurrency under the hood is critical for high-performance applications.</p>
     <ul>
         <li><strong>M:N Scheduling:</strong> Go uses an M:N scheduler where <em>m</em> goroutines are multiplexed onto <em>n</em> OS threads, making goroutines far cheaper than OS threads.</li>
-        <li><strong>The GOMAXPROCS Variable:</strong> Controls the number of OS threads that can execute user-level Go code simultaneously. The runtime chooses a sensible default, and explicit tuning is rarely needed.</li>
+        <li><strong>The GOMAXPROCS Variable:</strong> Controls the maximum number of logical processors that can execute Go code simultaneously. The runtime chooses a default based on available CPU capacity, and explicit tuning is rarely needed.</li>
         <li><strong>Work-Stealing Algorithm:</strong> Underutilized logical processors "steal" tasks from others to automatically balance the load across cores.</li>
     </ul>
     <pre><code class="language-go">import (
@@ -221,9 +221,9 @@ case &lt;-time.After(time.Second): // Timeout pattern
 )
 
 func main() {
-    // Query or set the number of logical CPUs in use
+    // Query CPU count and current GOMAXPROCS without changing it
     fmt.Println("CPUs:", runtime.NumCPU())
-    runtime.GOMAXPROCS(runtime.NumCPU()) // Default; explicit setting is rarely needed
+    fmt.Println("GOMAXPROCS:", runtime.GOMAXPROCS(0))
 }</code></pre>
 
     <!-- SECTION 7: ADVANCED SYNCHRONIZATION PRIMITIVES -->
@@ -232,7 +232,7 @@ func main() {
     <ul>
         <li><strong>Condition Variables (<code>sync.Cond</code>):</strong> A goroutine waits on a condition via <code>Wait()</code> and is woken by <code>Signal()</code> (one goroutine) or <code>Broadcast()</code> (all waiters).</li>
         <li><strong>Once (<code>sync.Once</code>):</strong> Ensures a piece of code, such as configuration loading or a singleton, runs exactly once regardless of how many goroutines call it.</li>
-        <li><strong>Atomic Operations (<code>sync/atomic</code>):</strong> Lock-free primitives for thread-safe counters and flags; faster than a mutex for simple operations.</li>
+        <li><strong>Atomic Operations (<code>sync/atomic</code>):</strong> Lock-free primitives for thread-safe counters and flags; often cheaper than a mutex for simple operations but harder to compose correctly.</li>
     </ul>
     <pre><code class="language-go">import "sync"
 
@@ -254,7 +254,7 @@ func GetConfig() *Config {
     <h2>8. Robust Error and Lifecycle Management</h2>
     <p>Professional concurrent code requires lifecycle control beyond just launching goroutines.</p>
     <ul>
-        <li><strong>Error Groups (<code>errgroup</code>):</strong> Tracks a collection of goroutines and returns the first non-nil error encountered, while cancelling the shared context automatically.</li>
+        <li><strong>Error Groups (<code>golang.org/x/sync/errgroup</code>):</strong> Tracks a collection of goroutines and returns the first non-nil error encountered. With <code>errgroup.WithContext</code>, the derived context is canceled on the first error or when <code>Wait</code> returns.</li>
         <li><strong>The Context Package:</strong> Essential for propagating deadlines, cancellation signals, and request-scoped values across API boundaries.</li>
         <li><strong>UNIX Signal Handling:</strong> Use channels to catch <code>SIGINT</code> / <code>SIGTERM</code> for graceful shutdowns.</li>
     </ul>
@@ -283,7 +283,7 @@ func main() {
     <!-- SECTION 9: SAFETY AND PERFORMANCE -->
     <h2>9. Safety and Performance Optimization</h2>
     <ul>
-        <li><strong>Race Detector:</strong> The <code>-race</code> flag instruments the binary to detect concurrent unsynchronized memory accesses at runtime.</li>
+        <li><strong>Race Detector:</strong> The <code>-race</code> flag instruments the binary to detect many data races in code paths exercised at runtime.</li>
         <li><strong>Deadlock Analysis:</strong> Avoid circular waits, such as goroutine A waiting for B while B waits for A. Consistent lock ordering and timeouts prevent this.</li>
         <li><strong>Throttling via Semaphores:</strong> Use a buffered channel as a semaphore to cap the number of goroutines accessing a resource concurrently.</li>
         <li><strong>Testing with <code>t.Parallel()</code>:</strong> Run unit tests concurrently to surface synchronization bugs early.</li>
@@ -378,7 +378,7 @@ func main() {
 
     <div class="pattern-box">
         <h3>Monitor Goroutine</h3>
-        <p>A safer alternative to shared memory: a dedicated goroutine <em>owns</em> the data, and others communicate with it via channels to read or update state, eliminating the need for mutexes.</p>
+        <p>A safer alternative to direct shared memory: a dedicated goroutine <em>owns</em> the data, and others communicate with it via channels to read or update state. This can eliminate mutexes for that state as long as all access goes through the owning goroutine.</p>
         <pre><code class="language-go">type request struct {
     key   string
     reply chan string

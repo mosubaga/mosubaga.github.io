@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23fdfcf3%22%2F%3E%3Cpath%20d%3D%22M27%2016%2021.5%2025.5%2010.5%2025.5%205%2016%2010.5%206.5%2021.5%206.5Z%22%20fill%3D%22%23c05f2c%22%2F%3E%3Cpath%20d%3D%22M21%2016%2018.5%2020.33%2013.5%2020.33%2011%2016%2013.5%2011.67%2018.5%2011.67Z%22%20fill%3D%22%23fdfcf3%22%2F%3E%3C%2Fsvg%3E">
+    <title>Introduction to Rust — Empowering Everyone to Build Reliable Software</title>
+    <meta name="description"
+        content="A friendly, accurate introduction to the Rust programming language: what makes it different, how ownership works, and how to get your first project running.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+        integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-brand" href="index.html">
+                <i class="fa-brands fa-rust" aria-hidden="true"></i>
+                <span>Learn Rust</span>
+            </a>
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Toggle navigation menu</span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+                <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>Control Flow</a></li>
+                <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i>Collections</a></li>
+                <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Files &amp; I/O</a></li>
+                <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i>JSON &amp; Text</a></li>
+                <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i>Databases</a></li>
+                <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i>HTTP</a></li>
+                <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i>WebAssembly</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <span class="badge"><i class="fa-brands fa-rust" aria-hidden="true"></i> A Safe, Fast Systems
+                Language</span>
+            <h1>Learn <span>Rust</span></h1>
+            <p>Empowering everyone to build reliable and efficient software — with the speed of C and the guardrails of
+                a modern language.</p>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <div class="key-points">
+            <h3><i class="fa-solid fa-list-check" aria-hidden="true"></i> What you will find here</h3>
+            <div class="kp">
+                <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                <span>Plain-language explanations of what makes Rust different, with no prior systems-programming
+                    experience assumed.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-terminal" aria-hidden="true"></i>
+                <span>Copy-and-run code for every idea — control flow, collections, files, JSON and text,
+                    databases, HTTP and WebAssembly.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span>A careful account of ownership and borrowing: the one concept that unlocks everything else.</span>
+            </div>
+            <div class="kp">
+                <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                <span>A suggested reading order at the bottom of every page, so you always know where to go next.</span>
+            </div>
+        </div>
+
+        <!-- SECTION: THE ARTWORK -->
+        <section id="ownership-visualised">
+            <h2><i class="fa-solid fa-paintbrush" aria-hidden="true"></i> Rust, Visualised</h2>
+            <p class="lead">
+                Every idea on this site eventually comes back to one picture. A value lives in exactly one place. Other
+                parts of the program may look at it, or — one at a time — change it. When its scope ends, it is freed.
+                The sketch below plays that story out continuously.
+            </p>
+
+            <div class="art-panel">
+                <div id="rust-art-canvas" role="img"
+                    aria-label="An animated diagram of Rust ownership: hexagonal scopes arranged in a ring pass values between one another, radiate green shared borrows and single orange mutable borrows, and drop values when their scope ends.">
+                </div>
+                <div class="art-caption">
+                    <p><strong>The Ownership Flow.</strong> Hexagons are scopes; the small coloured tiles are heap
+                        values. Watch a value <em>move</em> between scopes, lend itself out, and finally get dropped.
+                    </p>
+                    <div class="art-controls">
+                        <button class="art-btn" type="button" id="art-toggle">
+                            <i class="fa-solid fa-pause" aria-hidden="true"></i><span>Pause</span>
+                        </button>
+                        <button class="art-btn" type="button" id="art-regen">
+                            <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i><span>New scene</span>
+                        </button>
+                    </div>
+                </div>
+                <ul class="art-legend">
+                    <li><span class="swatch" style="background:#5f8f3e"></span> Shared borrow <code>&amp;T</code> — many
+                        at once</li>
+                    <li><span class="swatch" style="background:#c05f2c"></span> Mutable borrow <code>&amp;mut T</code> —
+                        exactly one</li>
+                    <li><span class="swatch" style="background:#b4791c"></span> Move — ownership transfers, old binding
+                        dies</li>
+                    <li><span class="swatch" style="background:#3f7a9c"></span> Drop — scope ends, memory is freed</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 1: INTRODUCTION -->
+        <section id="introduction">
+            <h2><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Introducing Rust</h2>
+            <p>
+                Rust is a general-purpose systems programming language. It began in 2006 as a personal project by
+                Graydon Hoare, an engineer at Mozilla; Mozilla began sponsoring the work in 2009 and announced it
+                publicly in 2010. After a long period of rapid change, the language reached its first stable release,
+                <strong>Rust 1.0, in May 2015</strong>. Since 2021 it has been stewarded by the independent
+                <a href="https://foundation.rust-lang.org/" target="_blank" rel="noopener">Rust Foundation</a>, whose
+                founding members included AWS, Google, Huawei, Microsoft and Mozilla.
+            </p>
+            <p>
+                Rust has topped Stack Overflow's "most loved" (now "most admired") language ranking in the annual
+                developer survey every year from 2016 through 2025 — ten years running, with 72% admiration in 2025. It
+                is used in production at Amazon Web Services, Google, Cloudflare, Microsoft, Meta and Discord. The
+                Linux kernel has had experimental Rust support since version 6.1, and Windows 11 24H2 includes a Rust
+                implementation of GDI regions in <code>win32kbase_rs.sys</code> as Microsoft expands Rust support for
+                kernel and driver work.
+            </p>
+            <p>
+                At its core, Rust is designed to balance three goals that have historically competed with one another:
+                <strong>safety</strong>, <strong>productivity</strong> and <strong>control</strong>. It grants
+                developers the performance and direct machine access of a low-level language like C or C++, while
+                keeping the safety guarantees, expressive type system and pleasant tooling associated with high-level
+                languages.
+            </p>
+
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> A stable,
+                    predictable language</div>
+                <p>
+                    A new stable Rust version ships every six weeks, and the project takes backwards compatibility
+                    seriously: code that compiled on Rust 1.0 is still expected to compile today. Occasional
+                    opt-in-only changes are grouped into <strong>editions</strong> — 2015, 2018, 2021 and 2024 — which
+                    you select per crate in <code>Cargo.toml</code>. Crates on different editions interoperate freely,
+                    so upgrading is never all-or-nothing.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: HOW IT IS DIFFERENT -->
+        <section id="differences">
+            <h2><i class="fa-solid fa-right-left" aria-hidden="true"></i> How Rust is Different</h2>
+            <p>
+                If you are coming from JavaScript, Python, Go or Java, Rust introduces a handful of genuine paradigm
+                shifts in how software manages memory and correctness:
+            </p>
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-bolt" aria-hidden="true"></i> No Garbage Collection</h3>
+                    <p>
+                        Go, Java, C# and JavaScript rely on a runtime engine and a garbage collector to reclaim memory,
+                        which costs both throughput and predictability — a collection pause can arrive at any moment.
+                        Rust compiles straight to native machine code and inserts the deallocation itself, at exactly
+                        the point where the compiler can prove the value is no longer needed. There is no collector
+                        and no virtual machine; the standard runtime support is small and mostly covers startup,
+                        panics, unwinding when enabled, and platform glue.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> The Borrow Checker</h3>
+                    <p>
+                        Rust enforces memory safety at compile time using a static analysis pass called the
+                        <strong>borrow checker</strong>. By applying strict ownership rules — every value has a single
+                        owner, and no reference may outlive the data it points into — whole categories of bug
+                        disappear before the program ever runs: use-after-free, double-free, dangling pointers, null
+                        dereferences and data races.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Traits, Not Inheritance</h3>
+                    <p>
+                        Rust has no class inheritance. It models data with <strong>structs</strong> and
+                        <strong>enums</strong>, and shared behaviour with <strong>traits</strong> — closer to
+                        interfaces or type classes than to base classes. Traits can carry default method bodies and can
+                        require other traits, so you get reuse without the fragile deep hierarchies that inheritance
+                        tends to grow.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-key" aria-hidden="true"></i> Immutability by Default</h3>
+                    <p>
+                        Every binding in Rust is <strong>immutable unless you say otherwise</strong>. Opting in with the
+                        <code class="keyword">mut</code> keyword is a deliberate, visible act, so a reader can tell at a
+                        glance which parts of a function change state. This single default removes a surprising amount
+                        of accidental-mutation debugging.
+                    </p>
+                </div>
+            </div>
+
+            <div class="callout warn">
+                <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> An
+                    honest footnote about <code>unsafe</code></div>
+                <p>
+                    Those guarantees apply to <strong>safe Rust</strong>, which is what you write almost all of the
+                    time. Rust also has an <code class="keyword">unsafe</code> escape hatch for the handful of
+                    operations the compiler cannot verify — dereferencing a raw pointer, calling into C, or
+                    implementing a data structure the borrow checker cannot express. Inside an
+                    <code>unsafe</code> block the burden of proof moves to you. The value of the design is that unsafe
+                    code is rare, explicit and greppable, so a security review has a small surface to inspect rather
+                    than an entire codebase.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: OWNERSHIP -->
+        <section id="ownership">
+            <h2><i class="fa-solid fa-circle-nodes" aria-hidden="true"></i> The One Concept: Ownership</h2>
+            <p class="lead">
+                Almost every "why won't this compile?" moment in your first weeks with Rust traces back to these rules.
+                Learn them properly now and the rest of the language falls into place quickly.
+            </p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3><i class="fa-solid fa-box-open" aria-hidden="true"></i> The three ownership rules</h3>
+                    <ol>
+                        <li>Each value in Rust has an <strong>owner</strong>.</li>
+                        <li>There can be <strong>only one owner at a time</strong>.</li>
+                        <li>When the owner goes out of scope, the value is <strong>dropped</strong> (its memory is
+                            freed, its files are closed, its locks are released).</li>
+                    </ol>
+                    <p>
+                        Rule 3 is why Rust needs no garbage collector: the compiler already knows the exact line where
+                        each value dies, so it can emit the cleanup call itself.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-hand-holding-hand" aria-hidden="true"></i> The two borrowing rules</h3>
+                    <ol>
+                        <li>At any given time you may have <strong>either</strong> one mutable reference
+                            (<code>&amp;mut T</code>) <strong>or</strong> any number of shared references
+                            (<code>&amp;T</code>) — never both.</li>
+                        <li>References must always be <strong>valid</strong>: a reference can never outlive the data it
+                            points to.</li>
+                    </ol>
+                    <p>
+                        Rule 1 is the same rule that eliminates data races between threads. Single-threaded aliasing
+                        bugs and multi-threaded races turn out to be the same problem, so one check fixes both.
+                    </p>
+                </div>
+            </div>
+
+            <p>Here is all of it in fifteen lines:</p>
+
+            <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">main</span>() {
+    <span class="keyword">let</span> greeting = <span class="type">String</span>::from(<span class="string">"hello"</span>);   <span class="comment">// `greeting` owns the heap buffer</span>
+
+    <span class="keyword">let</span> length = <span class="builtin">measure</span>(&amp;greeting);          <span class="comment">// lend it out: a shared borrow</span>
+    <span class="builtin">println!</span>(<span class="string">"{greeting} is {length} bytes"</span>); <span class="comment">// still usable — we only lent it</span>
+
+    <span class="keyword">let</span> moved = greeting;                    <span class="comment">// MOVE: ownership transfers</span>
+    <span class="comment">// println!("{greeting}");               // ERROR: value borrowed after move</span>
+    <span class="builtin">println!</span>(<span class="string">"{moved}"</span>);                     <span class="comment">// the new owner is fine</span>
+}                                            <span class="comment">// `moved` goes out of scope -&gt; buffer freed</span>
+
+<span class="keyword">fn</span> <span class="builtin">measure</span>(text: &amp;<span class="type">str</span>) -&gt; <span class="type">usize</span> {
+    text.len()
+}                                            <span class="comment">// the borrow ends; nothing is freed here</span></pre>
+
+            <div class="callout info">
+                <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> The mental model
+                    that helps most</div>
+                <p>
+                    Think of a value as a physical object rather than a name. You can <em>give it away</em> (a move),
+                    <em>let people look at it</em> (any number of <code>&amp;T</code>), or <em>hand it to exactly one
+                        person to modify</em> (<code>&amp;mut T</code>). What you cannot do is give it away and keep
+                    using it, or let someone edit it while others are reading. Stated that way, every borrow-checker
+                    error you will meet is obvious in hindsight.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: WHAT MAKES IT BETTER -->
+        <section id="advantages">
+            <h2><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Why Rust is Worth Learning</h2>
+            <p>
+                The learning curve is real, and pretending otherwise does nobody any favours. What you pay in upfront
+                effort is returned during maintenance — the phase where software actually spends its life:
+            </p>
+            <ul>
+                <li><strong>No undefined behaviour in safe code:</strong> dangling pointers, double-frees and null
+                    dereferences are ruled out by the type system rather than becoming production incidents. An
+                    out-of-bounds index is a clean, predictable panic, not silent memory corruption.</li>
+                <li><strong>Fearless concurrency:</strong> the same ownership rules that govern memory also rule out
+                    data races. The <code>Send</code> and <code>Sync</code> traits let the compiler reject unsafe
+                    sharing between threads, so parallelising a hot loop stops being a source of dread.</li>
+                <li><strong>Zero-cost abstractions:</strong> generics, iterators, closures and pattern matching are
+                    resolved at compile time through monomorphisation and inlining. Idiomatic, expressive Rust
+                    typically compiles to the same machine code you would have written by hand.</li>
+                <li><strong>Errors you cannot ignore:</strong> fallible operations return <code>Result&lt;T, E&gt;</code>
+                    and optional values return <code>Option&lt;T&gt;</code>. Both are ordinary enums the compiler
+                    forces you to handle, which is why Rust has no <code>null</code> and no invisible exceptions.</li>
+                <li><strong>Tooling that ships in the box:</strong> toolchain management
+                    (<code class="builtin">rustup</code>), builds, dependencies and tests
+                    (<code class="builtin">cargo</code>), formatting (<code class="builtin">rustfmt</code>), linting
+                    (<code class="builtin">clippy</code>), documentation (<code class="builtin">rustdoc</code>) and a
+                    first-class language server (<code class="builtin">rust-analyzer</code>) are all official and all
+                    consistent across projects.</li>
+                <li><strong>A compiler that teaches:</strong> Rust's error messages name the rule you broke, point at
+                    both ends of the conflict, and frequently print the exact edit that fixes it.</li>
+            </ul>
+
+            <div class="callout">
+                <div class="callout-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Where Rust is
+                    <em>not</em> the obvious choice</div>
+                <p>
+                    Rust rewards programs that must be fast, correct and long-lived. For a one-off script, a quick data
+                    exploration, or a team with no appetite for a new language, a garbage-collected language will often
+                    get you there sooner. Knowing when not to reach for a tool is part of knowing the tool.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 5: GETTING STARTED -->
+        <section id="getting-started">
+            <h2><i class="fa-solid fa-rocket" aria-hidden="true"></i> Getting Started</h2>
+            <p>
+                Install the toolchain, compile a single file to see the compiler work, then switch to Cargo for
+                everything else.
+            </p>
+
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="install"><i class="fa-solid fa-download"
+                            aria-hidden="true"></i>1. Install</button>
+                    <button class="tab-btn" data-tab="single-file"><i class="fa-solid fa-terminal"
+                            aria-hidden="true"></i>2. One File</button>
+                    <button class="tab-btn" data-tab="cargo"><i class="fa-solid fa-toolbox" aria-hidden="true"></i>3.
+                        Cargo</button>
+                    <button class="tab-btn" data-tab="layout"><i class="fa-solid fa-folder-open"
+                            aria-hidden="true"></i>4. Project Layout</button>
+                </div>
+
+                <!-- TAB 1: INSTALL -->
+                <div id="install" class="tab-content active">
+                    <h3>Install with rustup</h3>
+                    <p>
+                        <strong>rustup</strong> is the official installer. It manages compiler toolchains, keeps them
+                        updated, and lets you add extra compilation targets later — including the WebAssembly target
+                        used on the <a href="wasm.html">WebAssembly page</a>.
+                    </p>
+                    <p><strong>macOS / Linux</strong> — run this in a terminal:</p>
+                    <pre data-lang="shell">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</pre>
+                    <p><strong>Windows</strong> — download and run the installer from
+                        <a href="https://rustup.rs" target="_blank" rel="noopener">rustup.rs</a>. It will also prompt
+                        you to install the Microsoft C++ build tools, which Rust uses as its linker.</p>
+                    <p>Then confirm the install and keep it current:</p>
+                    <pre data-lang="shell"><span class="comment"># Should print something like: rustc 1.98.0 (1159e78c4 2026-08-20)</span>
+rustc --version
+cargo --version
+
+<span class="comment"># Update every installed toolchain and component</span>
+rustup update</pre>
+                    <div class="callout tip">
+                        <div class="callout-title"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Add the
+                            editor experience</div>
+                        <p>
+                            Install the <strong>rust-analyzer</strong> extension for VS Code (or the Rust plugin for a
+                            JetBrains IDE). Inline type hints and instant error underlining shorten the ownership
+                            learning curve more than anything else on this page.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: SINGLE FILE -->
+                <div id="single-file" class="tab-content">
+                    <h3>Compile a single file with rustc</h3>
+                    <p>
+                        For a first experiment, invoke the compiler directly. You will not do this often — but it is
+                        worth seeing once, so that Cargo feels like a convenience rather than magic.
+                    </p>
+                    <p>1. Create <code>hello.rs</code>:</p>
+                    <pre data-lang="rust"><span class="keyword">fn</span> <span class="builtin">main</span>() {
+    <span class="comment">// The exclamation mark means `println` is a macro, not a function.</span>
+    <span class="comment">// Macros are expanded at compile time — this one type-checks</span>
+    <span class="comment">// your format string against its arguments.</span>
+    <span class="builtin">println!</span>(<span class="string">"Hello, world!"</span>);
+
+    <span class="keyword">let</span> name = <span class="string">"Ferris"</span>;
+    <span class="builtin">println!</span>(<span class="string">"Hello, {name}!"</span>); <span class="comment">// inline captured identifier</span>
+}</pre>
+                    <p>2. Compile it:</p>
+                    <pre data-lang="shell">rustc hello.rs</pre>
+                    <p>3. Run the binary it produced:</p>
+                    <pre data-lang="shell"><span class="comment"># macOS / Linux</span>
+./hello
+
+<span class="comment"># Windows</span>
+.\hello.exe</pre>
+                    <p>
+                        That binary is self-contained: it needs no interpreter and no runtime installed on the target
+                        machine.
+                    </p>
+                </div>
+
+                <!-- TAB 3: CARGO -->
+                <div id="cargo" class="tab-content">
+                    <h3>Use Cargo for everything else</h3>
+                    <p>
+                        <strong>Cargo</strong> is Rust's build system, dependency manager, test runner and
+                        documentation generator in one command. Real projects always use it.
+                    </p>
+                    <pre data-lang="shell"><span class="comment"># Create a new binary project (use --lib for a library)</span>
+cargo new hello_project
+cd hello_project
+
+<span class="comment"># Compile and run in one step</span>
+cargo run
+
+<span class="comment"># Type-check without producing a binary — much faster, use it constantly</span>
+cargo check
+
+<span class="comment"># Run the test suite (including examples in your doc comments)</span>
+cargo test
+
+<span class="comment"># Format the whole project to the community standard</span>
+cargo fmt
+
+<span class="comment"># Lint for common mistakes and unidiomatic code</span>
+cargo clippy
+
+<span class="comment"># Build an optimised binary into target/release/</span>
+cargo build --release
+
+<span class="comment"># Add a dependency (edits Cargo.toml for you)</span>
+cargo add serde --features derive</pre>
+                    <div class="callout warn">
+                        <div class="callout-title"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            Always benchmark the release build</div>
+                        <p>
+                            The default <code>cargo run</code> uses the <strong>debug</strong> profile: no
+                            optimisation, plus integer-overflow checks and full debug symbols. Debug builds can be
+                            <em>ten to fifty times</em> slower than release builds. If Rust ever seems slow, check
+                            which profile you measured before drawing conclusions.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TAB 4: LAYOUT -->
+                <div id="layout" class="tab-content">
+                    <h3>What Cargo generated</h3>
+                    <p><code>cargo new</code> creates a small, conventional tree. Cargo finds these paths by
+                        convention, so there is nothing to configure:</p>
+                    <pre data-lang="text">hello_project/
+├── Cargo.toml      # name, version, edition, dependencies
+├── Cargo.lock      # exact resolved versions (commit this for binaries)
+├── .gitignore
+└── src/
+    └── main.rs     # binary crate root — `fn main()` lives here
+                    # (a library crate uses src/lib.rs instead)</pre>
+                    <p>And the manifest itself:</p>
+                    <pre data-lang="toml"><span class="keyword">[package]</span>
+name = <span class="string">"hello_project"</span>
+version = <span class="string">"0.1.0"</span>
+edition = <span class="string">"2024"</span>
+
+<span class="keyword">[dependencies]</span>
+<span class="comment"># Crates from crates.io go here, e.g.</span>
+<span class="comment"># serde = { version = "1", features = ["derive"] }</span></pre>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Term</th>
+                                    <th>What it means</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Crate</strong></td>
+                                    <td>The unit of compilation — one library or one binary.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Package</strong></td>
+                                    <td>What a <code>Cargo.toml</code> describes: up to one library crate plus any
+                                        number of binaries.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Module</strong></td>
+                                    <td>A namespace inside a crate, declared with <code>mod</code>. Items are private
+                                        unless marked <code>pub</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Workspace</strong></td>
+                                    <td>Several packages sharing one <code>Cargo.lock</code> and one
+                                        <code>target/</code> directory.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: READING ERRORS -->
+        <section id="reading-errors">
+            <h2><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Learning to Read the Compiler</h2>
+            <p>
+                Rust's compiler is the best teacher you will have, but only if you slow down and read what it says. A
+                typical borrow error looks like this:
+            </p>
+            <pre data-lang="text"><span class="comment">error[E0502]: cannot borrow `scores` as mutable because it is also borrowed as immutable</span>
+  --&gt; src/main.rs:5:5
+   |
+4  |     let first = &amp;scores[0];
+   |                  ------ immutable borrow occurs here
+5  |     scores.push(42);
+   |     ^^^^^^^^^^^^^^^ mutable borrow occurs here
+6  |     println!("{first}");
+   |               ------- immutable borrow later used here</pre>
+            <p>Read it in four moves, and it stops being intimidating:</p>
+            <ol class="step-list">
+                <li><strong>The rule.</strong> The headline names exactly which rule was broken — here, shared and
+                    mutable borrows cannot overlap.</li>
+                <li><strong>The two ends.</strong> Rust shows you <em>both</em> conflicting lines, not just the one
+                    that failed. Line 4 opened the borrow, line 5 collided with it.</li>
+                <li><strong>The lifetime.</strong> The last note is the important one: the borrow lives until line 6,
+                    because that is where it is last <em>used</em>. Move that use earlier — or clone the value — and
+                    the conflict disappears.</li>
+                <li><strong>The full explanation.</strong> Every code has a long-form write-up with worked examples.
+                    Run <code>rustc --explain E0502</code> to read it in your terminal.</li>
+            </ol>
+            <div class="callout tip">
+                <div class="callout-title"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Let the
+                    machine do the boring half</div>
+                <p>
+                    Many diagnostics come with a machine-applicable fix. <code>cargo fix</code> applies those
+                    automatically, and <code>cargo clippy --fix</code> does the same for lint suggestions. Both refuse
+                    to run on a dirty working tree by default, so your changes stay reviewable.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 7: LEARNING PATH -->
+        <section id="learning-path">
+            <h2><i class="fa-solid fa-signs-post" aria-hidden="true"></i> A Practical Learning Path</h2>
+            <p>
+                Rust is best learned in layers. Trying to understand lifetimes on day one is the most common way people
+                bounce off the language. This order works:
+            </p>
+            <ol class="step-list">
+                <li><strong>Syntax and control flow.</strong> Variables, functions, <code>if</code>, loops and
+                    <code>match</code>. Enough to solve small exercises. →
+                    <a href="controlflow.html">Control Flow</a></li>
+                <li><strong>Ownership, borrowing and lifetimes.</strong> Fight the borrow checker deliberately. Write
+                    code that fails, read the error, fix it. This is the investment that pays for everything after.</li>
+                <li><strong>Collections and iterators.</strong> <code>Vec</code>, <code>HashMap</code>, slices, and the
+                    iterator adapters that replace most hand-written loops. →
+                    <a href="iterators.html">Collections &amp; Iterators</a></li>
+                <li><strong>Error handling.</strong> <code>Option</code>, <code>Result</code>, the <code>?</code>
+                    operator, and when to reach for <code>anyhow</code> (applications) versus
+                    <code>thiserror</code> (libraries).</li>
+                <li><strong>Traits and generics.</strong> Write your own trait, implement it for two types, then accept
+                    <code>impl Trait</code> as a parameter. Generic code stops feeling abstract very quickly.</li>
+                <li><strong>Doing real work.</strong> Read and write files, parse text and JSON, talk to a database,
+                    call an HTTP API. → <a href="stdlib.html">Files &amp; I/O</a>,
+                    <a href="topic.html">JSON &amp; Text</a>, <a href="db.html">Databases &amp; CSV</a>,
+                    <a href="httpreq.html">HTTP</a></li>
+                <li><strong>Async and concurrency.</strong> Threads and channels first, then
+                    <code>async</code>/<code>await</code> with Tokio. Learning them in that order avoids a lot of
+                    confusion.</li>
+            </ol>
+
+            <div class="grid-3">
+                <div class="card">
+                    <h3><i class="fa-solid fa-book" aria-hidden="true"></i> Read</h3>
+                    <ul>
+                        <li><a href="https://doc.rust-lang.org/book/" target="_blank" rel="noopener">The Rust
+                                Programming Language</a> — the official book, and still the best starting point.</li>
+                        <li><a href="https://doc.rust-lang.org/rust-by-example/" target="_blank" rel="noopener">Rust by
+                                Example</a> — the same ground, in runnable snippets.</li>
+                        <li><a href="https://doc.rust-lang.org/std/" target="_blank" rel="noopener">The std
+                                documentation</a> — unusually readable; try <code>rustup doc --std</code> offline.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-keyboard" aria-hidden="true"></i> Practise</h3>
+                    <ul>
+                        <li><a href="https://github.com/rust-lang/rustlings" target="_blank"
+                                rel="noopener">Rustlings</a> — small compile-error puzzles, ideal for week one.</li>
+                        <li><a href="https://exercism.org/tracks/rust" target="_blank" rel="noopener">Exercism's Rust
+                                track</a> — exercises with human mentoring.</li>
+                        <li><a href="https://play.rust-lang.org/" target="_blank" rel="noopener">The Rust
+                                Playground</a> — compile and share code with nothing installed.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-people-group" aria-hidden="true"></i> Ask</h3>
+                    <ul>
+                        <li><a href="https://users.rust-lang.org/" target="_blank" rel="noopener">users.rust-lang.org</a>
+                            — the official user forum, notably welcoming to beginners.</li>
+                        <li><a href="https://this-week-in-rust.org/" target="_blank" rel="noopener">This Week in
+                                Rust</a> — a weekly digest of what changed.</li>
+                        <li><a href="https://crates.io" target="_blank" rel="noopener">crates.io</a> — the package
+                            registry; check recent-download counts before adopting a crate.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <nav class="page-nav" aria-label="Continue reading">
+            <a href="controlflow.html">
+                <i class="fa-solid fa-code-branch" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Start here</span>
+                    <span class="page-nav-title">Control Flow &amp; Variables</span>
+                </span>
+            </a>
+            <a href="iterators.html">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                <span>
+                    <span class="page-nav-label">Then</span>
+                    <span class="page-nav-title">Collections &amp; Iterators</span>
+                </span>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <ul class="footer-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+            <li><a href="controlflow.html"><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Control Flow</a></li>
+            <li><a href="iterators.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+            <li><a href="stdlib.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Files &amp; I/O</a></li>
+            <li><a href="topic.html"><i class="fa-solid fa-code" aria-hidden="true"></i> JSON &amp; Text</a></li>
+            <li><a href="db.html"><i class="fa-solid fa-database" aria-hidden="true"></i> Databases &amp; CSV</a></li>
+            <li><a href="httpreq.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> HTTP</a></li>
+            <li><a href="wasm.html"><i class="fa-solid fa-cube" aria-hidden="true"></i> WebAssembly</a></li>
+        </ul>
+        <p>An introduction to Rust for people who are just starting. Made with care for future Rustaceans.</p>
+        <p>Every page of the official documentation is available offline once Rust is installed:
+            <code>rustup doc</code> opens the index, <code>rustup doc --book</code> opens The Book, and
+            <code>rustup doc --std</code> opens the standard library reference.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.10/p5.min.js"
+        integrity="sha512-7DACDM+XO+/7cocfzNIXh/3rSXc7MzTtr2elSVJLYcXXHPL1/lAyFSKU1F1JBPPCvBGOLNYJCqLlzFeJzc6dLg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/rust-art.js"></script>
+    <script src="js/site.js"></script>
+    <script>
+        // Wire the artwork controls up once the sketch has registered itself.
+        (function () {
+            function ready() {
+                var toggle = document.getElementById("art-toggle");
+                var regen = document.getElementById("art-regen");
+                if (!toggle || !regen) return;
+
+                if (!window.rustArt) {
+                    // p5 blocked or still loading — hide controls that would do nothing.
+                    window.setTimeout(ready, 300);
+                    return;
+                }
+
+                toggle.addEventListener("click", function () {
+                    var paused = window.rustArt.toggle();
+                    toggle.innerHTML = paused
+                        ? '<i class="fa-solid fa-play" aria-hidden="true"></i><span>Play</span>'
+                        : '<i class="fa-solid fa-pause" aria-hidden="true"></i><span>Pause</span>';
+                });
+
+                regen.addEventListener("click", function () {
+                    window.rustArt.regenerate();
+                });
+            }
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", ready);
+            } else {
+                ready();
+            }
+        })();
+    </script>
+</body>
+
+</html>

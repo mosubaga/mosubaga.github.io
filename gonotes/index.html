@@ -22,16 +22,20 @@
     <h1>Go Programming Fundamentals</h1>
     <p>This guide introduces the fundamental concepts of Go with practical, copy-friendly code samples. Start here for syntax, tooling, values, control flow, and collections before moving into the more focused topics in the navigation.</p>
 
+    <section class="go-art-panel" aria-label="Animated artwork showing Go programming features">
+        <div id="go-artwork"></div>
+    </section>
+
     <!-- Section 1: Introduction and Ecosystem -->
     <h2>1. Introduction and Ecosystem</h2>
     <p>Go is an open-source language focused on <strong>simplicity and efficiency</strong>. To verify your installation, you can use the command line:</p>
     <pre><code class="language-bash">$ go version
-# Example output: go version go1.26.4 darwin/arm64</code></pre>
+# Example output: go version go1.27.0 darwin/arm64</code></pre>
     <p>You can also use the <strong>Go Playground</strong> at <a href="https://go.dev/play">go.dev/play</a> to run code directly in your browser.</p>
 
     <!-- Section 2: The Go Toolchain -->
     <h2>2. The Go Toolchain</h2>
-    <p>The Go command is a "Swiss Army Knife" for developers, handling everything from running scripts to building binaries.</p>
+    <p>The Go command is a "Swiss Army Knife" for developers, handling source files, tests, modules, and binaries.</p>
     <pre><code class="language-bash"># 1. Run code immediately without creating a visible binary
 $ go run main.go
 
@@ -89,9 +93,9 @@ func main() {
     <p>Go provides fixed-size numeric types, booleans, and context-aware characters called <strong>runes</strong>.</p>
     <pre><code class="language-go">var (
     a bool    = true    // Boolean
-    b int     = 42      // Integer (32 or 64 bits depending on OS)
+    b int     = 42      // Machine-sized integer (32 or 64 bits, depending on architecture)
     c float64 = 19.99   // Floating-point
-    d string  = "Go"    // Sequence of characters
+    d string  = "Go"    // Immutable byte sequence, usually UTF-8 text
     e rune    = '世'    // Single Unicode code point (int32 alias)
 )
 
@@ -161,7 +165,9 @@ _, exists := prices["Hat"] // exists is false; use _ to discard value</code></pr
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
     <script>hljs.highlightAll();</script>
+    <script src="js/go-artwork.js"></script>
     <script src="js/copy.js"></script>
 </body>
 </html>
