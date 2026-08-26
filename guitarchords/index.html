@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chord Library — Guitar Chords for Beginners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- floating bubbles -->
+<div class="bubbles" aria-hidden="true">
+  <span style="width:14px;height:14px;left:7%;animation-duration:16s;animation-delay:0s;--drift:28px"></span>
+  <span style="width:22px;height:22px;left:18%;animation-duration:13s;animation-delay:3.5s;--drift:-22px"></span>
+  <span style="width:10px;height:10px;left:31%;animation-duration:20s;animation-delay:1s;--drift:18px"></span>
+  <span style="width:18px;height:18px;left:47%;animation-duration:15s;animation-delay:6s;--drift:32px"></span>
+  <span style="width:26px;height:26px;left:63%;animation-duration:11s;animation-delay:2s;--drift:-26px"></span>
+  <span style="width:12px;height:12px;left:76%;animation-duration:18s;animation-delay:8s;--drift:20px"></span>
+  <span style="width:20px;height:20px;left:87%;animation-duration:14s;animation-delay:4.5s;--drift:-18px"></span>
+  <span style="width:16px;height:16px;left:53%;animation-duration:22s;animation-delay:10s;--drift:35px"></span>
+</div>
+
+<div class="page">
+
+  <!-- navigation -->
+  <nav class="ramune-nav" aria-label="Site navigation">
+    <a href="index.html" class="active"><i class="fa-solid fa-guitar"></i>Chord Library</a>
+    <a href="progressions.html"><i class="fa-solid fa-music"></i>Progressions</a>
+    <a href="practice.html"><i class="fa-solid fa-book-open"></i>How to Practice</a>
+  </nav>
+
+  <!-- hero -->
+  <header class="hero">
+    <div class="cap" aria-hidden="true"><i class="fa-solid fa-guitar"></i></div>
+    <h1>Chord Library</h1>
+    <p class="sub">Open-position chords for 6-string guitar · standard tuning E A D G B E</p>
+  </header>
+
+  <!-- filter card -->
+  <div class="bottle-card">
+    <h2><span class="marble"></span><i class="fa-solid fa-sliders"></i>Browse Chords</h2>
+    <div class="filter-section">
+      <div class="filter-row">
+        <span class="filter-label"><i class="fa-solid fa-layer-group"></i>Family</span>
+        <div class="family-tabs" role="group" aria-label="Filter by chord family">
+          <button class="family-tab active" data-family="all">All</button>
+          <button class="family-tab" data-family="major"><i class="fa-solid fa-sun"></i>Major</button>
+          <button class="family-tab" data-family="minor"><i class="fa-solid fa-moon"></i>Minor</button>
+          <button class="family-tab" data-family="dom7"><i class="fa-solid fa-bolt"></i>Dom 7th</button>
+          <button class="family-tab" data-family="maj7"><i class="fa-solid fa-gem"></i>Maj 7th</button>
+          <button class="family-tab" data-family="min7"><i class="fa-solid fa-droplet"></i>Min 7th</button>
+        </div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label"><i class="fa-solid fa-music"></i>Root</span>
+        <div class="root-buttons" role="group" aria-label="Filter by root note">
+          <button class="root-btn active" data-root="all">All</button>
+          <button class="root-btn" data-root="C">C</button>
+          <button class="root-btn" data-root="D">D</button>
+          <button class="root-btn" data-root="E">E</button>
+          <button class="root-btn" data-root="F">F</button>
+          <button class="root-btn" data-root="G">G</button>
+          <button class="root-btn" data-root="A">A</button>
+          <button class="root-btn" data-root="B">B</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- chord library (rendered by JS) -->
+  <main id="chord-library" aria-label="Chord library"></main>
+
+  <footer>
+    <p><i class="fa-regular fa-circle-question"></i> Tap a chord card to highlight it · use filters to narrow by family or root note</p>
+  </footer>
+
+</div><!-- /.page -->
+
+<script src="js/chords-data.js"></script>
+<script src="js/chord-diagram.js"></script>
+<script>
+  const FAMILY_ORDER  = ['major', 'minor', 'dom7', 'maj7', 'min7'];
+  const FAMILY_LABELS = { major: 'Major', minor: 'Minor', dom7: '7th (Dominant)', maj7: 'Major 7th', min7: 'Minor 7th' };
+  const FAMILY_ICONS  = { major: 'fa-sun', minor: 'fa-moon', dom7: 'fa-bolt', maj7: 'fa-gem', min7: 'fa-droplet' };
+  const PITCH_ORDER   = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+
+  function chordId(chord) {
+    return 'chord-' + chord.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+  }
+  function rootLetter(chord) { return chord.root.charAt(0).toUpperCase(); }
+  function sortByPitch(chords) {
+    return [...chords].sort((a, b) =>
+      PITCH_ORDER.indexOf(rootLetter(a)) - PITCH_ORDER.indexOf(rootLetter(b))
+    );
+  }
+
+  function buildLibrary() {
+    const container = document.getElementById('chord-library');
+
+    FAMILY_ORDER.forEach(family => {
+      const familyChords = sortByPitch(chordData.filter(c => c.family === family));
+
+      // Each family is a bottle-card
+      const section = document.createElement('div');
+      section.className = 'bottle-card family-section';
+      section.dataset.family = family;
+
+      const h2 = document.createElement('h2');
+      h2.innerHTML = `<span class="marble"></span><i class="fa-solid ${FAMILY_ICONS[family]}"></i>${FAMILY_LABELS[family]}`;
+      section.appendChild(h2);
+
+      const grid = document.createElement('div');
+      grid.className = 'chord-grid';
+
+      familyChords.forEach(chord => {
+        const card = document.createElement('div');
+        card.className = 'chord-card';
+        card.dataset.family = family;
+        card.dataset.root = rootLetter(chord);
+        card.id = chordId(chord);
+
+        const nameEl = document.createElement('h3');
+        nameEl.className = 'chord-name';
+        nameEl.textContent = chord.name;
+
+        const diagramWrap = document.createElement('div');
+        diagramWrap.className = 'diagram-wrap';
+
+        const notesEl = document.createElement('div');
+        notesEl.className = 'chord-notes';
+        notesEl.textContent = chord.notes.join(' – ');
+
+        card.appendChild(nameEl);
+        card.appendChild(diagramWrap);
+        card.appendChild(notesEl);
+
+        if (chord.tip) {
+          const tipEl = document.createElement('p');
+          tipEl.className = 'chord-tip';
+          tipEl.textContent = chord.tip;
+          card.appendChild(tipEl);
+        }
+
+        renderChordDiagram(diagramWrap, chord);
+        grid.appendChild(card);
+      });
+
+      section.appendChild(grid);
+      container.appendChild(section);
+    });
+  }
+
+  let activeFamily = 'all';
+  let activeRoot   = 'all';
+
+  function applyFilters() {
+    let anyVisible = false;
+
+    document.querySelectorAll('.family-section').forEach(section => {
+      const fam = section.dataset.family;
+      const famMatch = activeFamily === 'all' || fam === activeFamily;
+      let sectionHasVisible = false;
+
+      section.querySelectorAll('.chord-card').forEach(card => {
+        const rootMatch = activeRoot === 'all' || card.dataset.root === activeRoot;
+        const visible   = famMatch && rootMatch;
+        card.hidden = !visible;
+        if (visible) { sectionHasVisible = true; anyVisible = true; }
+      });
+      section.hidden = !sectionHasVisible;
+    });
+
+    const existing = document.getElementById('no-results-msg');
+    if (!anyVisible && !existing) {
+      const msg = document.createElement('p');
+      msg.id = 'no-results-msg';
+      msg.className = 'no-results';
+      msg.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> No chords match the current filters.';
+      document.getElementById('chord-library').appendChild(msg);
+    } else if (anyVisible && existing) {
+      existing.remove();
+    }
+  }
+
+  document.querySelectorAll('.family-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFamily = btn.dataset.family;
+      document.querySelectorAll('.family-tab').forEach(b => b.classList.toggle('active', b === btn));
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('.root-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeRoot = btn.dataset.root;
+      document.querySelectorAll('.root-btn').forEach(b => b.classList.toggle('active', b === btn));
+      applyFilters();
+    });
+  });
+
+  buildLibrary();
+</script>
+</body>
+</html>
