@@ -10,7 +10,7 @@
         <!-- Bootstrap core CSS -->
         <link href="../css/bootstrap.min.css" rel="stylesheet" />
         <!-- Custom styles for this template -->
-        <!-- Hightlight -->
+        <!-- Highlight -->
         <link rel="stylesheet" href="../css/prism.css" />
         <link rel="stylesheet" href="../css/style.css" />
         <script src="../css/prism.js"></script>
@@ -31,6 +31,10 @@
 
             .navbar {
                 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            }
+
+            .latex-source {
+                margin-bottom: 25px;
             }
         </style>
     </head>
@@ -56,41 +60,183 @@
         <div class="container">
             <h3 style="padding-top: 50px">Einstein's Equation</h3>
             <p>Well, can't miss this one.</p>
-            <p><span class="math display">\[ E = m{c^2} \]</span></p>
+            <p><span class="math display">\[ E = mc^2 \]</span></p>
+            <pre class="latex-source"><code class="language-latex">E = mc^2</code></pre>
+
             <h3 style="padding-top: 50px">Law of Gravitation</h3>
-            <p>It is claimed that Newton was the one who came up.</p>
+            <p>It is claimed that Newton was the one who came up with it.</p>
             <p><span class="math display">\[ F = -G \frac{Mm}{r^2} \]</span></p>
-            <h3 style="padding-top: 50px">Gradiant</h3>
-            <p>You will see it in the start of vector analysis course.</p>
+            <pre class="latex-source"><code class="language-latex">F = -G \frac{Mm}{r^2}</code></pre>
+
+            <h3 style="padding-top: 50px">Gradient</h3>
+            <p>You will see it at the start of a vector analysis course.</p>
             <p>
                 <span class="math display"
-                    >\[ \nabla g(x, y, z) =\frac{\partial g}{\partial x}\hat{i}
+                    >\[ \nabla g(x, y, z) = \frac{\partial g}{\partial x}\hat{i}
                     + \frac{\partial g}{\partial y}\hat{j} + \frac{\partial
                     g}{\partial z}\hat{k} \]</span
                 >
             </p>
+            <pre class="latex-source"><code class="language-latex">\nabla g(x, y, z) = \frac{\partial g}{\partial x}\hat{i} + \frac{\partial g}{\partial y}\hat{j} + \frac{\partial g}{\partial z}\hat{k}</code></pre>
+
             <h3 style="padding-top: 50px">Euler's Identity</h3>
             <p>Saw this many times during my college and grad school days.</p>
             <p>
                 <span class="math display"
-                    >\[ e^{i \theta} = cos \theta + isin \theta \]</span
+                    >\[ e^{i \theta} = \cos \theta + i\sin \theta \]</span
                 >
             </p>
+            <pre class="latex-source"><code class="language-latex">e^{i \theta} = \cos \theta + i\sin \theta</code></pre>
+
             <h3 style="padding-top: 50px">Wave Equation</h3>
-            <p>One of the basic equation in phyisics.</p>
+            <p>One of the basic equations in physics.</p>
             <p>
                 <span class="math display"
                     >\[ \frac{\partial^2 f}{\partial x^2} = \frac{1}{c^2}
                     \frac{\partial^2 f}{\partial t^2} \]</span
                 >
             </p>
-            <h3 style="padding-top: 50px">Bayes' theorem</h3>
+            <pre class="latex-source"><code class="language-latex">\frac{\partial^2 f}{\partial x^2} = \frac{1}{c^2} \frac{\partial^2 f}{\partial t^2}</code></pre>
+
+            <h3 style="padding-top: 50px">Bayes' Theorem</h3>
             <p>No wonder the Red Sox keep on signing lousy players.</p>
             <p>
                 <span class="math display"
                     >\[ P(A \lvert B) = \frac{P(B \lvert A)P(A)}{P(B)} \]</span
                 >
             </p>
+            <pre class="latex-source"><code class="language-latex">P(A \lvert B) = \frac{P(B \lvert A)P(A)}{P(B)}</code></pre>
+
+            <h3 style="padding-top: 50px">Pythagorean Theorem</h3>
+            <p>The classic relationship between the sides of a right triangle.</p>
+            <p><span class="math display">\[ a^2 + b^2 = c^2 \]</span></p>
+            <pre class="latex-source"><code class="language-latex">a^2 + b^2 = c^2</code></pre>
+
+            <h3 style="padding-top: 50px">Quadratic Formula</h3>
+            <p>The direct way to solve a quadratic equation.</p>
+            <p>
+                <span class="math display"
+                    >\[ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}</code></pre>
+
+            <h3 style="padding-top: 50px">Euler-Lagrange Equation</h3>
+            <p>A key equation in calculus of variations and classical mechanics.</p>
+            <p>
+                <span class="math display"
+                    >\[ \frac{\partial L}{\partial q} - \frac{d}{dt}
+                    \frac{\partial L}{\partial \dot{q}} = 0 \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">\frac{\partial L}{\partial q} - \frac{d}{dt} \frac{\partial L}{\partial \dot{q}} = 0</code></pre>
+
+            <h3 style="padding-top: 50px">Schrodinger Equation</h3>
+            <p>A central equation in quantum mechanics.</p>
+            <p>
+                <span class="math display"
+                    >\[ i\hbar\frac{\partial}{\partial t}\Psi(\mathbf{r}, t) =
+                    \hat{H}\Psi(\mathbf{r}, t) \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">i\hbar\frac{\partial}{\partial t}\Psi(\mathbf{r}, t) = \hat{H}\Psi(\mathbf{r}, t)</code></pre>
+
+            <h3 style="padding-top: 50px">Maxwell's Equations</h3>
+            <p>The four compact equations that describe classical electromagnetism.</p>
+            <p>
+                <span class="math display"
+                    >\[ \begin{gathered}
+                    \nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0} \\
+                    \nabla \cdot \mathbf{B} = 0 \\
+                    \nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} \\
+                    \nabla \times \mathbf{B} = \mu_0\mathbf{J} +
+                    \mu_0\epsilon_0\frac{\partial \mathbf{E}}{\partial t}
+                    \end{gathered} \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">\begin{gathered}
+\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0} \\
+\nabla \cdot \mathbf{B} = 0 \\
+\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} \\
+\nabla \times \mathbf{B} = \mu_0\mathbf{J} + \mu_0\epsilon_0\frac{\partial \mathbf{E}}{\partial t}
+\end{gathered}</code></pre>
+
+            <h3 style="padding-top: 50px">Navier-Stokes Equation</h3>
+            <p>A famous equation for fluid motion.</p>
+            <p>
+                <span class="math display"
+                    >\[ \rho\left(\frac{\partial \mathbf{v}}{\partial t} +
+                    \mathbf{v}\cdot\nabla\mathbf{v}\right) = -\nabla p +
+                    \mu\nabla^2\mathbf{v} + \mathbf{f} \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">\rho\left(\frac{\partial \mathbf{v}}{\partial t} + \mathbf{v}\cdot\nabla\mathbf{v}\right) = -\nabla p + \mu\nabla^2\mathbf{v} + \mathbf{f}</code></pre>
+
+            <h3 style="padding-top: 50px">Fourier Transform</h3>
+            <p>A way to express a function in terms of frequencies.</p>
+            <p>
+                <span class="math display"
+                    >\[ \hat{f}(\xi) = \int_{-\infty}^{\infty} f(x)
+                    e^{-2\pi i x \xi}\,dx \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">\hat{f}(\xi) = \int_{-\infty}^{\infty} f(x)e^{-2\pi i x \xi}\,dx</code></pre>
+
+            <h3 style="padding-top: 50px">Normal Distribution</h3>
+            <p>The familiar bell curve from probability and statistics.</p>
+            <p>
+                <span class="math display"
+                    >\[ f(x) = \frac{1}{\sigma\sqrt{2\pi}}
+                    e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2} \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}</code></pre>
+
+            <h3 style="padding-top: 50px">Logistic Function</h3>
+            <p>A compact S-shaped curve used in statistics and machine learning.</p>
+            <p><span class="math display">\[ f(x) = \frac{1}{1 + e^{-x}} \]</span></p>
+            <pre class="latex-source"><code class="language-latex">f(x) = \frac{1}{1 + e^{-x}}</code></pre>
+
+            <h3 style="padding-top: 50px">Black-Scholes Equation</h3>
+            <p>A notable equation from mathematical finance.</p>
+            <p>
+                <span class="math display"
+                    >\[ \frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2
+                    \frac{\partial^2 V}{\partial S^2} + rS\frac{\partial
+                    V}{\partial S} - rV = 0 \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2 \frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0</code></pre>
+
+            <h3 style="padding-top: 50px">Heisenberg Uncertainty Principle</h3>
+            <p>A quantum limit on how precisely position and momentum can both be known.</p>
+            <p><span class="math display">\[ \Delta x\,\Delta p \geq \frac{\hbar}{2} \]</span></p>
+            <pre class="latex-source"><code class="language-latex">\Delta x\,\Delta p \geq \frac{\hbar}{2}</code></pre>
+
+            <h3 style="padding-top: 50px">Planck-Einstein Relation</h3>
+            <p>The energy of a photon in terms of its frequency.</p>
+            <p><span class="math display">\[ E = h\nu \]</span></p>
+            <pre class="latex-source"><code class="language-latex">E = h\nu</code></pre>
+
+            <h3 style="padding-top: 50px">Ideal Gas Law</h3>
+            <p>A familiar relationship between pressure, volume, temperature, and amount of gas.</p>
+            <p><span class="math display">\[ PV = nRT \]</span></p>
+            <pre class="latex-source"><code class="language-latex">PV = nRT</code></pre>
+
+            <h3 style="padding-top: 50px">Boltzmann Entropy Formula</h3>
+            <p>A beautiful bridge between thermodynamics and statistical mechanics.</p>
+            <p><span class="math display">\[ S = k_B \ln \Omega \]</span></p>
+            <pre class="latex-source"><code class="language-latex">S = k_B \ln \Omega</code></pre>
+
+            <h3 style="padding-top: 50px">Heat Equation</h3>
+            <p>A classic partial differential equation for diffusion and heat flow.</p>
+            <p>
+                <span class="math display"
+                    >\[ \frac{\partial u}{\partial t} =
+                    \alpha\nabla^2u \]</span
+                >
+            </p>
+            <pre class="latex-source"><code class="language-latex">\frac{\partial u}{\partial t} = \alpha\nabla^2u</code></pre>
         </div>
         <!-- /.container -->
 
