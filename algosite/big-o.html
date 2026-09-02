@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Big-O Notation — DSA Studio</title>
+  <meta name="description" content="Big-O notation explained from first principles — how to read it, how to spot it in code, every common complexity class, and code examples in Python and TypeScript.">
+  <link rel="stylesheet" href="css/style.css?v=20260831">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    p { max-width: none; }
+    pre {
+      background: #f0f9e8;
+      border: 1px solid var(--line);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) var(--radius-sm);
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      font-size: 0.87rem;
+      line-height: 1.6;
+      margin: 0 0 1.2rem;
+      tab-size: 4;
+    }
+    code { font-family: 'Courier New', Courier, monospace; color: var(--ink); }
+    /* Keep the site's green background; let highlight.js handle token colours only */
+    .hljs { background: #f0f9e8 !important; }
+    pre code.hljs { padding: 0; }
+    .code-block { margin: 1rem 0 1.5rem; }
+    .code-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--soda);
+      padding: 0.25rem 0.8rem;
+      border-radius: 8px 8px 0 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1.25rem;
+      font-size: 0.9rem;
+    }
+    th, td { text-align: left; padding: 0.55rem 0.9rem; border: 1px solid var(--line); }
+    th { background: var(--soda-light); font-weight: 700; }
+    tr:nth-child(even) td { background: var(--cream); }
+    .toc {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 1.4rem 2rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .toc h3 { margin-bottom: 0.6rem; font-size: 1rem; }
+    .toc ol { columns: 2; gap: 2rem; margin: 0; padding-left: 1.4rem; }
+    .toc li { margin-bottom: 0.3rem; }
+    .toc a { color: var(--ink-soft); text-decoration: none; font-size: 0.92rem; }
+    .toc a:hover { color: var(--ink); text-decoration: underline; }
+    .bigo-section { padding: 2.5rem 0 0.5rem; border-top: 2px solid var(--line); }
+    .analogy {
+      background: var(--soda-light);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.1rem;
+      margin: 1rem 0 1.25rem;
+    }
+    .analogy strong { display: block; margin-bottom: 0.25rem; color: var(--ink); }
+    .where-used {
+      background: var(--cream);
+      border-left: 4px solid var(--soda);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 1rem 0 0.5rem;
+      font-size: 0.92rem;
+    }
+    .where-used strong { color: var(--ink); }
+    .steps {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      counter-reset: step;
+    }
+    .steps li {
+      counter-increment: step;
+      list-style: none;
+      padding: 0.4rem 0 0.4rem 2.2rem;
+      position: relative;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 1.4rem;
+      height: 1.4rem;
+      background: var(--soda);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+    }
+    .page-hero { padding: var(--space-4) 0 var(--space-3); }
+    .back-link { display: inline-flex; align-items: center; gap: .4rem; color: var(--ink-soft); text-decoration: none; font-size: .9rem; margin-bottom: 1rem; }
+    .back-link:hover { color: var(--ink); }
+    h2 { font-size: clamp(1.3rem, 2.5vw, 1.7rem); }
+    .complexity-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .complexity-strip a {
+      display: inline-block;
+      font-size: .82rem;
+      font-weight: 700;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .35rem .9rem;
+      text-decoration: none;
+    }
+    .complexity-strip a:hover { background: var(--soda-light); border-color: var(--soda); }
+    .rank-table td:first-child, .rank-table th:first-child { font-family: 'Courier New', Courier, monospace; font-weight: 700; }
+    .rank-note { font-size: .85rem; color: var(--ink-soft); margin: -0.5rem 0 1.5rem; }
+
+    /* Tablet (641px – 1024px) */
+    @media (max-width: 1024px) {
+      .toc ol { columns: 1; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.45rem 0.7rem; }
+    }
+
+    /* Phone (≤ 640px) */
+    @media (max-width: 640px) {
+      pre { font-size: 0.82rem; padding: 0.9rem 1rem; }
+      table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .analogy, .where-used { padding: 0.7rem 0.9rem; }
+      .steps li { padding-left: 2rem; font-size: 0.93rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="DSA Studio home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        DSA Studio
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="data-structures.html">Data Structures</a></li>
+        <li><a href="algorithms.html">Algorithms</a></li>
+        <li><a href="big-o.html" aria-current="page">Big-O</a></li>
+        <li><a href="index.html#playground">Playground</a></li>
+        <li><a href="index.html#reference">Reference</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+    <div class="wrap">
+      <div class="page-hero">
+        <a class="back-link" href="index.html">← Back to home</a>
+        <span class="tag">Reference</span>
+        <h1>Big-O Notation</h1>
+        <p style="max-width:62ch; color:var(--ink-soft);">
+          Big-O is the vocabulary computer scientists use to describe how an algorithm's
+          running time or memory use grows as the input grows. It's the single most useful
+          habit you can build early — every data structure and algorithm on this site is
+          labeled with one. This page explains what it means, how to read it straight from
+          code, and walks through every common complexity class with runnable Python and
+          TypeScript examples.
+        </p>
+      </div>
+
+      <div class="toc" aria-label="Table of contents">
+        <h3>Contents</h3>
+        <ol>
+          <li><a href="#what-is-big-o">What Is Big-O Notation?</a></li>
+          <li><a href="#why-it-matters">Why It Matters</a></li>
+          <li><a href="#reading-big-o">Reading Big-O From Code</a></li>
+          <li><a href="#o-1">O(1) — Constant Time</a></li>
+          <li><a href="#o-log-n">O(log n) — Logarithmic Time</a></li>
+          <li><a href="#o-n">O(n) — Linear Time</a></li>
+          <li><a href="#o-n-log-n">O(n log n) — Linearithmic Time</a></li>
+          <li><a href="#o-n-squared">O(n²) — Quadratic Time</a></li>
+          <li><a href="#o-2-n">O(2ⁿ) — Exponential Time</a></li>
+          <li><a href="#o-n-factorial">O(n!) — Factorial Time</a></li>
+          <li><a href="#best-worst-average">Best, Worst &amp; Average Case</a></li>
+          <li><a href="#space-complexity">Space Complexity</a></li>
+          <li><a href="#growth-comparison">Growth Rate Comparison</a></li>
+          <li><a href="#cheat-sheet">Cheat Sheet</a></li>
+        </ol>
+      </div>
+
+      <!-- ============================================================
+           WHAT IS BIG-O
+      ============================================================ -->
+      <section class="bigo-section" id="what-is-big-o">
+        <h2>What Is Big-O Notation?</h2>
+        <p>
+          Big-O notation describes how the <strong>running time</strong> (or memory use) of an
+          algorithm grows as the size of its input, usually called <code>n</code>, grows toward
+          infinity. It is written as <code>O(&hellip;)</code> — for example <code>O(n)</code> or
+          <code>O(n&sup2;)</code> — and it answers one question: <em>if I double the input, what
+          happens to the work?</em>
+        </p>
+        <p>
+          Big-O deliberately ignores two things that don't matter at scale:
+        </p>
+        <ol class="steps">
+          <li><strong>Constants:</strong> An algorithm that does <code>2n</code> steps and one that does <code>100n</code> steps are both <code>O(n)</code> — they both grow in a straight line as <code>n</code> grows, just with a different slope.</li>
+          <li><strong>Lower-order terms:</strong> An algorithm that does <code>n&sup2; + n</code> steps is <code>O(n&sup2;)</code> — once <code>n</code> is large, the <code>n&sup2;</code> term completely dwarfs the <code>n</code> term.</li>
+          <li><strong>Machine speed:</strong> Big-O never mentions seconds or milliseconds. A faster computer shrinks every algorithm's constant factor equally — it does not change which curve the algorithm is on.</li>
+        </ol>
+        <div class="analogy">
+          <strong>Think of it like… a car's fuel-efficiency rating, not a stopwatch.</strong>
+          "35 miles per gallon" tells you how efficiency <em>scales</em> with distance without
+          promising an exact arrival time — the actual time also depends on traffic and speed
+          limits. Big-O tells you how work scales with input size without promising an exact
+          number of milliseconds, which also depends on the CPU, the language, and the machine.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           WHY IT MATTERS
+      ============================================================ -->
+      <section class="bigo-section" id="why-it-matters">
+        <h2>Why It Matters</h2>
+        <p>
+          Two algorithms can look equally simple in code and behave completely differently in
+          production. An <code>O(n&sup2;)</code> function that feels instant on a 20-item test
+          list can lock up a server once a customer uploads a file with a million rows. Big-O
+          is how you predict that failure <em>before</em> it happens, instead of after a page
+          times out.
+        </p>
+        <p>
+          It also gives engineers a shared, precise vocabulary. Saying "this hash-map lookup is
+          O(1) and that linear scan is O(n)" communicates an exact scaling tradeoff in five
+          words — no benchmark required to have the conversation.
+        </p>
+        <div class="where-used">
+          <strong>Where you'll actually use this:</strong>
+          Choosing between a list and a hash set for membership checks, deciding whether a
+          "clever" nested loop will survive real data, technical interviews, and code review
+          comments like "this is O(n&sup2;), can we do better?"
+        </div>
+      </section>
+
+      <!-- ============================================================
+           READING BIG-O FROM CODE
+      ============================================================ -->
+      <section class="bigo-section" id="reading-big-o">
+        <h2>Reading Big-O From Code</h2>
+        <p>
+          You rarely calculate Big-O with a formula — you recognize it from shape. These five
+          rules cover almost everything you'll see:
+        </p>
+        <ol class="steps">
+          <li><strong>Straight-line code is O(1).</strong> Arithmetic, variable assignment, an array index by position, or a hash-map lookup all take the same amount of work no matter how big the data is.</li>
+          <li><strong>A single loop over the input is O(n).</strong> One pass, one unit of work per item.</li>
+          <li><strong>Nested loops multiply.</strong> A loop inside a loop, each running roughly <code>n</code> times, is <code>O(n) &times; O(n) = O(n&sup2;)</code>. Three nested loops over the same input is <code>O(n&sup3;)</code>.</li>
+          <li><strong>Sequential (not nested) loops add, then simplify.</strong> Two separate loops back to back are <code>O(n) + O(n) = O(2n)</code>, which simplifies to <code>O(n)</code> because constants are dropped.</li>
+          <li><strong>Halving the problem each step is O(log n).</strong> Any loop or recursion that throws away half the remaining data every iteration — binary search is the classic example — grows logarithmically.</li>
+        </ol>
+        <h3>Spotting the shape in practice</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def constant(items):
+    return items[0]                 # O(1) — one lookup, size doesn't matter
+
+def linear(items):
+    total = 0
+    for x in items:                 # loop runs n times
+        total += x                  # O(1) work per item  ->  O(n) overall
+    return total
+
+def quadratic(items):
+    pairs = []
+    for a in items:                 # outer loop: n
+        for b in items:             # inner loop: n, nested inside the outer
+            pairs.append((a, b))    # -> O(n) * O(n) = O(n^2)
+    return pairs
+
+def two_passes(items):
+    total = sum(items)              # O(n)
+    biggest = max(items)            # O(n), but NOT nested inside the loop above
+    return total, biggest           # O(n) + O(n) = O(2n) -> simplifies to O(n)
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function constant(items: number[]): number {
+  return items[0];                  // O(1) — one lookup, size doesn't matter
+}
+
+function linear(items: number[]): number {
+  let total = 0;
+  for (const x of items) {          // loop runs n times
+    total += x;                     // O(1) work per item  ->  O(n) overall
+  }
+  return total;
+}
+
+function quadratic(items: number[]): [number, number][] {
+  const pairs: [number, number][] = [];
+  for (const a of items) {          // outer loop: n
+    for (const b of items) {        // inner loop: n, nested inside the outer
+      pairs.push([a, b]);           // -> O(n) * O(n) = O(n^2)
+    }
+  }
+  return pairs;
+}
+
+function twoPasses(items: number[]): [number, number] {
+  const total = items.reduce((s, x) => s + x, 0); // O(n)
+  const biggest = Math.max(...items);             // O(n), NOT nested in the line above
+  return [total, biggest];          // O(n) + O(n) = O(2n) -> simplifies to O(n)
+}
+</code></pre>
+        </div>
+      </section>
+
+      <div class="complexity-strip" aria-label="Jump to a complexity class">
+        <a href="#o-1">O(1)</a>
+        <a href="#o-log-n">O(log n)</a>
+        <a href="#o-n">O(n)</a>
+        <a href="#o-n-log-n">O(n log n)</a>
+        <a href="#o-n-squared">O(n&sup2;)</a>
+        <a href="#o-2-n">O(2&#8319;)</a>
+        <a href="#o-n-factorial">O(n!)</a>
+      </div>
+
+      <!-- ============================================================
+           O(1)
+      ============================================================ -->
+      <section class="bigo-section" id="o-1">
+        <h2>O(1) — Constant Time</h2>
+        <p>
+          The amount of work stays exactly the same no matter how large the input gets.
+          Whether the array has 5 items or 5 million, the operation takes one step.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… grabbing a book by its exact shelf label.</strong>
+          If you know a book lives on "Shelf 12, Slot 4," you walk straight there — it doesn't
+          matter whether the library has 100 books or 10 million.
+        </div>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def get_first(items):
+    return items[0]                 # O(1) — direct index, no scanning
+
+def is_even(n):
+    return n % 2 == 0               # O(1) — one arithmetic operation
+
+cache = {"tokyo": 9273000, "osaka": 2691000}
+
+def population_of(city):
+    return cache.get(city, 0)       # O(1) average — hash lookup, not a scan
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function getFirst&lt;T&gt;(items: T[]): T {
+  return items[0];                  // O(1) — direct index, no scanning
+}
+
+function isEven(n: number): boolean {
+  return n % 2 === 0;               // O(1) — one arithmetic operation
+}
+
+const cache = new Map([["tokyo", 9273000], ["osaka", 2691000]]);
+
+function populationOf(city: string): number {
+  return cache.get(city) ?? 0;      // O(1) average — hash lookup, not a scan
+}
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Array indexing, stack push/pop, hash-map/dictionary get and set, checking a boolean
+          flag, and appending to a dynamic array (amortized).
+        </div>
+      </section>
+
+      <!-- ============================================================
+           O(log n)
+      ============================================================ -->
+      <section class="bigo-section" id="o-log-n">
+        <h2>O(log n) — Logarithmic Time</h2>
+        <p>
+          The work grows, but very slowly, because each step throws away a large fraction of
+          the remaining problem — usually half. Doubling the input only adds <em>one more
+          step</em>, not double the work. A binary search through a billion sorted items takes
+          about 30 steps.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… guessing a number between 1 and 1,000.</strong>
+          If every guess gets a "higher" or "lower" hint, guessing 500 first eliminates half
+          the range in one question. You can find any number in ten guesses or fewer — not
+          1,000 guesses.
+        </div>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def binary_search(sorted_items, target):
+    low, high = 0, len(sorted_items) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if sorted_items[mid] == target:
+            return mid               # found it
+        elif sorted_items[mid] < target:
+            low = mid + 1            # discard the left half
+        else:
+            high = mid - 1           # discard the right half
+    return -1                        # each loop cuts the range in half -> O(log n)
+
+print(binary_search([1, 3, 5, 7, 9, 11, 13], 11))  # 5
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function binarySearch(sortedItems: number[], target: number): number {
+  let low = 0;
+  let high = sortedItems.length - 1;
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    if (sortedItems[mid] === target) {
+      return mid;                   // found it
+    } else if (sortedItems[mid] < target) {
+      low = mid + 1;                // discard the left half
+    } else {
+      high = mid - 1;               // discard the right half
+    }
+  }
+  return -1;                        // each loop cuts the range in half -> O(log n)
+}
+
+console.log(binarySearch([1, 3, 5, 7, 9, 11, 13], 11)); // 5
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Binary search, balanced binary search tree lookups, and any "divide the problem in
+          half" step inside a bigger algorithm — including the per-level cost inside
+          <code>O(n log n)</code> sorts below.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           O(n)
+      ============================================================ -->
+      <section class="bigo-section" id="o-n">
+        <h2>O(n) — Linear Time</h2>
+        <p>
+          The work grows in direct proportion to the input. Double the input, double the work.
+          This is the cost of touching every item exactly once — you can't do better than
+          O(n) if you genuinely need to look at every element at least once.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… checking every locker in a hallway for a missing item.</strong>
+          With no other information, you have to open each locker once. Twice as many lockers
+          means twice as much checking.
+        </div>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def find_max(items):
+    biggest = items[0]
+    for x in items:                 # visits every item exactly once
+        if x > biggest:
+            biggest = x
+    return biggest                  # O(n)
+
+def contains(items, target):
+    for x in items:                 # worst case: scan the whole list
+        if x == target:
+            return True
+    return False                    # O(n)
+
+print(find_max([4, 9, 2, 7]))       # 9
+print(contains([4, 9, 2, 7], 2))    # True
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function findMax(items: number[]): number {
+  let biggest = items[0];
+  for (const x of items) {          // visits every item exactly once
+    if (x > biggest) biggest = x;
+  }
+  return biggest;                   // O(n)
+}
+
+function contains(items: number[], target: number): boolean {
+  for (const x of items) {          // worst case: scan the whole array
+    if (x === target) return true;
+  }
+  return false;                     // O(n)
+}
+
+console.log(findMax([4, 9, 2, 7]));      // 9
+console.log(contains([4, 9, 2, 7], 2));  // true
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Linear search, summing or averaging a list, copying an array, printing every row of
+          a table, and traversing a linked list.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           O(n log n)
+      ============================================================ -->
+      <section class="bigo-section" id="o-n-log-n">
+        <h2>O(n log n) — Linearithmic Time</h2>
+        <p>
+          This is the cost of doing an <code>O(log n)</code>-style "divide in half" process
+          <em>at every one of the n items</em> — commonly: split the input in half repeatedly
+          (that's the <code>log n</code> part, since halving stops after about <code>log n</code>
+          rounds) and do <code>O(n)</code> work to merge each round back together. It's the
+          best possible complexity for comparison-based sorting, and dramatically faster than
+          <code>O(n&sup2;)</code> at any real-world scale.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… sorting a deck of cards by repeated splitting.</strong>
+          Split the deck in half, split each half again, and again, until each pile has one
+          card (that takes <code>log n</code> splitting rounds). Then merge sorted piles back
+          together two at a time — merging every round costs <code>O(n)</code> total, and there
+          are <code>log n</code> rounds of merging.
+        </div>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def merge_sort(items):
+    if len(items) <= 1:
+        return items
+    mid = len(items) // 2
+    left = merge_sort(items[:mid])   # recursively sort each half -> log n levels
+    right = merge_sort(items[mid:])
+    return merge(left, right)        # O(n) work to merge at each level
+
+def merge(left, right):
+    result, i, j = [], 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result                    # log n levels * O(n) merge each = O(n log n)
+
+print(merge_sort([5, 2, 9, 1, 7, 3]))  # [1, 2, 3, 5, 7, 9]
+
+# In practice, just use the built-in sort — it's O(n log n) already:
+print(sorted([5, 2, 9, 1, 7, 3]))
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function mergeSort(items: number[]): number[] {
+  if (items.length <= 1) return items;
+  const mid = Math.floor(items.length / 2);
+  const left = mergeSort(items.slice(0, mid));   // log n levels of splitting
+  const right = mergeSort(items.slice(mid));
+  return merge(left, right);                     // O(n) work to merge at each level
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0, j = 0;
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) result.push(left[i++]);
+    else result.push(right[j++]);
+  }
+  return [...result, ...left.slice(i), ...right.slice(j)]; // O(n log n) total
+}
+
+console.log(mergeSort([5, 2, 9, 1, 7, 3])); // [1, 2, 3, 5, 7, 9]
+
+// In practice, the built-in sort is O(n log n) already:
+console.log([5, 2, 9, 1, 7, 3].sort((a, b) => a - b));
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Merge sort, quicksort (average case), heap sort, and virtually every language's
+          built-in <code>sort()</code> — plus building a heap from n items one at a time.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           O(n²)
+      ============================================================ -->
+      <section class="bigo-section" id="o-n-squared">
+        <h2>O(n²) — Quadratic Time</h2>
+        <p>
+          The work grows with the <em>square</em> of the input, typically because the code
+          compares or combines every item with every other item. Doubling the input
+          quadruples the work — 10 items means ~100 operations, but 10,000 items means
+          ~100,000,000. This complexity class is where naive solutions start to break under
+          real data.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… everyone at a party shaking hands with everyone else.</strong>
+          With 10 guests there are about 45 handshakes. With 1,000 guests, it's roughly
+          500,000 handshakes — the guest count only grew 100&times;, but the handshakes grew
+          about 10,000&times;.
+        </div>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def has_duplicate_naive(items):
+    for i in range(len(items)):          # outer loop: n
+        for j in range(len(items)):      # inner loop: n, nested -> O(n^2)
+            if i != j and items[i] == items[j]:
+                return True
+    return False
+
+# Compare: the O(n) version using a hash set instead of nested loops
+def has_duplicate_fast(items):
+    seen = set()
+    for x in items:                      # single pass -> O(n)
+        if x in seen:                    # O(1) average hash lookup
+            return True
+        seen.add(x)
+    return False
+
+print(has_duplicate_naive([1, 2, 3, 2]))  # True — O(n^2)
+print(has_duplicate_fast([1, 2, 3, 2]))   # True — O(n), much better at scale
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function hasDuplicateNaive(items: number[]): boolean {
+  for (let i = 0; i < items.length; i++) {       // outer loop: n
+    for (let j = 0; j < items.length; j++) {     // inner loop: n, nested -> O(n^2)
+      if (i !== j && items[i] === items[j]) return true;
+    }
+  }
+  return false;
+}
+
+// Compare: the O(n) version using a Set instead of nested loops
+function hasDuplicateFast(items: number[]): boolean {
+  const seen = new Set&lt;number&gt;();
+  for (const x of items) {                       // single pass -> O(n)
+    if (seen.has(x)) return true;                // O(1) average lookup
+    seen.add(x);
+  }
+  return false;
+}
+
+console.log(hasDuplicateNaive([1, 2, 3, 2]));    // true — O(n^2)
+console.log(hasDuplicateFast([1, 2, 3, 2]));     // true — O(n), much better at scale
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Bubble sort and insertion sort (worst case), naive duplicate detection, comparing
+          every pair of points, and any "for each item, scan the whole list again" pattern —
+          usually a sign a hash map could make it O(n).
+        </div>
+      </section>
+
+      <!-- ============================================================
+           O(2^n)
+      ============================================================ -->
+      <section class="bigo-section" id="o-2-n">
+        <h2>O(2ⁿ) — Exponential Time</h2>
+        <p>
+          The work <em>doubles</em> with every single item added to the input. This usually
+          comes from recursive code that branches into two (or more) calls at every step
+          without remembering work it already did. It's fast enough for tiny inputs and
+          unusable within a few dozen items.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a coin-flip decision tree.</strong>
+          Every added decision doubles the number of possible paths: 1 decision is 2 paths,
+          2 decisions is 4 paths, 20 decisions is already over a million paths.
+        </div>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def fib_naive(n):
+    if n <= 1:
+        return n
+    # every call branches into two more calls -> the call tree doubles each level
+    return fib_naive(n - 1) + fib_naive(n - 2)   # O(2^n) — recomputes the same work repeatedly
+
+def power_set(items):
+    # for each item, either "include it" or "don't" -> 2^n possible subsets
+    if not items:
+        return [[]]
+    first, rest = items[0], items[1:]
+    without_first = power_set(rest)               # O(2^(n-1))
+    with_first = [[first] + subset for subset in without_first]
+    return without_first + with_first              # O(2^n) total
+
+print(fib_naive(10))            # 55 (fine for small n, terrible for n=40+)
+print(power_set([1, 2, 3]))     # [[], [3], [2], [2,3], [1], [1,3], [1,2], [1,2,3]]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function fibNaive(n: number): number {
+  if (n <= 1) return n;
+  // every call branches into two more calls -> the call tree doubles each level
+  return fibNaive(n - 1) + fibNaive(n - 2);   // O(2^n) — recomputes the same work repeatedly
+}
+
+function powerSet&lt;T&gt;(items: T[]): T[][] {
+  // for each item, either "include it" or "don't" -> 2^n possible subsets
+  if (items.length === 0) return [[]];
+  const [first, ...rest] = items;
+  const withoutFirst = powerSet(rest);                    // O(2^(n-1))
+  const withFirst = withoutFirst.map(subset => [first, ...subset]);
+  return [...withoutFirst, ...withFirst];                 // O(2^n) total
+}
+
+console.log(fibNaive(10));          // 55 (fine for small n, terrible for n=40+)
+console.log(powerSet([1, 2, 3]));   // [[], [3], [2], [2,3], [1], [1,3], [1,2], [1,2,3]]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Naive recursive Fibonacci, generating a power set, brute-force subset-sum, and any
+          recursive "try including it, try not including it" search. Adding
+          <a href="algorithms.html#lru-eviction">memoization</a> (caching results) usually
+          brings these down to O(n) or O(n&sup2;) by trading space for time.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           O(n!)
+      ============================================================ -->
+      <section class="bigo-section" id="o-n-factorial">
+        <h2>O(n!) — Factorial Time</h2>
+        <p>
+          The steepest complexity class in common use — the work equals every possible
+          ordering of the input. It shows up when code generates every permutation of n
+          items. It's only practical for very small n (roughly n ≤ 10 before it becomes
+          unusable).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… trying every seating arrangement at a dinner table.</strong>
+          4 guests have 24 possible seatings. 10 guests already have over 3.6 million. By 20
+          guests, the number of arrangements exceeds the number of seconds since the universe
+          began.
+        </div>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def permutations(items):
+    if len(items) <= 1:
+        return [items]
+    result = []
+    for i in range(len(items)):
+        rest = items[:i] + items[i+1:]
+        for p in permutations(rest):        # n choices, then (n-1), then (n-2)...
+            result.append([items[i]] + p)   # -> n! total orderings
+    return result
+
+print(permutations([1, 2, 3]))
+# [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]  -- 3! = 6 orderings
+
+# Python also has this built in:
+from itertools import permutations as itertools_permutations
+print(list(itertools_permutations([1, 2, 3])))
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function permutations&lt;T&gt;(items: T[]): T[][] {
+  if (items.length <= 1) return [items];
+  const result: T[][] = [];
+  for (let i = 0; i < items.length; i++) {
+    const rest = [...items.slice(0, i), ...items.slice(i + 1)];
+    for (const p of permutations(rest)) {   // n choices, then (n-1), then (n-2)...
+      result.push([items[i], ...p]);        // -> n! total orderings
+    }
+  }
+  return result;
+}
+
+console.log(permutations([1, 2, 3]));
+// [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]  -- 3! = 6 orderings
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Generating every permutation of a list, brute-force solutions to the traveling
+          salesman problem, and password/combination brute-forcing over small alphabets —
+          almost always a sign to look for a smarter algorithm before n grows past a dozen.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           BEST / WORST / AVERAGE CASE
+      ============================================================ -->
+      <section class="bigo-section" id="best-worst-average">
+        <h2>Best, Worst &amp; Average Case</h2>
+        <p>
+          The same algorithm can have different complexities depending on the input it's
+          handed. Big-O by itself doesn't say <em>which</em> case it describes — that's
+          usually made explicit in words, and occasionally with two related notations:
+        </p>
+        <ol class="steps">
+          <li><strong>Worst case (usually written as O):</strong> The maximum possible work for any input of size n. This is what "O(n)" almost always means by default — it's the guarantee you can rely on.</li>
+          <li><strong>Best case (sometimes written as &Omega;, "big-Omega"):</strong> The minimum possible work — the luckiest input.</li>
+          <li><strong>Average case:</strong> The expected work across typical/random inputs — often quoted separately, e.g. "quicksort is O(n log n) on average but O(n&sup2;) in the worst case."</li>
+        </ol>
+        <table>
+          <thead><tr><th>Algorithm</th><th>Best case</th><th>Average case</th><th>Worst case</th></tr></thead>
+          <tbody>
+            <tr><td>Linear search</td><td>O(1) — target is first</td><td>O(n)</td><td>O(n) — target is last or missing</td></tr>
+            <tr><td>Binary search</td><td>O(1) — target is the middle</td><td>O(log n)</td><td>O(log n)</td></tr>
+            <tr><td>Quicksort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n&sup2;) — already-sorted input with a naive pivot</td></tr>
+            <tr><td>Hash map get/set</td><td>O(1)</td><td>O(1)</td><td>O(n) — many keys collide into one bucket</td></tr>
+          </tbody>
+        </table>
+        <div class="where-used">
+          <strong>Why this matters in practice:</strong>
+          Quicksort's average-case speed is why it's popular, but its O(n&sup2;) worst case
+          (triggered by already-sorted or adversarial input) is why production sort routines
+          often add randomization or switch strategies to avoid it.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SPACE COMPLEXITY
+      ============================================================ -->
+      <section class="bigo-section" id="space-complexity">
+        <h2>Space Complexity</h2>
+        <p>
+          Big-O also measures <strong>memory</strong>, not just time — this is called space
+          complexity. It counts the extra ("auxiliary") memory an algorithm needs beyond the
+          input itself: new arrays, hash maps, or the call stack built up by recursion.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… scratch paper during a math test.</strong>
+          Solving a problem "in your head" (O(1) space) is harder than solving it with a full
+          page of scratch work (O(n) space) — but the scratch paper can make the problem much
+          faster to solve.
+        </div>
+        <h3>Time vs. space is a tradeoff</h3>
+        <p>
+          The naive Fibonacci function from the O(2ⁿ) section above uses almost no extra
+          memory (O(n) space, just for the recursion's call stack) but wastes enormous time
+          recomputing the same values. Caching previous results — <strong>memoization</strong>
+          — spends O(n) extra space to bring the time down from O(2ⁿ) to O(n):
+        </p>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def fib_memo(n, cache=None):
+    if cache is None:
+        cache = {}
+    if n <= 1:
+        return n
+    if n in cache:                   # O(1) — already computed, reuse it
+        return cache[n]
+    cache[n] = fib_memo(n - 1, cache) + fib_memo(n - 2, cache)
+    return cache[n]                  # O(n) time, O(n) space -- trades memory for speed
+
+print(fib_memo(50))   # instant; fib_naive(50) would never realistically finish
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function fibMemo(n: number, cache: Map&lt;number, number&gt; = new Map()): number {
+  if (n <= 1) return n;
+  if (cache.has(n)) return cache.get(n)!;    // O(1) — already computed, reuse it
+  const result = fibMemo(n - 1, cache) + fibMemo(n - 2, cache);
+  cache.set(n, result);
+  return result;                              // O(n) time, O(n) space
+}
+
+console.log(fibMemo(50));  // instant; fibNaive(50) would never realistically finish
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Dynamic programming (trading space for time on purpose), recursion depth limits on
+          large inputs, and the classic interview question "can you solve this in O(1) extra
+          space?" — meaning: without allocating a new array or hash map proportional to n.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           GROWTH RATE COMPARISON
+      ============================================================ -->
+      <section class="bigo-section" id="growth-comparison">
+        <h2>Growth Rate Comparison</h2>
+        <p>
+          Numbers make the difference concrete. Here's roughly how many operations each
+          complexity class needs as <code>n</code> grows — notice how close the columns stay
+          for the first two rows, and how fast they explode by the last two.
+        </p>
+        <table>
+          <thead><tr><th>Complexity</th><th>n = 10</th><th>n = 100</th><th>n = 1,000</th></tr></thead>
+          <tbody>
+            <tr><td>O(1)</td><td>1</td><td>1</td><td>1</td></tr>
+            <tr><td>O(log n)</td><td>~3</td><td>~7</td><td>~10</td></tr>
+            <tr><td>O(n)</td><td>10</td><td>100</td><td>1,000</td></tr>
+            <tr><td>O(n log n)</td><td>~33</td><td>~664</td><td>~9,966</td></tr>
+            <tr><td>O(n&sup2;)</td><td>100</td><td>10,000</td><td>1,000,000</td></tr>
+            <tr><td>O(2&#8319;)</td><td>1,024</td><td>~1.27 &times; 10&sup3;&sup0;</td><td>practically infinite</td></tr>
+            <tr><td>O(n!)</td><td>3,628,800</td><td>practically infinite</td><td>practically infinite</td></tr>
+          </tbody>
+        </table>
+        <p class="rank-note">
+          "Practically infinite" isn't hyperbole here — 100! has over 150 digits, far beyond
+          the number of atoms in the observable universe. This is exactly why the jump from
+          O(n&sup2;) to O(2&#8319;) or O(n!) matters so much more than the jump from O(1) to O(n).
+        </p>
+      </section>
+
+      <!-- ============================================================
+           CHEAT SHEET
+      ============================================================ -->
+      <section class="bigo-section" id="cheat-sheet">
+        <h2>Cheat Sheet</h2>
+        <p>Ranked from fastest-growing-slowest to fastest-growing-worst:</p>
+        <table class="rank-table">
+          <thead><tr><th>Rank</th><th>Notation</th><th>Name</th><th>Common example</th></tr></thead>
+          <tbody>
+            <tr><td>1 (best)</td><td>O(1)</td><td>Constant</td><td>Array index, hash map get</td></tr>
+            <tr><td>2</td><td>O(log n)</td><td>Logarithmic</td><td>Binary search</td></tr>
+            <tr><td>3</td><td>O(n)</td><td>Linear</td><td>Linear scan</td></tr>
+            <tr><td>4</td><td>O(n log n)</td><td>Linearithmic</td><td>Merge sort, quicksort (avg)</td></tr>
+            <tr><td>5</td><td>O(n&sup2;)</td><td>Quadratic</td><td>Nested loops, bubble sort</td></tr>
+            <tr><td>6</td><td>O(2&#8319;)</td><td>Exponential</td><td>Naive recursive Fibonacci, power set</td></tr>
+            <tr><td>7 (worst)</td><td>O(n!)</td><td>Factorial</td><td>All permutations, brute-force TSP</td></tr>
+          </tbody>
+        </table>
+        <div class="analogy">
+          <strong>The one habit worth building:</strong>
+          Before you ship a loop, ask "does this loop inside another loop over the same data?"
+          If yes, you're probably at O(n&sup2;) or worse — worth a second look before it meets
+          real-world data.
+        </div>
+      </section>
+
+      <div style="padding: var(--space-4) 0 var(--space-3);">
+        <a class="btn btn-primary" href="algorithms.html">← Algorithms</a>
+        <a class="btn btn-ghost" href="data-structures.html" style="margin-left:1rem;">Data Structures →</a>
+      </div>
+
+    </div><!-- /.wrap -->
+  </main>
+
+  <div class="wrap">
+    <footer>
+      <span>DSA Studio</span>
+      <span>Visual, practical computer science for real understanding.</span>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Auto-assign language class from the adjacent code-label tab
+      document.querySelectorAll('.code-block').forEach(function (block) {
+        var labelEl = block.querySelector('.code-label');
+        var codeEl  = block.querySelector('code');
+        if (!labelEl || !codeEl) return;
+        var lang = labelEl.textContent.trim().toLowerCase();
+        if (lang === 'python')     codeEl.className = 'language-python';
+        if (lang === 'typescript') codeEl.className = 'language-typescript';
+      });
+      hljs.highlightAll();
+    });
+  </script>
+</body>
+</html>

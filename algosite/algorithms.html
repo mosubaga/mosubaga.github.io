@@ -1,0 +1,2060 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Algorithms — DSA Studio</title>
+  <meta name="description" content="Core algorithms explained step by step with Python and TypeScript code examples — DFS, BFS, hashing, BST search, heap reorganization, trie prefix search, and more.">
+  <link rel="stylesheet" href="css/style.css?v=20260831">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    p { max-width: none; }
+    pre {
+      background: #f0f9e8;
+      border: 1px solid var(--line);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) var(--radius-sm);
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      font-size: 0.87rem;
+      line-height: 1.6;
+      margin: 0 0 1.2rem;
+      tab-size: 4;
+    }
+    code { font-family: 'Courier New', Courier, monospace; color: var(--ink); }
+    /* Keep the site's green background; let highlight.js handle token colours only */
+    .hljs { background: #f0f9e8 !important; }
+    pre code.hljs { padding: 0; }
+    .code-block { margin: 1rem 0 1.5rem; }
+    .code-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--soda);
+      padding: 0.25rem 0.8rem;
+      border-radius: 8px 8px 0 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1.25rem;
+      font-size: 0.9rem;
+    }
+    th, td { text-align: left; padding: 0.55rem 0.9rem; border: 1px solid var(--line); }
+    th { background: var(--soda-light); font-weight: 700; }
+    tr:nth-child(even) td { background: var(--cream); }
+    .toc {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 1.4rem 2rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .toc h3 { margin-bottom: 0.6rem; font-size: 1rem; }
+    .toc ol { columns: 2; gap: 2rem; margin: 0; padding-left: 1.4rem; }
+    .toc li { margin-bottom: 0.3rem; }
+    .toc a { color: var(--ink-soft); text-decoration: none; font-size: 0.92rem; }
+    .toc a:hover { color: var(--ink); text-decoration: underline; }
+    .algo-section { padding: 2.5rem 0 0.5rem; border-top: 2px solid var(--line); }
+    .analogy {
+      background: var(--soda-light);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.1rem;
+      margin: 1rem 0 1.25rem;
+    }
+    .analogy strong { display: block; margin-bottom: 0.25rem; color: var(--ink); }
+    .where-used {
+      background: var(--cream);
+      border-left: 4px solid var(--soda);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 1rem 0 0.5rem;
+      font-size: 0.92rem;
+    }
+    .where-used strong { color: var(--ink); }
+    .steps {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      counter-reset: step;
+    }
+    .steps li {
+      counter-increment: step;
+      list-style: none;
+      padding: 0.4rem 0 0.4rem 2.2rem;
+      position: relative;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 1.4rem;
+      height: 1.4rem;
+      background: var(--soda);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+    }
+    .page-hero { padding: var(--space-4) 0 var(--space-3); }
+    .back-link { display: inline-flex; align-items: center; gap: .4rem; color: var(--ink-soft); text-decoration: none; font-size: .9rem; margin-bottom: 1rem; }
+    .back-link:hover { color: var(--ink); }
+    h2 { font-size: clamp(1.3rem, 2.5vw, 1.7rem); }
+
+    /* Tablet (641px – 1024px) */
+    @media (max-width: 1024px) {
+      .toc ol { columns: 1; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.45rem 0.7rem; }
+    }
+
+    /* Phone (≤ 640px) */
+    @media (max-width: 640px) {
+      pre { font-size: 0.82rem; padding: 0.9rem 1rem; }
+      table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .analogy, .where-used { padding: 0.7rem 0.9rem; }
+      .steps li { padding-left: 2rem; font-size: 0.93rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="DSA Studio home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        DSA Studio
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="data-structures.html">Data Structures</a></li>
+        <li><a href="algorithms.html" aria-current="page">Algorithms</a></li>
+        <li><a href="big-o.html">Big-O</a></li>
+        <li><a href="index.html#playground">Playground</a></li>
+        <li><a href="index.html#reference">Reference</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+    <div class="wrap">
+      <div class="page-hero">
+        <a class="back-link" href="index.html">← Back to home</a>
+        <span class="tag">Algorithms</span>
+        <h1>Algorithms</h1>
+        <p style="max-width:62ch; color:var(--ink-soft);">
+          An algorithm is a precise, repeatable series of steps for solving a problem.
+          Every algorithm below is explained with a plain-English walkthrough, a step-by-step
+          breakdown, and code in both Python and TypeScript.
+        </p>
+      </div>
+
+      <div class="toc" aria-label="Table of contents">
+        <h3>Contents</h3>
+        <ol>
+          <li><a href="#push-pop">Push and Pop</a></li>
+          <li><a href="#enqueue-dequeue">Enqueue and Dequeue</a></li>
+          <li><a href="#hashing">Hashing</a></li>
+          <li><a href="#collision-resolution">Collision Resolution</a></li>
+          <li><a href="#bubble-sort">Bubble Sort</a></li>
+          <li><a href="#selection-sort">Selection Sort</a></li>
+          <li><a href="#insertion-sort">Insertion Sort</a></li>
+          <li><a href="#merge-sort">Merge Sort</a></li>
+          <li><a href="#quick-sort">Quick Sort</a></li>
+          <li><a href="#bst-search">BST Half-Tree Search</a></li>
+          <li><a href="#heap-reorganization">Heap Self-Reorganization</a></li>
+          <li><a href="#dfs">Depth First Search (DFS)</a></li>
+          <li><a href="#bfs">Breadth First Search (BFS)</a></li>
+          <li><a href="#trie-prefix-search">Trie Prefix Search</a></li>
+          <li><a href="#path-compression">Path Compression</a></li>
+          <li><a href="#lru-eviction">LRU Eviction</a></li>
+        </ol>
+      </div>
+
+      <!-- ============================================================
+           PUSH AND POP
+      ============================================================ -->
+      <section class="algo-section" id="push-pop">
+        <h2>Push and Pop</h2>
+        <p>
+          Push and pop are the two core operations of a <strong>stack</strong>.
+          <em>Push</em> adds an item to the top of the stack. <em>Pop</em> removes the item from the top.
+          Because both work only on one end of an underlying array, both are O(1).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a spring-loaded plate dispenser.</strong>
+          Push a new plate down (push). Grab the top plate to serve (pop). The bottom plate
+          is always the one pushed first — it never comes out until everything above it is removed.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li><strong>Push:</strong> Append the new value to the end of the underlying array. The array's last element is now the "top."</li>
+          <li><strong>Pop:</strong> Read the value at the last index, shrink the array by one, and return that value.</li>
+          <li><strong>Peek:</strong> Read the value at the last index without shrinking the array.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code># Push = append to end. Pop = remove from end. Both O(1).
+stack = []
+
+# --- PUSH ---
+stack.append("A")    # stack: ["A"]
+stack.append("B")    # stack: ["A", "B"]
+stack.append("C")    # stack: ["A", "B", "C"]
+
+# --- PEEK (read top without removing) ---
+print(stack[-1])     # "C"
+
+# --- POP ---
+print(stack.pop())   # "C"  — stack: ["A", "B"]
+print(stack.pop())   # "B"  — stack: ["A"]
+
+# Safety check before popping
+if stack:
+    print(stack.pop())   # "A"  — stack: []
+
+print(stack)         # [] — empty
+
+
+# Practical example: matching brackets
+def is_balanced(s):
+    stack = []
+    pairs = {')': '(', ']': '[', '}': '{'}
+    for ch in s:
+        if ch in "([{":
+            stack.append(ch)           # push opening bracket
+        elif ch in ")]}":
+            if not stack or stack[-1] != pairs[ch]:
+                return False
+            stack.pop()               # pop matching opener
+    return len(stack) == 0            # balanced if nothing left
+
+print(is_balanced("({[]})"))   # True
+print(is_balanced("({[})"))    # False
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class Stack&lt;T&gt; {
+  private items: T[] = [];
+
+  push(val: T): void    { this.items.push(val); }           // O(1)
+  pop(): T | undefined  { return this.items.pop(); }        // O(1)
+  peek(): T | undefined { return this.items[this.items.length - 1]; } // O(1)
+  isEmpty(): boolean    { return this.items.length === 0; }
+  size(): number        { return this.items.length; }
+}
+
+const stack = new Stack&lt;string&gt;();
+stack.push("A");  // ["A"]
+stack.push("B");  // ["A", "B"]
+stack.push("C");  // ["A", "B", "C"]
+
+console.log(stack.peek()); // "C"
+console.log(stack.pop());  // "C"
+console.log(stack.pop());  // "B"
+console.log(stack.size()); // 1
+
+// Practical: evaluate reverse Polish notation (e.g. "2 3 + 4 *" = 20)
+function evalRPN(tokens: string[]): number {
+  const stack = new Stack&lt;number&gt;();
+  for (const t of tokens) {
+    if (["+", "-", "*", "/"].includes(t)) {
+      const b = stack.pop()!, a = stack.pop()!;
+      if (t === "+") stack.push(a + b);
+      if (t === "-") stack.push(a - b);
+      if (t === "*") stack.push(a * b);
+      if (t === "/") stack.push(Math.trunc(a / b));
+    } else {
+      stack.push(Number(t));
+    }
+  }
+  return stack.pop()!;
+}
+
+console.log(evalRPN(["2","3","+","4","*"])); // 20
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Undo systems, function call stack (every program uses this to track nested function calls),
+          expression evaluation, syntax parsing, and backtracking in search algorithms.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           ENQUEUE AND DEQUEUE
+      ============================================================ -->
+      <section class="algo-section" id="enqueue-dequeue">
+        <h2>Enqueue and Dequeue</h2>
+        <p>
+          Enqueue and dequeue are the core operations of a <strong>queue</strong>.
+          <em>Enqueue</em> adds an item to the back. <em>Dequeue</em> removes the item from the front.
+          This enforces First In, First Out (FIFO) ordering — the longest-waiting item is always
+          served next.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a checkout line at a grocery store.</strong>
+          New shoppers join at the back (enqueue). The cashier serves the person at the front (dequeue).
+          The first person to arrive is the first to leave — no cutting in line.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li><strong>Enqueue:</strong> Append the new item to the back (tail) of the queue.</li>
+          <li><strong>Dequeue:</strong> Remove and return the item at the front (head) of the queue.</li>
+          <li><strong>Key concern:</strong> A plain array's <code>shift()</code> is O(n) because it moves all elements. A proper queue uses a linked list or circular buffer for O(1) dequeue.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import deque
+
+# deque = doubly-ended queue — O(1) on both ends
+q = deque()
+
+# --- ENQUEUE (add to back) ---
+q.append("job1")    # q: deque(["job1"])
+q.append("job2")    # q: deque(["job1", "job2"])
+q.append("job3")    # q: deque(["job1", "job2", "job3"])
+
+# Peek at front without removing
+print(q[0])         # "job1"
+
+# --- DEQUEUE (remove from front) ---
+print(q.popleft())  # "job1"  — O(1)
+print(q.popleft())  # "job2"  — O(1)
+print(list(q))      # ["job3"]
+
+
+# Practical example: process tasks round-robin
+tasks = deque(["task_A", "task_B", "task_C"])
+workers = 2
+
+while tasks:
+    # Each cycle processes up to `workers` tasks
+    for _ in range(min(workers, len(tasks))):
+        task = tasks.popleft()
+        print(f"Processing: {task}")
+    # Could re-enqueue partially-done tasks here
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// O(1) queue using a singly linked list
+class QNode&lt;T&gt; {
+  constructor(public val: T, public next: QNode&lt;T&gt; | null = null) {}
+}
+
+class Queue&lt;T&gt; {
+  private head: QNode&lt;T&gt; | null = null;
+  private tail: QNode&lt;T&gt; | null = null;
+  private _size = 0;
+
+  enqueue(val: T): void {               // O(1) — add to back
+    const node = new QNode(val);
+    if (this.tail) this.tail.next = node;
+    this.tail = node;
+    if (!this.head) this.head = node;
+    this._size++;
+  }
+
+  dequeue(): T | undefined {            // O(1) — remove from front
+    if (!this.head) return undefined;
+    const val = this.head.val;
+    this.head = this.head.next;
+    if (!this.head) this.tail = null;
+    this._size--;
+    return val;
+  }
+
+  peek(): T | undefined { return this.head?.val; }
+  isEmpty(): boolean    { return this._size === 0; }
+  size(): number        { return this._size; }
+}
+
+const q = new Queue&lt;string&gt;();
+q.enqueue("request_1");
+q.enqueue("request_2");
+q.enqueue("request_3");
+
+// Web server handles requests in order
+while (!q.isEmpty()) {
+  console.log("Handling:", q.dequeue());
+}
+// Handling: request_1
+// Handling: request_2
+// Handling: request_3
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Web server request queues, message brokers (Kafka, SQS), print spoolers,
+          CPU task scheduling, and BFS graph traversal — which relies on a queue to
+          process nodes level by level.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           HASHING
+      ============================================================ -->
+      <section class="algo-section" id="hashing">
+        <h2>Hashing</h2>
+        <p>
+          Hashing is the process of converting a key (like a string or number) into a fixed-range
+          integer called a <strong>hash code</strong>, which is then used as an array index (a "bucket").
+          A good hash function distributes keys uniformly across buckets to minimize collisions.
+          The same key must always produce the same hash — hashing is deterministic.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… assigning lockers by name initials.</strong>
+          "Alice" → locker A, "Bob" → locker B. The "hash function" is the initials rule.
+          It runs instantly and always gives the same answer. The problem: "Alice" and "Anna"
+          both map to A — that's a collision, which needs separate handling.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li>Take the key (e.g. the string "cat").</li>
+          <li>Run it through the hash function: sum the character codes, multiply by a prime, then take modulo table size. Result: a bucket index like 3.</li>
+          <li>Store the value at bucket 3 in an array.</li>
+          <li>On lookup: run the same hash function → jump straight to bucket 3 → return the value. No scanning needed.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code># How a hash function works internally (simplified)
+def naive_hash(key: str, table_size: int) -&gt; int:
+    """Sum char codes, multiply by prime, mod by table size."""
+    h = 0
+    for ch in key:
+        h = (h * 31 + ord(ch)) % table_size
+    return h
+
+table_size = 10
+print(naive_hash("cat", table_size))    # e.g. 1
+print(naive_hash("dog", table_size))    # e.g. 7
+print(naive_hash("rat", table_size))    # some bucket
+
+# Python's built-in hash() (more sophisticated, randomized per run)
+print(hash("hello"))     # integer (varies per Python session)
+print(hash(42))          # 42 (small ints hash to themselves)
+print(hash((1, 2, 3)))   # tuples are hashable; lists are not
+
+# A minimal hashmap built on top of a hash function + chaining
+class SimpleHashMap:
+    def __init__(self, size=16):
+        self.size = size
+        self.buckets = [[] for _ in range(size)]
+
+    def _bucket(self, key):
+        h = 0
+        for ch in str(key):
+            h = (h * 31 + ord(ch)) % self.size
+        return h
+
+    def put(self, key, val):
+        b = self.buckets[self._bucket(key)]
+        for i, (k, _) in enumerate(b):
+            if k == key:
+                b[i] = (key, val)
+                return
+        b.append((key, val))
+
+    def get(self, key):
+        for k, v in self.buckets[self._bucket(key)]:
+            if k == key:
+                return v
+        return None
+
+hm = SimpleHashMap()
+hm.put("name", "Alice")
+hm.put("role", "engineer")
+print(hm.get("name"))   # "Alice"
+print(hm.get("role"))   # "engineer"
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// A simple polynomial hash function
+function polyHash(key: string, tableSize: number): number {
+  let h = 0;
+  for (const ch of key) {
+    h = (Math.imul(h, 31) + ch.charCodeAt(0)) % tableSize;
+  }
+  return h;
+}
+
+console.log(polyHash("cat", 10));  // e.g. 1
+console.log(polyHash("dog", 10));  // e.g. 7
+
+// Minimal hashmap with chaining
+class HashMap&lt;V&gt; {
+  private buckets: Array&lt;Array&lt;[string, V]&gt;&gt;;
+  private size: number;
+
+  constructor(size = 16) {
+    this.size = size;
+    this.buckets = Array.from({ length: size }, () =&gt; []);
+  }
+
+  private bucket(key: string): number {
+    return polyHash(key, this.size);
+  }
+
+  set(key: string, val: V): void {
+    const b = this.buckets[this.bucket(key)];
+    const idx = b.findIndex(([k]) =&gt; k === key);
+    if (idx &gt;= 0) b[idx] = [key, val];
+    else b.push([key, val]);
+  }
+
+  get(key: string): V | undefined {
+    return this.buckets[this.bucket(key)].find(([k]) =&gt; k === key)?.[1];
+  }
+
+  has(key: string): boolean {
+    return this.get(key) !== undefined;
+  }
+}
+
+const hm = new HashMap&lt;string&gt;();
+hm.set("name", "Alice");
+hm.set("role", "engineer");
+console.log(hm.get("name")); // "Alice"
+console.log(hm.has("age"));  // false
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Every language's built-in dictionary/map/object, database index hashing,
+          password storage (cryptographic hashes), checksums, load balancing (consistent hashing),
+          and content-addressable storage (git uses SHA-1 hashes for every commit and file).
+        </div>
+      </section>
+
+      <!-- ============================================================
+           COLLISION RESOLUTION
+      ============================================================ -->
+      <section class="algo-section" id="collision-resolution">
+        <h2>Collision Resolution</h2>
+        <p>
+          A collision occurs when two different keys hash to the same bucket. Since hash functions
+          are not perfect, collisions happen even with good hash functions. Two main strategies
+          handle them: <strong>chaining</strong> (each bucket holds a list of items) and
+          <strong>open addressing</strong> (probe other buckets for a free slot).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a parking lot.</strong>
+          <em>Chaining:</em> Each parking spot has a stack of tickets — multiple cars can share a spot (they just line up in the stack). <br>
+          <em>Open addressing:</em> If your assigned spot is taken, drive to the next empty spot you find.
+        </div>
+        <h3>Strategies Compared</h3>
+        <table>
+          <thead><tr><th>Strategy</th><th>Idea</th><th>Trade-off</th></tr></thead>
+          <tbody>
+            <tr><td>Chaining</td><td>Each bucket holds a linked list of (key, value) pairs</td><td>Simple; handles high load factors; extra memory for pointers</td></tr>
+            <tr><td>Linear probing</td><td>If bucket i is full, try i+1, i+2, … (wrap around)</td><td>Better cache performance; clustering can slow lookup</td></tr>
+            <tr><td>Quadratic probing</td><td>Try i+1², i+2², i+3², …</td><td>Reduces clustering compared to linear probing</td></tr>
+            <tr><td>Double hashing</td><td>Use a second hash function to compute the probe step</td><td>Best distribution; two hash computations per probe</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code># Strategy 1: Chaining
+class ChainingMap:
+    def __init__(self, size=7):
+        self.size = size
+        self.buckets = [[] for _ in range(size)]
+
+    def _idx(self, key):
+        return hash(key) % self.size
+
+    def put(self, key, val):
+        bucket = self.buckets[self._idx(key)]
+        for i, (k, _) in enumerate(bucket):
+            if k == key:
+                bucket[i] = (key, val)   # update existing key
+                return
+        bucket.append((key, val))         # new key → add to chain
+
+    def get(self, key):
+        for k, v in self.buckets[self._idx(key)]:
+            if k == key:
+                return v
+        return None
+
+
+# Strategy 2: Open addressing with linear probing
+class LinearProbingMap:
+    _DELETED = object()   # sentinel distinguishes "deleted" from "never used"
+
+    def __init__(self, size=11):
+        self.size = size
+        self.slots = [None] * size   # None = empty; _DELETED = was occupied
+
+    def _probe(self, key):
+        """Find the slot for key, or the first empty slot."""
+        idx = hash(key) % self.size
+        while self.slots[idx] not in (None, self._DELETED):
+            if self.slots[idx][0] == key:
+                return idx            # found the key
+            idx = (idx + 1) % self.size   # probe next slot
+        return idx
+
+    def put(self, key, val):
+        self.slots[self._probe(key)] = (key, val)
+
+    def get(self, key):
+        idx = hash(key) % self.size
+        while self.slots[idx] is not None:
+            if self.slots[idx] != self._DELETED and self.slots[idx][0] == key:
+                return self.slots[idx][1]
+            idx = (idx + 1) % self.size
+        return None
+
+    def delete(self, key):
+        idx = hash(key) % self.size
+        while self.slots[idx] is not None:
+            if self.slots[idx] != self._DELETED and self.slots[idx][0] == key:
+                self.slots[idx] = self._DELETED
+                return
+            idx = (idx + 1) % self.size
+
+
+cm = ChainingMap()
+cm.put("apple", 1); cm.put("apricot", 2)   # might collide
+print(cm.get("apple"))    # 1
+print(cm.get("apricot"))  # 2
+
+lp = LinearProbingMap()
+lp.put("x", 10); lp.put("y", 20)
+print(lp.get("x"))        # 10
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// Chaining hashmap
+class ChainingMap&lt;V&gt; {
+  private buckets: Array&lt;Array&lt;[string, V]&gt;&gt;;
+  private size: number;
+
+  constructor(size = 7) {
+    this.size = size;
+    this.buckets = Array.from({ length: size }, () =&gt; []);
+  }
+
+  private idx(key: string): number {
+    let h = 0;
+    for (const ch of key) h = (Math.imul(h, 31) + ch.charCodeAt(0)) % this.size;
+    return h;
+  }
+
+  put(key: string, val: V): void {
+    const b = this.buckets[this.idx(key)];
+    const i = b.findIndex(([k]) =&gt; k === key);
+    if (i &gt;= 0) b[i] = [key, val]; else b.push([key, val]);
+  }
+
+  get(key: string): V | undefined {
+    return this.buckets[this.idx(key)].find(([k]) =&gt; k === key)?.[1];
+  }
+}
+
+// Linear probing hashmap
+class LinearProbingMap&lt;V&gt; {
+  private slots: Array&lt;[string, V] | null | "deleted"&gt;;
+  private size: number;
+
+  constructor(size = 11) {
+    this.size = size;
+    this.slots = new Array(size).fill(null);
+  }
+
+  private hash(key: string): number {
+    let h = 0;
+    for (const ch of key) h = (Math.imul(h, 31) + ch.charCodeAt(0)) % this.size;
+    return h;
+  }
+
+  put(key: string, val: V): void {
+    let idx = this.hash(key);
+    while (this.slots[idx] !== null &amp;&amp; this.slots[idx] !== "deleted") {
+      if ((this.slots[idx] as [string, V])[0] === key) {
+        this.slots[idx] = [key, val]; return;
+      }
+      idx = (idx + 1) % this.size;
+    }
+    this.slots[idx] = [key, val];
+  }
+
+  get(key: string): V | undefined {
+    let idx = this.hash(key);
+    while (this.slots[idx] !== null) {
+      const slot = this.slots[idx];
+      if (slot !== "deleted" &amp;&amp; slot[0] === key) return slot[1];
+      idx = (idx + 1) % this.size;
+    }
+    return undefined;
+  }
+}
+
+const cm = new ChainingMap&lt;number&gt;();
+cm.put("apple", 1); cm.put("apricot", 2);
+console.log(cm.get("apple"));    // 1
+console.log(cm.get("apricot"));  // 2
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Python's <code>dict</code> uses open addressing with pseudo-random probing.
+          Java's <code>HashMap</code> uses chaining. Redis uses chaining with incremental rehashing.
+          Understanding collision resolution helps diagnose why hash tables slow down
+          as they fill up (high load factor).
+        </div>
+      </section>
+
+      <!-- ============================================================
+           BUBBLE SORT
+      ============================================================ -->
+      <section class="algo-section" id="bubble-sort">
+        <h2>Bubble Sort</h2>
+        <p>
+          Bubble sort repeatedly steps through the list, compares each pair of
+          <strong>adjacent</strong> elements, and swaps them if they're in the wrong order.
+          Each full pass "bubbles" the largest remaining value up to its correct position at
+          the end. It's simple to understand but rarely used in production — it's
+          <code>O(n&sup2;)</code> in the average and worst case.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… bubbles rising through water.</strong>
+          The heaviest, biggest value sinks toward the end with every pass, the same way the
+          largest air bubble in a glass always rises to the top first.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li>Compare items at positions 0 and 1. If the left one is bigger, swap them.</li>
+          <li>Move to positions 1 and 2, then 2 and 3, and so on to the end of the list — this is one "pass." By the end of a pass, the largest value is guaranteed to be in its final spot.</li>
+          <li>Repeat the pass, but each time stop one position earlier — the tail is already sorted.</li>
+          <li><strong>Optimization:</strong> if a full pass makes zero swaps, the list is already sorted — stop early instead of running all n passes.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def bubble_sort(items):
+    items = items.copy()
+    n = len(items)
+    for i in range(n):                    # up to n passes
+        swapped = False
+        for j in range(0, n - i - 1):      # shrinks by 1 each pass — tail is sorted
+            if items[j] > items[j + 1]:
+                items[j], items[j + 1] = items[j + 1], items[j]   # swap
+                swapped = True
+        if not swapped:                    # already sorted — stop early
+            break
+    return items                           # O(n^2) worst/average, O(n) best case
+
+print(bubble_sort([5, 1, 4, 2, 8]))   # [1, 2, 4, 5, 8]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function bubbleSort(input: number[]): number[] {
+  const items = [...input];
+  const n = items.length;
+  for (let i = 0; i < n; i++) {              // up to n passes
+    let swapped = false;
+    for (let j = 0; j < n - i - 1; j++) {    // shrinks by 1 each pass — tail is sorted
+      if (items[j] > items[j + 1]) {
+        [items[j], items[j + 1]] = [items[j + 1], items[j]];  // swap
+        swapped = true;
+      }
+    }
+    if (!swapped) break;                     // already sorted — stop early
+  }
+  return items;                              // O(n^2) worst/average, O(n) best case
+}
+
+console.log(bubbleSort([5, 1, 4, 2, 8]));   // [1, 2, 4, 5, 8]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Almost nowhere in production — it's outclassed by insertion sort at small sizes and
+          by merge/quicksort at large sizes. Its value is entirely educational: the
+          swap-adjacent-elements idea is the easiest sorting mental model to trace by hand.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SELECTION SORT
+      ============================================================ -->
+      <section class="algo-section" id="selection-sort">
+        <h2>Selection Sort</h2>
+        <p>
+          Selection sort repeatedly scans the unsorted remainder of the list to find its
+          <strong>smallest</strong> value, then swaps that value into the next sorted position.
+          Like bubble sort it's <code>O(n&sup2;)</code> no matter what — but it makes at most
+          <code>n</code> swaps total, compared to bubble sort's potentially <code>O(n&sup2;)</code>
+          swaps, which matters when writes are expensive.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… sorting a hand of cards by repeatedly picking the smallest.</strong>
+          Scan every card still in your messy pile, pull out the smallest one, and place it at
+          the end of your neat row. Repeat until the messy pile is empty.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li>Assume the first position holds the "current minimum" search boundary.</li>
+          <li>Scan the rest of the unsorted portion to find the actual smallest value.</li>
+          <li>Swap that smallest value into the current boundary position.</li>
+          <li>Move the boundary one position to the right and repeat until the whole list is scanned.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def selection_sort(items):
+    items = items.copy()
+    n = len(items)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):          # scan the unsorted remainder
+            if items[j] < items[min_idx]:
+                min_idx = j
+        items[i], items[min_idx] = items[min_idx], items[i]   # one swap per outer step
+    return items                           # O(n^2) time, but only O(n) swaps total
+
+print(selection_sort([64, 25, 12, 22, 11]))   # [11, 12, 22, 25, 64]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function selectionSort(input: number[]): number[] {
+  const items = [...input];
+  const n = items.length;
+  for (let i = 0; i < n; i++) {
+    let minIdx = i;
+    for (let j = i + 1; j < n; j++) {        // scan the unsorted remainder
+      if (items[j] < items[minIdx]) minIdx = j;
+    }
+    [items[i], items[minIdx]] = [items[minIdx], items[i]];   // one swap per outer step
+  }
+  return items;                              // O(n^2) time, but only O(n) swaps total
+}
+
+console.log(selectionSort([64, 25, 12, 22, 11]));   // [11, 12, 22, 25, 64]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Situations where writes are far more expensive than comparisons — for example,
+          sorting data on flash memory, where minimizing the number of writes extends
+          hardware lifespan. It's also the algorithm behind this site's own
+          <a href="index.html#playground">sorting playground demo</a>.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           INSERTION SORT
+      ============================================================ -->
+      <section class="algo-section" id="insertion-sort">
+        <h2>Insertion Sort</h2>
+        <p>
+          Insertion sort builds a sorted section one element at a time, taking each new item
+          and sliding it backward into its correct place among the items already sorted.
+          Worst case is <code>O(n&sup2;)</code>, but it's <code>O(n)</code> on data that's
+          already sorted or nearly sorted — one of the few sorts that gets <em>faster</em> the
+          more ordered its input already is.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… sorting playing cards as you pick them up.</strong>
+          You hold a sorted hand. Each new card you draw, you slide into its correct spot among
+          the cards you're already holding — you never need to re-sort the whole hand.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li>Start at the second element — treat the first element as a "sorted" section of size 1.</li>
+          <li>Save the current element as <code>key</code>, then compare it backward against the sorted section.</li>
+          <li>Shift every sorted element bigger than <code>key</code> one position to the right, opening a gap.</li>
+          <li>Drop <code>key</code> into the gap. Move to the next element and repeat.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def insertion_sort(items):
+    items = items.copy()
+    for i in range(1, len(items)):
+        key = items[i]
+        j = i - 1
+        while j >= 0 and items[j] > key:   # shift bigger sorted elements right
+            items[j + 1] = items[j]
+            j -= 1
+        items[j + 1] = key                 # drop key into the opened gap
+    return items                           # O(n^2) worst case, O(n) if already sorted
+
+print(insertion_sort([12, 11, 13, 5, 6]))   # [5, 6, 11, 12, 13]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function insertionSort(input: number[]): number[] {
+  const items = [...input];
+  for (let i = 1; i < items.length; i++) {
+    const key = items[i];
+    let j = i - 1;
+    while (j >= 0 && items[j] > key) {     // shift bigger sorted elements right
+      items[j + 1] = items[j];
+      j--;
+    }
+    items[j + 1] = key;                    // drop key into the opened gap
+  }
+  return items;                            // O(n^2) worst case, O(n) if already sorted
+}
+
+console.log(insertionSort([12, 11, 13, 5, 6]));   // [5, 6, 11, 12, 13]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Python's <code>sorted()</code>/<code>list.sort()</code> (Timsort) and Java's
+          <code>Arrays.sort()</code> both fall back to insertion sort for small sub-arrays
+          (typically under ~64 elements) because it beats merge sort's overhead at that size.
+          It's also the natural choice for sorting a live stream of data as it arrives.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           MERGE SORT
+      ============================================================ -->
+      <section class="algo-section" id="merge-sort">
+        <h2>Merge Sort</h2>
+        <p>
+          Merge sort splits the list in half recursively until each piece has one element
+          (trivially sorted), then merges pairs of sorted pieces back together in order. It
+          guarantees <code>O(n log n)</code> in every case — best, average, and worst — which
+          is the best possible complexity for a comparison-based sort. The cost is
+          <code>O(n)</code> extra memory for the merge step.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… merging two sorted stacks of graded papers.</strong>
+          Two teaching assistants each hand you a stack of papers already sorted by name. You
+          merge them into one sorted stack just by repeatedly taking whichever top paper comes
+          first alphabetically — you never have to re-sort either original stack.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li><strong>Divide:</strong> split the list into two halves.</li>
+          <li><strong>Conquer:</strong> recursively sort each half the same way, down to lists of size 0 or 1 (already sorted).</li>
+          <li><strong>Combine:</strong> merge the two sorted halves into one sorted list by repeatedly taking the smaller of the two fronts.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def merge_sort(items):
+    if len(items) <= 1:
+        return items
+    mid = len(items) // 2
+    left = merge_sort(items[:mid])     # recursively sort each half
+    right = merge_sort(items[mid:])
+    return _merge(left, right)
+
+def _merge(left, right):
+    result, i, j = [], 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    result.extend(left[i:])            # append any leftovers
+    result.extend(right[j:])
+    return result                      # O(n log n) time, O(n) extra space
+
+print(merge_sort([38, 27, 43, 3, 9, 82, 10]))   # [3, 9, 10, 27, 38, 43, 82]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function mergeSort(items: number[]): number[] {
+  if (items.length <= 1) return items;
+  const mid = Math.floor(items.length / 2);
+  const left = mergeSort(items.slice(0, mid));     // recursively sort each half
+  const right = mergeSort(items.slice(mid));
+  return merge(left, right);
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0, j = 0;
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) result.push(left[i++]);
+    else result.push(right[j++]);
+  }
+  return [...result, ...left.slice(i), ...right.slice(j)]; // O(n log n) time, O(n) space
+}
+
+console.log(mergeSort([38, 27, 43, 3, 9, 82, 10]));   // [3, 9, 10, 27, 38, 43, 82]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          External sorting (sorting files too large to fit in memory), and the backbone of
+          Python's and Java's built-in Timsort, which is a hybrid of merge sort and insertion
+          sort. See the <a href="big-o.html#o-n-log-n">Big-O page</a> for a deeper look at why
+          this specific complexity class is so favorable.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           QUICK SORT
+      ============================================================ -->
+      <section class="algo-section" id="quick-sort">
+        <h2>Quick Sort</h2>
+        <p>
+          Quicksort picks a <strong>pivot</strong> element, partitions the rest of the list
+          into "smaller than pivot" and "bigger than pivot" groups, then recursively sorts
+          each group. It sorts <strong>in place</strong> (little extra memory) and averages
+          <code>O(n log n)</code> — but a poorly chosen pivot on already-sorted or adversarial
+          data degrades it to <code>O(n&sup2;)</code>.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… sorting people into a line by height, one round at a time.</strong>
+          Pick one person as the reference. Everyone shorter steps to their left, everyone
+          taller steps to their right. Now repeat the same trick separately within the "shorter"
+          group and the "taller" group, until every group has one person left.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li><strong>Choose a pivot:</strong> commonly the last element, first element, or a random element.</li>
+          <li><strong>Partition:</strong> rearrange the list so everything less than the pivot comes before it, and everything greater comes after — the pivot lands in its final sorted position.</li>
+          <li><strong>Recurse:</strong> apply the same process independently to the sub-list left of the pivot and the sub-list right of the pivot.</li>
+          <li><strong>Base case:</strong> a sub-list of 0 or 1 elements is already sorted.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def quick_sort(items):
+    if len(items) <= 1:
+        return items
+    pivot = items[-1]                         # choose the last element as pivot
+    smaller = [x for x in items[:-1] if x <= pivot]
+    bigger  = [x for x in items[:-1] if x > pivot]
+    # sort each side, pivot sits in its final position between them
+    return quick_sort(smaller) + [pivot] + quick_sort(bigger)
+    # average O(n log n); worst case O(n^2) on adversarial/sorted input + bad pivot choice
+
+print(quick_sort([10, 7, 8, 9, 1, 5]))   # [1, 5, 7, 8, 9, 10]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function quickSort(items: number[]): number[] {
+  if (items.length <= 1) return items;
+  const pivot = items[items.length - 1];        // choose the last element as pivot
+  const rest = items.slice(0, -1);
+  const smaller = rest.filter(x => x <= pivot);
+  const bigger = rest.filter(x => x > pivot);
+  // sort each side, pivot sits in its final position between them
+  return [...quickSort(smaller), pivot, ...quickSort(bigger)];
+  // average O(n log n); worst case O(n^2) on adversarial/sorted input + bad pivot choice
+}
+
+console.log(quickSort([10, 7, 8, 9, 1, 5]));   // [1, 5, 7, 8, 9, 10]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          C's standard library <code>qsort()</code>, and the historical basis for many
+          languages' default array sort before they switched to Timsort/introsort hybrids.
+          Production implementations pick a random or median-of-three pivot specifically to
+          avoid the <code>O(n&sup2;)</code> worst case on already-sorted input.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           BST SEARCH
+      ============================================================ -->
+      <section class="algo-section" id="bst-search">
+        <h2>BST Half-Tree Search</h2>
+        <p>
+          Searching a binary search tree works by using the BST ordering rule to eliminate
+          half the remaining candidates at each step. With one million nodes, you need at most
+          about 20 comparisons (log₂(1,000,000) ≈ 20). This is far more powerful than linear
+          search (which would need up to 1,000,000 comparisons).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… "higher or lower?" guessing game.</strong>
+          Your target is 42. Middle guess is 50 — too high. Now you only search below 50.
+          Each guess cuts what remains in half. A BST is pre-organized so this halving
+          happens automatically as you walk left or right.
+        </div>
+        <h3>Step by Step (iterative version)</h3>
+        <ol class="steps">
+          <li>Start at the root node.</li>
+          <li>Compare the target to the current node's value.</li>
+          <li>If equal: found! Return true (or the node).</li>
+          <li>If target is smaller: move to the left child (all smaller values are there).</li>
+          <li>If target is larger: move to the right child (all larger values are there).</li>
+          <li>If you reach null: the target is not in the tree. Return false.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>class BSTNode:
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Iterative search — O(log n) average, O(n) worst (unbalanced tree)
+def bst_search(root, target):
+    node = root
+    while node:
+        if target == node.val:
+            return True        # found!
+        elif target &lt; node.val:
+            node = node.left   # target must be in left subtree
+        else:
+            node = node.right  # target must be in right subtree
+    return False               # fell off the tree — not found
+
+
+# Recursive search — same complexity, cleaner for some
+def bst_search_recursive(node, target):
+    if node is None:
+        return False
+    if target == node.val:
+        return True
+    if target &lt; node.val:
+        return bst_search_recursive(node.left, target)
+    return bst_search_recursive(node.right, target)
+
+
+# Build a small BST manually for demonstration
+#        5
+#       / \
+#      3   8
+#     / \ / \
+#    1  4 7  9
+
+root = BSTNode(5,
+    BSTNode(3, BSTNode(1), BSTNode(4)),
+    BSTNode(8, BSTNode(7), BSTNode(9))
+)
+
+print(bst_search(root, 4))   # True  — found in 3 steps: 5→3→4
+print(bst_search(root, 6))   # False — not found
+print(bst_search(root, 1))   # True  — found in 3 steps: 5→3→1
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class BSTNode {
+  constructor(
+    public val: number,
+    public left: BSTNode | null = null,
+    public right: BSTNode | null = null
+  ) {}
+}
+
+// Iterative BST search — O(log n) average
+function bstSearch(root: BSTNode | null, target: number): boolean {
+  let node = root;
+  while (node) {
+    if (target === node.val) return true;
+    node = target &lt; node.val ? node.left : node.right;
+  }
+  return false;
+}
+
+// Recursive BST search — same complexity
+function bstSearchRec(node: BSTNode | null, target: number): boolean {
+  if (!node) return false;
+  if (target === node.val) return true;
+  return target &lt; node.val
+    ? bstSearchRec(node.left, target)
+    : bstSearchRec(node.right, target);
+}
+
+// Find the minimum value node (always the leftmost node)
+function bstMin(root: BSTNode | null): number | null {
+  if (!root) return null;
+  let node = root;
+  while (node.left) node = node.left;
+  return node.val;
+}
+
+//        5
+//       / \
+//      3   8
+//     / \ / \
+//    1  4 7  9
+const root = new BSTNode(5,
+  new BSTNode(3, new BSTNode(1), new BSTNode(4)),
+  new BSTNode(8, new BSTNode(7), new BSTNode(9))
+);
+
+console.log(bstSearch(root, 4));    // true
+console.log(bstSearch(root, 6));    // false
+console.log(bstMin(root));          // 1
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Database B-Tree indexes (a balanced BST generalization), symbol tables in compilers,
+          and any system maintaining a sorted collection with frequent searches, insertions,
+          and deletions — where an array's shifting cost would be too high.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           HEAP SELF-REORGANIZATION
+      ============================================================ -->
+      <section class="algo-section" id="heap-reorganization">
+        <h2>Heap Self-Reorganization</h2>
+        <p>
+          Every time an element is inserted or removed from a heap, the heap must restore its
+          <strong>heap property</strong> (the root is always min or max). This is done via two
+          operations: <em>bubble up</em> (also called sift up or heapify up) after insertion,
+          and <em>sift down</em> (heapify down) after removal. Each takes O(log n) because
+          the heap's height is log n.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a bubble rising in water or sinking in oil.</strong>
+          A newly inserted small element in a min-heap rises (bubbles up) past larger elements
+          until it finds its correct level. When the min is removed and replaced by the last element,
+          that element sinks down (sifts down) past smaller elements until it stops.
+        </div>
+        <h3>Bubble Up (after insert)</h3>
+        <ol class="steps">
+          <li>Append the new value to the end of the heap array (last position in the tree).</li>
+          <li>Compare it with its parent (parent index = ⌊(i-1)/2⌋).</li>
+          <li>If the new value violates the heap property (e.g., smaller than parent in a min-heap), swap with the parent.</li>
+          <li>Repeat from the new position until the property holds or you reach the root.</li>
+        </ol>
+        <h3>Sift Down (after remove)</h3>
+        <ol class="steps">
+          <li>Move the last element to the root position to fill the gap left by the removed element.</li>
+          <li>Compare the root with its two children.</li>
+          <li>Swap with the smaller child (in a min-heap) if it violates the property.</li>
+          <li>Repeat from the new position until the property holds or you reach a leaf.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>def heap_push(heap: list, val: int) -&gt; None:
+    """Insert into a min-heap and bubble up."""
+    heap.append(val)
+    i = len(heap) - 1
+    while i &gt; 0:
+        parent = (i - 1) // 2
+        if heap[parent] &lt;= heap[i]:
+            break                                         # heap property satisfied
+        heap[parent], heap[i] = heap[i], heap[parent]    # swap up
+        i = parent
+
+
+def heap_pop(heap: list) -&gt; int | None:
+    """Remove min from a min-heap and sift down the replacement."""
+    if not heap:
+        return None
+    if len(heap) == 1:
+        return heap.pop()
+
+    top = heap[0]
+    heap[0] = heap.pop()    # move last element to root position
+    i, n = 0, len(heap)
+
+    while True:
+        left, right = 2 * i + 1, 2 * i + 2
+        smallest = i
+        if left  &lt; n and heap[left]  &lt; heap[smallest]: smallest = left
+        if right &lt; n and heap[right] &lt; heap[smallest]: smallest = right
+        if smallest == i:
+            break                                              # sift-down complete
+        heap[i], heap[smallest] = heap[smallest], heap[i]
+        i = smallest
+
+    return top
+
+
+# Trace through the operations
+heap = []
+for v in [5, 1, 8, 3]:
+    heap_push(heap, v)
+    print(f"After push({v}): {heap}")
+
+# After push(5): [5]
+# After push(1): [1, 5]         ← 1 bubbled up past 5
+# After push(8): [1, 5, 8]      ← 8 stays; parent (1) is smaller
+# After push(3): [1, 3, 8, 5]   ← 3 bubbled up past 5
+
+print(heap_pop(heap))   # 1 — min extracted
+print(heap)             # [3, 5, 8] — sifted down correctly
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>function heapPush(heap: number[], val: number): void {  // O(log n)
+  heap.push(val);
+  let i = heap.length - 1;
+  while (i &gt; 0) {
+    const parent = Math.floor((i - 1) / 2);
+    if (heap[parent] &lt;= heap[i]) break;
+    [heap[parent], heap[i]] = [heap[i], heap[parent]]; // swap up
+    i = parent;
+  }
+}
+
+function heapPop(heap: number[]): number | undefined {  // O(log n)
+  if (heap.length === 0) return undefined;
+  if (heap.length === 1) return heap.pop();
+
+  const top = heap[0];
+  heap[0] = heap.pop()!;  // move last to root
+  let i = 0;
+  const n = heap.length;
+
+  while (true) {
+    const l = 2 * i + 1, r = 2 * i + 2;
+    let smallest = i;
+    if (l &lt; n &amp;&amp; heap[l] &lt; heap[smallest]) smallest = l;
+    if (r &lt; n &amp;&amp; heap[r] &lt; heap[smallest]) smallest = r;
+    if (smallest === i) break;
+    [heap[smallest], heap[i]] = [heap[i], heap[smallest]]; // swap down
+    i = smallest;
+  }
+  return top;
+}
+
+const heap: number[] = [];
+[5, 1, 8, 3].forEach(v =&gt; heapPush(heap, v));
+console.log("Heap array:", heap);  // [1, 3, 8, 5]
+console.log("Pop:", heapPop(heap));  // 1
+console.log("After pop:", heap);   // [3, 5, 8]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Heap sort, Dijkstra's shortest path (priority queue), A* pathfinding,
+          operating system task scheduling (run the highest-priority task first),
+          and any "top K" or "next event" problem.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           DFS
+      ============================================================ -->
+      <section class="algo-section" id="dfs">
+        <h2>Depth First Search (DFS)</h2>
+        <p>
+          DFS explores a graph by going as <strong>deep as possible</strong> along one path before
+          backtracking and trying another. It uses a stack — either explicitly or via recursion
+          (the call stack is a hidden stack). DFS is great for detecting cycles, topological sorting,
+          finding connected components, and solving maze-like problems.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… exploring a maze by always taking the first available turn.</strong>
+          You go straight ahead until you hit a dead end, then backtrack to the last junction
+          and try the next turn. You eventually visit every room — but not necessarily in the
+          shortest-path order.
+        </div>
+        <h3>Step by Step (recursive)</h3>
+        <ol class="steps">
+          <li>Mark the current node as visited. Add it to the result.</li>
+          <li>For each unvisited neighbor: recursively call DFS on that neighbor.</li>
+          <li>When all neighbors are visited, backtrack (the function returns).</li>
+          <li>Repeat until no unvisited nodes remain reachable from the start.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import defaultdict
+
+def build_graph(edges, directed=False):
+    g = defaultdict(list)
+    for u, v in edges:
+        g[u].append(v)
+        if not directed:
+            g[v].append(u)
+    return g
+
+
+# Recursive DFS — O(V + E)
+def dfs_recursive(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(node)
+    result = [node]
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            result.extend(dfs_recursive(graph, neighbor, visited))
+    return result
+
+
+# Iterative DFS using an explicit stack — O(V + E)
+def dfs_iterative(graph, start):
+    visited = set()
+    stack = [start]
+    result = []
+    while stack:
+        node = stack.pop()         # LIFO — go deep
+        if node in visited:
+            continue
+        visited.add(node)
+        result.append(node)
+        # Push neighbors in reverse so leftmost is processed first
+        for nb in reversed(graph[node]):
+            if nb not in visited:
+                stack.append(nb)
+    return result
+
+
+# Cycle detection in a directed graph
+def has_cycle(graph, nodes):
+    visited = set()
+    rec_stack = set()   # nodes currently in the call stack
+
+    def _dfs(node):
+        visited.add(node)
+        rec_stack.add(node)
+        for nb in graph[node]:
+            if nb not in visited:
+                if _dfs(nb): return True
+            elif nb in rec_stack:
+                return True          # back edge → cycle!
+        rec_stack.remove(node)
+        return False
+
+    return any(_dfs(n) for n in nodes if n not in visited)
+
+
+g = build_graph([(0,1),(0,2),(1,3),(1,4),(2,5)])
+print("Recursive DFS:", dfs_recursive(g, 0))  # [0, 1, 3, 4, 2, 5]
+print("Iterative DFS:", dfs_iterative(g, 0))  # [0, 1, 3, 4, 2, 5]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>type Graph = Map&lt;string, string[]&gt;;
+
+// Recursive DFS — O(V + E)
+function dfsRecursive(
+  graph: Graph, node: string,
+  visited = new Set&lt;string&gt;(), result: string[] = []
+): string[] {
+  visited.add(node);
+  result.push(node);
+  for (const nb of (graph.get(node) ?? [])) {
+    if (!visited.has(nb)) dfsRecursive(graph, nb, visited, result);
+  }
+  return result;
+}
+
+// Iterative DFS — O(V + E)
+function dfsIterative(graph: Graph, start: string): string[] {
+  const visited = new Set&lt;string&gt;();
+  const stack = [start];
+  const result: string[] = [];
+  while (stack.length) {
+    const node = stack.pop()!;
+    if (visited.has(node)) continue;
+    visited.add(node); result.push(node);
+    for (const nb of [...(graph.get(node) ?? [])].reverse()) {
+      if (!visited.has(nb)) stack.push(nb);
+    }
+  }
+  return result;
+}
+
+const g: Graph = new Map([
+  ["0", ["1", "2"]],
+  ["1", ["3", "4"]],
+  ["2", ["5"]],
+  ["3", []], ["4", []], ["5", []]
+]);
+
+console.log("Recursive:", dfsRecursive(g, "0")); // ["0","1","3","4","2","5"]
+console.log("Iterative:", dfsIterative(g, "0")); // ["0","1","3","4","2","5"]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Topological sorting (dependency ordering in build systems like make/webpack),
+          cycle detection, maze generation and solving, connected components,
+          compiler parse trees, and file system traversal.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           BFS
+      ============================================================ -->
+      <section class="algo-section" id="bfs">
+        <h2>Breadth First Search (BFS)</h2>
+        <p>
+          BFS explores a graph <strong>layer by layer</strong>, visiting all nodes at distance 1
+          from the start, then all at distance 2, and so on. It uses a queue instead of a stack.
+          The key property: BFS always finds the <em>shortest path</em> in an unweighted graph
+          because it never moves further from the start until all closer nodes are visited.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… ripples spreading from a stone dropped in water.</strong>
+          The first ripple touches nearby points, the second ripple reaches farther out —
+          always in order of increasing distance. BFS is exactly these expanding ripples.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li>Put the start node in a queue and mark it visited.</li>
+          <li>While the queue is not empty: dequeue the front node, add it to the result.</li>
+          <li>For each unvisited neighbor of that node: mark it visited, enqueue it.</li>
+          <li>Repeat until the queue is empty. Nodes are always processed closest-first.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import deque, defaultdict
+
+
+def bfs(graph, start):              # O(V + E)
+    visited = {start}
+    queue = deque([start])
+    order = []
+    while queue:
+        node = queue.popleft()      # FIFO — process closest node first
+        order.append(node)
+        for nb in graph[node]:
+            if nb not in visited:
+                visited.add(nb)
+                queue.append(nb)
+    return order
+
+
+def shortest_path(graph, start, end):
+    """BFS guarantees the first time we reach 'end', it's via the shortest path."""
+    if start == end:
+        return [start]
+    visited = {start}
+    queue = deque([[start]])        # each item in queue is a full path
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+        for nb in graph[node]:
+            if nb == end:
+                return path + [nb]  # shortest path found!
+            if nb not in visited:
+                visited.add(nb)
+                queue.append(path + [nb])
+    return []                       # no path exists
+
+
+g = defaultdict(list, {
+    0: [1, 2], 1: [0, 3, 4], 2: [0, 5],
+    3: [1], 4: [1, 5], 5: [2, 4]
+})
+
+print("BFS order:", bfs(g, 0))             # [0, 1, 2, 3, 4, 5]
+print("Shortest 0→5:", shortest_path(g, 0, 5))  # [0, 2, 5]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>type Graph = Map&lt;string, string[]&gt;;
+
+// BFS traversal — O(V + E)
+function bfs(graph: Graph, start: string): string[] {
+  const visited = new Set([start]);
+  const queue: string[] = [start];
+  const order: string[] = [];
+  while (queue.length) {
+    const node = queue.shift()!;    // FIFO
+    order.push(node);
+    for (const nb of (graph.get(node) ?? [])) {
+      if (!visited.has(nb)) { visited.add(nb); queue.push(nb); }
+    }
+  }
+  return order;
+}
+
+// Shortest path via BFS — O(V + E)
+function shortestPath(graph: Graph, start: string, end: string): string[] {
+  if (start === end) return [start];
+  const visited = new Set([start]);
+  const queue: string[][] = [[start]];
+  while (queue.length) {
+    const path = queue.shift()!;
+    const node = path[path.length - 1];
+    for (const nb of (graph.get(node) ?? [])) {
+      if (nb === end) return [...path, nb];
+      if (!visited.has(nb)) { visited.add(nb); queue.push([...path, nb]); }
+    }
+  }
+  return [];
+}
+
+const g: Graph = new Map([
+  ["0", ["1", "2"]], ["1", ["0", "3", "4"]],
+  ["2", ["0", "5"]], ["3", ["1"]],
+  ["4", ["1", "5"]], ["5", ["2", "4"]]
+]);
+
+console.log("BFS:", bfs(g, "0"));                   // ["0","1","2","3","4","5"]
+console.log("Shortest 0→5:", shortestPath(g, "0", "5")); // ["0","2","5"]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Social network "degrees of separation" (LinkedIn's 1st/2nd connections),
+          GPS shortest route in equal-weight networks, web crawlers (visiting pages
+          level by level), and peer-to-peer file sharing (finding nearest peers).
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TRIE PREFIX SEARCH
+      ============================================================ -->
+      <section class="algo-section" id="trie-prefix-search">
+        <h2>Trie Prefix Search</h2>
+        <p>
+          Trie prefix search finds every word stored in a trie that starts with a given prefix.
+          It works in two phases: first <strong>navigate</strong> to the node representing the
+          last character of the prefix (O(L) where L = prefix length), then
+          <strong>collect</strong> all words in the subtree rooted there. This is the algorithm
+          behind "Google Suggest" and every autocomplete field.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… navigating a phone book by index tabs.</strong>
+          You flip to the "SM" tab instantly. From there, you read every entry: Smith, Smythe,
+          Smithson… You didn't scan from A — you jumped to the right starting point first.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li>Start at the root. Set current node = root.</li>
+          <li>For each character in the prefix: if the child for that character exists, move to it. If any character is missing, return an empty list (no words share this prefix).</li>
+          <li>You are now at the prefix node. Collect all words in its subtree using DFS.</li>
+          <li>At each node: if it's marked end-of-word, add the accumulated prefix to results. Continue into each child, appending that child's character.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+
+class AutocompleteTrie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):              # O(L) — L = word length
+        node = self.root
+        for ch in word:
+            node.children.setdefault(ch, TrieNode())
+            node = node.children[ch]
+        node.is_end = True
+
+    def _navigate_to(self, prefix):
+        """Walk to the node for the last character of prefix. O(L)"""
+        node = self.root
+        for ch in prefix:
+            if ch not in node.children:
+                return None   # prefix not in trie
+            node = node.children[ch]
+        return node
+
+    def _collect_all(self, node, current_prefix):
+        """DFS: collect every word in the subtree. O(results)"""
+        results = []
+        if node.is_end:
+            results.append(current_prefix)
+        for ch, child in node.children.items():
+            results.extend(self._collect_all(child, current_prefix + ch))
+        return results
+
+    def autocomplete(self, prefix):      # O(L + results)
+        node = self._navigate_to(prefix)
+        if node is None:
+            return []
+        return self._collect_all(node, prefix)
+
+    def count_words_with_prefix(self, prefix):
+        return len(self.autocomplete(prefix))
+
+
+trie = AutocompleteTrie()
+words = ["apple", "app", "application", "apt", "banana", "band", "bandana"]
+for w in words:
+    trie.insert(w)
+
+print(trie.autocomplete("app"))
+# ['app', 'apple', 'application']
+
+print(trie.autocomplete("ban"))
+# ['banana', 'band', 'bandana']
+
+print(trie.count_words_with_prefix("ap"))   # 4
+print(trie.autocomplete("xyz"))             # []
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class TrieNode {
+  children = new Map&lt;string, TrieNode&gt;();
+  isEnd = false;
+}
+
+class AutocompleteTrie {
+  private root = new TrieNode();
+
+  insert(word: string): void {              // O(L)
+    let node = this.root;
+    for (const ch of word) {
+      if (!node.children.has(ch)) node.children.set(ch, new TrieNode());
+      node = node.children.get(ch)!;
+    }
+    node.isEnd = true;
+  }
+
+  private navigateTo(prefix: string): TrieNode | null {
+    let node = this.root;
+    for (const ch of prefix) {
+      if (!node.children.has(ch)) return null;
+      node = node.children.get(ch)!;
+    }
+    return node;
+  }
+
+  private collectAll(node: TrieNode, prefix: string): string[] {
+    const results: string[] = [];
+    if (node.isEnd) results.push(prefix);
+    for (const [ch, child] of node.children) {
+      results.push(...this.collectAll(child, prefix + ch));
+    }
+    return results;
+  }
+
+  autocomplete(prefix: string): string[] {  // O(L + results)
+    const node = this.navigateTo(prefix);
+    return node ? this.collectAll(node, prefix) : [];
+  }
+}
+
+const trie = new AutocompleteTrie();
+["apple", "app", "application", "apt", "banana", "band", "bandana"]
+  .forEach(w =&gt; trie.insert(w));
+
+console.log(trie.autocomplete("app")); // ["app","apple","application"]
+console.log(trie.autocomplete("ban")); // ["banana","band","bandana"]
+console.log(trie.autocomplete("xyz")); // []
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Search engine suggest, IDE code completion, address bar in browsers,
+          command-line tab completion (bash/zsh), and DNS lookup trees.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           PATH COMPRESSION
+      ============================================================ -->
+      <section class="algo-section" id="path-compression">
+        <h2>Path Compression</h2>
+        <p>
+          Path compression is an optimization in the <a href="data-structures.html#union-find">Union Find</a>
+          (Disjoint Set) data structure. Without it, the <code>find()</code> operation could walk a
+          long chain of parent pointers (O(n) worst case). Path compression collapses those chains:
+          after finding the root, every node visited along the way is pointed <strong>directly</strong>
+          to the root. Future lookups for those nodes become O(1).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… updating your home address after moving.</strong>
+          Without path compression: every time someone visits you, they follow a chain of
+          forwarding addresses (old address → old address → current address).
+          With path compression: after following the chain once, everyone's forwarding address
+          is updated to point directly to your current home. The next visit is instant.
+        </div>
+        <h3>Step by Step</h3>
+        <ol class="steps">
+          <li>Call <code>find(x)</code> to locate the root of x's group.</li>
+          <li>While walking up the parent chain to reach the root, record every node visited.</li>
+          <li>After finding the root, set <code>parent[node] = root</code> for every node on the path.</li>
+          <li>On subsequent calls, those nodes return their root in one step.</li>
+        </ol>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>parent = list(range(8))   # 8 nodes, each initially its own root
+
+# WITHOUT path compression — O(n) worst case for a long chain
+def find_naive(x):
+    while parent[x] != x:
+        x = parent[x]      # walk up one step at a time
+    return x
+
+# WITH path compression (recursive) — O(α(n)) amortized
+def find(x):
+    if parent[x] != x:
+        parent[x] = find(parent[x])   # flatten: point directly to root
+    return parent[x]
+
+# WITH path compression (iterative halving — slightly different strategy)
+def find_halving(x):
+    while parent[x] != x:
+        parent[x] = parent[parent[x]]   # skip one level (path halving)
+        x = parent[x]
+    return x
+
+
+# Demonstrate: build a chain 5 → 3 → 1 → 0 (root)
+parent[1] = 0
+parent[3] = 1
+parent[5] = 3
+
+print(f"Root of 5 (before compression): {find_naive(5)}")  # 0
+
+# Now run find() with path compression
+result = find(5)
+print(f"Root of 5 (with compression): {result}")           # 0
+print(f"parent[5] after: {parent[5]}")                     # 0 — flattened!
+print(f"parent[3] after: {parent[3]}")                     # 0 — flattened!
+print(f"parent[1] after: {parent[1]}")                     # 0 — flattened!
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class UnionFind {
+  private parent: number[];
+  private rank: number[];
+
+  constructor(n: number) {
+    this.parent = Array.from({ length: n }, (_, i) =&gt; i);
+    this.rank   = new Array(n).fill(0);
+  }
+
+  // find() with recursive path compression — O(α(n)) amortized
+  find(x: number): number {
+    if (this.parent[x] !== x) {
+      this.parent[x] = this.find(this.parent[x]); // compress path
+    }
+    return this.parent[x];
+  }
+
+  // Iterative path halving (alternative compression — same amortized cost)
+  findHalving(x: number): number {
+    while (this.parent[x] !== x) {
+      this.parent[x] = this.parent[this.parent[x]]; // skip a level
+      x = this.parent[x];
+    }
+    return x;
+  }
+
+  union(x: number, y: number): void {
+    const rx = this.find(x), ry = this.find(y);
+    if (rx === ry) return;
+    if (this.rank[rx] &lt; this.rank[ry]) this.parent[rx] = ry;
+    else if (this.rank[rx] &gt; this.rank[ry]) this.parent[ry] = rx;
+    else { this.parent[ry] = rx; this.rank[rx]++; }
+  }
+
+  connected(x: number, y: number): boolean {
+    return this.find(x) === this.find(y);
+  }
+}
+
+const uf = new UnionFind(8);
+// Build chain: 5 → 3 → 1 → 0
+uf.union(0, 1); uf.union(1, 3); uf.union(3, 5);
+
+console.log(uf.find(5));           // 0 (root)
+// After find(5), parent[5], parent[3], parent[1] all point directly to 0
+console.log(uf.connected(5, 0));   // true
+console.log(uf.connected(5, 2));   // false
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Kruskal's minimum spanning tree, image processing (connected component labeling),
+          network clustering, Percolation theory simulations, and LeetCode "Number of Islands"
+          and "Redundant Connection" problems.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           LRU EVICTION
+      ============================================================ -->
+      <section class="algo-section" id="lru-eviction">
+        <h2>LRU Eviction</h2>
+        <p>
+          LRU (Least Recently Used) eviction decides <em>which cached item to discard</em> when
+          the cache is full. The item that has not been accessed for the longest time is evicted.
+          The algorithm maintains a recency order — most recently used at the front, least recently
+          used at the back. On every access, the item moves to the front. On every eviction, the
+          back item is removed.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a row of lockers sorted by last use.</strong>
+          Every time you access your locker, it moves to the front of the row.
+          When a new student needs a locker and there are none left, the locker at the very back
+          — the one nobody has touched in the longest time — gets cleared out.
+        </div>
+        <h3>Why Hashmap + Doubly Linked List?</h3>
+        <table>
+          <thead><tr><th>Need</th><th>Solved by</th></tr></thead>
+          <tbody>
+            <tr><td>O(1) lookup by key</td><td>Hashmap: key → pointer to node in list</td></tr>
+            <tr><td>O(1) move-to-front on access</td><td>Doubly linked list: pointer lets you splice any node out and reinsert at head instantly</td></tr>
+            <tr><td>O(1) evict from back</td><td>Doubly linked list tail is always the LRU</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import OrderedDict
+
+class LRUCache:
+    """
+    Python's OrderedDict is a dict backed by a doubly linked list,
+    making it a natural LRU cache. All operations are O(1).
+    """
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = OrderedDict()
+
+    def get(self, key: str) -&gt; int:
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)   # mark as most recently used
+        return self.cache[key]
+
+    def put(self, key: str, value: int) -&gt; None:
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) &gt; self.capacity:
+            evicted_key, _ = self.cache.popitem(last=False)   # evict LRU
+            print(f"  Evicted: {evicted_key}")
+
+
+# Trace through a cache with capacity 3
+cache = LRUCache(3)
+cache.put("a", 1)   # cache: a
+cache.put("b", 2)   # cache: a, b
+cache.put("c", 3)   # cache: a, b, c
+
+cache.get("a")      # access "a" → cache order: b, c, a
+cache.put("d", 4)   # full! evict "b" (LRU) → cache: c, a, d
+cache.put("e", 5)   # full! evict "c" → cache: a, d, e
+
+print(cache.get("b"))   # -1  — evicted
+print(cache.get("a"))   # 1   — still in cache (was recently accessed)
+print(cache.get("d"))   # 4
+print(cache.get("e"))   # 5
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// Doubly linked list node for the LRU cache
+class DLLNode {
+  prev: DLLNode | null = null;
+  next: DLLNode | null = null;
+  constructor(public key: string, public val: number) {}
+}
+
+class LRUCache {
+  private map = new Map&lt;string, DLLNode&gt;(); // key → node
+  // Sentinel head (most recent) and tail (least recent) — simplify edge cases
+  private head = new DLLNode("", 0);
+  private tail = new DLLNode("", 0);
+
+  constructor(private capacity: number) {
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
+
+  private insertFront(node: DLLNode): void {  // O(1)
+    node.next = this.head.next;
+    node.prev = this.head;
+    this.head.next!.prev = node;
+    this.head.next = node;
+  }
+
+  private remove(node: DLLNode): void {       // O(1)
+    node.prev!.next = node.next;
+    node.next!.prev = node.prev;
+  }
+
+  get(key: string): number {                  // O(1)
+    const node = this.map.get(key);
+    if (!node) return -1;
+    this.remove(node);
+    this.insertFront(node);                   // move to front (most recent)
+    return node.val;
+  }
+
+  put(key: string, val: number): void {       // O(1)
+    if (this.map.has(key)) this.remove(this.map.get(key)!);
+    const node = new DLLNode(key, val);
+    this.insertFront(node);
+    this.map.set(key, node);
+    if (this.map.size &gt; this.capacity) {
+      const lru = this.tail.prev!;            // LRU is just before sentinel tail
+      this.remove(lru);
+      this.map.delete(lru.key);
+    }
+  }
+}
+
+const cache = new LRUCache(3);
+cache.put("a", 1); cache.put("b", 2); cache.put("c", 3);
+cache.get("a");         // "a" is now most recent
+cache.put("d", 4);      // "b" evicted
+
+console.log(cache.get("b")); // -1  — evicted
+console.log(cache.get("a")); // 1   — still in cache
+console.log(cache.get("d")); // 4
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          CPU L1/L2 caches, browser page caches, CDN edge caches, Redis's
+          <code>allkeys-lru</code> eviction policy, database buffer pools,
+          and any system that must decide what to keep in fast storage when space is limited.
+        </div>
+      </section>
+
+      <div style="padding: var(--space-4) 0 var(--space-3);">
+        <a class="btn btn-primary" href="data-structures.html">← Data Structures</a>
+        <a class="btn btn-ghost" href="index.html#playground" style="margin-left:1rem;">Try the Playground</a>
+      </div>
+
+    </div><!-- /.wrap -->
+  </main>
+
+  <div class="wrap">
+    <footer>
+      <span>DSA Studio</span>
+      <span>Visual, practical computer science for real understanding.</span>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Auto-assign language class from the adjacent code-label tab
+      document.querySelectorAll('.code-block').forEach(function (block) {
+        var labelEl = block.querySelector('.code-label');
+        var codeEl  = block.querySelector('code');
+        if (!labelEl || !codeEl) return;
+        var lang = labelEl.textContent.trim().toLowerCase();
+        if (lang === 'python')     codeEl.className = 'language-python';
+        if (lang === 'typescript') codeEl.className = 'language-typescript';
+      });
+      hljs.highlightAll();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1993 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Structures — DSA Studio</title>
+  <meta name="description" content="All major data structures explained with plain English, real-world analogies, complexity tables, and code examples in Python and TypeScript.">
+  <link rel="stylesheet" href="css/style.css?v=20260831">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <style>
+    p { max-width: none; }
+    pre {
+      background: #f0f9e8;
+      border: 1px solid var(--line);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) var(--radius-sm);
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      font-size: 0.87rem;
+      line-height: 1.6;
+      margin: 0 0 1.2rem;
+      tab-size: 4;
+    }
+    code { font-family: 'Courier New', Courier, monospace; color: var(--ink); }
+    /* Keep the site's green background; let highlight.js handle token colours only */
+    .hljs { background: #f0f9e8 !important; }
+    pre code.hljs { padding: 0; }
+    .code-block { margin: 1rem 0 1.5rem; }
+    .code-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--soda);
+      padding: 0.25rem 0.8rem;
+      border-radius: 8px 8px 0 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1.25rem;
+      font-size: 0.9rem;
+    }
+    th, td { text-align: left; padding: 0.55rem 0.9rem; border: 1px solid var(--line); }
+    th { background: var(--soda-light); font-weight: 700; }
+    tr:nth-child(even) td { background: var(--cream); }
+    .toc {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 1.4rem 2rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .toc h3 { margin-bottom: 0.6rem; font-size: 1rem; }
+    .toc ol { columns: 2; gap: 2rem; margin: 0; padding-left: 1.4rem; }
+    .toc li { margin-bottom: 0.3rem; }
+    .toc a { color: var(--ink-soft); text-decoration: none; font-size: 0.92rem; }
+    .toc a:hover { color: var(--ink); text-decoration: underline; }
+    .ds-section { padding: 2.5rem 0 0.5rem; border-top: 2px solid var(--line); }
+    .analogy {
+      background: var(--soda-light);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.1rem;
+      margin: 1rem 0 1.25rem;
+    }
+    .analogy strong { display: block; margin-bottom: 0.25rem; color: var(--ink); }
+    .where-used {
+      background: var(--cream);
+      border-left: 4px solid var(--soda);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 1rem 0 0.5rem;
+      font-size: 0.92rem;
+    }
+    .where-used strong { color: var(--ink); }
+    .page-hero { padding: var(--space-4) 0 var(--space-3); }
+    .back-link { display: inline-flex; align-items: center; gap: .4rem; color: var(--ink-soft); text-decoration: none; font-size: .9rem; margin-bottom: 1rem; }
+    .back-link:hover { color: var(--ink); }
+    h2 { font-size: clamp(1.3rem, 2.5vw, 1.7rem); }
+
+    /* Tablet (641px – 1024px) */
+    @media (max-width: 1024px) {
+      .toc ol { columns: 1; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.45rem 0.7rem; }
+    }
+
+    /* Phone (≤ 640px) */
+    @media (max-width: 640px) {
+      pre { font-size: 0.82rem; padding: 0.9rem 1rem; }
+      table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .analogy, .where-used { padding: 0.7rem 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="DSA Studio home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        DSA Studio
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="data-structures.html" aria-current="page">Data Structures</a></li>
+        <li><a href="algorithms.html">Algorithms</a></li>
+        <li><a href="big-o.html">Big-O</a></li>
+        <li><a href="index.html#playground">Playground</a></li>
+        <li><a href="index.html#reference">Reference</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+    <div class="wrap">
+      <div class="page-hero">
+        <a class="back-link" href="index.html">← Back to home</a>
+        <span class="tag">Data Structures</span>
+        <h1>Data Structures</h1>
+        <p style="max-width:62ch; color:var(--ink-soft);">
+          A data structure gives information a useful shape. Choosing the right one makes
+          the difference between code that runs instantly and code that crawls. Every structure
+          below is explained with a real-world analogy, a complexity table, and code in both
+          Python and TypeScript.
+        </p>
+      </div>
+
+      <div class="toc" aria-label="Table of contents">
+        <h3>Contents</h3>
+        <ol>
+          <li><a href="#arrays">Arrays</a></li>
+          <li><a href="#linked-lists">Linked Lists</a></li>
+          <li><a href="#stacks">Stacks</a></li>
+          <li><a href="#queues">Queues</a></li>
+          <li><a href="#deques">Deques (Double-Ended Queues)</a></li>
+          <li><a href="#hashmaps">Hashmaps</a></li>
+          <li><a href="#hashsets">Hashsets</a></li>
+          <li><a href="#trees">Trees</a></li>
+          <li><a href="#bst">Binary Search Trees</a></li>
+          <li><a href="#heaps">Heaps</a></li>
+          <li><a href="#graphs">Graphs</a></li>
+          <li><a href="#tries">Tries</a></li>
+          <li><a href="#union-find">Disjoint Set / Union Find</a></li>
+          <li><a href="#bloom-filter">Bloom Filter</a></li>
+          <li><a href="#lru-cache">LRU Cache</a></li>
+        </ol>
+      </div>
+
+      <!-- ============================================================
+           ARRAYS
+      ============================================================ -->
+      <section class="ds-section" id="arrays">
+        <h2>Arrays</h2>
+        <p>
+          An array is a fixed-size, ordered collection of elements stored in <strong>contiguous memory</strong>.
+          Because each element sits right next to the last one, the computer can jump directly to any
+          position in one step using a simple math formula: <code>address = base + index × element_size</code>.
+          This makes reading blazing fast but inserting or deleting in the middle expensive, because
+          everything after that position must shift.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… numbered theatre seats in a row.</strong>
+          You can walk straight to seat 42 without checking every row first.
+          But if a new seat is added at position 10, every person from seat 10 onward must move one spot.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Access by index</td><td>O(1)</td><td>Direct memory address calculation</td></tr>
+            <tr><td>Search (unsorted)</td><td>O(n)</td><td>Must scan each element</td></tr>
+            <tr><td>Append to end</td><td>O(1) amortized</td><td>Dynamic arrays grow by doubling</td></tr>
+            <tr><td>Insert in middle</td><td>O(n)</td><td>Must shift elements right</td></tr>
+            <tr><td>Delete in middle</td><td>O(n)</td><td>Must shift elements left</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code># Python lists are dynamic arrays
+arr = [10, 20, 30, 40, 50]
+
+# O(1) — access by index
+print(arr[2])         # 30
+
+# O(1) amortized — append to end
+arr.append(60)        # [10, 20, 30, 40, 50, 60]
+
+# O(n) — insert in the middle (shifts everything right)
+arr.insert(1, 15)     # [10, 15, 20, 30, 40, 50, 60]
+
+# O(n) — remove by value
+arr.remove(15)        # [10, 20, 30, 40, 50, 60]
+
+# O(n) — search
+idx = arr.index(30)   # 2
+
+# O(k) — slice (creates a copy of k elements)
+sub = arr[1:4]        # [20, 30, 40]
+
+print(f"Length: {len(arr)}")          # 6
+print(f"Found 30 at index: {idx}")    # Found 30 at index: 2
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>const arr: number[] = [10, 20, 30, 40, 50];
+
+// O(1) — access by index
+console.log(arr[2]);            // 30
+
+// O(1) amortized — append to end
+arr.push(60);                   // [10, 20, 30, 40, 50, 60]
+
+// O(n) — insert in the middle
+arr.splice(1, 0, 15);           // [10, 15, 20, 30, 40, 50, 60]
+
+// O(n) — remove one element at an index
+arr.splice(arr.indexOf(15), 1); // [10, 20, 30, 40, 50, 60]
+
+// O(n) — search for a value
+const idx = arr.indexOf(30);    // 2
+
+// O(k) — slice without mutating
+const sub = arr.slice(1, 4);    // [20, 30, 40]
+
+console.log(`Length: ${arr.length}`);       // 6
+console.log(`Found 30 at index: ${idx}`);
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Image pixels, audio samples, database rows in a result set, and any list where you need
+          fast indexed access — like the frames of a video or the cells of a spreadsheet.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           LINKED LISTS
+      ============================================================ -->
+      <section class="ds-section" id="linked-lists">
+        <h2>Linked Lists</h2>
+        <p>
+          A linked list is a chain of <strong>nodes</strong> scattered anywhere in memory. Each node
+          stores its value and a pointer to the next node. Because nodes are connected by pointers
+          rather than physical position, inserting or removing at the front is instant — just update
+          a pointer. But finding the 10th element means walking the chain from the beginning.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a treasure hunt with clues.</strong>
+          Each clue tells you where the next one is. To reach clue 8, you must follow clues 1 through 7
+          in order — there's no shortcut. But adding a new first clue just means pointing it at the
+          old first clue, which is instant.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Access by index</td><td>O(n)</td><td>Must traverse from head</td></tr>
+            <tr><td>Prepend (insert at head)</td><td>O(1)</td><td>Just update the head pointer</td></tr>
+            <tr><td>Append (insert at tail)</td><td>O(n) or O(1)*</td><td>O(1) if tail pointer is kept</td></tr>
+            <tr><td>Delete at head</td><td>O(1)</td><td>Just update the head pointer</td></tr>
+            <tr><td>Delete by value</td><td>O(n)</td><td>Must find the node first</td></tr>
+            <tr><td>Search</td><td>O(n)</td><td>Sequential scan from head</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def prepend(self, val):       # O(1)
+        node = Node(val)
+        node.next = self.head
+        self.head = node
+
+    def append(self, val):        # O(n) — walks to the end
+        node = Node(val)
+        if not self.head:
+            self.head = node
+            return
+        cur = self.head
+        while cur.next:
+            cur = cur.next
+        cur.next = node
+
+    def delete(self, val):        # O(n)
+        if self.head and self.head.val == val:
+            self.head = self.head.next
+            return
+        cur = self.head
+        while cur and cur.next:
+            if cur.next.val == val:
+                cur.next = cur.next.next
+                return
+            cur = cur.next
+
+    def to_list(self):            # O(n)
+        result, cur = [], self.head
+        while cur:
+            result.append(cur.val)
+            cur = cur.next
+        return result
+
+ll = LinkedList()
+ll.append(1); ll.append(2); ll.append(3)
+ll.prepend(0)
+print(ll.to_list())   # [0, 1, 2, 3]
+ll.delete(2)
+print(ll.to_list())   # [0, 1, 3]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class ListNode&lt;T&gt; {
+  constructor(public val: T, public next: ListNode&lt;T&gt; | null = null) {}
+}
+
+class LinkedList&lt;T&gt; {
+  private head: ListNode&lt;T&gt; | null = null;
+
+  prepend(val: T): void {          // O(1)
+    this.head = new ListNode(val, this.head);
+  }
+
+  append(val: T): void {           // O(n)
+    const node = new ListNode(val);
+    if (!this.head) { this.head = node; return; }
+    let cur = this.head;
+    while (cur.next) cur = cur.next;
+    cur.next = node;
+  }
+
+  delete(val: T): void {           // O(n)
+    if (this.head?.val === val) { this.head = this.head.next; return; }
+    let cur = this.head;
+    while (cur?.next) {
+      if (cur.next.val === val) { cur.next = cur.next.next; return; }
+      cur = cur.next;
+    }
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    let cur = this.head;
+    while (cur) { result.push(cur.val); cur = cur.next; }
+    return result;
+  }
+}
+
+const ll = new LinkedList&lt;number&gt;();
+ll.append(1); ll.append(2); ll.append(3); ll.prepend(0);
+console.log(ll.toArray()); // [0, 1, 2, 3]
+ll.delete(2);
+console.log(ll.toArray()); // [0, 1, 3]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Undo/redo history chains, music playlists, browser tab history, and as the internal
+          building block for stacks, queues, and LRU caches.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           STACKS
+      ============================================================ -->
+      <section class="ds-section" id="stacks">
+        <h2>Stacks</h2>
+        <p>
+          A stack is a <strong>Last In, First Out (LIFO)</strong> structure. You can only interact
+          with the top element. Pushing adds to the top; popping removes from the top. This constraint
+          is exactly what makes stacks useful — the newest item is always the easiest to find and reverse.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a stack of plates in a cafeteria.</strong>
+          You always take the plate from the top — which is the one most recently placed there.
+          You can't grab a plate from the middle without moving the ones above it first.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Push (add to top)</td><td>O(1)</td><td>Append to end of underlying array</td></tr>
+            <tr><td>Pop (remove from top)</td><td>O(1)</td><td>Remove last element of underlying array</td></tr>
+            <tr><td>Peek (read top without removing)</td><td>O(1)</td><td>Access last element by index</td></tr>
+            <tr><td>isEmpty</td><td>O(1)</td><td>Check if size is zero</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code># Python list works perfectly as a stack
+stack = []
+
+stack.append("page1")   # push — O(1)
+stack.append("page2")   # push — O(1)
+stack.append("page3")   # push — O(1)
+
+print(stack[-1])        # peek top — O(1) → "page3"
+print(stack.pop())      # pop — O(1)      → "page3"
+print(stack.pop())      # pop — O(1)      → "page2"
+print(stack)            # ["page1"]
+
+# Real-world: undo history in a text editor
+class UndoHistory:
+    def __init__(self):
+        self._stack = []
+
+    def do_action(self, action):
+        self._stack.append(action)
+
+    def undo(self):
+        if self._stack:
+            return self._stack.pop()   # most recent action reversed first
+        return None
+
+history = UndoHistory()
+history.do_action("type 'Hello'")
+history.do_action("bold text")
+history.do_action("change font")
+
+print(history.undo())   # "change font"  — last action undone first
+print(history.undo())   # "bold text"
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class Stack&lt;T&gt; {
+  private items: T[] = [];
+
+  push(item: T): void       { this.items.push(item); }        // O(1)
+  pop(): T | undefined      { return this.items.pop(); }      // O(1)
+  peek(): T | undefined     { return this.items[this.items.length - 1]; } // O(1)
+  isEmpty(): boolean        { return this.items.length === 0; }
+  size(): number            { return this.items.length; }
+}
+
+// Browser history simulation
+const browserHistory = new Stack&lt;string&gt;();
+browserHistory.push("home");
+browserHistory.push("about");
+browserHistory.push("contact");
+
+console.log(browserHistory.peek()); // "contact"
+browserHistory.pop();               // go back
+console.log(browserHistory.peek()); // "about"
+
+// Checking balanced parentheses — a classic stack problem
+function isBalanced(s: string): boolean {
+  const stack = new Stack&lt;string&gt;();
+  const pairs: Record&lt;string, string&gt; = { ')': '(', ']': '[', '}': '{' };
+  for (const ch of s) {
+    if ("([{".includes(ch)) stack.push(ch);
+    else if (ch in pairs) {
+      if (stack.pop() !== pairs[ch]) return false;
+    }
+  }
+  return stack.isEmpty();
+}
+
+console.log(isBalanced("([{}])"));  // true
+console.log(isBalanced("([)]"));    // false
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Browser back button, undo in every editor, function call stack (how programs
+          track which function called which), expression parsing, and syntax highlighting.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           QUEUES
+      ============================================================ -->
+      <section class="ds-section" id="queues">
+        <h2>Queues</h2>
+        <p>
+          A queue is a <strong>First In, First Out (FIFO)</strong> structure. Items join at the back
+          (enqueue) and leave from the front (dequeue). The item waiting longest is always served next.
+          This fairness property makes queues the right choice for any system where order matters.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a line at a coffee shop.</strong>
+          The first person in line is served first. New customers join at the back.
+          No jumping the queue — everyone waits their turn.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Enqueue (add to back)</td><td>O(1)</td><td>Append to end</td></tr>
+            <tr><td>Dequeue (remove from front)</td><td>O(1)</td><td>Use deque for true O(1); array shift is O(n)</td></tr>
+            <tr><td>Peek front</td><td>O(1)</td><td>Read without removing</td></tr>
+            <tr><td>isEmpty</td><td>O(1)</td><td>Check if size is zero</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import deque
+
+# deque gives true O(1) operations on both ends
+queue = deque()
+
+queue.append("task1")    # enqueue — O(1)
+queue.append("task2")    # enqueue — O(1)
+queue.append("task3")    # enqueue — O(1)
+
+print(queue[0])          # peek front — "task1"
+print(queue.popleft())   # dequeue — O(1) → "task1"
+print(queue.popleft())   # dequeue — O(1) → "task2"
+print(list(queue))       # ["task3"]
+
+# Real-world: print job queue
+class PrintQueue:
+    def __init__(self):
+        self._queue = deque()
+
+    def add_job(self, job):
+        self._queue.append(job)
+        print(f"Queued: {job}")
+
+    def print_next(self):
+        if self._queue:
+            job = self._queue.popleft()
+            print(f"Printing: {job}")
+        else:
+            print("Queue is empty")
+
+pq = PrintQueue()
+pq.add_job("report.pdf")
+pq.add_job("invoice.pdf")
+pq.print_next()   # Printing: report.pdf (first in, first out)
+pq.print_next()   # Printing: invoice.pdf
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// Queue with O(1) enqueue and dequeue using a linked list internally
+class QueueNode&lt;T&gt; {
+  constructor(public val: T, public next: QueueNode&lt;T&gt; | null = null) {}
+}
+
+class Queue&lt;T&gt; {
+  private head: QueueNode&lt;T&gt; | null = null;
+  private tail: QueueNode&lt;T&gt; | null = null;
+  private _size = 0;
+
+  enqueue(val: T): void {             // O(1)
+    const node = new QueueNode(val);
+    if (this.tail) this.tail.next = node;
+    this.tail = node;
+    if (!this.head) this.head = node;
+    this._size++;
+  }
+
+  dequeue(): T | undefined {          // O(1)
+    if (!this.head) return undefined;
+    const val = this.head.val;
+    this.head = this.head.next;
+    if (!this.head) this.tail = null;
+    this._size--;
+    return val;
+  }
+
+  peek(): T | undefined { return this.head?.val; }
+  isEmpty(): boolean    { return this._size === 0; }
+  size(): number        { return this._size; }
+}
+
+const q = new Queue&lt;string&gt;();
+q.enqueue("task1"); q.enqueue("task2"); q.enqueue("task3");
+console.log(q.dequeue()); // "task1"
+console.log(q.dequeue()); // "task2"
+console.log(q.size());    // 1
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Print queues, web server request handling, message brokers (Kafka, RabbitMQ),
+          keyboard input buffers, and as the core data structure behind BFS graph traversal.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           DEQUES
+      ============================================================ -->
+      <section class="ds-section" id="deques">
+        <h2>Deques (Double-Ended Queues)</h2>
+        <p>
+          A deque (pronounced "deck") lets you add and remove elements from <strong>both the front and the back</strong>
+          in O(1) time. It behaves as a stack when you use only one end, and as a queue when you use
+          back-in / front-out. This flexibility makes it the right tool for sliding-window problems
+          and palindrome detection.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a tube of sweets open at both ends.</strong>
+          You can pop a candy from either end instantly. A normal queue is a tube open at both
+          ends but you're only allowed to insert from one side. A deque removes that restriction.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Push front / Push back</td><td>O(1)</td><td>Both ends equally fast</td></tr>
+            <tr><td>Pop front / Pop back</td><td>O(1)</td><td>Both ends equally fast</td></tr>
+            <tr><td>Peek front / Peek back</td><td>O(1)</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import deque
+
+dq = deque([3, 4, 5])
+
+dq.appendleft(2)   # add to front — O(1)
+dq.appendleft(1)   # add to front — O(1)
+dq.append(6)       # add to back  — O(1)
+
+print(list(dq))    # [1, 2, 3, 4, 5, 6]
+
+dq.popleft()       # remove from front — O(1) → 1
+dq.pop()           # remove from back  — O(1) → 6
+
+print(list(dq))    # [2, 3, 4, 5]
+
+# Classic use: sliding window maximum
+def max_sliding_window(nums, k):
+    """Return max of every window of size k in O(n)."""
+    dq = deque()      # stores indices, not values
+    result = []
+    for i, num in enumerate(nums):
+        # evict indices that are outside the current window
+        while dq and dq[0] < i - k + 1:
+            dq.popleft()
+        # keep only indices of elements that could be the max
+        while dq and nums[dq[-1]] < num:
+            dq.pop()
+        dq.append(i)
+        if i >= k - 1:
+            result.append(nums[dq[0]])
+    return result
+
+nums = [1, 3, -1, -3, 5, 3, 6, 7]
+print(max_sliding_window(nums, k=3))  # [3, 3, 5, 5, 6, 7]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// Deque backed by a doubly-linked list for true O(1) on both ends
+class DequeNode&lt;T&gt; {
+  constructor(
+    public val: T,
+    public prev: DequeNode&lt;T&gt; | null = null,
+    public next: DequeNode&lt;T&gt; | null = null
+  ) {}
+}
+
+class Deque&lt;T&gt; {
+  private head: DequeNode&lt;T&gt; | null = null;
+  private tail: DequeNode&lt;T&gt; | null = null;
+  private _size = 0;
+
+  pushFront(val: T): void {          // O(1)
+    const node = new DequeNode(val, null, this.head);
+    if (this.head) this.head.prev = node;
+    this.head = node;
+    if (!this.tail) this.tail = node;
+    this._size++;
+  }
+
+  pushBack(val: T): void {           // O(1)
+    const node = new DequeNode(val, this.tail, null);
+    if (this.tail) this.tail.next = node;
+    this.tail = node;
+    if (!this.head) this.head = node;
+    this._size++;
+  }
+
+  popFront(): T | undefined {        // O(1)
+    if (!this.head) return undefined;
+    const val = this.head.val;
+    this.head = this.head.next;
+    if (this.head) this.head.prev = null; else this.tail = null;
+    this._size--;
+    return val;
+  }
+
+  popBack(): T | undefined {         // O(1)
+    if (!this.tail) return undefined;
+    const val = this.tail.val;
+    this.tail = this.tail.prev;
+    if (this.tail) this.tail.next = null; else this.head = null;
+    this._size--;
+    return val;
+  }
+
+  peekFront(): T | undefined { return this.head?.val; }
+  peekBack(): T | undefined  { return this.tail?.val; }
+  isEmpty(): boolean         { return this._size === 0; }
+  size(): number             { return this._size; }
+}
+
+// Palindrome check using a deque
+function isPalindrome(s: string): boolean {
+  const dq = new Deque&lt;string&gt;();
+  for (const ch of s) dq.pushBack(ch);
+  while (dq.size() &gt; 1) {
+    if (dq.popFront() !== dq.popBack()) return false;
+  }
+  return true;
+}
+
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello"));   // false
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Sliding window algorithms, undo/redo with both forward and backward navigation,
+          work-stealing schedulers (worker threads steal tasks from the back of other workers' deques),
+          and browser tab history with forward/back buttons.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           HASHMAPS
+      ============================================================ -->
+      <section class="ds-section" id="hashmaps">
+        <h2>Hashmaps</h2>
+        <p>
+          A hashmap (also called a dictionary or hash table) stores <strong>key-value pairs</strong> and
+          retrieves values in O(1) average time. A <em>hash function</em> converts the key into an
+          index (a "bucket" number), and the value is stored there. Because the bucket is computed —
+          not searched — lookup is near-instant regardless of how many entries are in the map.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a dictionary book.</strong>
+          When you look up "ephemeral," you don't read every page from A to Z.
+          You jump straight to the E section. The hash function is the rule that tells
+          you which section to open.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Average Time</th><th>Worst Case</th></tr></thead>
+          <tbody>
+            <tr><td>Insert / Update</td><td>O(1)</td><td>O(n) — many hash collisions</td></tr>
+            <tr><td>Lookup by key</td><td>O(1)</td><td>O(n) — many hash collisions</td></tr>
+            <tr><td>Delete by key</td><td>O(1)</td><td>O(n) — many hash collisions</td></tr>
+            <tr><td>Iterate all entries</td><td>O(n)</td><td>O(n)</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code># Python's built-in dict is a hashmap
+phone_book = {}
+
+# Insert — O(1) average
+phone_book["Alice"] = "555-1234"
+phone_book["Bob"]   = "555-5678"
+phone_book["Carol"] = "555-9012"
+
+# Lookup — O(1) average
+print(phone_book["Alice"])           # "555-1234"
+print(phone_book.get("Dave", "N/A")) # "N/A" (safe — no KeyError)
+
+# Delete — O(1) average
+del phone_book["Bob"]
+
+# Membership check — O(1) average
+print("Carol" in phone_book)         # True
+
+# Iterate — O(n)
+for name, number in phone_book.items():
+    print(f"{name}: {number}")
+
+# Common pattern: count character frequencies
+text = "hello world"
+freq = {}
+for ch in text:
+    freq[ch] = freq.get(ch, 0) + 1
+print(freq)
+# {'h': 1, 'e': 1, 'l': 3, 'o': 2, ' ': 1, 'w': 1, 'r': 1, 'd': 1}
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// Use Map for key-value storage (better than plain objects for this purpose)
+const phoneBook = new Map&lt;string, string&gt;();
+
+// Insert — O(1) average
+phoneBook.set("Alice", "555-1234");
+phoneBook.set("Bob",   "555-5678");
+phoneBook.set("Carol", "555-9012");
+
+// Lookup — O(1) average
+console.log(phoneBook.get("Alice"));          // "555-1234"
+console.log(phoneBook.get("Dave") ?? "N/A");  // "N/A"
+
+// Delete — O(1) average
+phoneBook.delete("Bob");
+
+// Membership check — O(1) average
+console.log(phoneBook.has("Carol"));  // true
+
+// Iterate — O(n)
+for (const [name, number] of phoneBook) {
+  console.log(`${name}: ${number}`);
+}
+
+// Count character frequencies
+const text = "hello world";
+const freq = new Map&lt;string, number&gt;();
+for (const ch of text) {
+  freq.set(ch, (freq.get(ch) ?? 0) + 1);
+}
+console.log(freq.get("l")); // 3
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Database indexes, caches (Redis is essentially a hashmap over a network),
+          session storage, URL routing tables, and any feature that needs O(1) lookup
+          — like "has this user already voted?" or "what is the config value for this key?"
+        </div>
+      </section>
+
+      <!-- ============================================================
+           HASHSETS
+      ============================================================ -->
+      <section class="ds-section" id="hashsets">
+        <h2>Hashsets</h2>
+        <p>
+          A hashset is a hashmap with no values — just keys. It answers one question blazingly fast:
+          <em>"Is this item in the set?"</em> It also automatically prevents duplicates.
+          Internally, a hashset is the same structure as a hashmap; it just ignores the value slot.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a guest list at a club.</strong>
+          The bouncer doesn't care what each person "holds" — they just check if the name is on the list or not.
+          Adding the same name twice changes nothing. The check is instant.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Average Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Add item</td><td>O(1)</td><td>Silently ignores duplicates</td></tr>
+            <tr><td>Check membership</td><td>O(1)</td><td>The primary use case</td></tr>
+            <tr><td>Remove item</td><td>O(1)</td><td>—</td></tr>
+            <tr><td>Union / Intersection / Difference</td><td>O(n)</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code># Python's built-in set is a hashset
+visited = set()
+
+visited.add("page1")
+visited.add("page2")
+visited.add("page1")    # duplicate — silently ignored
+print(visited)           # {'page1', 'page2'} — no duplicates
+
+# O(1) membership check
+print("page1" in visited)   # True
+print("page3" in visited)   # False
+
+# Remove safely
+visited.discard("page2")    # no error if missing (unlike .remove())
+
+# Set math
+a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+print(a &amp; b)   # intersection: {3, 4}
+print(a | b)   # union:        {1, 2, 3, 4, 5, 6}
+print(a - b)   # difference:   {1, 2}
+print(a ^ b)   # symmetric diff: {1, 2, 5, 6}
+
+# Remove duplicates while preserving sort order
+data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
+unique = sorted(set(data))
+print(unique)   # [1, 2, 3, 4, 5, 6, 9]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>const visited = new Set&lt;string&gt;();
+
+visited.add("page1");
+visited.add("page2");
+visited.add("page1");       // duplicate — ignored
+console.log(visited.size);  // 2
+
+// O(1) membership check
+console.log(visited.has("page1")); // true
+console.log(visited.has("page3")); // false
+
+// Remove
+visited.delete("page2");
+
+// Set operations (no built-in operators in TypeScript — use spread)
+const a = new Set([1, 2, 3, 4]);
+const b = new Set([3, 4, 5, 6]);
+
+const intersection = new Set([...a].filter(x =&gt; b.has(x)));   // {3, 4}
+const union        = new Set([...a, ...b]);                     // {1,2,3,4,5,6}
+const difference   = new Set([...a].filter(x =&gt; !b.has(x)));  // {1, 2}
+
+// Remove duplicates from array
+const data = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3];
+const unique = [...new Set(data)].sort((x, y) =&gt; x - y);
+console.log(unique); // [1, 2, 3, 4, 5, 6, 9]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Web crawlers (tracking visited URLs), deduplication pipelines, "already seen"
+          checks in recommendation systems, and efficient lookups when you don't need the values —
+          just whether something exists.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TREES
+      ============================================================ -->
+      <section class="ds-section" id="trees">
+        <h2>Trees</h2>
+        <p>
+          A tree is a hierarchical structure of <strong>nodes</strong> connected by edges. There is
+          exactly one <em>root</em> node at the top, and each node can have zero or more <em>children</em>.
+          Nodes with no children are called <em>leaves</em>. Unlike arrays or lists, trees branch —
+          which makes them perfect for representing anything with a parent-child relationship.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a company org chart or a file system.</strong>
+          The CEO (root) has direct reports (children). Each direct report has their own team (children).
+          The interns at the bottom have no one reporting to them — they are the leaves.
+        </div>
+        <h3>Key Terms</h3>
+        <table>
+          <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>Root</td><td>The single top node with no parent</td></tr>
+            <tr><td>Leaf</td><td>A node with no children</td></tr>
+            <tr><td>Height</td><td>Longest path from root to a leaf</td></tr>
+            <tr><td>Depth</td><td>Distance from the root to a specific node</td></tr>
+            <tr><td>Subtree</td><td>A node and all its descendants</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.children = []
+
+    def add_child(self, child):
+        self.children.append(child)
+
+# Build a file-system tree
+root = TreeNode("root")
+docs = TreeNode("Documents")
+pics = TreeNode("Pictures")
+root.add_child(docs)
+root.add_child(pics)
+docs.add_child(TreeNode("resume.pdf"))
+docs.add_child(TreeNode("notes.txt"))
+pics.add_child(TreeNode("vacation.jpg"))
+
+# DFS pre-order traversal (parent before children)
+def dfs(node, depth=0):
+    print("  " * depth + node.val)
+    for child in node.children:
+        dfs(child, depth + 1)
+
+dfs(root)
+# root
+#   Documents
+#     resume.pdf
+#     notes.txt
+#   Pictures
+#     vacation.jpg
+
+# BFS level-order traversal (layer by layer)
+from collections import deque
+
+def bfs(root):
+    queue = deque([root])
+    while queue:
+        node = queue.popleft()
+        print(node.val, end="  ")
+        for child in node.children:
+            queue.append(child)
+
+bfs(root)   # root  Documents  Pictures  resume.pdf  notes.txt  vacation.jpg
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class TreeNode&lt;T&gt; {
+  children: TreeNode&lt;T&gt;[] = [];
+  constructor(public val: T) {}
+  addChild(child: TreeNode&lt;T&gt;): void { this.children.push(child); }
+}
+
+// Build a file-system tree
+const root = new TreeNode("root");
+const docs = new TreeNode("Documents");
+const pics = new TreeNode("Pictures");
+root.addChild(docs);
+root.addChild(pics);
+docs.addChild(new TreeNode("resume.pdf"));
+docs.addChild(new TreeNode("notes.txt"));
+pics.addChild(new TreeNode("vacation.jpg"));
+
+// DFS pre-order
+function dfs&lt;T&gt;(node: TreeNode&lt;T&gt;, depth = 0): void {
+  console.log("  ".repeat(depth) + node.val);
+  for (const child of node.children) dfs(child, depth + 1);
+}
+dfs(root);
+
+// BFS level-order
+function bfs&lt;T&gt;(root: TreeNode&lt;T&gt;): void {
+  const queue: TreeNode&lt;T&gt;[] = [root];
+  while (queue.length) {
+    const node = queue.shift()!;
+    process.stdout.write(String(node.val) + "  ");
+    for (const child of node.children) queue.push(child);
+  }
+}
+bfs(root); // root  Documents  Pictures  resume.pdf  notes.txt  vacation.jpg
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          HTML/XML DOM (every webpage is a tree), file systems, JSON structures,
+          organizational hierarchies, compiler parse trees, and comment threads.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           BINARY SEARCH TREES
+      ============================================================ -->
+      <section class="ds-section" id="bst">
+        <h2>Binary Search Trees (BST)</h2>
+        <p>
+          A binary search tree is a special tree where every node has <strong>at most two children</strong>
+          (left and right), and it enforces a sorting rule:
+          <em>everything in the left subtree is smaller than the parent, and everything in the right is larger.</em>
+          This rule means searching cuts the remaining possibilities in half with each step — just like
+          binary search on a sorted array, but without needing to shift elements on insert.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a game of "higher or lower?"</strong>
+          You pick a number. Your friend says "higher" or "lower." Each answer cuts the
+          remaining possibilities in half. A BST bakes this game into the tree's structure so
+          the computer automatically knows which branch to follow.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Average (Balanced)</th><th>Worst Case (Skewed)</th></tr></thead>
+          <tbody>
+            <tr><td>Search</td><td>O(log n)</td><td>O(n)</td></tr>
+            <tr><td>Insert</td><td>O(log n)</td><td>O(n)</td></tr>
+            <tr><td>Delete</td><td>O(log n)</td><td>O(n)</td></tr>
+            <tr><td>In-order traversal (sorted output)</td><td>O(n)</td><td>O(n)</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>class BSTNode:
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+class BST:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, val):              # O(log n) average
+        self.root = self._insert(self.root, val)
+
+    def _insert(self, node, val):
+        if not node:
+            return BSTNode(val)
+        if val &lt; node.val:
+            node.left = self._insert(node.left, val)
+        elif val &gt; node.val:
+            node.right = self._insert(node.right, val)
+        # Equal values are ignored (no duplicates)
+        return node
+
+    def search(self, val):             # O(log n) average
+        node = self.root
+        while node:
+            if val == node.val:
+                return True
+            node = node.left if val &lt; node.val else node.right
+        return False
+
+    def in_order(self):                # O(n) — returns values in sorted order!
+        result = []
+        def _walk(node):
+            if node:
+                _walk(node.left)
+                result.append(node.val)
+                _walk(node.right)
+        _walk(self.root)
+        return result
+
+bst = BST()
+for v in [5, 3, 8, 1, 4, 7, 9]:
+    bst.insert(v)
+
+print(bst.in_order())   # [1, 3, 4, 5, 7, 8, 9] — automatically sorted!
+print(bst.search(4))    # True
+print(bst.search(6))    # False
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class BSTNode {
+  left: BSTNode | null = null;
+  right: BSTNode | null = null;
+  constructor(public val: number) {}
+}
+
+class BST {
+  private root: BSTNode | null = null;
+
+  insert(val: number): void {            // O(log n) average
+    this.root = this._insert(this.root, val);
+  }
+
+  private _insert(node: BSTNode | null, val: number): BSTNode {
+    if (!node) return new BSTNode(val);
+    if      (val &lt; node.val) node.left  = this._insert(node.left, val);
+    else if (val &gt; node.val) node.right = this._insert(node.right, val);
+    return node;
+  }
+
+  search(val: number): boolean {         // O(log n) average — iterative
+    let cur = this.root;
+    while (cur) {
+      if (val === cur.val) return true;
+      cur = val &lt; cur.val ? cur.left : cur.right;
+    }
+    return false;
+  }
+
+  inOrder(): number[] {                  // O(n) — sorted output
+    const result: number[] = [];
+    function walk(node: BSTNode | null) {
+      if (!node) return;
+      walk(node.left);
+      result.push(node.val);
+      walk(node.right);
+    }
+    walk(this.root);
+    return result;
+  }
+}
+
+const bst = new BST();
+[5, 3, 8, 1, 4, 7, 9].forEach(v =&gt; bst.insert(v));
+console.log(bst.inOrder());  // [1, 3, 4, 5, 7, 8, 9]
+console.log(bst.search(4));  // true
+console.log(bst.search(6));  // false
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Database index structures (B-Trees are BST variants used in every SQL database),
+          symbol tables in compilers, autocomplete with sorted order, and any situation where
+          you need fast insert, delete, AND sorted iteration.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           HEAPS
+      ============================================================ -->
+      <section class="ds-section" id="heaps">
+        <h2>Heaps</h2>
+        <p>
+          A heap is a <strong>tree-based structure optimized for priority access</strong>. In a
+          <em>min-heap</em>, the smallest element is always at the top (root). In a <em>max-heap</em>,
+          the largest is at the top. Every insert or removal reorganizes the tree to restore this
+          property — which takes O(log n). But peeking at the top is always O(1).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… an emergency room triage system.</strong>
+          Patients enter in any order, but the most critical patient is always seen first.
+          When a patient is discharged, the next most critical rises to the top automatically.
+          The heap always puts the highest priority item within instant reach.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Peek top (min or max)</td><td>O(1)</td><td>Root is always the priority element</td></tr>
+            <tr><td>Insert (push)</td><td>O(log n)</td><td>Add at end, bubble up</td></tr>
+            <tr><td>Remove top (pop)</td><td>O(log n)</td><td>Replace root with last, sift down</td></tr>
+            <tr><td>Build heap from array</td><td>O(n)</td><td>More efficient than n inserts</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>import heapq
+
+# Python's heapq is a min-heap
+heap = []
+
+heapq.heappush(heap, 5)   # O(log n)
+heapq.heappush(heap, 1)
+heapq.heappush(heap, 8)
+heapq.heappush(heap, 3)
+
+print(heap[0])             # peek min — O(1) → 1
+print(heapq.heappop(heap)) # pop min  — O(log n) → 1
+print(heapq.heappop(heap)) # pop min  — O(log n) → 3
+
+# Max-heap: negate all values as a workaround
+max_heap = []
+for v in [5, 1, 8, 3]:
+    heapq.heappush(max_heap, -v)
+print(-heapq.heappop(max_heap))   # 8 (largest)
+
+# Build heap in O(n) from an existing list
+data = [4, 7, 2, 9, 1, 3]
+heapq.heapify(data)               # in-place — O(n)
+print(data[0])                    # 1 — min is at root
+
+# Real-world: find K smallest elements
+def k_smallest(nums, k):
+    return heapq.nsmallest(k, nums)
+
+print(k_smallest([3, 1, 4, 1, 5, 9, 2, 6], 3))  # [1, 1, 2]
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// Min-heap implementation (stores numbers for clarity)
+class MinHeap {
+  private data: number[] = [];
+
+  push(val: number): void {         // O(log n)
+    this.data.push(val);
+    this._bubbleUp(this.data.length - 1);
+  }
+
+  pop(): number | undefined {       // O(log n)
+    if (this.data.length === 0) return undefined;
+    const top = this.data[0];
+    const last = this.data.pop()!;
+    if (this.data.length &gt; 0) {
+      this.data[0] = last;
+      this._siftDown(0);
+    }
+    return top;
+  }
+
+  peek(): number | undefined { return this.data[0]; } // O(1)
+  size(): number { return this.data.length; }
+
+  private _bubbleUp(i: number): void {
+    while (i &gt; 0) {
+      const parent = Math.floor((i - 1) / 2);
+      if (this.data[parent] &lt;= this.data[i]) break;
+      [this.data[parent], this.data[i]] = [this.data[i], this.data[parent]];
+      i = parent;
+    }
+  }
+
+  private _siftDown(i: number): void {
+    const n = this.data.length;
+    while (true) {
+      let smallest = i;
+      const l = 2 * i + 1, r = 2 * i + 2;
+      if (l &lt; n &amp;&amp; this.data[l] &lt; this.data[smallest]) smallest = l;
+      if (r &lt; n &amp;&amp; this.data[r] &lt; this.data[smallest]) smallest = r;
+      if (smallest === i) break;
+      [this.data[smallest], this.data[i]] = [this.data[i], this.data[smallest]];
+      i = smallest;
+    }
+  }
+}
+
+const h = new MinHeap();
+h.push(5); h.push(1); h.push(8); h.push(3);
+console.log(h.peek()); // 1
+console.log(h.pop());  // 1
+console.log(h.pop());  // 3
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Priority queues (operating system schedulers, Dijkstra's shortest path),
+          "top K" queries (leaderboard top 10), event-driven simulations, and
+          merge-sorted-lists problems.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           GRAPHS
+      ============================================================ -->
+      <section class="ds-section" id="graphs">
+        <h2>Graphs</h2>
+        <p>
+          A graph is a collection of <strong>nodes (vertices)</strong> connected by <strong>edges</strong>.
+          Unlike trees, graphs have no root and can contain cycles. Edges can be
+          <em>undirected</em> (friendship: Alice knows Bob, Bob knows Alice) or
+          <em>directed</em> (Twitter follow: Alice follows Bob, but Bob doesn't follow Alice).
+          Edges can also carry a <em>weight</em> (distance, cost, capacity).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a road map or social network.</strong>
+          Cities are nodes. Roads are edges. Some roads are one-way (directed). Some roads
+          have tolls (weighted). Finding the shortest route from A to B is a graph problem.
+          Suggesting "people you may know" is also a graph problem.
+        </div>
+        <h3>Representations</h3>
+        <table>
+          <thead><tr><th>Method</th><th>Space</th><th>Best for</th></tr></thead>
+          <tbody>
+            <tr><td>Adjacency list (dict/map)</td><td>O(V + E)</td><td>Sparse graphs — most real-world graphs</td></tr>
+            <tr><td>Adjacency matrix (2D array)</td><td>O(V²)</td><td>Dense graphs, edge lookup in O(1)</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import defaultdict, deque
+
+class Graph:
+    def __init__(self):
+        self.adj = defaultdict(list)   # adjacency list
+
+    def add_edge(self, u, v, directed=False):
+        self.adj[u].append(v)
+        if not directed:
+            self.adj[v].append(u)
+
+    def bfs(self, start):              # O(V + E)
+        visited = {start}
+        queue = deque([start])
+        order = []
+        while queue:
+            node = queue.popleft()
+            order.append(node)
+            for neighbor in self.adj[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        return order
+
+    def dfs(self, start):              # O(V + E)
+        visited = set()
+        order = []
+        def _dfs(node):
+            visited.add(node)
+            order.append(node)
+            for nb in self.adj[node]:
+                if nb not in visited:
+                    _dfs(nb)
+        _dfs(start)
+        return order
+
+    def has_path(self, start, end):    # BFS-based
+        visited = {start}
+        queue = deque([start])
+        while queue:
+            node = queue.popleft()
+            if node == end:
+                return True
+            for nb in self.adj[node]:
+                if nb not in visited:
+                    visited.add(nb); queue.append(nb)
+        return False
+
+g = Graph()
+g.add_edge("A", "B"); g.add_edge("A", "C")
+g.add_edge("B", "D"); g.add_edge("C", "D")
+g.add_edge("D", "E")
+
+print("BFS:", g.bfs("A"))       # ['A', 'B', 'C', 'D', 'E']
+print("DFS:", g.dfs("A"))       # ['A', 'B', 'D', 'C', 'E']
+print("Path A→E:", g.has_path("A", "E"))  # True
+print("Path E→A:", g.has_path("E", "A"))  # True (undirected)
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class Graph {
+  private adj = new Map&lt;string, string[]&gt;();
+
+  private ensure(node: string) {
+    if (!this.adj.has(node)) this.adj.set(node, []);
+  }
+
+  addEdge(u: string, v: string, directed = false): void {
+    this.ensure(u); this.ensure(v);
+    this.adj.get(u)!.push(v);
+    if (!directed) this.adj.get(v)!.push(u);
+  }
+
+  bfs(start: string): string[] {     // O(V + E)
+    const visited = new Set([start]);
+    const queue = [start];
+    const order: string[] = [];
+    while (queue.length) {
+      const node = queue.shift()!;
+      order.push(node);
+      for (const nb of (this.adj.get(node) ?? [])) {
+        if (!visited.has(nb)) { visited.add(nb); queue.push(nb); }
+      }
+    }
+    return order;
+  }
+
+  dfs(start: string): string[] {     // O(V + E)
+    const visited = new Set&lt;string&gt;();
+    const order: string[] = [];
+    const recurse = (node: string) =&gt; {
+      visited.add(node); order.push(node);
+      for (const nb of (this.adj.get(node) ?? []))
+        if (!visited.has(nb)) recurse(nb);
+    };
+    recurse(start);
+    return order;
+  }
+}
+
+const g = new Graph();
+g.addEdge("A", "B"); g.addEdge("A", "C");
+g.addEdge("B", "D"); g.addEdge("C", "D"); g.addEdge("D", "E");
+
+console.log("BFS:", g.bfs("A")); // ["A", "B", "C", "D", "E"]
+console.log("DFS:", g.dfs("A")); // ["A", "B", "D", "C", "E"]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Google Maps (shortest path), Facebook friends (undirected graph), Twitter follows
+          (directed graph), package dependency resolution (directed acyclic graph),
+          network routing, and fraud detection (who transferred money to whom).
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TRIES
+      ============================================================ -->
+      <section class="ds-section" id="tries">
+        <h2>Tries (Prefix Trees)</h2>
+        <p>
+          A trie (pronounced "try," short for re<em>trie</em>val) is a tree where each node represents
+          a single <strong>character</strong>. Words are formed by following paths from the root. Searching
+          for a word or prefix takes exactly O(L) steps, where L is the number of characters — it doesn't
+          matter if a million words are stored. This makes tries the engine behind autocomplete.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a physical dictionary with shared spine letters.</strong>
+          All words starting with "app" share the same A→P→P path through the trie.
+          Once you reach the "app" node, branching leads to "apple," "append," "application."
+          You never recheck whether a word starts with "app" — you're already there.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Insert word</td><td>O(L)</td><td>L = length of word</td></tr>
+            <tr><td>Search exact word</td><td>O(L)</td><td>Check end-of-word marker at last char</td></tr>
+            <tr><td>Prefix search (autocomplete)</td><td>O(L + results)</td><td>Navigate to prefix node, then collect all endings</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>class TrieNode:
+    def __init__(self):
+        self.children = {}   # char → TrieNode
+        self.is_end = False  # marks end of a complete word
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):          # O(L)
+        node = self.root
+        for ch in word:
+            if ch not in node.children:
+                node.children[ch] = TrieNode()
+            node = node.children[ch]
+        node.is_end = True
+
+    def search(self, word):          # O(L) — exact match
+        node = self.root
+        for ch in word:
+            if ch not in node.children:
+                return False
+            node = node.children[ch]
+        return node.is_end
+
+    def starts_with(self, prefix):   # O(L + matches) — autocomplete
+        node = self.root
+        for ch in prefix:
+            if ch not in node.children:
+                return []
+            node = node.children[ch]
+        return self._collect(node, prefix)
+
+    def _collect(self, node, prefix):
+        words = []
+        if node.is_end:
+            words.append(prefix)
+        for ch, child in node.children.items():
+            words.extend(self._collect(child, prefix + ch))
+        return words
+
+trie = Trie()
+for w in ["apple", "app", "apt", "banana", "band"]:
+    trie.insert(w)
+
+print(trie.search("app"))         # True  (complete word)
+print(trie.search("ap"))          # False (prefix only, not a full word)
+print(trie.starts_with("ap"))     # ['apple', 'app', 'apt']
+print(trie.starts_with("ban"))    # ['banana', 'band']
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class TrieNode {
+  children = new Map&lt;string, TrieNode&gt;();
+  isEnd = false;
+}
+
+class Trie {
+  private root = new TrieNode();
+
+  insert(word: string): void {        // O(L)
+    let node = this.root;
+    for (const ch of word) {
+      if (!node.children.has(ch)) node.children.set(ch, new TrieNode());
+      node = node.children.get(ch)!;
+    }
+    node.isEnd = true;
+  }
+
+  search(word: string): boolean {     // O(L)
+    let node = this.root;
+    for (const ch of word) {
+      if (!node.children.has(ch)) return false;
+      node = node.children.get(ch)!;
+    }
+    return node.isEnd;
+  }
+
+  startsWith(prefix: string): string[] { // O(L + matches)
+    let node = this.root;
+    for (const ch of prefix) {
+      if (!node.children.has(ch)) return [];
+      node = node.children.get(ch)!;
+    }
+    return this._collect(node, prefix);
+  }
+
+  private _collect(node: TrieNode, prefix: string): string[] {
+    const words: string[] = [];
+    if (node.isEnd) words.push(prefix);
+    for (const [ch, child] of node.children) {
+      words.push(...this._collect(child, prefix + ch));
+    }
+    return words;
+  }
+}
+
+const trie = new Trie();
+["apple", "app", "apt", "banana", "band"].forEach(w =&gt; trie.insert(w));
+console.log(trie.search("app"));       // true
+console.log(trie.startsWith("ap"));    // ["apple", "app", "apt"]
+console.log(trie.startsWith("ban"));   // ["banana", "band"]
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Search autocomplete (Google suggest), spell checkers, IP routing tables (longest prefix match),
+          and any feature that needs to quickly find all strings sharing a common prefix.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           DISJOINT SET / UNION FIND
+      ============================================================ -->
+      <section class="ds-section" id="union-find">
+        <h2>Disjoint Set (Union Find)</h2>
+        <p>
+          A disjoint set tracks elements grouped into non-overlapping sets, and efficiently answers:
+          <em>"Are these two elements in the same group?"</em> and <em>"Merge the groups containing these two elements."</em>
+          Two optimizations — <strong>union by rank</strong> and <strong>path compression</strong> —
+          bring both operations to nearly O(1) (formally O(α(n)), where α is the inverse Ackermann function,
+          which is less than 5 for any practical input size).
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… tracking friend groups at a party.</strong>
+          Initially everyone is a lone group. When Alice meets Bob, their groups merge.
+          Later, when you ask "are Alice and Carol in the same group?" you don't trace every
+          introduction — you look up each person's group leader, and compare.
+        </div>
+        <h3>Common Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time (with both optimizations)</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Find (find group root)</td><td>O(α(n)) ≈ O(1)</td><td>Path compression flattens future lookups</td></tr>
+            <tr><td>Union (merge two groups)</td><td>O(α(n)) ≈ O(1)</td><td>Union by rank keeps trees shallow</td></tr>
+            <tr><td>Connected (same group?)</td><td>O(α(n)) ≈ O(1)</td><td>Just compare roots</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))   # each element starts as its own root
+        self.rank   = [0] * n          # tree height estimate
+
+    def find(self, x):                 # O(α(n)) with path compression
+        if self.parent[x] != x:
+            # Path compression: point directly to root after finding it
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):             # O(α(n))
+        rx, ry = self.find(x), self.find(y)
+        if rx == ry:
+            return False               # already in same group
+        # Union by rank: attach smaller tree under larger tree's root
+        if self.rank[rx] &lt; self.rank[ry]:
+            rx, ry = ry, rx
+        self.parent[ry] = rx
+        if self.rank[rx] == self.rank[ry]:
+            self.rank[rx] += 1
+        return True
+
+    def connected(self, x, y):        # O(α(n))
+        return self.find(x) == self.find(y)
+
+# Network connectivity example
+uf = UnionFind(6)   # nodes 0–5
+uf.union(0, 1)      # 0 and 1 connect
+uf.union(1, 2)      # 2 joins 0's group
+uf.union(3, 4)      # 3 and 4 form a separate group
+
+print(uf.connected(0, 2))   # True  — same group
+print(uf.connected(0, 3))   # False — different groups
+uf.union(2, 3)              # merge the two groups
+print(uf.connected(0, 4))   # True  — now all connected
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class UnionFind {
+  private parent: number[];
+  private rank: number[];
+
+  constructor(n: number) {
+    this.parent = Array.from({ length: n }, (_, i) =&gt; i);
+    this.rank   = new Array(n).fill(0);
+  }
+
+  find(x: number): number {              // O(α(n)) with path compression
+    if (this.parent[x] !== x) {
+      this.parent[x] = this.find(this.parent[x]);
+    }
+    return this.parent[x];
+  }
+
+  union(x: number, y: number): boolean { // O(α(n))
+    const rx = this.find(x), ry = this.find(y);
+    if (rx === ry) return false;
+    if (this.rank[rx] &lt; this.rank[ry]) {
+      this.parent[rx] = ry;
+    } else if (this.rank[rx] &gt; this.rank[ry]) {
+      this.parent[ry] = rx;
+    } else {
+      this.parent[ry] = rx;
+      this.rank[rx]++;
+    }
+    return true;
+  }
+
+  connected(x: number, y: number): boolean {
+    return this.find(x) === this.find(y);
+  }
+}
+
+const uf = new UnionFind(6);
+uf.union(0, 1); uf.union(1, 2); uf.union(3, 4);
+
+console.log(uf.connected(0, 2)); // true
+console.log(uf.connected(0, 3)); // false
+uf.union(2, 3);
+console.log(uf.connected(0, 4)); // true
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Kruskal's minimum spanning tree algorithm, network connectivity checks,
+          image segmentation (grouping pixels of the same region), and detecting cycles
+          in undirected graphs.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           BLOOM FILTER
+      ============================================================ -->
+      <section class="ds-section" id="bloom-filter">
+        <h2>Bloom Filter</h2>
+        <p>
+          A bloom filter is a <strong>probabilistic, space-efficient</strong> membership structure.
+          It can definitively tell you an item is <em>not</em> in the set, but may occasionally
+          report a false positive (claiming an item is in the set when it isn't). No false negatives
+          ever occur. The tradeoff: it uses a tiny fraction of the memory a hashset would need,
+          and cannot store or return actual values — only yes/maybe or no.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a checklist of smudged fingerprints.</strong>
+          If a fingerprint doesn't match any smudge, the suspect was definitely not here.
+          If it does match, they <em>probably</em> were here — but the smudge might overlap
+          with someone else's. You'd then do a more expensive check to confirm.
+        </div>
+        <h3>Properties</h3>
+        <table>
+          <thead><tr><th>Property</th><th>Bloom Filter</th><th>Hashset</th></tr></thead>
+          <tbody>
+            <tr><td>False negatives</td><td>Never</td><td>Never</td></tr>
+            <tr><td>False positives</td><td>Possible (tunable)</td><td>Never</td></tr>
+            <tr><td>Delete elements</td><td>Not supported</td><td>Supported</td></tr>
+            <tr><td>Space usage</td><td>Very small (bits)</td><td>Large (stores full keys)</td></tr>
+            <tr><td>Add / Check time</td><td>O(k) — k hash functions</td><td>O(1)</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>import hashlib
+
+class BloomFilter:
+    """
+    Space-efficient probabilistic membership structure.
+    No false negatives. Possible false positives.
+    Cannot delete entries once added.
+    """
+    def __init__(self, size=10_000, num_hashes=3):
+        self.size = size
+        self.num_hashes = num_hashes
+        self.bits = bytearray(size)   # one bit per slot (using bytes here)
+
+    def _positions(self, item):
+        return [
+            int(hashlib.md5(f"{seed}:{item}".encode()).hexdigest(), 16) % self.size
+            for seed in range(self.num_hashes)
+        ]
+
+    def add(self, item):              # O(k)
+        for pos in self._positions(item):
+            self.bits[pos] = 1
+
+    def might_contain(self, item):    # O(k) — True means "probably yes"
+        return all(self.bits[pos] for pos in self._positions(item))
+
+# Web crawler: skip already-seen URLs cheaply
+bf = BloomFilter(size=100_000, num_hashes=3)
+for url in ["https://example.com", "https://python.org"]:
+    bf.add(url)
+
+# Definite NO — safe to crawl
+print(bf.might_contain("https://new-site.com"))   # False → definitely not seen
+
+# Probable YES — skip or do a more expensive check before crawling
+print(bf.might_contain("https://example.com"))    # True → probably seen
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>class BloomFilter {
+  private bits: Uint8Array;
+  private numHashes: number;
+
+  constructor(size = 10_000, numHashes = 3) {
+    this.bits = new Uint8Array(size);
+    this.numHashes = numHashes;
+  }
+
+  // Simple polynomial hash with different seeds
+  private hash(item: string, seed: number): number {
+    let h = seed * 2654435761;
+    for (const ch of item) h = (Math.imul(h, 31) + ch.charCodeAt(0)) | 0;
+    return Math.abs(h) % this.bits.length;
+  }
+
+  add(item: string): void {              // O(k)
+    for (let s = 0; s &lt; this.numHashes; s++) {
+      this.bits[this.hash(item, s)] = 1;
+    }
+  }
+
+  mightContain(item: string): boolean {  // O(k)
+    for (let s = 0; s &lt; this.numHashes; s++) {
+      if (!this.bits[this.hash(item, s)]) return false;
+    }
+    return true;
+  }
+}
+
+const bf = new BloomFilter(100_000, 3);
+bf.add("https://example.com");
+bf.add("https://python.org");
+
+console.log(bf.mightContain("https://new-site.com")); // false — definitely not seen
+console.log(bf.mightContain("https://example.com"));  // true  — probably seen
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          Chrome's Safe Browsing (checking if a URL is malicious before a full DB lookup),
+          Cassandra and HBase databases (skip disk reads for keys that definitely don't exist),
+          Bitcoin's SPV (lightweight node wallet syncing), and CDN cache filtering.
+        </div>
+      </section>
+
+      <!-- ============================================================
+           LRU CACHE
+      ============================================================ -->
+      <section class="ds-section" id="lru-cache">
+        <h2>LRU Cache (Least Recently Used)</h2>
+        <p>
+          An LRU cache is a fixed-size cache that automatically evicts the item that has not been
+          accessed for the longest time when space runs out. It combines two structures:
+          a <strong>hashmap</strong> for O(1) lookup, and a <strong>doubly linked list</strong>
+          to efficiently track the recency order. When an item is accessed, it moves to the front
+          of the list. The back of the list is always the eviction candidate.
+        </p>
+        <div class="analogy">
+          <strong>Think of it like… a desk with limited space.</strong>
+          You keep the files you're currently using on the desk. When the desk is full and you need
+          a new file, you put away the one you haven't touched in the longest time. Files you use
+          often stay on the desk; files gathering dust get filed away.
+        </div>
+        <h3>Operations</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th><th>How</th></tr></thead>
+          <tbody>
+            <tr><td>get(key)</td><td>O(1)</td><td>Hashmap lookup, then move node to front of list</td></tr>
+            <tr><td>put(key, value)</td><td>O(1)</td><td>Hashmap insert, add to front; if over capacity, remove from back</td></tr>
+          </tbody>
+        </table>
+        <h3>Code Examples</h3>
+        <div class="code-block">
+          <span class="code-label">Python</span>
+          <pre><code>from collections import OrderedDict
+
+class LRUCache:
+    """
+    OrderedDict maintains insertion order and supports move_to_end(),
+    making it a natural LRU cache backed by a hashmap + doubly linked list.
+    All operations are O(1).
+    """
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.cache = OrderedDict()
+
+    def get(self, key):               # O(1)
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)   # mark as most recently used
+        return self.cache[key]
+
+    def put(self, key, value):        # O(1)
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) &gt; self.capacity:
+            self.cache.popitem(last=False)  # evict least recently used (front)
+
+# Example with capacity 3
+cache = LRUCache(3)
+cache.put("a", 1)
+cache.put("b", 2)
+cache.put("c", 3)
+
+cache.get("a")         # access "a" — it's now the most recent
+cache.put("d", 4)      # cache full → "b" is evicted (least recently used)
+
+print(cache.get("b"))  # -1  — evicted!
+print(cache.get("a"))  # 1   — still here
+print(cache.get("c"))  # 3   — still here
+print(cache.get("d"))  # 4   — just added
+</code></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">TypeScript</span>
+          <pre><code>// JavaScript's Map preserves insertion order, making it a clean LRU foundation
+class LRUCache {
+  private capacity: number;
+  private cache: Map&lt;string, number&gt;;
+
+  constructor(capacity: number) {
+    this.capacity = capacity;
+    this.cache = new Map();
+  }
+
+  get(key: string): number {          // O(1)
+    if (!this.cache.has(key)) return -1;
+    const val = this.cache.get(key)!;
+    // Move to end = most recently used
+    this.cache.delete(key);
+    this.cache.set(key, val);
+    return val;
+  }
+
+  put(key: string, value: number): void { // O(1)
+    if (this.cache.has(key)) this.cache.delete(key);
+    this.cache.set(key, value);
+    if (this.cache.size &gt; this.capacity) {
+      // First key in Map = least recently used
+      const lruKey = this.cache.keys().next().value;
+      this.cache.delete(lruKey);
+    }
+  }
+}
+
+const cache = new LRUCache(3);
+cache.put("a", 1); cache.put("b", 2); cache.put("c", 3);
+cache.get("a");         // access "a" — most recent
+cache.put("d", 4);      // "b" evicted
+
+console.log(cache.get("b")); // -1  — evicted
+console.log(cache.get("a")); // 1
+console.log(cache.get("d")); // 4
+</code></pre>
+        </div>
+        <div class="where-used">
+          <strong>Where you see this in real software:</strong>
+          CPU caches, browser page caches, CDN edge caches, database query result caches,
+          Redis's maxmemory-policy setting, and any system with a fixed budget of fast storage
+          that must decide what to keep and what to drop.
+        </div>
+      </section>
+
+      <div style="padding: var(--space-4) 0 var(--space-3);">
+        <a class="btn btn-primary" href="algorithms.html">Next: Algorithms →</a>
+        <a class="btn btn-ghost" href="index.html#playground" style="margin-left:1rem;">Try the Playground</a>
+      </div>
+
+    </div><!-- /.wrap -->
+  </main>
+
+  <div class="wrap">
+    <footer>
+      <span>DSA Studio</span>
+      <span>Visual, practical computer science for real understanding.</span>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Auto-assign language class from the adjacent code-label tab
+      document.querySelectorAll('.code-block').forEach(function (block) {
+        var labelEl = block.querySelector('.code-label');
+        var codeEl  = block.querySelector('code');
+        if (!labelEl || !codeEl) return;
+        var lang = labelEl.textContent.trim().toLowerCase();
+        if (lang === 'python')     codeEl.className = 'language-python';
+        if (lang === 'typescript') codeEl.className = 'language-typescript';
+      });
+      hljs.highlightAll();
+    });
+  </script>
+</body>
+</html>

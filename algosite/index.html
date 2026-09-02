@@ -1,0 +1,252 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DSA Studio: Data Structures and Algorithms Explained</title>
+  <meta name="description" content="A visual, practical guide to data structures and algorithms for high-school students, college students, and young professionals.">
+  <link rel="stylesheet" href="css/style.css?v=20260831">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js" defer></script>
+  <script src="js/demos.js" defer></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="#home" aria-label="DSA Studio home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        DSA Studio
+      </a>
+      <ul class="nav-links">
+        <li><a href="#start">Start</a></li>
+        <li><a href="data-structures.html">Data Structures</a></li>
+        <li><a href="algorithms.html">Algorithms</a></li>
+        <li><a href="big-o.html">Big-O</a></li>
+        <li><a href="#playground">Playground</a></li>
+        <li><a href="#reference">Reference</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main id="home">
+    <div class="wrap">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow-note">Visual computer science for students and early-career developers</p>
+          <h1 id="page-title">Data Structures and Algorithms, explained with approachable mental models.</h1>
+          <p>
+            Learn how programs organize information, why some solutions scale better than others,
+            and where DSA ideas appear in everyday software. This guide is for understanding first:
+            clear explanations, practical examples, and visual intuition before heavy theory.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#start">Start learning</a>
+            <a class="btn btn-ghost" href="#playground">Explore visuals</a>
+          </div>
+        </div>
+
+        <div class="glass-stage" aria-label="Decorative learning lab illustration">
+          <div class="bubble-field" aria-hidden="true">
+            <span class="bubble" style="width:10px;height:10px;left:20%;animation-delay:0s;"></span>
+            <span class="bubble" style="width:6px;height:6px;left:35%;animation-delay:1.2s;"></span>
+            <span class="bubble" style="width:8px;height:8px;left:55%;animation-delay:2.1s;"></span>
+            <span class="bubble" style="width:5px;height:5px;left:68%;animation-delay:0.6s;"></span>
+            <span class="bubble" style="width:9px;height:9px;left:80%;animation-delay:3s;"></span>
+          </div>
+          <div class="glass" aria-hidden="true">
+            <div class="soda-fill"></div>
+            <div class="soda-fizz"></div>
+            <div class="foam"></div>
+            <div class="scoop"></div>
+          </div>
+          <div class="straw" aria-hidden="true"></div>
+          <div class="cherry" aria-hidden="true"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="wrap" id="start">
+      <section style="padding: var(--space-4) 0 0;">
+        <h2>Start With The Core Ideas</h2>
+        <p>
+          Data is information. A data structure gives that information a useful shape.
+          An algorithm is a repeatable process for transforming, searching, sorting, or moving it.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <span class="tag">Foundation</span>
+            <h3>What is data?</h3>
+            <p>Names, numbers, messages, pixels, locations, clicks, and measurements are all data. Software becomes useful when it can store and reason about them.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Structure</span>
+            <h3>What is a data structure?</h3>
+            <p>A data structure organizes information so certain actions become easier. A stack helps undo; a queue helps fair processing; a hash map helps fast lookup.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Algorithm</span>
+            <h3>What is an algorithm?</h3>
+            <p>An algorithm is a planned sequence of steps. Binary search, sorting, graph traversal, and dynamic programming are different styles of planned work.</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div class="wave-divider" aria-hidden="true"></div>
+
+    <div class="wrap" id="topics">
+      <section style="padding: var(--space-4) 0;">
+        <h2>Learning Map</h2>
+        <p>
+          Move from concrete containers to abstract relationship models, then learn the algorithms
+          that operate on them. Every topic includes Python and TypeScript code examples.
+        </p>
+        <div style="display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin: 1.5rem 0;">
+          <span class="chip is-active">Visual-first</span>
+          <span class="chip">Practical examples</span>
+          <span class="chip">Python &amp; TypeScript</span>
+          <span class="chip">Code samples</span>
+        </div>
+        <div class="card-grid">
+          <article class="card">
+            <span class="tag">Data Structures</span>
+            <h3>Arrays, stacks, queues, maps, trees, graphs &amp; more</h3>
+            <p>15 data structures explained with plain-English definitions, real-world analogies, complexity tables, and code examples in Python and TypeScript.</p>
+            <div class="hero-actions" style="margin-top:1rem;"><a class="btn btn-primary" href="data-structures.html">Explore Data Structures →</a></div>
+          </article>
+          <article class="card">
+            <span class="tag">Algorithms</span>
+            <h3>Search, sort, traverse, hashing, and more</h3>
+            <p>Core algorithms explained step by step — DFS, BFS, BST search, heap reorganization, trie prefix search, path compression, and LRU eviction.</p>
+            <div class="hero-actions" style="margin-top:1rem;"><a class="btn btn-primary" href="algorithms.html">Explore Algorithms →</a></div>
+          </article>
+          <article class="card">
+            <span class="tag">Playground</span>
+            <h3>Interactive visual demos</h3>
+            <p>Watch stacks, queues, sorting, graph traversal, binary search, and hash maps come alive. Use buttons to step through each algorithm and see state change.</p>
+            <div class="hero-actions" style="margin-top:1rem;"><a class="btn btn-ghost" href="#playground">Try the Playground →</a></div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div class="wrap" id="playground">
+      <section style="padding: var(--space-4) 0;">
+        <h2>Visual Playground</h2>
+        <p>
+          These are live p5.js diagrams. Use the controls to change the data and watch how each structure or algorithm behaves.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <span class="tag">Stack</span>
+            <h3>Push, pop, peek</h3>
+            <p>Last in, first out. The newest item is removed first, which explains undo, browser history, and function calls.</p>
+            <div id="stackCanvas" class="canvas-host" style="min-height:250px;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--white);"></div>
+            <div class="hero-actions" style="margin-top:0;"><button class="btn btn-primary" data-demo="stack" data-action="push">Push</button><button class="btn btn-ghost" data-demo="stack" data-action="pop">Pop</button><button class="btn btn-ghost" data-demo="stack" data-action="reset">Reset</button></div>
+          </article>
+          <article class="card">
+            <span class="tag">Sorting</span>
+            <h3>Watch order emerge</h3>
+            <p>Selection sort compares values, finds the next smallest item, and moves it into place step by step.</p>
+            <div id="sortCanvas" class="canvas-host" style="min-height:250px;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--white);"></div>
+            <div class="hero-actions" style="margin-top:0;"><button class="btn btn-primary" data-demo="sort" data-action="step">Step</button><button class="btn btn-ghost" data-demo="sort" data-action="auto">Auto</button><button class="btn btn-ghost" data-demo="sort" data-action="reset">Reset</button></div>
+          </article>
+          <article class="card">
+            <span class="tag">Graph Traversal</span>
+            <h3>BFS and DFS</h3>
+            <p>BFS explores by layers. DFS follows one route deeply before returning to try another path.</p>
+            <div id="graphCanvas" class="canvas-host" style="min-height:250px;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--white);"></div>
+            <div class="hero-actions" style="margin-top:0;"><button class="btn btn-primary" data-demo="graph" data-action="bfs">BFS Step</button><button class="btn btn-ghost" data-demo="graph" data-action="dfs">DFS Step</button><button class="btn btn-ghost" data-demo="graph" data-action="reset">Reset</button></div>
+          </article>
+          <article class="card">
+            <span class="tag">Hash Map</span>
+            <h3>Keys into buckets</h3>
+            <p>A hash function turns a key into a bucket position. Collisions show why lookup tables need collision handling.</p>
+            <div id="hashCanvas" class="canvas-host" style="min-height:250px;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--white);"></div>
+            <div class="hero-actions" style="margin-top:0;"><button class="btn btn-primary" data-demo="hash" data-action="add">Add Key</button><button class="btn btn-ghost" data-demo="hash" data-action="find">Find Key</button><button class="btn btn-ghost" data-demo="hash" data-action="reset">Reset</button></div>
+          </article>
+          <article class="card">
+            <span class="tag">Queue</span>
+            <h3>First in, first out</h3>
+            <p>Queues process the oldest waiting item first, which is useful for tasks, printers, and breadth-first search.</p>
+            <div id="queueCanvas" class="canvas-host" style="min-height:250px;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--white);"></div>
+            <div class="hero-actions" style="margin-top:0;"><button class="btn btn-primary" data-demo="queue" data-action="enqueue">Enqueue</button><button class="btn btn-ghost" data-demo="queue" data-action="dequeue">Dequeue</button><button class="btn btn-ghost" data-demo="queue" data-action="reset">Reset</button></div>
+          </article>
+          <article class="card">
+            <span class="tag">Binary Search</span>
+            <h3>Discard half</h3>
+            <p>Sorted data lets binary search check the middle and remove half of the remaining possibilities.</p>
+            <div id="binaryCanvas" class="canvas-host" style="min-height:250px;margin:1rem 0;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:var(--white);"></div>
+            <div class="hero-actions" style="margin-top:0;"><button class="btn btn-primary" data-demo="binary" data-action="step">Step</button><button class="btn btn-ghost" data-demo="binary" data-action="target">New Target</button><button class="btn btn-ghost" data-demo="binary" data-action="reset">Reset</button></div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div class="wave-divider" aria-hidden="true"></div>
+
+    <div class="wrap" id="real-world">
+      <section style="padding: var(--space-4) 0;">
+        <h2>Real-World Uses</h2>
+        <p>
+          Data structures and algorithms are the vocabulary behind common software behavior.
+          Connect the classroom term to the product behavior a learner already recognizes.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <span class="tag">Stacks</span>
+            <h3>Browser history and undo</h3>
+            <p>The latest action is easiest to reverse because it sits at the top of the stack.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Queues</span>
+            <h3>Printers and task workers</h3>
+            <p>Jobs wait their turn so work can be processed fairly and predictably.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Graphs</span>
+            <h3>Maps and social networks</h3>
+            <p>Nodes and edges model roads, friendships, dependencies, permissions, and recommendations.</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div class="wrap" id="reference">
+      <section style="padding: var(--space-4) 0;">
+        <h2>Reference</h2>
+        <p>
+          Keep reference material compact. Learners should be able to compare concepts quickly,
+          then return to examples and visuals when the tradeoff feels abstract.
+        </p>
+        <div class="card-grid">
+          <article class="card">
+            <span class="tag">Big-O</span>
+            <h3>How work grows</h3>
+            <p>O(1) stays constant. O(log n) shrinks the problem fast. O(n) scans once. O(n²) often compares pairs and grows quickly.</p>
+            <div class="hero-actions" style="margin-top:1rem;"><a class="btn btn-primary" href="big-o.html">Learn Big-O →</a></div>
+          </article>
+          <article class="card">
+            <span class="tag">Comparison</span>
+            <h3>Choose the shape</h3>
+            <p>Use arrays for order, hash maps for lookup, queues for fair processing, trees for hierarchy, and graphs for relationships.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Practice</span>
+            <h3>Learn by explaining</h3>
+            <p>Trace an algorithm, predict output, debug a wrong explanation, or choose a data structure for a small software scenario.</p>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="wrap">
+    <footer>
+      <span>DSA Studio</span>
+      <span>Visual, practical computer science for real understanding.</span>
+    </footer>
+  </div>
+</body>
+</html>
+
+

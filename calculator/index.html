@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ramune Calculator — TinyGo WASM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ============================================================
+       Calculator — additions to the ramune base theme
+       ============================================================ */
+    .calc-card { max-width: 420px; margin: 0 auto; }
+
+    .display {
+      background: linear-gradient(180deg, #ffffff, var(--ramune-foam));
+      border: 2px solid var(--ramune-pale);
+      border-radius: 20px;
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      text-align: right;
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(2,136,209,0.08);
+    }
+    #expr-line {
+      font-family: 'Nunito', sans-serif;
+      color: var(--ink-soft);
+      font-weight: 700;
+      font-size: 1rem;
+      min-height: 1.2em;
+      word-break: break-all;
+    }
+    #display {
+      font-family: 'Baloo 2', sans-serif;
+      color: var(--ramune-deepest);
+      font-size: 2.3rem;
+      font-weight: 800;
+      min-height: 1.3em;
+      word-break: break-all;
+      text-shadow: 0 2px 0 #ffffff;
+    }
+
+    #functions {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    #keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--ramune-deepest);
+      border: none;
+      border-radius: 14px;
+      padding: 16px 0;
+      cursor: pointer;
+      background: linear-gradient(180deg, #ffffff, var(--ramune-pale));
+      box-shadow: 0 3px 0 var(--ramune-light), 0 5px 10px rgba(2,136,209,0.15);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    button:hover { transform: translateY(-2px); }
+    button:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--ramune-light), 0 2px 5px rgba(2,136,209,0.15);
+    }
+
+    button.func {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 11px 0;
+      color: var(--ramune-deepest);
+      background: var(--ramune-foam);
+      box-shadow: 0 3px 0 var(--ramune-pale), 0 4px 8px rgba(2,136,209,0.1);
+    }
+
+    button.operator {
+      color: #ffffff;
+      background: linear-gradient(180deg, var(--ramune-mid), var(--ramune-deepest));
+      box-shadow: 0 3px 0 #016a9e, 0 5px 10px rgba(2,136,209,0.3);
+    }
+    button.operator:active {
+      box-shadow: 0 1px 0 #016a9e, 0 2px 5px rgba(2,136,209,0.3);
+    }
+
+    button.accent {
+      grid-column: span 2;
+      font-size: 1.4rem;
+      color: #ffffff;
+      background: linear-gradient(180deg, var(--ramune-deep), var(--ramune-deepest));
+      box-shadow: 0 4px 0 #016a9e, 0 8px 16px rgba(2,136,209,0.35);
+    }
+    button.accent:active {
+      box-shadow: 0 1px 0 #016a9e, 0 3px 8px rgba(2,136,209,0.3);
+    }
+
+    button.danger {
+      color: #ffffff;
+      background: linear-gradient(180deg, var(--ramune-pink), #e8628a);
+      box-shadow: 0 3px 0 #c94c72, 0 5px 10px rgba(232,98,138,0.35);
+    }
+    button.danger:active {
+      box-shadow: 0 1px 0 #c94c72, 0 2px 5px rgba(232,98,138,0.3);
+    }
+
+    button.span-2 { grid-column: span 2; }
+
+    @media (max-width: 480px) {
+      .calc-card { padding: 22px 16px; }
+      #display { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bubbles" aria-hidden="true">
+    <span style="left:6%;  width:14px; height:14px; animation-duration:9s;  animation-delay:0s;   --drift:18px;"></span>
+    <span style="left:16%; width:8px;  height:8px;  animation-duration:7s;  animation-delay:1.2s; --drift:-14px;"></span>
+    <span style="left:28%; width:11px; height:11px; animation-duration:11s; animation-delay:2.5s; --drift:10px;"></span>
+    <span style="left:42%; width:6px;  height:6px;  animation-duration:8s;  animation-delay:0.6s; --drift:-8px;"></span>
+    <span style="left:58%; width:13px; height:13px; animation-duration:10s; animation-delay:3s;   --drift:16px;"></span>
+    <span style="left:70%; width:9px;  height:9px;  animation-duration:7.5s;animation-delay:1.8s; --drift:-12px;"></span>
+    <span style="left:82%; width:12px; height:12px; animation-duration:9.5s;animation-delay:0.3s; --drift:14px;"></span>
+    <span style="left:92%; width:7px;  height:7px;  animation-duration:8.5s;animation-delay:2.2s; --drift:-10px;"></span>
+  </div>
+
+  <div class="page">
+    <div class="hero">
+      <div class="cap">🥤</div>
+      <h1>Ramune Calculator</h1>
+      <p class="sub">Fizzy math, one tap at a time.</p>
+    </div>
+
+    <div class="bottle-card calc-card">
+      <div class="display">
+        <div id="expr-line">0</div>
+        <div id="display">0</div>
+      </div>
+
+      <div id="functions">
+        <button data-value="sin(" class="func">sin</button>
+        <button data-value="cos(" class="func">cos</button>
+        <button data-value="tan(" class="func">tan</button>
+        <button data-value="ln(" class="func">ln</button>
+        <button data-value="exp(" class="func">exp</button>
+      </div>
+
+      <div id="keypad">
+        <button data-action="clear" class="danger">C</button>
+        <button data-action="backspace">⌫</button>
+        <button data-value="(" class="operator">(</button>
+        <button data-value=")" class="operator">)</button>
+
+        <button data-value="7">7</button>
+        <button data-value="8">8</button>
+        <button data-value="9">9</button>
+        <button data-value="/" class="operator">÷</button>
+
+        <button data-value="4">4</button>
+        <button data-value="5">5</button>
+        <button data-value="6">6</button>
+        <button data-value="*" class="operator">×</button>
+
+        <button data-value="1">1</button>
+        <button data-value="2">2</button>
+        <button data-value="3">3</button>
+        <button data-value="-" class="operator">−</button>
+
+        <button data-value="0" class="span-2">0</button>
+        <button data-value=".">.</button>
+        <button data-value="+" class="operator">+</button>
+
+        <button data-action="equals" class="accent">=</button>
+      </div>
+    </div>
+
+    <footer>Built with Go + WebAssembly 🫧</footer>
+  </div>
+
+  <!-- Copy TinyGo's wasm_exec.js into this folder yourself -->
+  <script src="wasm_exec.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
