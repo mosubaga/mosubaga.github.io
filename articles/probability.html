@@ -189,6 +189,121 @@
         </li>
       </ul>
 
+      <h2>1.7 Probability vs. Likelihood</h2>
+      <p>
+        The words "probability" and "likelihood" are used interchangeably in everyday speech, but
+        they answer two different questions. Probability asks how plausible an <em>outcome</em> is
+        given a model; likelihood asks how plausible a <em>model</em> is given the outcomes we have
+        actually observed.
+      </p>
+
+      <h3>Probability</h3>
+      <ul>
+        <li>
+          <strong>Definition:</strong> Probability is the <em>measure of the chance</em> of an event
+          occurring. It is a number between 0 and 1 (or expressed as a percentage).
+        </li>
+        <li>
+          <strong>What it represents:</strong> A general assessment of how likely something
+          <em>should</em> be, based on our understanding of the situation and the data available.
+        </li>
+        <li>
+          <strong>Formula (simple):</strong> In the classical case of equally likely outcomes:
+          <p><span class="math display">\[ P(E) = \frac{\text{Number of favorable outcomes}}{\text{Total number of possible outcomes}} \]</span></p>
+        </li>
+        <li>
+          <strong>Example (Finance) &mdash; Credit Risk Assessment:</strong> A bank assesses the
+          probability of a borrower defaulting on a loan.
+        </li>
+      </ul>
+
+      <h3>Likelihood</h3>
+      <ul>
+        <li>
+          <strong>Definition:</strong> Likelihood is a measure of <em>how well a hypothesis or model
+          fits the observed data</em>. It assesses how probable the data <em>is</em> given that a
+          specific model or hypothesis is true &mdash; a judgment about the plausibility of an
+          explanation.
+        </li>
+        <li>
+          <strong>What it represents:</strong> A more nuanced concept than probability. It does not
+          just tell you the chance of an event; it tells you how <em>consistent</em> the event is
+          with a particular explanation. A high likelihood means the explanation is a good fit for
+          the data.
+        </li>
+        <li>
+          <strong>It is relative:</strong> Likelihood is not a single self-contained number like
+          probability. It is normally interpreted comparatively &mdash; higher or lower than the
+          likelihood of a competing hypothesis.
+        </li>
+        <li>
+          <strong>Example (Healthcare) &mdash; Diagnosis:</strong> Determining the cause of a
+          patient's symptoms, such as pneumonia.
+        </li>
+      </ul>
+
+      <h3>Comparing the Concepts</h3>
+
+      <h4>Diagnosis of Pneumonia</h4>
+      <p>
+        Consider a patient, Sarah, presenting with cough, fatigue, and shortness of breath.
+      </p>
+      <ol>
+        <li>
+          <strong>Probability (of pneumonia):</strong>
+          <ul>
+            <li>
+              <em>What it represents:</em> The overall chance that a patient presenting with these
+              symptoms has pneumonia, based on population data.
+            </li>
+            <li>
+              <em>How it is determined:</em> Statistical data shows that 15% of patients with these
+              symptoms typically have pneumonia.
+            </li>
+            <li><em>Result:</em> The initial probability of Sarah having pneumonia is 15%.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Likelihood (of pneumonia, given Sarah's specific case):</strong>
+          <ul>
+            <li>
+              <em>What it represents:</em> How likely it is that Sarah <em>actually</em> has
+              pneumonia, considering her individual characteristics.
+            </li>
+            <li>
+              <em>How it is determined:</em> Sarah is 75 years old, has a history of smoking, and a
+              chest X-ray shows some subtle infiltrates. The doctor determines that the likelihood
+              of pneumonia is 60%, due to the combined evidence.
+            </li>
+            <li>
+              <em>Why it is different:</em> The doctor is not relying solely on the population-level
+              probability. They are factoring in Sarah's specific risk factors to make a more
+              informed assessment.
+            </li>
+          </ul>
+        </li>
+      </ol>
+
+      <h4>Loan Application Assessment</h4>
+      <ul>
+        <li>
+          <em>How it is determined:</em> The bank's credit risk analysts examine the applicant
+          Alex's data and the model's output. Suppose the model suggests an 8% probability of
+          default. The analyst might then say: "Considering Alex's <em>very low</em> credit score
+          (significantly below average for loan applicants) and his history of short-term
+          employment, the <em>likelihood</em> of default is <em>higher</em> than the 8% predicted by
+          the model." They might adjust the likelihood to 15%, acknowledging the red flags in
+          Alex's profile.
+        </li>
+        <li>
+          <em>Why it is different:</em> The analyst is not saying the model is wrong. They are
+          saying the <em>combination</em> of factors in Alex's case &mdash; particularly the poor
+          credit score &mdash; makes a default <em>more probable</em> than the model initially
+          suggested. It is a more nuanced assessment based on a deeper understanding of the borrower
+          and the model's limitations.
+        </li>
+      </ul>
+
 
 
     </div>

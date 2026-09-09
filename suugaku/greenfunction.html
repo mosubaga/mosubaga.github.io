@@ -397,6 +397,156 @@
             </p>
         </section>
 
+        <section class="example-box">
+            <h2 style="margin-top: 0;">5. A Second Operator — \(u'' + u = f\)</h2>
+            <p>
+                The construction is not tied to \(-d^2/dx^2\). To see the machinery on a different
+                operator, consider the Helmholtz-type boundary-value problem
+            </p>
+            <div class="equation">
+                \[
+                u''(x) + u(x) = f(x),
+                \qquad
+                x \in (0, L),
+                \qquad
+                u(0) = u(L) = 0.
+                \]
+            </div>
+            <p>
+                Here \(\mathcal{L} = d^2/dx^2 + 1\), so the Green's function must satisfy
+            </p>
+            <div class="equation">
+                \[
+                G_{xx}(x, x') + G(x, x') = \delta(x - x'),
+                \qquad
+                G(0, x') = G(L, x') = 0.
+                \]
+            </div>
+
+            <p><strong>Step 1 — Homogeneous solutions on each side.</strong>
+                Away from \(x'\) the equation is \(G_{xx} + G = 0\), whose general solution is a
+                combination of \(\sin x\) and \(\cos x\). On each subinterval we pick the
+                combination that already satisfies the boundary condition on that side:
+            </p>
+            <div class="equation-grid">
+                <div class="equation-card">
+                    <h3>Left of the source</h3>
+                    \[
+                    G = A \sin x,
+                    \qquad 0 \le x < x'
+                    \]
+                    <p style="margin: 0.75rem 0 0; font-size: 0.9rem;">
+                        chosen because \(\sin 0 = 0\), so \(G(0,x') = 0\) holds automatically.
+                    </p>
+                </div>
+                <div class="equation-card">
+                    <h3>Right of the source</h3>
+                    \[
+                    G = B \sin(L - x),
+                    \qquad x' < x \le L
+                    \]
+                    <p style="margin: 0.75rem 0 0; font-size: 0.9rem;">
+                        chosen because \(\sin(L-L) = 0\), so \(G(L,x') = 0\) holds automatically.
+                    </p>
+                </div>
+            </div>
+            <p>
+                Writing each branch in the form that already vanishes at its own endpoint is what
+                makes the rest of the calculation short — the two remaining constants \(A\) and
+                \(B\) are then fixed entirely by what happens at the source.
+            </p>
+
+            <p><strong>Step 2 — Continuity at \(x'\).</strong>
+                A delta source produces a kink, not a jump, so \(G\) itself is continuous:
+            </p>
+            <div class="equation">
+                \[
+                A \sin x' = B \sin(L - x').
+                \]
+            </div>
+
+            <p><strong>Step 3 — Jump condition on the derivative.</strong>
+                Integrate \(G_{xx} + G = \delta(x - x')\) across the source over
+                \([x'-\varepsilon,\; x'+\varepsilon]\). The \(\int G\,dx\) term vanishes as
+                \(\varepsilon \to 0\) because \(G\) is bounded, leaving
+            </p>
+            <div class="equation">
+                \[
+                G_x(x'^+, x') - G_x(x'^-, x') = 1
+                \qquad\Longrightarrow\qquad
+                -B\cos(L - x') - A\cos x' = 1.
+                \]
+            </div>
+            <p>
+                Note the jump is \(+1\) here, whereas the \(-u'' = f\) problem of Section 3 gave
+                \(-1\); the sign simply follows the coefficient of the highest derivative.
+            </p>
+
+            <p><strong>Step 4 — Solve for \(A\) and \(B\).</strong>
+                Substituting \(A = B\sin(L-x')/\sin x'\) into the jump condition and collecting
+                terms over \(\sin x'\), the numerator collapses by the angle-addition identity:
+            </p>
+            <div class="equation">
+                \[
+                -B\,\frac{\cos(L-x')\sin x' + \sin(L-x')\cos x'}{\sin x'}
+                =
+                -B\,\frac{\sin\bigl((L-x') + x'\bigr)}{\sin x'}
+                =
+                -B\,\frac{\sin L}{\sin x'}
+                = 1,
+                \]
+            </div>
+            <p>
+                so \(B = -\sin x' / \sin L\) and therefore \(A = -\sin(L - x')/\sin L\).
+            </p>
+
+            <p><strong>Result.</strong></p>
+            <div class="boxed-equation">
+                <div class="equation">
+                    \[
+                    G(x, x')
+                    =
+                    -\frac{1}{\sin L}
+                    \begin{cases}
+                    \sin x \, \sin(L - x') & 0 \le x \le x', \\[4pt]
+                    \sin x' \, \sin(L - x) & x' \le x \le L,
+                    \end{cases}
+                    \]
+                </div>
+            </div>
+            <p>
+                or, compactly, \(\displaystyle G(x,x') = -\frac{\sin x_{<}\,\sin(L - x_{>})}{\sin L}\)
+                with \(x_{<} = \min(x,x')\) and \(x_{>} = \max(x,x')\). Written this way the
+                symmetry \(G(x,x') = G(x',x)\) is manifest — as it must be, since
+                \(d^2/dx^2 + 1\) is self-adjoint under these boundary conditions. The solution is
+                then the same superposition integral as before:
+            </p>
+            <div class="equation">
+                \[
+                u(x) = \int_0^L G(x, x')\, f(x')\, dx'.
+                \]
+            </div>
+
+            <div class="note-panel">
+                <p style="margin-top: 0;">
+                    <strong>Resonance — when the Green's function fails to exist.</strong>
+                    The factor \(1/\sin L\) blows up whenever \(\sin L = 0\), that is when
+                    \(L = n\pi\) for integer \(n\). This is not an algebraic accident. At those
+                    lengths the homogeneous problem \(u'' + u = 0\) with \(u(0) = u(L) = 0\) has the
+                    nontrivial solution \(u = \sin x\), so \(\mathcal{L}\) has a zero eigenvalue and
+                    is no longer invertible — there is nothing for the Green's function to invert.
+                </p>
+                <p style="margin-bottom: 0;">
+                    This is the <strong>Fredholm alternative</strong>: the boundary-value problem
+                    has a unique solution for every \(f\) exactly when the homogeneous problem has
+                    only the trivial solution. When \(L = n\pi\), a solution exists only for sources
+                    orthogonal to the null mode, \(\int_0^L f(x)\sin x\, dx = 0\), and is then not
+                    unique. Compare the spectral expansion in the next section: the \(n\)-th term
+                    carries \(1/\lambda_n\), which diverges precisely when \(\lambda_n = 0\).
+                </p>
+            </div>
+        </section>
+
         <section class="definition-box">
             <h2 style="margin-top: 0;">Symmetry and Self-Adjointness</h2>
             <p>
@@ -429,7 +579,7 @@
         </section>
 
         <section class="example-box">
-            <h2 style="margin-top: 0;">5. Green's Functions in Higher Dimensions and Physics</h2>
+            <h2 style="margin-top: 0;">6. Green's Functions in Higher Dimensions and Physics</h2>
             <p>
                 The concept generalizes naturally to PDEs. For the Laplacian in \(\mathbb{R}^3\),
                 the free-space Green's function satisfies
@@ -461,7 +611,7 @@
         </section>
 
         <section class="example-box">
-            <h2 style="margin-top: 0;">6. Real-World Applications</h2>
+            <h2 style="margin-top: 0;">7. Real-World Applications</h2>
             <ul>
                 <li>
                     <strong>Electrostatics and Magnetostatics.</strong> Computing the electric field
