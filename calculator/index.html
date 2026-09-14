@@ -12,7 +12,7 @@
     /* ============================================================
        Calculator — additions to the ramune base theme
        ============================================================ */
-    .calc-card { max-width: 420px; margin: 0 auto; }
+    .calc-card { max-width: 520px; margin: 0 auto; }
 
     .display {
       background: linear-gradient(180deg, #ffffff, var(--ramune-foam));
@@ -44,8 +44,8 @@
 
     #functions {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
       margin-bottom: 12px;
     }
     #keypad {
@@ -75,7 +75,7 @@
 
     button.func {
       font-family: 'Nunito', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       padding: 11px 0;
       color: var(--ramune-deepest);
@@ -151,6 +151,8 @@
         <button data-value="tan(" class="func">tan</button>
         <button data-value="ln(" class="func">ln</button>
         <button data-value="exp(" class="func">exp</button>
+        <button data-value="sqrt(" class="func">√</button>
+        <button data-value="sq(" class="func">x²</button>
       </div>
 
       <div id="keypad">
