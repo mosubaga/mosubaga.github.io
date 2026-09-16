@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Homework: Hypothesis Testing and Confidence Intervals</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Hypothesis Testing and Confidence Intervals</h1>
+<p class="meta"><strong>Level:</strong> Undergraduate introductory statistics<br>
+<strong>Topic:</strong> Hypothesis Testing and Confidence Intervals<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Problem 1 — One-Sample Mean: Battery Life</h2>
+<p>A manufacturer advertises that a new rechargeable battery has a mean operating life of \(50\) hours. A quality-control engineer randomly selects \(n=25\) batteries and obtains</p>
+<p>\[
+\bar{x}=52.4 \text{ hours}, \qquad s=6.0 \text{ hours}.
+\]</p>
+<p>Assume that battery lifetimes are approximately normally distributed and that the sampled batteries are independent.</p>
+<p>Use \(\alpha=0.05\).</p>
+<h3>Questions</h3>
+<ol>
+<li>State the null and alternative hypotheses.
+</li>
+<li>Identify the appropriate test statistic.
+</li>
+<li>Perform the hypothesis test.
+</li>
+<li>Construct a \(95\%\) confidence interval for the true mean battery life.
+</li>
+<li>Explain the relationship between the hypothesis-test conclusion and the confidence interval.
+</li>
+<li>Suppose the manufacturer considers an improvement of at least \(5\) hours to be practically important. Discuss statistical versus practical significance.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Solution</h3>
+<p>Let</p>
+<p>\[
+\mu=\text{true mean operating life of the new battery}.
+\]</p>
+<p>Because the population standard deviation is unknown and the sample is relatively small, a one-sample \(t\)-procedure is appropriate.</p>
+<h3>Step 1: Hypotheses</h3>
+<p>\[
+H_0:\mu=50
+\]</p>
+<p>\[
+H_a:\mu\neq 50.
+\]</p>
+<p>This is a two-tailed test.</p>
+<h3>Step 2: Test statistic</h3>
+<p>The test statistic is</p>
+<p>\[
+t=\frac{\bar{x}-\mu_0}{s/\sqrt{n}}.
+\]</p>
+<p>Substituting the observed values,</p>
+<p>\[
+t=\frac{52.4-50}{6/\sqrt{25}}
+=\frac{2.4}{1.2}
+=2.00.
+\]</p>
+<p>The degrees of freedom are</p>
+<p>\[
+df=n-1=24.
+\]</p>
+<p>For a two-tailed test with \(\alpha=0.05\),</p>
+<p>\[
+t_{0.025,24}\approx 2.064.
+\]</p>
+<p>Thus, the rejection rule is</p>
+<p>\[
+|t|&gt;2.064.
+\]</p>
+<p>Because</p>
+<p>\[
+|2.00|&lt;2.064,
+\]</p>
+<p>we do not reject \(H_0\).</p>
+<p>The two-sided p-value is approximately</p>
+<p>\[
+p\approx 0.0569.
+\]</p>
+<p>Since</p>
+<p>\[
+p=0.0569&gt;0.05,
+\]</p>
+<p>the conclusion is again to fail to reject \(H_0\).</p>
+<p>\[
+\boxed{\text{There is insufficient evidence at the }5\%\text{ level that }\mu\neq 50.}
+\]</p>
+<h3>Step 3: \(95\%\) confidence interval</h3>
+<p>The confidence interval is</p>
+<p>\[
+\bar{x}\pm t_{\alpha/2,df}\frac{s}{\sqrt n}.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+52.4\pm 2.064\left(\frac{6}{5}\right).
+\]</p>
+<p>The margin of error is</p>
+<p>\[
+2.064(1.2)=2.4768.
+\]</p>
+<p>Hence,</p>
+<p>\[
+(52.4-2.4768,\;52.4+2.4768)
+\]</p>
+<p>or approximately</p>
+<p>\[
+\boxed{(49.92,\;54.88)\text{ hours}}.
+\]</p>
+<p>Because \(50\) hours lies inside the \(95\%\) confidence interval, the interval is consistent with the failure to reject</p>
+<p>\[
+H_0:\mu=50.
+\]</p>
+<h3>Interpretation</h3>
+<p>The sample suggests an average increase of</p>
+<p>\[
+52.4-50=2.4\text{ hours},
+\]</p>
+<p>but the evidence is not quite strong enough to establish a statistically significant difference at \(\alpha=0.05\).</p>
+<p>The company considers a \(5\)-hour improvement practically important. The observed improvement of \(2.4\) hours is below this benchmark, so even if a similar effect were eventually shown to be statistically significant with a larger sample, it might still not be practically important.</p>
+<h3>Assumptions</h3>
+<p>The analysis assumes:</p>
+<p>\[
+\boxed{\text{independent observations}}
+\]</p>
+<p>and an approximately normal population distribution because \(n=25\) is modest.</p>
+<p>If the data were strongly skewed or contained major outliers, the one-sample \(t\)-procedure could be questionable.</p>
+<h3>Common Pitfalls</h3>
+<ul>
+<li>Using a \(z\)-test even though the population standard deviation \(\sigma\) is unknown.
+</li>
+<li>Concluding that \(H_0\) is proven true because it was not rejected.
+</li>
+<li>Saying that \(p=0.0569\) is the probability that \(H_0\) is true.
+</li>
+<li>Ignoring practical significance simply because the sample mean exceeds \(50\).
+</li>
+</ul>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2 — One-Sample Proportion: Appointment Reminders</h2>
+<p>A public health clinic historically finds that \(60\%\) of patients attend their scheduled follow-up appointments. After introducing a text-message reminder system, the clinic randomly observes \(120\) patients, of whom \(84\) attend.</p>
+<p>Assume patients can reasonably be treated as independent and that the sample represents patients receiving the reminder system.</p>
+<p>Use \(\alpha=0.05\).</p>
+<h3>Questions</h3>
+<ol>
+<li>Test whether the attendance proportion differs from the historical value of \(0.60\).
+</li>
+<li>Construct a \(95\%\) confidence interval for the true attendance proportion.
+</li>
+<li>Interpret the results in context.
+</li>
+<li>The clinic considers an improvement of at least \(5\) percentage points to be practically meaningful. Discuss practical significance.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Solution</h3>
+<p>Let</p>
+<p>\[
+p=\text{true attendance proportion under the reminder system}.
+\]</p>
+<p>The observed sample proportion is</p>
+<p>\[
+\hat p=\frac{84}{120}=0.70.
+\]</p>
+<h3>Step 1: Hypotheses</h3>
+<p>\[
+H_0:p=0.60
+\]</p>
+<p>\[
+H_a:p\neq 0.60.
+\]</p>
+<h3>Step 2: Check conditions</h3>
+<p>Under \(H_0\),</p>
+<p>\[
+np_0=120(0.60)=72
+\]</p>
+<p>and</p>
+<p>\[
+n(1-p_0)=120(0.40)=48.
+\]</p>
+<p>Both are greater than \(10\), so the normal approximation is appropriate.</p>
+<h3>Step 3: Test statistic</h3>
+<p>For a one-sample proportion test,</p>
+<p>\[
+z=
+\frac{\hat p-p_0}
+{\sqrt{\frac{p_0(1-p_0)}{n}}}.
+\]</p>
+<p>Thus,</p>
+<p>\[
+z=
+\frac{0.70-0.60}
+{\sqrt{\frac{0.60(0.40)}{120}}}.
+\]</p>
+<p>The null standard error is</p>
+<p>\[
+\sqrt{\frac{0.24}{120}}
+=
+\sqrt{0.002}
+\approx 0.04472.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+z=\frac{0.10}{0.04472}
+\approx 2.236.
+\]</p>
+<p>For a two-tailed test at \(\alpha=0.05\), the critical values are</p>
+<p>\[
+z=\pm1.96.
+\]</p>
+<p>Since</p>
+<p>\[
+2.236&gt;1.96,
+\]</p>
+<p>we reject \(H_0\).</p>
+<p>The two-sided p-value is approximately</p>
+<p>\[
+p\approx0.0253.
+\]</p>
+<p>Thus,</p>
+<p>\[
+\boxed{\text{There is statistically significant evidence that the attendance rate differs from }60\%.}
+\]</p>
+<p>Because the observed rate is \(70\%\), the sample suggests that attendance increased.</p>
+<h3>Step 4: \(95\%\) confidence interval</h3>
+<p>For estimation, use the estimated standard error</p>
+<p>\[
+SE=
+\sqrt{\frac{\hat p(1-\hat p)}{n}}.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+SE=
+\sqrt{\frac{0.70(0.30)}{120}}
+=
+\sqrt{0.00175}
+\approx0.04183.
+\]</p>
+<p>The interval is</p>
+<p>\[
+0.70\pm1.96(0.04183).
+\]</p>
+<p>The margin of error is approximately</p>
+<p>\[
+0.08199.
+\]</p>
+<p>Hence,</p>
+<p>\[
+\boxed{(0.618,\;0.782)}.
+\]</p>
+<p>Equivalently, the clinic can estimate the true attendance percentage to be between approximately</p>
+<p>\[
+61.8\% \text{ and }78.2\%.
+\]</p>
+<p>The null value \(0.60\) is not in this confidence interval, which agrees with the rejection of \(H_0\).</p>
+<h3>Statistical versus practical significance</h3>
+<p>The observed improvement is</p>
+<p>\[
+0.70-0.60=0.10,
+\]</p>
+<p>or \(10\) percentage points.</p>
+<p>This exceeds the clinic's practical benchmark of \(5\) percentage points.</p>
+<p>However, the confidence interval for the attendance proportion begins at approximately \(61.8\%\), corresponding to an improvement of only about</p>
+<p>\[
+61.8\%-60\%=1.8
+\]</p>
+<p>percentage points.</p>
+<p>Thus, although the data establish a statistically detectable improvement, they do not establish with \(95\%\) confidence that the improvement is at least \(5\) percentage points.</p>
+<h3>Common Pitfalls</h3>
+<ul>
+<li>Using \(\hat p\) instead of \(p_0\) in the denominator of the hypothesis-test statistic.
+</li>
+<li>Forgetting that the test is two-sided.
+</li>
+<li>Interpreting a \(95\%\) confidence interval as saying there is a \(95\%\) probability that \(p\) lies in this particular computed interval.
+</li>
+<li>Equating statistical significance with guaranteed practical importance.
+</li>
+</ul>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3 — Independent Two-Sample Means: Rehabilitation Programs</h2>
+<p>A hospital compares two independent physical-rehabilitation programs. Improvement is measured using a mobility score, where larger positive values indicate greater improvement.</p>
+<p>The results are:</p>
+<p>\[
+\begin{array}{c|ccc}
+&amp; n &amp; \bar{x} &amp; s\\
+\hline
+\text{Program A} &amp; 40 &amp; 18.2 &amp; 4.5\\
+\text{Program B} &amp; 35 &amp; 15.6 &amp; 5.1
+\end{array}
+\]</p>
+<p>Assume that patients were independently assigned to the two programs, observations are independent within groups, and the score distributions contain no severe outliers. Do not assume equal population variances.</p>
+<p>Use \(\alpha=0.05\).</p>
+<h3>Questions</h3>
+<ol>
+<li>Test whether the two programs have different mean improvements.
+</li>
+<li>Construct a \(95\%\) confidence interval for
+ \[
+\mu_A-\mu_B.
+\]
+</li>
+<li>Interpret the result.
+</li>
+<li>Explain why Welch's two-sample \(t\)-test is preferred here over a pooled \(t\)-test.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Solution</h3>
+<p>Define</p>
+<p>\[
+\mu_A=\text{mean improvement for Program A}
+\]</p>
+<p>and</p>
+<p>\[
+\mu_B=\text{mean improvement for Program B}.
+\]</p>
+<h3>Step 1: Hypotheses</h3>
+<p>\[
+H_0:\mu_A-\mu_B=0
+\]</p>
+<p>\[
+H_a:\mu_A-\mu_B\neq0.
+\]</p>
+<h3>Step 2: Difference in sample means</h3>
+<p>\[
+\bar{x}_A-\bar{x}_B
+=
+18.2-15.6
+=
+2.6.
+\]</p>
+<h3>Step 3: Standard error</h3>
+<p>Using Welch's procedure,</p>
+<p>\[
+SE=
+\sqrt{\frac{s_A^2}{n_A}+\frac{s_B^2}{n_B}}.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+SE=
+\sqrt{\frac{4.5^2}{40}+\frac{5.1^2}{35}}.
+\]</p>
+<p>Calculate each component:</p>
+<p>\[
+\frac{4.5^2}{40}
+=
+\frac{20.25}{40}
+=
+0.50625
+\]</p>
+<p>and</p>
+<p>\[
+\frac{5.1^2}{35}
+=
+\frac{26.01}{35}
+\approx0.74314.
+\]</p>
+<p>Thus,</p>
+<p>\[
+SE=
+\sqrt{0.50625+0.74314}
+=
+\sqrt{1.24939}
+\approx1.1178.
+\]</p>
+<h3>Step 4: Test statistic</h3>
+<p>\[
+t=
+\frac{2.6-0}{1.1178}
+\approx2.326.
+\]</p>
+<p>Using the Welch-Satterthwaite approximation,</p>
+<p>\[
+df\approx68.42.
+\]</p>
+<p>The approximate two-sided critical value is</p>
+<p>\[
+t_{0.025,68.42}\approx1.995.
+\]</p>
+<p>Since</p>
+<p>\[
+|2.326|&gt;1.995,
+\]</p>
+<p>we reject \(H_0\).</p>
+<p>The p-value is approximately</p>
+<p>\[
+p\approx0.0230.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+\boxed{\text{There is statistically significant evidence that the two mean improvements differ.}}
+\]</p>
+<h3>Step 5: Confidence interval</h3>
+<p>The \(95\%\) confidence interval is</p>
+<p>\[
+(\bar{x}_A-\bar{x}_B)
+\pm
+t^*SE.
+\]</p>
+<p>Thus,</p>
+<p>\[
+2.6\pm1.995(1.1178).
+\]</p>
+<p>The margin of error is approximately</p>
+<p>\[
+2.230.
+\]</p>
+<p>Hence,</p>
+<p>\[
+\boxed{(0.37,\;4.83)}.
+\]</p>
+<h3>Interpretation</h3>
+<p>We estimate that Program A improves the mobility score by between approximately</p>
+<p>\[
+0.37
+\]</p>
+<p>and</p>
+<p>\[
+4.83
+\]</p>
+<p>points more than Program B on average.</p>
+<p>Because \(0\) is not in the interval, this conclusion is consistent with rejection of the null hypothesis.</p>
+<p>Whether the difference is practically important requires clinical context. For example, if clinicians consider a \(4\)-point difference necessary to matter to patients, the observed mean difference of \(2.6\) points may have limited practical importance despite its statistical significance.</p>
+<h3>Why use Welch's test?</h3>
+<p>The pooled two-sample test assumes</p>
+<p>\[
+\sigma_A^2=\sigma_B^2.
+\]</p>
+<p>That assumption was not given.</p>
+<p>Welch's test does not require equal population variances and is therefore the safer choice.</p>
+<h3>Assumptions</h3>
+<p>The procedure assumes:</p>
+<p>\[
+\boxed{\text{independence between the two groups}}
+\]</p>
+<p>and independence of observations within each group.</p>
+<p>The sample sizes are moderately large, so the \(t\)-procedure is relatively robust to modest nonnormality, although severe skewness or extreme outliers should still be investigated.</p>
+<h3>Common Pitfalls</h3>
+<ul>
+<li>Treating the two independent groups as paired data.
+</li>
+<li>Automatically using a pooled test without checking the equal-variance assumption.
+</li>
+<li>Reversing the subtraction and then misinterpreting the sign.
+</li>
+<li>Saying that statistical significance proves Program A is meaningfully better in practice.
+</li>
+</ul>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4 — Paired Samples: Sleep Before and After an Intervention</h2>
+<p>A researcher studies whether a behavioral program changes the amount of time university students spend using their phones after 10 p.m.</p>
+<p>For \(16\) students, phone use is recorded before and after the intervention. Define each paired difference as</p>
+<p>\[
+d=\text{after}-\text{before}.
+\]</p>
+<p>The sample of \(16\) differences has</p>
+<p>\[
+\bar d=-3.2\text{ hours per week}
+\]</p>
+<p>and</p>
+<p>\[
+s_d=4.0\text{ hours}.
+\]</p>
+<p>Assume the students are independent of one another and that the distribution of paired differences is approximately normal.</p>
+<p>Use \(\alpha=0.05\).</p>
+<h3>Questions</h3>
+<ol>
+<li>Test whether the intervention changes average late-night phone use.
+</li>
+<li>Construct a \(95\%\) confidence interval for the mean paired difference.
+</li>
+<li>Interpret the negative sign.
+</li>
+<li>Explain why an independent two-sample test would be inappropriate.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Solution</h3>
+<p>Let</p>
+<p>\[
+\mu_d=\text{population mean of the paired differences}.
+\]</p>
+<h3>Step 1: Hypotheses</h3>
+<p>\[
+H_0:\mu_d=0
+\]</p>
+<p>\[
+H_a:\mu_d\neq0.
+\]</p>
+<h3>Step 2: Standard error</h3>
+<p>Because</p>
+<p>\[
+n=16,
+\]</p>
+<p>the standard error is</p>
+<p>\[
+SE=\frac{s_d}{\sqrt n}
+=
+\frac{4.0}{\sqrt{16}}
+=
+1.0.
+\]</p>
+<h3>Step 3: Test statistic</h3>
+<p>\[
+t=
+\frac{\bar d-0}{s_d/\sqrt n}
+=
+\frac{-3.2}{1.0}
+=
+-3.2.
+\]</p>
+<p>The degrees of freedom are</p>
+<p>\[
+df=16-1=15.
+\]</p>
+<p>For a two-tailed test with \(\alpha=0.05\),</p>
+<p>\[
+t_{0.025,15}\approx2.131.
+\]</p>
+<p>Since</p>
+<p>\[
+|-3.2|&gt;2.131,
+\]</p>
+<p>we reject \(H_0\).</p>
+<p>The two-sided p-value is approximately</p>
+<p>\[
+p\approx0.0060.
+\]</p>
+<p>Thus,</p>
+<p>\[
+\boxed{\text{There is strong evidence that the intervention changes average late-night phone use.}}
+\]</p>
+<h3>Step 4: Confidence interval</h3>
+<p>The interval is</p>
+<p>\[
+\bar d\pm t^*\frac{s_d}{\sqrt n}.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+-3.2\pm2.131(1.0).
+\]</p>
+<p>Hence,</p>
+<p>\[
+\boxed{(-5.33,\;-1.07)\text{ hours per week}}.
+\]</p>
+<h3>Interpretation</h3>
+<p>Because the differences were defined as</p>
+<p>\[
+d=\text{after}-\text{before},
+\]</p>
+<p>a negative value means that phone use decreased after the intervention.</p>
+<p>The data estimate that the intervention reduces late-night phone use by approximately</p>
+<p>\[
+1.07 \text{ to }5.33
+\]</p>
+<p>hours per week on average.</p>
+<h3>Why paired analysis is necessary</h3>
+<p>Each student's after-intervention observation is naturally matched to that same student's before-intervention observation.</p>
+<p>The observations within a student's pair are therefore not independent.</p>
+<p>A paired \(t\)-test analyzes the single variable</p>
+<p>\[
+d_i=\text{after}_i-\text{before}_i,
+\]</p>
+<p>which correctly accounts for the pairing.</p>
+<h3>Assumptions</h3>
+<p>The important normality assumption concerns the distribution of the differences</p>
+<p>\[
+d_i,
+\]</p>
+<p>not the separate before and after distributions.</p>
+<p>Because \(n=16\) is small, severe skewness or outliers among the paired differences could substantially affect the validity of the \(t\)-procedure.</p>
+<h3>Common Pitfalls</h3>
+<ul>
+<li>Using an independent two-sample \(t\)-test.
+</li>
+<li>Checking normality separately for the before and after samples instead of for the differences.
+</li>
+<li>Forgetting how the difference was defined and therefore reversing the interpretation.
+</li>
+<li>Reporting \(p&lt;0.05\) without explaining the estimated size of the effect.
+</li>
+</ul>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5 — Critical Evaluation of an A/B Study</h2>
+<p>A university develops a mobile app intended to increase the proportion of students who submit assignments before the deadline.</p>
+<p>Among students who voluntarily enrolled in the app study, \(1000\) students were randomly assigned individually to one of two app versions:</p>
+<ul>
+<li>Reminder version: \(310\) of \(500\) students submitted the assignment early.
+</li>
+<li>Standard version: \(285\) of \(500\) students submitted the assignment early.
+</li>
+</ul>
+<p>Researchers want to know whether the reminder version changes the probability of early submission.</p>
+<p>Use</p>
+<p>\[
+\alpha=0.05.
+\]</p>
+<p>The university considers an improvement of at least \(8\) percentage points to be large enough to justify implementing the reminder system campus-wide.</p>
+<h3>Questions</h3>
+<ol>
+<li>Perform an appropriate hypothesis test.
+</li>
+<li>Construct a \(95\%\) confidence interval for the difference in population proportions.
+</li>
+<li>Compare statistical and practical significance.
+</li>
+<li>Evaluate the assumptions of the test.
+</li>
+<li>Discuss whether the conclusion can be generalized to all university students.
+</li>
+<li>Propose an improved follow-up study and justify the inferential method you would use.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Solution</h3>
+<p>Let</p>
+<p>\[
+p_R=\text{true early-submission probability under the reminder version}
+\]</p>
+<p>and</p>
+<p>\[
+p_S=\text{true early-submission probability under the standard version}.
+\]</p>
+<p>The sample proportions are</p>
+<p>\[
+\hat p_R=\frac{310}{500}=0.62
+\]</p>
+<p>and</p>
+<p>\[
+\hat p_S=\frac{285}{500}=0.57.
+\]</p>
+<p>The observed difference is</p>
+<p>\[
+\hat p_R-\hat p_S
+=
+0.62-0.57
+=
+0.05.
+\]</p>
+<p>Thus, the reminder group had an observed early-submission rate \(5\) percentage points higher.</p>
+<h3>Step 1: Hypotheses</h3>
+<p>\[
+H_0:p_R-p_S=0
+\]</p>
+<p>\[
+H_a:p_R-p_S\neq0.
+\]</p>
+<h3>Step 2: Check large-sample conditions</h3>
+<p>For the reminder group,</p>
+<p>\[
+310\text{ successes},\qquad190\text{ failures}.
+\]</p>
+<p>For the standard group,</p>
+<p>\[
+285\text{ successes},\qquad215\text{ failures}.
+\]</p>
+<p>All counts are much larger than \(10\), so the normal approximation is appropriate.</p>
+<h3>Step 3: Pooled proportion</h3>
+<p>Under \(H_0\),</p>
+<p>\[
+p_R=p_S,
+\]</p>
+<p>so the pooled estimate is</p>
+<p>\[
+\hat p=
+\frac{310+285}{500+500}
+=
+\frac{595}{1000}
+=
+0.595.
+\]</p>
+<h3>Step 4: Null standard error</h3>
+<p>\[
+SE_0=
+\sqrt{
+\hat p(1-\hat p)
+\left(
+\frac1{500}+\frac1{500}
+\right)
+}.
+\]</p>
+<p>Thus,</p>
+<p>\[
+SE_0=
+\sqrt{
+0.595(0.405)(0.004)
+}.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+SE_0\approx0.03105.
+\]</p>
+<h3>Step 5: Test statistic</h3>
+<p>\[
+z=
+\frac{0.62-0.57}{0.03105}
+\approx1.610.
+\]</p>
+<p>For a two-tailed test with \(\alpha=0.05\),</p>
+<p>\[
+z^*=\pm1.96.
+\]</p>
+<p>Because</p>
+<p>\[
+|1.610|&lt;1.96,
+\]</p>
+<p>we fail to reject \(H_0\).</p>
+<p>The p-value is approximately</p>
+<p>\[
+p\approx0.1073.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+\boxed{\text{The observed difference is not statistically significant at }\alpha=0.05.}
+\]</p>
+<p>The data do not provide sufficiently strong evidence that the two app versions produce different early-submission probabilities.</p>
+<h3>Step 6: \(95\%\) confidence interval</h3>
+<p>For the confidence interval, do not pool the proportions.</p>
+<p>The standard error is</p>
+<p>\[
+SE=
+\sqrt{
+\frac{\hat p_R(1-\hat p_R)}{500}
++
+\frac{\hat p_S(1-\hat p_S)}{500}
+}.
+\]</p>
+<p>Thus,</p>
+<p>\[
+SE=
+\sqrt{
+\frac{0.62(0.38)}{500}
++
+\frac{0.57(0.43)}{500}
+}.
+\]</p>
+<p>This gives approximately</p>
+<p>\[
+SE\approx0.03076.
+\]</p>
+<p>The interval is</p>
+<p>\[
+0.05\pm1.96(0.03076).
+\]</p>
+<p>Therefore,</p>
+<p>\[
+\boxed{(-0.0108,\;0.1108)}.
+\]</p>
+<p>In percentage-point terms,</p>
+<p>\[
+\boxed{(-1.08,\;11.08)\text{ percentage points}}.
+\]</p>
+<h3>Interpretation of the confidence interval</h3>
+<p>The data are compatible with possibilities ranging from the reminder version being approximately \(1.1\) percentage points worse to approximately \(11.1\) percentage points better.</p>
+<p>Because</p>
+<p>\[
+0
+\]</p>
+<p>lies inside the confidence interval, the interval agrees with the failure to reject \(H_0\).</p>
+<h3>Statistical versus practical significance</h3>
+<p>The estimated effect is</p>
+<p>\[
+5\text{ percentage points}.
+\]</p>
+<p>The university's practical threshold is</p>
+<p>\[
+8\text{ percentage points}.
+\]</p>
+<p>The point estimate therefore falls below the threshold for practical importance.</p>
+<p>However, the confidence interval extends above \(8\) percentage points:</p>
+<p>\[
+(-1.08,\;11.08).
+\]</p>
+<p>Therefore, the current data are too imprecise to rule out an effect large enough to be practically important.</p>
+<p>A correct conclusion is not that the reminder system has no effect. Rather,</p>
+<p>\[
+\boxed{\text{the study does not estimate the effect precisely enough to establish either no effect or an important positive effect.}}
+\]</p>
+<h3>Evaluation of assumptions</h3>
+<h4>Independence within and between groups</h4>
+<p>Because students were randomly assigned individually to one of the two versions, assignment supports independence between treatment groups.</p>
+<p>However, additional dependence could arise if students influenced one another, shared reminders, or belonged to tightly connected classes.</p>
+<h4>Large-sample condition</h4>
+<p>The success and failure counts in both groups are much greater than \(10\), so the normal approximation is well supported.</p>
+<h4>Random assignment versus random sampling</h4>
+<p>Random assignment supports causal comparison between the two app versions for the students who participated.</p>
+<p>However, the students voluntarily enrolled in the study.</p>
+<p>They were not described as a random sample of all university students.</p>
+<p>Therefore, randomization provides strong internal validity but does not automatically provide broad external validity.</p>
+<h3>Can the results be generalized to all students?</h3>
+<p>Not necessarily.</p>
+<p>Students who voluntarily join an app study may differ from other students in characteristics such as:</p>
+<p>\[
+\text{motivation, technology use, study habits, or organization}.
+\]</p>
+<p>Therefore,</p>
+<p>\[
+\boxed{\text{causal inference within the volunteer sample is stronger than generalization to the entire university.}}
+\]</p>
+<h3>Improved follow-up study</h3>
+<p>A stronger study could randomly sample students from the university enrollment list and then randomly assign sampled students to the reminder and standard versions.</p>
+<p>This design would combine:</p>
+<p>\[
+\text{random sampling}
+\]</p>
+<p>with</p>
+<p>\[
+\text{random assignment}.
+\]</p>
+<p>Random sampling would improve the ability to generalize to the university population, while random assignment would support a causal comparison of the two app versions.</p>
+<p>The primary analysis could again use a two-proportion \(z\)-test and confidence interval for</p>
+<p>\[
+p_R-p_S,
+\]</p>
+<p>provided independence and large-count assumptions remain appropriate.</p>
+<p>The investigators should also choose a sample size large enough to estimate whether the improvement reaches the practically important threshold of</p>
+<p>\[
+8\text{ percentage points}.
+\]</p>
+<h3>Common Pitfalls</h3>
+<ul>
+<li>Treating failure to reject \(H_0\) as proof that the two app versions are identical.
+</li>
+<li>Using the pooled proportion when constructing the confidence interval.
+</li>
+<li>Assuming random assignment automatically makes the sample representative of all students.
+</li>
+<li>Ignoring the width of the confidence interval.
+</li>
+<li>Declaring a \(5\)-percentage-point difference important without comparing it with the university's stated practical benchmark.
+</li>
+<li>Confusing statistical uncertainty with absence of an effect.
+</li>
+</ul>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Summary of Major Ideas</h2>
+<p>These five problems illustrate several central principles of statistical inference.</p>
+<p>A hypothesis test evaluates whether sample evidence is sufficiently inconsistent with a specified null hypothesis. A confidence interval instead provides a range of parameter values compatible with the observed data.</p>
+<p>For a two-sided test at significance level</p>
+<p>\[
+\alpha=0.05,
+\]</p>
+<p>the test and corresponding \(95\%\) confidence interval generally agree:</p>
+<p>\[
+\boxed{\text{reject }H_0 \iff \text{the null value is outside the }95\%\text{ confidence interval}.}
+\]</p>
+<p>Students should also distinguish between</p>
+<p>\[
+\boxed{\text{statistical significance}}
+\]</p>
+<p>and</p>
+<p>\[
+\boxed{\text{practical significance}}.
+\]</p>
+<p>A statistically significant result may represent a very small effect, while a nonsignificant result can still be compatible with effects large enough to matter practically when the confidence interval is wide.</p>
+<p>Finally, valid inference requires attention to assumptions such as independence, approximate normality, sufficient sample size, random sampling, random assignment, and the structure of the data.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Grading Rubric</h2>
+<p>The supplied assignment instructions label the rubric as totaling \(50\) points, but the individual allocations shown in the source are</p>
+<p>\[
+10+10+12+12+16=60.
+\]</p>
+<p>The allocations below preserve those supplied values rather than silently changing them.</p>
+<h3>Problems 1–2: \(10\) points each</h3>
+<p>\[
+5\text{ points: hypothesis setup and test-statistic calculation}
+\]</p>
+<p>\[
+3\text{ points: p-value or confidence-interval computation}
+\]</p>
+<p>\[
+2\text{ points: interpretation and contextual relevance}
+\]</p>
+<h3>Problems 3–4: \(12\) points each</h3>
+<p>\[
+6\text{ points: two-sample or paired-test setup and calculations}
+\]</p>
+<p>\[
+4\text{ points: interpretation and assumption validation}
+\]</p>
+<p>\[
+2\text{ points: identification of common errors}
+\]</p>
+<h3>Problem 5: \(16\) points</h3>
+<p>\[
+8\text{ points: analysis of assumptions and methodology}
+\]</p>
+<p>\[
+6\text{ points: statistical and practical interpretation}
+\]</p>
+<p>\[
+2\text{ points: clarity of real-world application}
+\]</p>
+<h3>Partial Credit</h3>
+<p>Award approximately \(50\%\) of the relevant credit when the student selects the correct methodology but makes minor computational errors.</p>
+<p>Deduct points for omitted assumption checks, incorrect p-value interpretations, or conclusions that conflict with the corresponding confidence interval.</p>
+</section>
+</main>
+<script>
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show Solution" : "Hide Solution";
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

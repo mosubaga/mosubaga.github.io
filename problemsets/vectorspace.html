@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Homework Problem Set: Vector Spaces</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Homework Problem Set: Vector Spaces</h1>
+
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<p><strong>Course:</strong> Introductory Linear Algebra (Undergraduate)<br>
+<strong>Topic:</strong> Vector Spaces, Subspaces, Span, Linear Independence, Basis, and Dimension<br>
+<strong>Assignment Type:</strong> Homework Assignment</p>
+<h2>Student Instructions</h2>
+<blockquote class="directions"><p><strong>Directions:</strong> Answer all five problems below. Show all work explicitly, including step-by-step verification of vector space axioms, closure properties, matrix row reductions, and reasoning explanations. Write all final mathematical expressions and equations in clear \(\text{\LaTeX}\) notation.</p></blockquote>
+<section class="pastel-card problem-card">
+<h2>Problem 1: Verifying Vector Space Axioms with Non-Standard Operations</h2>
+<p>Let \(V = \mathbb{R}^2\) be the set of all ordered pairs of real numbers \((x_1, x_2)\). Define vector addition \(\oplus\) using standard entrywise addition: \[(x_1, x_2) \oplus (y_1, y_2) = (x_1 + y_1, x_2 + y_2)\] Define scalar multiplication \(\odot\) by a non-standard rule for any real scalar \(c \in \mathbb{R}\): \[c \odot (x_1, x_2) = (c x_1, 0)\]</p>
+<ol>
+<li>Verify whether closure under vector addition and closure under scalar multiplication hold for \((V, \oplus, \odot)\).
+</li>
+<li>Test the scalar multiplicative identity axiom: \(1 \odot \mathbf{v} = \mathbf{v}\) for all \(\mathbf{v} \in V\).
+</li>
+<li>Is \((V, \oplus, \odot)\) a valid vector space over \(\mathbb{R}\)? Explain your reasoning explicitly by citing any axiom that fails.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Solution</h3>
+<ol>
+<li><strong>Closure Properties:</strong>
+<ul>
+<li><strong>Closure under addition:</strong> For any \(\mathbf{u} = (u_1, u_2) \in \mathbb{R}^2\) and \(\mathbf{v} = (v_1, v_2) \in \mathbb{R}^2\), \(\mathbf{u} \oplus \mathbf{v} = (u_1 + v_1, u_2 + v_2) \in \mathbb{R}^2\) because real numbers are closed under addition.
+</li>
+<li><strong>Closure under scalar multiplication:</strong> For any real scalar \(c \in \mathbb{R}\) and \(\mathbf{v} = (v_1, v_2) \in \mathbb{R}^2\), \(c \odot (v_1, v_2) = (c v_1, 0) \in \mathbb{R}^2\) since \(c v_1 \in \mathbb{R}\) and \(0 \in \mathbb{R}\).
+</li>
+</ul>
+</li>
+<li><strong>Scalar Multiplicative Identity Axiom (\(1 \odot \mathbf{v} = \mathbf{v}\)):</strong>
+<ul>
+<li>Let \(\mathbf{v} = (x_1, x_2) \in \mathbb{R}^2\). Applying scalar multiplication with \(c = 1\):
+ \[1 \odot (x_1, x_2) = (1 \cdot x_1, 0) = (x_1, 0)\]
+</li>
+<li>For any vector where \(x_2 \neq 0\) (e.g., \(\mathbf{v} = (2, 5)\)), we have:
+ \[1 \odot (2, 5) = (2, 0) \neq (2, 5)\]
+</li>
+<li>Thus, \(1 \odot \mathbf{v} \neq \mathbf{v}\) for all vectors with a nonzero second coordinate.
+</li>
+</ul>
+</li>
+<li><strong>Conclusion &amp; Reasoning:</strong>
+<ul>
+<li><strong>No</strong>, \((V, \oplus, \odot)\) is <strong>not</strong> a vector space.
+</li>
+<li><em>Reason:</em> It fails the multiplicative identity axiom (\(1\mathbf{v} = \mathbf{v}\)).
+</li>
+</ul>
+</li>
+</ol>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2: Subspace Verification and Closure Properties</h2>
+<p>Determine whether each of the following subsets is a subspace of \(\mathbb{R}^3\). Show all steps and explain your reasoning by explicitly testing the three subspace closure requirements.</p>
+<ol>
+<li>\(W_1 = \{(x_1, x_2, x_3) \in \mathbb{R}^3 \mid 2x_1 - x_2 + 3x_3 = 0\}\).
+</li>
+<li>\(W_2 = \{(x_1, x_2, x_3) \in \mathbb{R}^3 \mid x_1 \ge 0\}\).
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Solution</h3>
+<ol>
+<li><strong>Subset \(W_1 = \{(x_1, x_2, x_3) \in \mathbb{R}^3 \mid 2x_1 - x_2 + 3x_3 = 0\}\):</strong>
+<ul>
+<li><strong>Zero Vector:</strong> \(\mathbf{0} = (0, 0, 0)\) satisfies \(2(0) - (0) + 3(0) = 0\), so \(\mathbf{0} \in W_1\).
+</li>
+<li><strong>Closure under Addition:</strong> Let \(\mathbf{u} = (u_1, u_2, u_3) \in W_1\) and \(\mathbf{v} = (v_1, v_2, v_3) \in W_1\), meaning \(2u_1 - u_2 + 3u_3 = 0\) and \(2v_1 - v_2 + 3v_3 = 0\).
+ For \(\mathbf{u} + \mathbf{v} = (u_1+v_1, u_2+v_2, u_3+v_3)\):
+ \[2(u_1+v_1) - (u_2+v_2) + 3(u_3+v_3) = (2u_1 - u_2 + 3u_3) + (2v_1 - v_2 + 3v_3) = 0 + 0 = 0\]
+ Thus, \(\mathbf{u} + \mathbf{v} \in W_1\).
+</li>
+<li><strong>Closure under Scalar Multiplication:</strong> For any scalar \(k \in \mathbb{R}\) and \(\mathbf{u} \in W_1\):
+ \[2(k u_1) - (k u_2) + 3(k u_3) = k (2u_1 - u_2 + 3u_3) = k(0) = 0\]
+ Thus, \(k\mathbf{u} \in W_1\).
+</li>
+<li><strong>Conclusion:</strong> \(W_1\) <strong>is a subspace</strong> of \(\mathbb{R}^3\) (a plane passing through the origin).
+</li>
+</ul>
+</li>
+<li><strong>Subset \(W_2 = \{(x_1, x_2, x_3) \in \mathbb{R}^3 \mid x_1 \ge 0\}\):</strong>
+<ul>
+<li><strong>Zero Vector:</strong> \(\mathbf{0} = (0, 0, 0) \in W_2\) because \(0 \ge 0\).
+</li>
+<li><strong>Closure under Scalar Multiplication:</strong> Let \(\mathbf{u} = (2, 1, 1) \in W_2\) since \(x_1 = 2 \ge 0\). Choose scalar \(c = -1 \in \mathbb{R}\):
+ \[c\mathbf{u} = -1(2, 1, 1) = (-2, -1, -1)\]
+ Here the first entry is \(-2 &lt; 0\), so \(c\mathbf{u} \notin W_2\).
+</li>
+<li><strong>Conclusion:</strong> \(W_2\) <strong>is not a subspace</strong> of \(\mathbb{R}^3\) because it fails closure under scalar multiplication when scaled by negative numbers.
+</li>
+</ul>
+</li>
+</ol>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3: Linear Combinations and Computing Spans in \(\mathbb{R}^3\)</h2>
+<p>Consider the following vectors in \(\mathbb{R}^3\): \[\mathbf{v}_1 = \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}, \quad \mathbf{v}_2 = \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}, \quad \mathbf{v}_3 = \begin{bmatrix} 3 \\ 4 \\ 2 \end{bmatrix}\]</p>
+<ol>
+<li>Determine if the target vector \(\mathbf{b} = \begin{bmatrix} 5 \\ 7 \\ 3 \end{bmatrix}\) lies in \(\text{Span}\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\). Set up the appropriate vector equation, perform matrix row reduction, and state the required linear combination if one exists.
+</li>
+<li>Do the vectors \(\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\) span all of \(\mathbb{R}^3\)? Explain algebraically (using pivot positions) and geometrically.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Solution</h3>
+<ol>
+<li><strong>Testing if \(\mathbf{b} \in \text{Span}\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\):</strong>
+<ul>
+<li>Set up \(c_1 \mathbf{v}_1 + c_2 \mathbf{v}_2 + c_3 \mathbf{v}_3 = \mathbf{b}\):
+ \[c_1 \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix} + c_2 \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix} + c_3 \begin{bmatrix} 3 \\ 4 \\ 2 \end{bmatrix} = \begin{bmatrix} 5 \\ 7 \\ 3 \end{bmatrix}\]
+</li>
+<li>Form the augmented matrix and row-reduce:
+ \[\begin{bmatrix} 1 &amp; 1 &amp; 3 &amp; \mid &amp; 5 \\ 2 &amp; 1 &amp; 4 &amp; \mid &amp; 7 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 3 \end{bmatrix} \xrightarrow{R_2 \to R_2 - 2R_1} \begin{bmatrix} 1 &amp; 1 &amp; 3 &amp; \mid &amp; 5 \\ 0 &amp; -1 &amp; -2 &amp; \mid &amp; -3 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 3 \end{bmatrix}\]
+ \[\xrightarrow{R_2 \to -R_2} \begin{bmatrix} 1 &amp; 1 &amp; 3 &amp; \mid &amp; 5 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 3 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 3 \end{bmatrix} \xrightarrow{R_3 \to R_3 - R_2} \begin{bmatrix} 1 &amp; 1 &amp; 3 &amp; \mid &amp; 5 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 3 \\ 0 &amp; 0 &amp; 0 &amp; \mid &amp; 0 \end{bmatrix}\]
+ \[\xrightarrow{R_1 \to R_1 - R_2} \begin{bmatrix} 1 &amp; 0 &amp; 1 &amp; \mid &amp; 2 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 3 \\ 0 &amp; 0 &amp; 0 &amp; \mid &amp; 0 \end{bmatrix}\]
+</li>
+<li>The system is consistent. Setting \(c_3 = 0\) yields \(c_1 = 2\) and \(c_2 = 3\).
+</li>
+<li><strong>Verification:</strong> \(2\mathbf{v}_1 + 3\mathbf{v}_2 + 0\mathbf{v}_3 = 2(1, 2, 0) + 3(1, 1, 1) = (5, 7, 3) = \mathbf{b}\).
+</li>
+<li><strong>Conclusion:</strong> Yes, \(\mathbf{b}\) lies in \(\text{Span}\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\).
+</li>
+</ul>
+</li>
+<li><strong>Spanning \(\mathbb{R}^3\):</strong>
+<ul>
+<li><strong>No</strong>, the vectors do <strong>not</strong> span \(\mathbb{R}^3\).
+</li>
+<li><em>Algebraic Reason:</em> The echelon form of the matrix has only 2 pivot positions (rows 1 and 2), meaning \(A\) does not have a pivot in every row.
+</li>
+<li><em>Geometric Reason:</em> Because there are only 2 linearly independent vectors in the set, \(\text{Span}\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}\) forms a 2-dimensional plane passing through the origin in \(\mathbb{R}^3\), rather than filling all of 3-space.
+</li>
+</ul>
+</li>
+</ol>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4: Assessing Linear Independence and Dependence Relations</h2>
+<p>Consider the set of vectors \(S = \{\mathbf{u}_1, \mathbf{u}_2, \mathbf{u}_3\} \subset \mathbb{R}^3\), where: \[\mathbf{u}_1 = \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix}, \quad \mathbf{u}_2 = \begin{bmatrix} 2 \\ 1 \\ 1 \end{bmatrix}, \quad \mathbf{u}_3 = \begin{bmatrix} 5 \\ 1 \\ 5 \end{bmatrix}\]</p>
+<ol>
+<li>Write down the vector equation \(c_1 \mathbf{u}_1 + c_2 \mathbf{u}_2 + c_3 \mathbf{u}_3 = \mathbf{0}\) for linear independence.
+</li>
+<li>Convert the vector equation into an augmented matrix and row-reduce it to reduced row echelon form (RREF).
+</li>
+<li>State whether the set \(S\) is linearly independent or linearly dependent. If dependent, find an explicit linear dependence relation.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Solution</h3>
+<ol>
+<li><strong>Vector Equation:</strong>
+ \[c_1 \begin{bmatrix} 1 \\ -1 \\ 2 \end{bmatrix} + c_2 \begin{bmatrix} 2 \\ 1 \\ 1 \end{bmatrix} + c_3 \begin{bmatrix} 5 \\ 1 \\ 5 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}\]
+</li>
+<li><strong>Row Reduction:</strong>
+ \[\begin{bmatrix} 1 &amp; 2 &amp; 5 &amp; \mid &amp; 0 \\ -1 &amp; 1 &amp; 1 &amp; \mid &amp; 0 \\ 2 &amp; 1 &amp; 5 &amp; \mid &amp; 0 \end{bmatrix} \xrightarrow{\substack{R_2 \to R_2 + R_1 \\ R_3 \to R_3 - 2R_1}} \begin{bmatrix} 1 &amp; 2 &amp; 5 &amp; \mid &amp; 0 \\ 0 &amp; 3 &amp; 6 &amp; \mid &amp; 0 \\ 0 &amp; -3 &amp; -5 &amp; \mid &amp; 0 \end{bmatrix}\]
+ \[\xrightarrow{R_2 \to \frac{1}{3}R_2} \begin{bmatrix} 1 &amp; 2 &amp; 5 &amp; \mid &amp; 0 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 0 \\ 0 &amp; -3 &amp; -5 &amp; \mid &amp; 0 \end{bmatrix} \xrightarrow{R_3 \to R_3 + 3R_2} \begin{bmatrix} 1 &amp; 2 &amp; 5 &amp; \mid &amp; 0 \\ 0 &amp; 1 &amp; 2 &amp; \mid &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; \mid &amp; 0 \end{bmatrix}\]
+ \[\xrightarrow{\substack{R_1 \to R_1 - 5R_3 \\ R_2 \to R_2 - 2R_3}} \begin{bmatrix} 1 &amp; 2 &amp; 0 &amp; \mid &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; \mid &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; \mid &amp; 0 \end{bmatrix} \xrightarrow{R_1 \to R_1 - 2R_2} \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; \mid &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; \mid &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; \mid &amp; 0 \end{bmatrix}\]
+</li>
+<li><strong>Conclusion &amp; Dependence Relation:</strong>
+<ul>
+<li>Every column contains a pivot, meaning there are no free variables.
+</li>
+<li>The only solution is the trivial solution \(c_1 = 0, c_2 = 0, c_3 = 0\).
+</li>
+<li>Therefore, \(S = \{\mathbf{u}_1, \mathbf{u}_2, \mathbf{u}_3\}\) is <strong>linearly independent</strong>. (There is no nontrivial linear dependence relation.)
+</li>
+</ul>
+</li>
+</ol>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5: Basis and Dimension of a Subspace Defined by Equations</h2>
+<p>Let \(W \subset \mathbb{R}^4\) be the solution set (null space) of the homogeneous system of linear equations: \[\begin{aligned} x_1 + 2x_2 - 3x_3 + x_4 &amp;= 0 \\ 2x_1 + 4x_2 - 5x_3 + 3x_4 &amp;= 0 \end{aligned}\]</p>
+<ol>
+<li>Form the coefficient matrix \(A\) for this system and reduce it to reduced row echelon form (RREF).
+</li>
+<li>Identify the basic (pivot) variables and the free variables.
+</li>
+<li>Write the general solution in parametric vector form to find a set of basis vectors for \(W\).
+</li>
+<li>State the dimension \(\dim(W)\) and explain why your set of vectors constitutes a valid basis.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Solution</h3>
+<ol>
+<li><strong>Coefficient Matrix and RREF:</strong>
+ \[A = \begin{bmatrix} 1 &amp; 2 &amp; -3 &amp; 1 \\ 2 &amp; 4 &amp; -5 &amp; 3 \end{bmatrix}\]
+ Row-reduce \(A\):
+ \[A \xrightarrow{R_2 \to R_2 - 2R_1} \begin{bmatrix} 1 &amp; 2 &amp; -3 &amp; 1 \\ 0 &amp; 0 &amp; 1 &amp; 1 \end{bmatrix} \xrightarrow{R_1 \to R_1 + 3R_2} \begin{bmatrix} 1 &amp; 2 &amp; 0 &amp; 4 \\ 0 &amp; 0 &amp; 1 &amp; 1 \end{bmatrix}\]
+</li>
+<li><strong>Pivots and Free Variables:</strong>
+<ul>
+<li><strong>Pivot columns:</strong> Column 1 (\(x_1\)) and Column 3 (\(x_3\)).
+</li>
+<li><strong>Free variables:</strong> \(x_2\) and \(x_4\).
+</li>
+</ul>
+</li>
+<li><strong>Parametric Form and Basis:</strong>
+ Write basic variables in terms of free variables:
+ \[x_1 = -2x_2 - 4x_4\]
+ \[x_3 = -x_4\]
+ Express the solution vector \(\mathbf{x} \in W\) in parametric vector form:
+ \[\begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{bmatrix} = \begin{bmatrix} -2x_2 - 4x_4 \\ x_2 \\ -x_4 \\ x_4 \end{bmatrix} = x_2 \begin{bmatrix} -2 \\ 1 \\ 0 \\ 0 \end{bmatrix} + x_4 \begin{bmatrix} -4 \\ 0 \\ -1 \\ 1 \end{bmatrix}\]
+<ul>
+<li><strong>Basis for \(W\):</strong>
+ \[\mathcal{B} = \left\{ \begin{bmatrix} -2 \\ 1 \\ 0 \\ 0 \end{bmatrix}, \begin{bmatrix} -4 \\ 0 \\ -1 \\ 1 \end{bmatrix} \right\}\]
+</li>
+</ul>
+</li>
+<li><strong>Dimension &amp; Explanation:</strong>
+<ul>
+<li><strong>Dimension:</strong> \(\dim(W) = 2\).
+</li>
+<li><em>Explanation:</em> The solution space \(W\) is spanned by \(\mathcal{B}\), and the vectors in \(\mathcal{B}\) are linearly independent because each contains a 1 in a position where the other contains a 0 (corresponding to the free variables \(x_2\) and \(x_4\)). Thus, \(\mathcal{B}\) satisfies both requirements for a basis.
+</li>
+</ul>
+</li>
+</ol>
+</div>
+</section>
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

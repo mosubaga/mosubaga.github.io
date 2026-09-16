@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Homework Assignment: Gauss's and Stokes' Theorems</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Gauss's and Stokes' Theorems</h1>
+<p class="meta"><strong>Level:</strong> Undergraduate vector calculus<br>
+<strong>Topic:</strong> Gauss's and Stokes' Theorems<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Problem 1: Gauss's (Divergence) Theorem — Flux Across a Closed Cube</h2>
+<p><strong>Topic:</strong> Gauss's (Divergence) Theorem</p>
+<h3>Statement</h3>
+<p>Let \(E\) be the solid unit cube bounded by the coordinate planes and the planes \(x = 1\), \(y = 1\), and \(z = 1\), so \(E = \{(x,y,z) \mid 0 \le x \le 1, 0 \le y \le 1, 0 \le z \le 1\}\). Let \(S = \partial E\) be the boundary surface of the cube with outward unit normal vector \(\mathbf{n}\). Consider the vector field: \[\mathbf{F}(x, y, z) = \langle 3x, xy, 2xz \rangle\]</p>
+<ol>
+<li>Compute the divergence \(\operatorname{div} \mathbf{F} = \nabla \cdot \mathbf{F}\) explicitly.
+</li>
+<li>Apply Gauss's (Divergence) Theorem to evaluate the outward flux \(\iint_S \mathbf{F} \cdot \mathbf{n} \, dS = \iiint_E \operatorname{div} \mathbf{F} \, dV\).
+</li>
+<li>Verify the result by directly calculating the flux across each of the 6 square faces of the cube.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Compute Divergence:</strong>
+ \[\operatorname{div} \mathbf{F} = \frac{\partial}{\partial x}(3x) + \frac{\partial}{\partial y}(xy) + \frac{\partial}{\partial z}(2xz) = 3 + x + 2x = 3 + 3x\].
+</li>
+<li><strong>Apply Divergence Theorem:</strong>
+ \[\iint_S \mathbf{F} \cdot \mathbf{n} \, dS = \int_0^1 \int_0^1 \int_0^1 (3 + 3x) \, dz \, dy \, dx\].
+ \[\int_0^1 (3 + 3x) \, dx = \left[ 3x + \frac{3}{2}x^2 \right]_0^1 = 3 + \frac{3}{2} = \frac{9}{2}\].
+</li>
+<li><strong>Direct Verification across 6 Faces:</strong>
+<ul>
+<li><strong>Front (\(x=1, \mathbf{n}=\mathbf{i}\)):</strong> \(\int_0^1 \int_0^1 F_1(1,y,z) \, dy \, dz = \int_0^1 \int_0^1 3 \, dy \, dz = 3\).
+</li>
+<li><strong>Back (\(x=0, \mathbf{n}=-\mathbf{i}\)):</strong> \(\int_0^1 \int_0^1 -F_1(0,y,z) \, dy \, dz = 0\).
+</li>
+<li><strong>Right (\(y=1, \mathbf{n}=\mathbf{j}\)):</strong> \(\int_0^1 \int_0^1 F_2(x,1,z) \, dx \, dz = \int_0^1 \int_0^1 x \, dx \, dz = \frac{1}{2}\).
+</li>
+<li><strong>Left (\(y=0, \mathbf{n}=-\mathbf{j}\)):</strong> \(\int_0^1 \int_0^1 -F_2(x,0,z) \, dx \, dz = 0\).
+</li>
+<li><strong>Top (\(z=1, \mathbf{n}=\mathbf{k}\)):</strong> \(\int_0^1 \int_0^1 F_3(x,y,1) \, dx \, dy = \int_0^1 \int_0^1 2x \, dx \, dy = 1\).
+</li>
+<li><strong>Bottom (\(z=0, \mathbf{n}=-\mathbf{k}\)):</strong> \(\int_0^1 \int_0^1 -F_3(x,y,0) \, dx \, dy = 0\).
+</li>
+<li><strong>Total Flux:</strong> \(3 + 0 + \frac{1}{2} + 0 + 1 + 0 = \frac{9}{2}\).
+</li>
+</ul>
+</li>
+</ol>
+<h3>Answer</h3>
+<p>\[\operatorname{div} \mathbf{F} = 3 + 3x; \quad \iint_S \mathbf{F} \cdot \mathbf{n} \, dS = \frac{9}{2}\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2: Gauss's (Divergence) Theorem — Flux Through a Solid Cylinder</h2>
+<p><strong>Topic:</strong> Gauss's (Divergence) Theorem</p>
+<h3>Statement</h3>
+<p>Let \(E\) be the solid cylinder bounded by \(x^2 + y^2 \le 4\), \(z = 0\), and \(z = 3\). Let \(S\) be the complete boundary surface of \(E\) oriented with outward normal \(\mathbf{n}\). Given the vector field: \[\mathbf{F}(x, y, z) = \langle x^3 + y, y^3 - x, z^2 \rangle\]</p>
+<ol>
+<li>Compute \(\operatorname{div} \mathbf{F}\) in Cartesian coordinates.
+</li>
+<li>Set up the triple integral for flux over \(E\) in cylindrical coordinates \((r, \theta, z)\).
+</li>
+<li>Evaluate the total outward flux \(\iint_S \mathbf{F} \cdot \mathbf{n} \, dS\).
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Compute Divergence:</strong>
+ \[\operatorname{div} \mathbf{F} = \frac{\partial}{\partial x}(x^3 + y) + \frac{\partial}{\partial y}(y^3 - x) + \frac{\partial}{\partial z}(z^2) = 3x^2 + 3y^2 + 2z\].
+</li>
+<li><strong>Convert to Cylindrical Coordinates:</strong>
+ In cylindrical coordinates, \(x^2 + y^2 = r^2\) and \(dV = r \, dz \, dr \, d\theta\).
+ The region \(E\) is defined by \(0 \le r \le 2\), \(0 \le \theta \le 2\pi\), and \(0 \le z \le 3\).
+ \[\operatorname{div} \mathbf{F} = 3r^2 + 2z\]
+</li>
+<li><strong>Evaluate Integral:</strong>
+ \[\iint_S \mathbf{F} \cdot \mathbf{n} \, dS = \int_0^{2\pi} \int_0^2 \int_0^3 (3r^2 + 2z) r \, dz \, dr \, d\theta\]
+<ul>
+<li>Inner integral with respect to \(z\):
+ \[\int_0^3 (3r^3 + 2rz) \, dz = \left[ 3r^3 z + r z^2 \right]_0^3 = 9r^3 + 9r\]
+</li>
+<li>Middle integral with respect to \(r\):
+ \[\int_0^2 (9r^3 + 9r) \, dr = \left[ \frac{9}{4}r^4 + \frac{9}{2}r^2 \right]_0^2 = \frac{9}{4}(16) + \frac{9}{2}(4) = 36 + 18 = 54\]
+</li>
+<li>Outer integral with respect to \(\theta\):
+ \[\int_0^{2\pi} 54 \, d\theta = 108\pi\]
+</li>
+</ul>
+</li>
+</ol>
+<h3>Answer</h3>
+<p>\[\operatorname{div} \mathbf{F} = 3(x^2 + y^2) + 2z; \quad \iint_S \mathbf{F} \cdot \mathbf{n} \, dS = 108\pi\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3: Stokes' Theorem — Circulation Around a Paraboloid Boundary</h2>
+<p><strong>Topic:</strong> Stokes' Theorem</p>
+<h3>Statement</h3>
+<p>Let \(S\) be the surface of the paraboloid \(z = 4 - x^2 - y^2\) for \(z \ge 0\), oriented with an upward unit normal vector \(\mathbf{n}\). The boundary curve \(C = \partial S\) is the circle \(x^2 + y^2 = 4\) in the plane \(z = 0\), traversed counterclockwise when viewed from above. Consider the vector field: \[\mathbf{F}(x, y, z) = \langle -y, x, z^2 \rangle\]</p>
+<ol>
+<li>Compute the curl of the vector field \(\operatorname{curl} \mathbf{F} = \nabla \times \mathbf{F}\).
+</li>
+<li>Set up and evaluate the surface integral \(\iint_S (\operatorname{curl} \mathbf{F}) \cdot \mathbf{n} \, dS\) using Stokes' Theorem.
+</li>
+<li>Verify the result by evaluating the line integral \(\oint_C \mathbf{F} \cdot d\mathbf{r}\) directly via a parameterization of \(C\).
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Compute Curl:</strong>
+ \[\operatorname{curl} \mathbf{F} = \begin{vmatrix} \mathbf{i} &amp; \mathbf{j} &amp; \mathbf{k} \\ \frac{\partial}{\partial x} &amp; \frac{\partial}{\partial y} &amp; \frac{\partial}{\partial z} \\ -y &amp; x &amp; z^2 \end{vmatrix} = \langle 0 - 0, 0 - 0, 1 - (-1) \rangle = \langle 0, 0, 2 \rangle\].
+</li>
+<li><strong>Surface Integral via Stokes' Theorem:</strong>
+ For a surface given as \(z = g(x,y) = 4 - x^2 - y^2\), the upward normal vector element is \(d\mathbf{S} = \mathbf{n} \, dS = \langle -g_x, -g_y, 1 \rangle \, dA = \langle 2x, 2y, 1 \rangle \, dA\).
+ \[\iint_S (\operatorname{curl} \mathbf{F}) \cdot \mathbf{n} \, dS = \iint_{x^2+y^2 \le 4} \langle 0, 0, 2 \rangle \cdot \langle 2x, 2y, 1 \rangle \, dA = \iint_{x^2+y^2 \le 4} 2 \, dA\].
+ The area of the disk \(x^2 + y^2 \le 4\) is \(\pi (2^2) = 4\pi\).
+ Therefore, the surface integral equals \(2 \times 4\pi = 8\pi\).
+</li>
+<li><strong>Direct Line Integral Verification:</strong>
+ Parameterize \(C\): \(\mathbf{r}(t) = \langle 2\cos t, 2\sin t, 0 \rangle\) for \(0 \le t \le 2\pi\).
+ Then \(d\mathbf{r} = \langle -2\sin t, 2\cos t, 0 \rangle \, dt\).
+ \(\mathbf{F}(\mathbf{r}(t)) = \langle -2\sin t, 2\cos t, 0 \rangle\).
+ \[\oint_C \mathbf{F} \cdot d\mathbf{r} = \int_0^{2\pi} \left( (-2\sin t)(-2\sin t) + (2\cos t)(2\cos t) + 0 \right) dt = \int_0^{2\pi} 4 (\sin^2 t + \cos^2 t) \, dt = \int_0^{2\pi} 4 \, dt = 8\pi\].
+</li>
+</ol>
+<h3>Answer</h3>
+<p>\[\operatorname{curl} \mathbf{F} = \langle 0, 0, 2 \rangle; \quad \oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_S (\operatorname{curl} \mathbf{F}) \cdot \mathbf{n} \, dS = 8\pi\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4: Stokes' Theorem — Work Done Around a Triangular Path</h2>
+<p><strong>Topic:</strong> Stokes' Theorem</p>
+<h3>Statement</h3>
+<p>Let \(C\) be the triangular path in \(\mathbb{R}^3\) connecting the vertices \((1,0,0) \to (0,1,0) \to (0,0,1) \to (1,0,0)\) in order, bounding the planar surface \(S\) given by \(x + y + z = 1\) in the first octant. Orient \(S\) with the upward unit normal \(\mathbf{n}\). Given the force field: \[\mathbf{F}(x, y, z) = \langle x + y^2, y + z^2, z + x^2 \rangle\]</p>
+<ol>
+<li>Calculate \(\operatorname{curl} \mathbf{F}\).
+</li>
+<li>Parameterize the surface \(S\) and compute the upward normal vector \(\mathbf{N} = \mathbf{n} \, dS\).
+</li>
+<li>Apply Stokes' Theorem to find the work done \(W = \oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_S (\operatorname{curl} \mathbf{F}) \cdot \mathbf{n} \, dS\).
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Calculate Curl:</strong>
+ \[\operatorname{curl} \mathbf{F} = \begin{vmatrix} \mathbf{i} &amp; \mathbf{j} &amp; \mathbf{k} \\ \frac{\partial}{\partial x} &amp; \frac{\partial}{\partial y} &amp; \frac{\partial}{\partial z} \\ x + y^2 &amp; y + z^2 &amp; z + x^2 \end{vmatrix} = \langle 0 - 2z, 0 - 2x, 0 - 2y \rangle = -2 \langle z, x, y \rangle\].
+</li>
+<li><strong>Parameterize Surface and Normal:</strong>
+ The surface is \(z = 1 - x - y\) over the region \(D = \{(x,y) \mid x \ge 0, y \ge 0, x + y \le 1\}\).
+ The upward vector differential is \(d\mathbf{S} = \langle -\frac{\partial z}{\partial x}, -\frac{\partial z}{\partial y}, 1 \rangle \, dA = \langle 1, 1, 1 \rangle \, dA\).
+</li>
+<li><strong>Evaluate Surface Integral:</strong>
+ Substitute \(z = 1 - x - y\) into \(\operatorname{curl} \mathbf{F}\):
+ \[\operatorname{curl} \mathbf{F} \cdot d\mathbf{S} = \langle -2(1-x-y), -2x, -2y \rangle \cdot \langle 1, 1, 1 \rangle \, dA = -2(1 - x - y + x + y) \, dA = -2 \, dA\].
+ \[\oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_D (-2) \, dA = -2 \cdot \operatorname{Area}(D)\].
+ Since \(D\) is a right triangle with base \(1\) and height \(1\), \(\operatorname{Area}(D) = \frac{1}{2}(1)(1) = \frac{1}{2}\).
+ \[W = -2 \left( \frac{1}{2} \right) = -1\]
+</li>
+</ol>
+<h3>Answer</h3>
+<p>\[\operatorname{curl} \mathbf{F} = \langle -2z, -2x, -2y \rangle; \quad W = \oint_C \mathbf{F} \cdot d\mathbf{r} = -1\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5: Computational Efficiency Comparison — Gauss vs. Direct Method</h2>
+<p><strong>Topic:</strong> Gauss's Theorem / Method Selection for Efficiency</p>
+<h3>Statement</h3>
+<p>A student is asked to calculate the outward flux \(\iint_S \mathbf{F} \cdot \mathbf{n} \, dS\) of the vector field: \[\mathbf{F}(x, y, z) = \langle x^3 + e^{y z}, y^3 + \sin(xz), z^3 + \tan^{-1}(xy) \rangle\] across the closed surface \(S\) of the unit sphere \(x^2 + y^2 + z^2 = 1\).</p>
+<ol>
+<li><strong>Compare Approaches:</strong> Compare computing the flux directly via surface parameterization versus using Gauss's (Divergence) Theorem in terms of computational complexity and effort.
+</li>
+<li><strong>Identify the Efficient Method:</strong> State which method is preferable and explain why.
+</li>
+<li><strong>Execute Solution:</strong> Using the chosen efficient method, show all step-by-step calculations to determine the exact flux.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Comparison of Methods:</strong>
+<ul>
+<li><em>Direct Method:</em> Requires parameterizing the spherical surface \(S\), computing normal vectors \(\mathbf{n}\), and evaluating \(\iint_S \mathbf{F} \cdot \mathbf{n} \, dS\) directly with complicated transcendental components like \(e^{yz}\), \(\sin(xz)\), and \(\tan^{-1}(xy)\) on the sphere.
+</li>
+<li><em>Divergence Theorem:</em> Relates flux to the volume integral \(\iiint_E \operatorname{div} \mathbf{F} \, dV\). Differentiating \(\mathbf{F}\) completely eliminates all complex cross-terms (\(e^{yz}, \sin(xz), \tan^{-1}(xy)\)) because \(\frac{\partial}{\partial x}(e^{yz}) = 0\), \(\frac{\partial}{\partial y}(\sin(xz)) = 0\), and \(\frac{\partial}{\partial z}(\tan^{-1}(xy)) = 0\).
+</li>
+</ul>
+</li>
+<li><strong>Method Selection:</strong>
+ Gauss's (Divergence) Theorem is vastly superior because it reduces a complicated surface integral with transcendental terms to a simple, highly symmetric triple integral over a solid sphere.
+</li>
+<li><strong>Execution via Divergence Theorem:</strong>
+<ul>
+<li><strong>Compute Divergence:</strong>
+ \[\operatorname{div} \mathbf{F} = \frac{\partial}{\partial x}(x^3 + e^{yz}) + \frac{\partial}{\partial y}(y^3 + \sin(xz)) + \frac{\partial}{\partial z}(z^3 + \tan^{-1}(xy)) = 3x^2 + 3y^2 + 3z^2\].
+</li>
+<li><strong>Set Up in Spherical Coordinates:</strong>
+ Using spherical coordinates where \(x^2 + y^2 + z^2 = \rho^2\) and \(dV = \rho^2 \sin \phi \, d\rho \, d\phi \, d\theta\) over \(0 \le \rho \le 1, 0 \le \phi \le \pi, 0 \le \theta \le 2\pi\).
+ \[\iiint_E 3(x^2 + y^2 + z^2) \, dV = \int_0^{2\pi} \int_0^\pi \int_0^1 3\rho^2 \cdot \rho^2 \sin \phi \, d\rho \, d\phi \, d\theta\].
+</li>
+<li><strong>Evaluate Integral:</strong>
+ \[\int_0^1 3\rho^4 \, d\rho = \left[ \frac{3}{5}\rho^5 \right]_0^1 = \frac{3}{5}\]
+ \[\int_0^\pi \sin \phi \, d\phi = 2\]
+ \[\int_0^{2\pi} d\theta = 2\pi\]
+ \[\text{Total Flux} = \frac{3}{5} \times 2 \times 2\pi = \frac{12\pi}{5}\].
+</li>
+</ul>
+</li>
+</ol>
+<h3>Answer</h3>
+<p>Gauss's Theorem is chosen because \(\operatorname{div} \mathbf{F} = 3(x^2 + y^2 + z^2)\) eliminates transcendental terms. The exact total flux is: \[\iint_S \mathbf{F} \cdot \mathbf{n} \, dS = \frac{12\pi}{5}\]</p>
+</div>
+</section>
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

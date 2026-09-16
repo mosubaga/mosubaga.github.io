@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Homework Set: Foundations of Discrete-Time Markov Processes</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Foundations of Discrete-Time Markov Processes</h1>
+<p class="meta"><strong>Level:</strong> Undergraduate probability<br>
+<strong>Topic:</strong> Discrete-Time Markov Processes<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Assignment Overview and Learning Objectives</h2>
+<p>This assignment marks a fundamental transition in our curriculum. Heretofore, our study has been rooted in the &ldquo;static&rdquo; view of probability, defined by the triplet \((\Omega, \mathcal{F}, P)\) and the behavior of distribution functions \(F(x)\) at fixed points in time. As Professor Kai Lai Chung observes in the preface to <em>A Course in Probability Theory</em>, the introduction of stochastic processes turns what was static into a dynamic structure.</p>
+<p>Crucially, this shift redefines our sample space \(\Omega\). In the static case, a sample point \(\omega \in \Omega\) represents a single outcome; in this &ldquo;dynamic&rdquo; territory, a single \(\omega\) now represents an entire trajectory&mdash;a sequence or path that the process follows through time (Source XV). The following table summarizes the core competencies required to master these trajectories.</p>
+<div class="table-scroll">
+<table>
+<thead><tr><th>Competency</th><th>Real-World Value</th></tr></thead>
+<tbody>
+<tr><td>Matrix Modeling</td><td>Mapping operational constraints to a rigorous mathematical &ldquo;Transition Rule.&rdquo;</td></tr>
+<tr><td>Equilibrium Analysis</td><td>Identifying the long-term stability and resource allocation needs of a system.</td></tr>
+<tr><td>State Classification</td><td>Distinguishing between temporary states and &ldquo;points of no return&rdquo; (absorption).</td></tr>
+<tr><td>Multi-Step Prediction</td><td>Forecasting complex system states across varying future time horizons.</td></tr>
+<tr><td>Absorption &amp; Timing</td><td>Quantifying the probability of goal achievement and the &ldquo;cost of time&rdquo; (expected steps).</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 1 — From Narrative to Matrix (The Transition Rule)</h2>
+<p><strong>Scenario:</strong> The &ldquo;Smart Campus Coffee Shop&rdquo; classifies its hourly state based on customer volume into three categories: Busy (\(B\)), Steady (\(S\)), or Quiet (\(Q\)). Observational data provides the following transition rules:</p>
+<ol>
+<li>If the shop is Busy, it has a 50% chance of remaining Busy and a 50% chance of slowing to Steady.</li>
+<li>If the shop is Steady, it has a 30% chance of becoming Busy, a 40% chance of remaining Steady, and a 30% chance of becoming Quiet.</li>
+<li>If the shop is Quiet, it never remains Quiet in the next hour; there is an 80% chance it moves to Steady and a 20% chance it moves straight to Busy.</li>
+</ol>
+<p><strong>Task:</strong> Construct the one-step transition matrix \(P\) for this system.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Instructor Solution</h3>
+<p>We define the state space \(S = \{B, S, Q\}\). The transition matrix \(P\) is an \(n \times n\) array where the entry \(P_{ij}\) represents the conditional probability \(P(X_{n+1} = j \mid X_n = i)\).</p>
+<p>\[P = \begin{bmatrix} 0.5 & 0.5 & 0 \\ 0.3 & 0.4 & 0.3 \\ 0.2 & 0.8 & 0 \end{bmatrix}\]</p>
+<p>The &ldquo;So What?&rdquo;: Grounding this construction in the Axiom of Probability (Source 2.2, iii), we recall that \(\mathcal{P}(\Omega) = 1\). In the context of Markovian dynamics, each row of the matrix \(P\) must sum exactly to 1. This is because each row represents the exhaustive sample space of possible outcomes for the next time step. A row sum deviating from unity indicates a model that is either &ldquo;leaking&rdquo; probability or violating the definition of a probability measure.</p>
+</div>
+<p class="narrative">Once the single-step rules are codified into a matrix, we can solve for the system's long-term behavior.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2 — The Search for Equilibrium (Steady-State Distributions)</h2>
+<p><strong>Task:</strong> Using the matrix \(P\) from Problem 1, find the stationary distribution vector \(\pi = [\pi_B, \pi_S, \pi_Q]\).</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Instructor Solution</h3>
+<p>The stationary vector \(\pi\) represents a distribution that remains invariant under the transition rule. We solve the system \(\pi P = \pi\) subject to the normalization constraint \(\sum \pi_i = 1\).</p>
+<ol>
+<li><strong>System of Equations:</strong>
+ \[\begin{align*} 0.5\pi_B + 0.3\pi_S + 0.2\pi_Q &= \pi_B \\ 0.5\pi_B + 0.4\pi_S + 0.8\pi_Q &= \pi_S \\ 0\pi_B + 0.3\pi_S + 0\pi_Q &= \pi_Q \end{align*}\]
+</li>
+<li><strong>Derivation:</strong> From the third equation, we find the direct relationship:
+ \[\begin{gather*} \pi_Q = 0.3\pi_S \end{gather*}\]
+ Substituting \(\pi_Q\) into the first equation:
+ \[\begin{align*} 0.5\pi_B + 0.3\pi_S + 0.2(0.3\pi_S) &= \pi_B \\ 0.36\pi_S &= 0.5\pi_B \\ \pi_B &= 0.72\pi_S \end{align*}\]
+</li>
+<li><strong>Normalization:</strong> Using \(\pi_B + \pi_S + \pi_Q = 1\):
+ \[\begin{align*} 0.72\pi_S + \pi_S + 0.3\pi_S &= 1 \\ 2.02\pi_S &= 1 \\ \pi_S \approx 0.4950, \quad \pi_B &\approx 0.3564, \quad \pi_Q \approx 0.1485 \end{align*}\]
+</li>
+</ol>
+<p><strong>Pedagogical Insight:</strong> While we call \(\pi\) the stationary distribution, it provides what is colloquially known as the &ldquo;asymptotic density&rdquo; of the process. You must distinguish this from Kai Lai Chung's formal definition of asymptotic density for sets of integers (Source 38, Ex. 2), which is defined as \(\lim_{n \to \infty} \frac{N_n(E)}{n}\). In Markovian territory, the stationary vector is the functional equivalent; it represents the limiting proportion of time the trajectory spends in each state.</p>
+</div>
+<p class="narrative">Knowing where a system settles requires us to analyze the anatomy of the states themselves&mdash;identifying which are temporary and which are permanent.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3 — The Anatomy of States (Classification and Periodicity)</h2>
+<p><strong>Scenario:</strong> Consider a 5-state process \(\{1, 2, 3, 4, 5\}\) with the transition matrix:</p>
+<p>\[P = \begin{bmatrix} 1 & 0 & 0 & 0 & 0 \\ 0.5 & 0 & 0.5 & 0 & 0 \\ 0 & 0 & 0 & 1 & 0 \\ 0 & 0 & 1 & 0 & 0 \\ 0 & 0.2 & 0 & 0.2 & 0.6 \end{bmatrix}\]</p>
+<p><strong>Task:</strong> Classify each state as Transient vs. Recurrent and Periodic vs. Aperiodic.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Instructor Solution</h3>
+<ul>
+<li><strong>State 1:</strong> Recurrent and Aperiodic.
+<ul><li>Rule: This is an absorbing state. The return probability \(f_{11} = 1\) is satisfied in a single step (\(P_{11}=1\)), making it recurrent. Since it can return in any number of steps, its period \(d=1\).</li></ul>
+</li>
+<li><strong>State 2:</strong> Transient.
+<ul><li>Rule: The return probability \(f_{22} < 1\). Specifically, there is a 0.5 probability of moving to State 1, from which return to State 2 is impossible.</li></ul>
+</li>
+<li><strong>States 3 &amp; 4:</strong> Recurrent and Periodic (Period \(d=2\)).
+<ul><li>Rule: These states form a closed communication class. Since they only communicate with each other (\(3 \to 4 \to 3\)), the return probability \(f_{ii} = 1\). The period is 2 because a return to state \(i\) is only possible at \(t=2, 4, 6, \dots\).</li></ul>
+</li>
+<li><strong>State 5:</strong> Transient.
+<ul><li>Rule: \(f_{55} < 1\). There are exit paths to State 2 and State 4. Trajectories starting here will eventually be &ldquo;lost&rdquo; to the absorbing state or the periodic cycle.</li></ul>
+</li>
+</ul>
+</div>
+<p class="narrative">Determining if a system can get &ldquo;stuck&rdquo; in a recurrent class or &ldquo;lost&rdquo; through transience is the prerequisite for modeling volatile systems like market dynamics.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4 — Market Dynamics (Real-World Application)</h2>
+<p><strong>Scenario:</strong> A &ldquo;Market Sentiment Model&rdquo; has states: Bullish (1), Bearish (2), and Stagnant (3).</p>
+<ul>
+<li>\(P_{1j} = [0.6, 0.2, 0.2]\)</li>
+<li>\(P_{2j} = [0.1, 0.5, 0.4]\)</li>
+<li>\(P_{3j} = [0.3, 0.3, 0.4]\)</li>
+</ul>
+<p><strong>Task:</strong> If the market is Bullish today (\(t=0\)), calculate the probability it will be Bearish in exactly 3 time steps (\(P^3_{12}\)).</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Instructor Solution</h3>
+<p>We leverage the Chapman-Kolmogorov equations. As Professor Chung notes, the &ldquo;mastery of techniques&rdquo; (Source XIV) allows us to bypass path-counting by utilizing matrix powers.</p>
+<div class="table-scroll">
+<table>
+<thead><tr><th>Step (\(t\))</th><th>\(P(\text{Bullish})\)</th><th>\(P(\text{Bearish})\)</th><th>\(P(\text{Stagnant})\)</th></tr></thead>
+<tbody>
+<tr><td>\(t=0\)</td><td>1.0000</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>\(t=1\)</td><td>0.6000</td><td>0.2000</td><td>0.2000</td></tr>
+<tr><td>\(t=2\)</td><td>0.4400</td><td>0.2800</td><td>0.2800</td></tr>
+<tr><td>\(t=3\)</td><td>0.3760</td><td>0.3120</td><td>0.3120</td></tr>
+</tbody>
+</table>
+</div>
+<p>Calculation for \(t=3\) Bearish:</p>
+<p>\[\begin{align*} P(\text{Bearish at } t=3) &= \sum_{k=1}^3 P(\text{State } k \text{ at } t=2) \times P_{k2} \\ &= (0.44 \times 0.2) + (0.28 \times 0.5) + (0.28 \times 0.3) \\ &= 0.088 + 0.140 + 0.084 = \mathbf{0.312} \end{align*}\]</p>
+</div>
+<p class="narrative">While multi-step transitions show us the path, we must eventually consider the cost of time and the mathematical certainty of absorption.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5 — The Point of No Return (Absorption and Return Times)</h2>
+<p><strong>Scenario:</strong> A &ldquo;Thesis Walk&rdquo; (Random Walk variant, Source 8.1). States represent Chapters Completed \(\{0, 1, 2, 3, 4\}\).</p>
+<ul>
+<li>State 0 (Dropped Out) and State 4 (Graduated) are absorbing.</li>
+<li>From transient states \(\{1, 2, 3\}\), the student has a \(p=0.6\) chance of progress and \(q=0.4\) chance of regression.</li>
+</ul>
+<p><strong>Task:</strong> Starting from Chapter 1, calculate the expected number of steps until absorption using the fundamental matrix \(N = (I - Q)^{-1}\).</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Instructor Solution</h3>
+<p>We first partition the transition matrix to isolate the transient submatrix \(Q\):</p>
+<p>\[Q = \begin{bmatrix} 0 & 0.6 & 0 \\ 0.4 & 0 & 0.6 \\ 0 & 0.4 & 0 \end{bmatrix}\]</p>
+<ol>
+<li>Compute \((I - Q)\):
+ \[I - Q = \begin{bmatrix} 1 & -0.6 & 0 \\ -0.4 & 1 & -0.6 \\ 0 & -0.4 & 1 \end{bmatrix}\]
+</li>
+<li>Matrix Inversion for \(N\): Solving \((I-Q)N = I\) via row reduction or Cramer's rule:
+ \[N = (I - Q)^{-1} = \begin{bmatrix} 1.4286 & 1.0714 & 0.6429 \\ 0.7143 & 1.7857 & 1.0714 \\ 0.2857 & 0.7143 & 1.4286 \end{bmatrix}\]
+</li>
+<li>Expected Time: The expected time to absorption starting from state \(i\) is the sum of the \(i\)-th row of \(N\). For a student starting at Chapter 1:
+ \[\begin{gather*} E[T \mid X_0 = 1] = 1.4286 + 1.0714 + 0.6429 = \mathbf{3.1429 \text{ steps}} \end{gather*}\]
+</li>
+</ol>
+<p><strong>Insight for the Learner:</strong> By inverting \((I-Q)\), we transform static probability measures into a dynamic timeline. This is the essence of decision science: we move from &ldquo;Can it happen?&rdquo; to &ldquo;How long must we wait?&rdquo;</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Final Synthesis</h2>
+<p>These five problems provide a &ldquo;sustained tour&rdquo; (Source 12) of discrete-parameter stochastic processes. We began by establishing the probability space \((\Omega, \mathcal{F}, P)\) and shifted our focus to the trajectories that define a dynamic system. By classifying states and applying the Chapman-Kolmogorov equations, we have moved from simple measure theory to the &ldquo;Markovian territory&rdquo; (Source XI) promised by Professor Chung.</p>
+<p>As you conclude this set, remember that this is but a prelude. The techniques used here&mdash;specifically the mastery of matrix structures and expectations&mdash;form the gateway to Potential Theory and the study of Martingales (Source XV), which serve as the crowning achievements of contemporary probability. We favor &ldquo;clarity over elegance&rdquo; (Source 15) in these derivations to ensure you have a robust foundation for these future excursions.</p>
+</section>
+
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

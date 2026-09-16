@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Problem Set: Calculus of Variations</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Calculus of Variations</h1>
+<p class="meta"><strong>Level:</strong> Undergraduate (advanced) calculus<br>
+<strong>Topic:</strong> Calculus of Variations<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Foundations: Optimizing Over Curves, Not Points</h2>
+<p>Ordinary calculus finds the point \(x\) that minimizes a function \(f(x)\). The calculus of variations asks a more ambitious question: among all admissible <em>curves</em> \(y(x)\) connecting two states, which one minimizes (or maximizes) a <strong>functional</strong>&mdash;a rule that assigns a single number to an entire curve? A functional typically has the form</p>
+<p>\[J[y] = \int_a^b F\bigl(x, y(x), y'(x)\bigr)\, dx.\]</p>
+<p>The candidate that extremizes \(J\) must satisfy the <strong>Euler&ndash;Lagrange equation</strong>:</p>
+<p>\[\frac{\partial F}{\partial y} - \frac{d}{dx}\left(\frac{\partial F}{\partial y'}\right) = 0.\]</p>
+<p>When an endpoint is free rather than fixed, the first variation must vanish there as well, producing a <strong>natural (transversality) boundary condition</strong> of the form \(\partial F/\partial y' = 0\) at that endpoint. When the admissible curves must also satisfy an integral constraint \(\int_a^b G(x,y,y')\,dx = k\), we adjoin the constraint with a <strong>Lagrange multiplier</strong> \(\lambda\) and instead extremize the augmented functional \(\int_a^b (F - \lambda G)\,dx\), applying the Euler&ndash;Lagrange equation to the combined integrand.</p>
+<p>Each problem below follows the same three-step outline: <strong>(a)</strong> formulate the functional (and any constraint), <strong>(b)</strong> derive the extremal curve from the Euler&ndash;Lagrange equation, and <strong>(c)</strong> analyze the boundary conditions&mdash;fixed, natural, or constraint-determined&mdash;that pin down the constants of integration.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 1 &mdash; Shortest Path to a Moving Target (Natural Boundary Conditions)</h2>
+<p><strong>Scenario:</strong> Find the curve \(y(x)\) of shortest length that starts at the fixed point \((0,0)\) and ends <em>anywhere</em> on the vertical line \(x=b\); that is, \(y(b)\) is free.</p>
+<ul>
+<li><strong>Functional to minimize:</strong> arc length \(\displaystyle L[y] = \int_0^b \sqrt{1+y'^2}\, dx\).</li>
+<li><strong>Fixed endpoint:</strong> \(y(0) = 0\).</li>
+<li><strong>Free endpoint:</strong> \(y(b)\) unconstrained.</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Instructor Solution</h3>
+<p><strong>(a) Functional formulation.</strong> Here \(F(x,y,y') = \sqrt{1+y'^2}\), which depends on neither \(x\) nor \(y\) explicitly.</p>
+<p><strong>(b) Variational derivation.</strong> Since \(\partial F/\partial y = 0\), the Euler&ndash;Lagrange equation reduces to</p>
+<p>\[\frac{d}{dx}\left(\frac{\partial F}{\partial y'}\right) = 0 \quad\Longrightarrow\quad \frac{\partial F}{\partial y'} = \frac{y'}{\sqrt{1+y'^2}} = m,\]</p>
+<p>a constant. Solving for \(y'\) gives \(y' = \text{const}\), so the extremal is a straight line \(y = mx + c\). The fixed condition \(y(0)=0\) forces \(c=0\), leaving \(y = mx\).</p>
+<p><strong>(c) Boundary condition analysis.</strong> Because \(y(b)\) is free, the first variation contributes a boundary term \(\left.\dfrac{\partial F}{\partial y'}\right|_{x=b}\delta y(b)\), which must vanish for arbitrary \(\delta y(b)\). This yields the natural boundary condition</p>
+<p>\[\left.\frac{\partial F}{\partial y'}\right|_{x=b} = \frac{m}{\sqrt{1+m^2}} = 0 \quad\Longrightarrow\quad m = 0.\]</p>
+<p>Hence \(y(x) \equiv 0\): the shortest path is the horizontal segment from \((0,0)\) to \((b,0)\), which meets the vertical target line \(x=b\) at a right angle.</p>
+<h3>Interpretation</h3>
+<p>The natural boundary condition recovers a classical fact of geometry: the shortest connector from a point to a line meets that line orthogonally. This transversality principle is the same mechanism that governs how light paths meet a mirror or interface in geometric optics.</p>
+</div>
+<p class="narrative">A free endpoint on a line was the simplest case; next we fix both endpoints but let the curve sweep out a surface, trading a boundary-condition subtlety for a genuinely nonlinear Euler&ndash;Lagrange equation.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 2 &mdash; Minimal Surface of Revolution (The Catenoid)</h2>
+<p><strong>Scenario:</strong> A curve \(y(x) > 0\) joins two fixed points \((a, y_a)\) and \((b, y_b)\), \(a<b\). Revolving it about the \(x\)-axis sweeps out a surface. Find the curve that minimizes the surface area&mdash;the shape a soap film takes when stretched between two coaxial rings.</p>
+<ul>
+<li><strong>Functional to minimize:</strong> \(\displaystyle S[y] = 2\pi\int_a^b y\sqrt{1+y'^2}\, dx\).</li>
+<li><strong>Fixed endpoints:</strong> \(y(a) = y_a\), \(y(b) = y_b\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Instructor Solution</h3>
+<p><strong>(a) Functional formulation.</strong> Drop the constant \(2\pi\) and take \(F(y,y') = y\sqrt{1+y'^2}\), which has no explicit \(x\)-dependence.</p>
+<p><strong>(b) Variational derivation.</strong> Since \(F\) is \(x\)-independent, the Beltrami identity \(F - y'\,\partial F/\partial y' = C\) applies:</p>
+<p>\[\frac{\partial F}{\partial y'} = \frac{y\,y'}{\sqrt{1+y'^2}}, \qquad F - y'\frac{\partial F}{\partial y'} = \frac{y(1+y'^2) - y\,y'^2}{\sqrt{1+y'^2}} = \frac{y}{\sqrt{1+y'^2}} = C.\]</p>
+<p>Solving for \(y'\): \(y' = \sqrt{(y/C)^2 - 1}\), which separates as \(\dfrac{dy}{\sqrt{(y/C)^2-1}} = dx\). Integrating gives \(C\cosh^{-1}(y/C) = x - x_0\), i.e.</p>
+<p>\[y(x) = C\cosh\!\left(\frac{x-x_0}{C}\right),\]</p>
+<p>a catenoid profile.</p>
+<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed (Dirichlet conditions), so no natural boundary condition arises; instead, the two constants \(C\) and \(x_0\) are determined by solving \(y_a = C\cosh\!\big((a-x_0)/C\big)\) and \(y_b = C\cosh\!\big((b-x_0)/C\big)\) simultaneously. For endpoints spread far enough apart, no real solution exists and the area-minimizing configuration degenerates to two disks plus the axis (the Goldschmidt discontinuous solution)&mdash;a reminder that a smooth Euler&ndash;Lagrange solution is not always the global minimizer.</p>
+<h3>Interpretation</h3>
+<p>A soap film spanning two coaxial rings minimizes surface energy, which is proportional to area; the resulting equilibrium shape is exactly this catenoid, the same curve as a hanging chain rotated about its axis of symmetry.</p>
+</div>
+<p class="narrative">Minimizing area gave a static equilibrium shape; the next problem minimizes time itself, for a bead sliding under gravity.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 3 &mdash; The Brachistochrone (Fastest Descent Under Gravity)</h2>
+<p><strong>Scenario:</strong> A frictionless bead starts from rest at the origin and slides under uniform gravity \(g\) along a wire shaped as \(y(x)\) (with \(y\) measured positive downward) to a fixed lower point \((x_1, y_1)\). Find the shape that minimizes the total descent time.</p>
+<ul>
+<li><strong>Functional to minimize:</strong> using \(v = \sqrt{2gy}\) from energy conservation, \(\displaystyle T[y] = \int_0^{x_1} \frac{\sqrt{1+y'^2}}{\sqrt{2gy}}\, dx\).</li>
+<li><strong>Fixed endpoints:</strong> \(y(0)=0\), \(y(x_1) = y_1\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Instructor Solution</h3>
+<p><strong>(a) Functional formulation.</strong> \(F(y,y') = \sqrt{1+y'^2}/\sqrt{2gy}\) again has no explicit \(x\)-dependence, so the Beltrami identity applies.</p>
+<p><strong>(b) Variational derivation.</strong> Compute</p>
+<p>\[\frac{\partial F}{\partial y'} = \frac{y'}{\sqrt{2gy}\sqrt{1+y'^2}}, \qquad F - y'\frac{\partial F}{\partial y'} = \frac{(1+y'^2) - y'^2}{\sqrt{2gy}\sqrt{1+y'^2}} = \frac{1}{\sqrt{2gy}\sqrt{1+y'^2}} = C.\]</p>
+<p>Rearranging, \(y(1+y'^2) = \dfrac{1}{2gC^2} \equiv 2a\), a constant. This first-order ODE is solved by the parametrization</p>
+<p>\[x(\theta) = a(\theta - \sin\theta), \qquad y(\theta) = a(1-\cos\theta),\]</p>
+<p>which traces a cycloid, as direct substitution confirms: \(dx = a(1-\cos\theta)\,d\theta\), \(dy = a\sin\theta\,d\theta\), so \(y'=dy/dx = \sin\theta/(1-\cos\theta)\), and \(y(1+y'^2) = a(1-\cos\theta)\cdot\dfrac{(1-\cos\theta)^2+\sin^2\theta}{(1-\cos\theta)^2} = 2a\), independent of \(\theta\). &#10003;</p>
+<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed, so no natural boundary condition appears; the scale \(a\) and the parameter range \(0 \le \theta \le \theta_1\) are fixed by requiring the cycloid to pass through \((x_1,y_1)\).</p>
+<h3>Interpretation</h3>
+<p>This is the classical brachistochrone problem posed by Johann Bernoulli in 1696: the curve of fastest descent is not the straight line but an inverted cycloid, because a steeper initial drop builds speed quickly enough to offset the longer path length.</p>
+</div>
+<p class="narrative">The brachistochrone minimized an unconstrained functional; the remaining two problems introduce an explicit constraint, requiring a Lagrange multiplier to adjoin it to the Euler&ndash;Lagrange machinery.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 4 &mdash; The Isoperimetric Problem (Dido's Problem)</h2>
+<p><strong>Scenario:</strong> Among all curves \(y(x)\) with \(y(-a) = y(a) = 0\) and a fixed arc length \(L > 2a\), find the curve that encloses the maximum area with the segment of the \(x\)-axis between \(-a\) and \(a\).</p>
+<ul>
+<li><strong>Functional to maximize:</strong> \(\displaystyle A[y] = \int_{-a}^{a} y\, dx\).</li>
+<li><strong>Constraint:</strong> \(\displaystyle \int_{-a}^{a} \sqrt{1+y'^2}\, dx = L\).</li>
+<li><strong>Fixed endpoints:</strong> \(y(\pm a) = 0\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Instructor Solution</h3>
+<p><strong>(a) Functional formulation.</strong> Adjoin the constraint with a Lagrange multiplier \(\lambda\) and extremize \(J[y] = \int_{-a}^{a}\bigl(y - \lambda\sqrt{1+y'^2}\bigr)\,dx\), so \(F = y - \lambda\sqrt{1+y'^2}\).</p>
+<p><strong>(b) Variational derivation.</strong> Since \(\partial F/\partial y = 1\) and \(\partial F/\partial y' = -\lambda y'/\sqrt{1+y'^2}\), the Euler&ndash;Lagrange equation gives</p>
+<p>\[1 - \frac{d}{dx}\left(\frac{-\lambda y'}{\sqrt{1+y'^2}}\right) = 0 \quad\Longrightarrow\quad \frac{d}{dx}\left(\frac{\lambda y'}{\sqrt{1+y'^2}}\right) = 1 \quad\Longrightarrow\quad \frac{\lambda y'}{\sqrt{1+y'^2}} = x + C_1.\]</p>
+<p>By the left&ndash;right symmetry of the boundary data (\(y(-a)=y(a)=0\)), the extremal is symmetric about \(x=0\), so \(C_1 = 0\). Squaring, \(\lambda^2 y'^2 = x^2(1+y'^2)\), so</p>
+<p>\[y' = \frac{x}{\sqrt{\lambda^2 - x^2}} \quad\Longrightarrow\quad y(x) = C_2 - \sqrt{\lambda^2-x^2}.\]</p>
+<p>Rearranged, \(x^2 + (y - C_2)^2 = \lambda^2\): the extremal is a circular arc of radius \(\lambda\).</p>
+<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed, so \(y(\pm a)=0\) pins \(C_2 = \sqrt{\lambda^2-a^2}\), and the multiplier \(\lambda\) itself is fixed not by a boundary condition but by the constraint equation&mdash;substituting the arc back into \(\int\sqrt{1+y'^2}\,dx = L\) relates \(\lambda\) to \(L\) and \(a\) through the subtended angle \(L = 2\lambda\arcsin(a/\lambda)\).</p>
+<h3>Interpretation</h3>
+<p>This is Dido's problem: of all curves of a given length anchored at two fixed points, the circular arc encloses the greatest area&mdash;the variational proof of the isoperimetric inequality in the plane.</p>
+</div>
+<p class="narrative">Dido's problem constrained total length while maximizing area; the final problem constrains length while minimizing potential energy, yielding the shape of every hanging cable and power line.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 5 &mdash; The Catenary (Shape of a Hanging Cable)</h2>
+<p><strong>Scenario:</strong> A flexible, inextensible cable of fixed length \(L\) and linear density \(\rho\) hangs under gravity \(g\) between two fixed supports at \((-a,0)\) and \((a,0)\). Find the curve \(y(x)\) it settles into&mdash;the shape minimizing gravitational potential energy subject to the fixed-length constraint.</p>
+<ul>
+<li><strong>Functional to minimize:</strong> \(\displaystyle U[y] = \rho g\int_{-a}^{a} y\sqrt{1+y'^2}\, dx\).</li>
+<li><strong>Constraint:</strong> \(\displaystyle \int_{-a}^{a} \sqrt{1+y'^2}\, dx = L\).</li>
+<li><strong>Fixed endpoints:</strong> \(y(\pm a) = 0\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Instructor Solution</h3>
+<p><strong>(a) Functional formulation.</strong> Adjoin the length constraint with multiplier \(\lambda\) (absorbing \(\rho g\) into a reduced multiplier \(\mu = \lambda/(\rho g)\)) to form \(F = (y-\mu)\sqrt{1+y'^2}\), the same structural form as Problem 2 with \(y\) shifted by \(\mu\).</p>
+<p><strong>(b) Variational derivation.</strong> \(F\) has no explicit \(x\)-dependence, so the Beltrami identity gives</p>
+<p>\[\frac{y-\mu}{\sqrt{1+y'^2}} = C \quad\Longrightarrow\quad y(x) - \mu = C\cosh\!\left(\frac{x-x_0}{C}\right).\]</p>
+<p>By symmetry of the boundary data about \(x=0\), \(x_0 = 0\), giving the catenary</p>
+<p>\[y(x) = \mu + C\cosh\!\left(\frac{x}{C}\right).\]</p>
+<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed, so no natural boundary condition is needed. The condition \(y(a)=y(-a)=0\) (automatically symmetric) gives one equation, \(\mu = -C\cosh(a/C)\), and the length constraint \(\int_{-a}^{a}\sqrt{1+y'^2}\,dx = 2C\sinh(a/C) = L\) supplies the second, fixing \(C\) (and hence \(\mu\)) in terms of \(a\) and \(L\).</p>
+<h3>Interpretation</h3>
+<p>Every hanging chain, cable, or power line adopts this catenary shape&mdash;not a parabola, though the two look similar&mdash;because it is precisely the configuration that minimizes gravitational potential energy while holding the cable's total length fixed.</p>
+</div>
+<p class="narrative">All five extremals below descend from the same Euler&ndash;Lagrange framework; only the presence of an explicit \(x\)-dependence, a free endpoint, or a constraint changes which shortcut&mdash;direct integration, the Beltrami identity, or a Lagrange multiplier&mdash;applies.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Synthesis and Self-Check Table</h2>
+<p>Compare the functional, any constraint, and the resulting extremal curve across all five problems above.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-6" aria-expanded="false" aria-controls="solution-6">Show Answers</button>
+<div class="solution" id="solution-6" hidden>
+<div class="table-scroll">
+<table>
+<thead>
+<tr><th>Problem</th><th>Functional</th><th>Constraint</th><th>Key Technique</th><th>Extremal Curve</th></tr>
+</thead>
+<tbody>
+<tr><td>1. Shortest path, free endpoint</td><td>\(\int\sqrt{1+y'^2}\,dx\)</td><td>None</td><td>Natural boundary condition</td><td>Straight line, \(y\equiv 0\)</td></tr>
+<tr><td>2. Minimal surface</td><td>\(2\pi\int y\sqrt{1+y'^2}\,dx\)</td><td>None</td><td>Beltrami identity</td><td>Catenoid, \(y=C\cosh\frac{x-x_0}{C}\)</td></tr>
+<tr><td>3. Brachistochrone</td><td>\(\int \sqrt{1+y'^2}/\sqrt{2gy}\,dx\)</td><td>None</td><td>Beltrami identity</td><td>Cycloid, \(x=a(\theta-\sin\theta)\)</td></tr>
+<tr><td>4. Isoperimetric (Dido)</td><td>\(\int y\,dx\) (maximize)</td><td>\(\int\sqrt{1+y'^2}\,dx=L\)</td><td>Lagrange multiplier</td><td>Circular arc, \(x^2+(y-C_2)^2=\lambda^2\)</td></tr>
+<tr><td>5. Catenary</td><td>\(\rho g\int y\sqrt{1+y'^2}\,dx\)</td><td>\(\int\sqrt{1+y'^2}\,dx=L\)</td><td>Lagrange multiplier + Beltrami</td><td>\(y=\mu+C\cosh(x/C)\)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

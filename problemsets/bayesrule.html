@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Problem Set: Bayes' Rule and the Logic of Uncertain Inference</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Problem Set: Bayes' Rule</h1>
+<p class="meta"><strong>Level:</strong> Undergraduate probability<br>
+<strong>Topic:</strong> Bayes' Rule and Conditional Probability<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Foundations: Updating Beliefs with Evidence</h2>
+<p>Bayes' Rule answers a very practical question: given a piece of new evidence, how should we update what we believe? We start with a <strong>prior</strong>&mdash;our belief before seeing any evidence&mdash;and end with a <strong>posterior</strong>&mdash;our updated belief after seeing it.</p>
+<p>Say we care about some event \(A\) (for example, &ldquo;the patient has the disease&rdquo;) and we observe evidence \(B\) (for example, &ldquo;the test came back positive&rdquo;). Bayes' Rule combines what we already believed about \(A\) with how likely the evidence \(B\) is, to produce an updated probability of \(A\):</p>
+<p>\[\mathscr{P}(A \mid B) = \frac{\mathscr{P}(B \mid A)\,\mathscr{P}(A)}{\mathscr{P}(B)}\]</p>
+<p>Each piece has a plain-language name:</p>
+<ul>
+<li><strong>\(\mathscr{P}(A)\)</strong> &mdash; the <em>prior</em>: how likely \(A\) was before any evidence.</li>
+<li><strong>\(\mathscr{P}(B \mid A)\)</strong> &mdash; the <em>likelihood</em>: how likely the evidence is, assuming \(A\) is true.</li>
+<li><strong>\(\mathscr{P}(B)\)</strong> &mdash; the overall chance of seeing the evidence at all, whether or not \(A\) is true.</li>
+<li><strong>\(\mathscr{P}(A \mid B)\)</strong> &mdash; the <em>posterior</em>: our updated belief about \(A\) once the evidence is known.</li>
+</ul>
+<p>The five problems below apply this one formula to five very different situations&mdash;medicine, email, weather, manufacturing, and forensics&mdash;to show how a rare prior can make even strong-looking evidence far less conclusive than it first appears.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 1 — Medical Diagnostic Testing (The Rare Disease Paradox)</h2>
+<p><strong>Scenario:</strong> A patient is screened for a rare neurological condition. Let Event \(D\) be the case that the patient has the disease, and Event \(T\) be the case that the test result is positive.</p>
+<ul>
+<li><strong>Prior Probability:</strong> The disease affects 0.1% of the population: \(\mathscr{P}(D) = 0.001\).</li>
+<li><strong>Sensitivity:</strong> The test correctly identifies the disease 99% of the time: \(\mathscr{P}(T|D) = 0.99\).</li>
+<li><strong>Specificity:</strong> The test has a specificity of 95%. Consequently, the False Positive Rate&mdash;the probability of testing positive given that the patient is healthy&mdash;is calculated as the complement of specificity: \(\mathscr{P}(T|D^c) = 1 - 0.95 = 0.05\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Instructor Solution</h3>
+<p>To determine the posterior probability that the patient has the disease given a positive test result, \(\mathscr{P}(D|T)\), we apply the Law of Total Probability to define the denominator \(\mathscr{P}(T)\):</p>
+<p>\[\mathscr{P}(T) = \mathscr{P}(T \cap D) + \mathscr{P}(T \cap D^c) = \mathscr{P}(T|D)\mathscr{P}(D) + \mathscr{P}(T|D^c)\mathscr{P}(D^c)\]</p>
+<p>\[\mathscr{P}(T) = (0.99 \times 0.001) + (0.05 \times 0.999) = 0.00099 + 0.04995 = 0.05094\]</p>
+<p>Applying Bayes' Rule:</p>
+<p>\[\mathscr{P}(D|T) = \frac{\mathscr{P}(T|D)\mathscr{P}(D)}{\mathscr{P}(T)} = \frac{0.00099}{0.05094} \approx 0.0194\]</p>
+<h3>Interpretation</h3>
+<p>Despite the test's high sensitivity, a positive result implies only a 1.94% chance of actual disease. This paradox arises because the extremely low prior \(\mathscr{P}(D)\) ensures that the absolute number of false positives from the healthy majority vastly exceeds the true positives from the diseased minority.</p>
+</div>
+<p class="narrative">This logic of isolating signals from overwhelming noise extends from medicine to the digital domain, such as the algorithmic identification of unwanted communication.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2 — Email Spam Filtering (Linguistic Evidence)</h2>
+<p><strong>Scenario:</strong> An automated filter scans emails for the presence of the trigger word &ldquo;WINNER&rdquo; (\(W\)) to identify spam (\(S\)).</p>
+<ul>
+<li><strong>Prior:</strong> 40% of the local email traffic is classified as spam: \(\mathscr{P}(S) = 0.4\).</li>
+<li><strong>Conditional (Spam):</strong> The word \(W\) appears in 60% of spam messages: \(\mathscr{P}(W|S) = 0.6\).</li>
+<li><strong>Conditional (Legitimate):</strong> The word \(W\) appears in 1% of legitimate mail: \(\mathscr{P}(W|S^c) = 0.01\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Instructor Solution</h3>
+<p>We update the probability of spam based on the evidence of word \(W\):</p>
+<p>\[\mathscr{P}(S|W) = \frac{\mathscr{P}(W|S)\mathscr{P}(S)}{\mathscr{P}(W)}\]</p>
+<p>First, compute the total probability of observing the word:</p>
+<p>\[\mathscr{P}(W) = \mathscr{P}(W|S)\mathscr{P}(S) + \mathscr{P}(W|S^c)\mathscr{P}(S^c) = (0.6 \times 0.4) + (0.01 \times 0.6) = 0.24 + 0.006 = 0.246\]</p>
+<p>Now, solve for the posterior:</p>
+<p>\[\mathscr{P}(S|W) = \frac{0.24}{0.246} \approx 0.9756\]</p>
+<h3>Interpretation</h3>
+<p>Specific linguistic evidence creates a massive shift in probability. The presence of the trigger word narrows the uncertainty, causing the probability of spam to jump from a 40% base rate to over 97.5%.</p>
+</div>
+<p class="narrative">While digital filters operate on discrete linguistic strings, environmental forecasting requires applying the same probabilistic restriction to the continuous Borel fields of physical data.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3 — Weather Forecasting (Updating the Outlook)</h2>
+<p><strong>Scenario:</strong> A meteorologist adjusts a rain forecast (\(R\)) based on a barometer reading of low pressure (\(B\)).</p>
+<ul>
+<li><strong>Prior:</strong> Historical data for the current season suggests a 20% chance of rain: \(\mathscr{P}(R) = 0.2\).</li>
+<li><strong>Conditional:</strong> When rain occurs, the barometer shows low pressure 80% of the time: \(\mathscr{P}(B|R) = 0.8\).</li>
+<li><strong>False Indicator:</strong> On dry days (\(R^c\)), the barometer mistakenly indicates low pressure 25% of the time: \(\mathscr{P}(B|R^c) = 0.25\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Instructor Solution</h3>
+<p>Utilizing the notation for set intersections (\(\cap\)) to represent the joint occurrence of rain and low pressure:</p>
+<p>\[\mathscr{P}(R|B) = \frac{\mathscr{P}(R \cap B)}{\mathscr{P}(B)} = \frac{\mathscr{P}(B|R)\mathscr{P}(R)}{\mathscr{P}(B|R)\mathscr{P}(R) + \mathscr{P}(B|R^c)\mathscr{P}(R^c)}\]</p>
+<p>\[\mathscr{P}(R|B) = \frac{0.8 \times 0.2}{(0.8 \times 0.2) + (0.25 \times 0.8)} = \frac{0.16}{0.16 + 0.2} = \frac{0.16}{0.36} \approx 0.4444\]</p>
+<h3>Interpretation</h3>
+<p>Physical evidence acts as a mathematical filter on historical frequency. Although the barometer is a strong indicator, the low prior probability of rain keeps the posterior at 44.4%, demonstrating that low pressure is not a guarantee of precipitation when the baseline climate is dry.</p>
+</div>
+<p class="narrative">We progress from the macro-scale volatility of environmental Borel fields to the micro-scale precision of industrial quality control.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4 — Industrial Quality Control (Defect Detection)</h2>
+<p><strong>Scenario:</strong> A manufacturing line utilizes a sensor to flag defective items. Let \(D\) be the event of a defective item and \(F\) be the event the sensor flags the item.</p>
+<ul>
+<li><strong>Base Rate:</strong> 2% of the total output is defective: \(\mathscr{P}(D) = 0.02\).</li>
+<li><strong>Accuracy:</strong> The sensor has a 1% False Negative Rate: \(\mathscr{P}(F^c|D) = 0.01\), implying \(\mathscr{P}(F|D) = 0.99\).</li>
+<li><strong>False Alarm Rate:</strong> The sensor flags a functional item 3% of the time: \(\mathscr{P}(F|D^c) = 0.03\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Instructor Solution</h3>
+<p>We seek the probability that a flagged item is actually defective, \(\mathscr{P}(D|F)\). The denominator \(\mathscr{P}(F)\) is expanded as:</p>
+<p>\[\mathscr{P}(F) = \mathscr{P}(F \cap D) + \mathscr{P}(F \cap D^c) = (0.99 \times 0.02) + (0.03 \times 0.98) = 0.0198 + 0.0294 = 0.0492\]</p>
+<p>Calculate the posterior probability:</p>
+<p>\[\mathscr{P}(D|F) = \frac{0.0198}{0.0492} \approx 0.4024\]</p>
+<h3>Interpretation</h3>
+<p>The sensor's high reliability at catching defects is undermined by the high volume of functional items. Despite a 99% true-positive rate, a flag only indicates a 40.2% chance of a defect, as the majority of flags are false alarms generated by the healthy population.</p>
+</div>
+<p class="narrative">The culmination of this logic is found in forensic science, where the measure of a human life is balanced against the infinitesimal match probabilities of genetic sequences.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5 — Forensic DNA Analysis (The Prosecutor's Fallacy)</h2>
+<p><strong>Scenario:</strong> A DNA match (\(M\)) is discovered between a suspect and a sample from a crime scene.</p>
+<ul>
+<li><strong>Suspect Pool:</strong> The suspect is one of 10,000 individuals who had access to the scene. The prior probability of guilt (\(G\)) is thus \(\mathscr{P}(G) = 1/10{,}000 = 0.0001\).</li>
+<li><strong>Random Match Probability:</strong> The probability that an innocent person's DNA matches the sample is one in a thousand: \(\mathscr{P}(M|G^c) = 0.001\).</li>
+<li><strong>Guilt Match Probability:</strong> If the suspect is the source, a match is guaranteed: \(\mathscr{P}(M|G) = 1.0\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Instructor Solution</h3>
+<p>We calculate the posterior probability of guilt given the evidence of a match, \(\mathscr{P}(G|M)\):</p>
+<p>\[\mathscr{P}(G|M) = \frac{\mathscr{P}(M|G)\mathscr{P}(G)}{\mathscr{P}(M|G)\mathscr{P}(G) + \mathscr{P}(M|G^c)\mathscr{P}(G^c)}\]</p>
+<p>\[\mathscr{P}(G|M) = \frac{1.0 \times 0.0001}{(1.0 \times 0.0001) + (0.001 \times 0.9999)} = \frac{0.0001}{0.0001 + 0.0009999} = \frac{0.0001}{0.0010999} \approx 0.0909\]</p>
+<h3>Interpretation</h3>
+<p>This illustrates the &ldquo;Prosecutor's Fallacy&rdquo;: confusing the rarity of a match given innocence (\(\mathscr{P}(M|G^c)\)) with the probability of innocence given a match (\(\mathscr{P}(G^c|M)\)). In a pool of 10,000, even a rare match only confers a 9.1% chance of guilt because the prior probability is so small.</p>
+</div>
+<p class="narrative">These diverse applications&mdash;from pathology to forensics&mdash;all derive from the core axioms of measure theory, proving that mathematical rigor is the only reliable guide through the fog of uncertainty.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Synthesis and Self-Check Table</h2>
+<p>Compare the base rate (prior) to the posterior probability across all five scenarios above.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-6" aria-expanded="false" aria-controls="solution-6">Show Answers</button>
+<div class="solution" id="solution-6" hidden>
+<div class="table-scroll">
+<table>
+<thead>
+<tr><th>Context</th><th>Base Rate (Prior)</th><th>Nature of Evidence</th><th>Posterior Probability</th><th>Shift (Posterior/Prior)</th></tr>
+</thead>
+<tbody>
+<tr><td>Medical</td><td>\(\mathscr{P}(D) = 0.001\)</td><td>Positive Test</td><td>\(\approx 0.0194\)</td><td>19.4x Increase</td></tr>
+<tr><td>Email Spam</td><td>\(\mathscr{P}(S) = 0.40\)</td><td>Trigger Word</td><td>\(\approx 0.9756\)</td><td>2.4x Increase</td></tr>
+<tr><td>Weather</td><td>\(\mathscr{P}(R) = 0.20\)</td><td>Low Pressure</td><td>\(\approx 0.4444\)</td><td>2.2x Increase</td></tr>
+<tr><td>Industry</td><td>\(\mathscr{P}(D) = 0.02\)</td><td>Sensor Flag</td><td>\(\approx 0.4024\)</td><td>20.1x Increase</td></tr>
+<tr><td>Forensics</td><td>\(\mathscr{P}(G) = 0.0001\)</td><td>DNA Match</td><td>\(\approx 0.0909\)</td><td>909.0x Increase</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Real Analysis Homework: Sequences and Series</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Sequences and Series</h1>
+<p class="meta"><strong>Level:</strong> Undergraduate real analysis<br>
+<strong>Topic:</strong> Sequences and Series<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Problem 1: Bounded Monotonic Sequences</h2>
+<h3>Problem Statement</h3>
+<p>Consider the sequence \((a_n)_{n=1}^\infty\) defined recursively by: \[a_1 = \sqrt{2}, \quad a_{n+1} = \sqrt{2 + a_n} \quad \text{for all } n \ge 1\]</p>
+<ol>
+<li>Prove by induction that \((a_n)\) is bounded above by \(2\).
+</li>
+<li>Prove that \((a_n)\) is strictly monotone increasing.
+</li>
+<li>Deduce that the sequence converges and find its limit \(\lim_{n \to \infty} a_n\).
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Boundedness:</strong> Establish \(a_n &lt; 2\) for all \(n \ge 1\) using mathematical induction.
+<ul>
+<li><em>Base case (\(n=1\)):</em> \(a_1 = \sqrt{2} &lt; 2\), which holds.
+</li>
+<li><em>Inductive step:</em> Assume \(a_k &lt; 2\) for \(k \ge 1\). Then \(a_{k+1} = \sqrt{2 + a_k} &lt; \sqrt{2 + 2} = \sqrt{4} = 2\). By induction, \(a_n &lt; 2\) for all \(n \ge 1\).
+</li>
+</ul>
+</li>
+<li><strong>Monotonicity:</strong> Show that \(a_{n+1} &gt; a_n\) for all \(n \ge 1\).
+<ul>
+<li><em>Base case (\(n=1\)):</em> \(a_2 = \sqrt{2 + \sqrt{2}} &gt; \sqrt{2} = a_1\).
+</li>
+<li><em>Inductive step:</em> Assume \(a_k &lt; a_{k+1}\). Then \(2 + a_k &lt; 2 + a_{k+1} \implies \sqrt{2 + a_k} &lt; \sqrt{2 + a_{k+1}} \implies a_{k+1} &lt; a_{k+2}\). Thus, \((a_n)\) is strictly monotone increasing.
+</li>
+</ul>
+</li>
+<li><strong>Convergence and Limit:</strong>
+<ul>
+<li>Since \((a_n)\) is bounded above and monotone increasing, the <strong>Monotone Convergence Theorem</strong> guarantees that \(\lim_{n \to \infty} a_n = L\) exists.
+</li>
+<li>Taking the limit on both sides of \(a_{n+1} = \sqrt{2 + a_n}\), we obtain \(L = \sqrt{2 + L} \implies L^2 - L - 2 = 0 \implies (L - 2)(L + 1) = 0\).
+</li>
+<li>Since \(a_n \ge \sqrt{2} &gt; 0\) for all \(n\), we must have \(L \ge \sqrt{2}\), ruling out \(L = -1\).
+</li>
+</ul>
+</li>
+</ol>
+<h3>Answer</h3>
+<p>The sequence \((a_n)\) is monotone increasing and bounded above by \(2\), so it converges by the Monotone Convergence Theorem. Its limit is: \[\lim_{n \to \infty} a_n = 2\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2: Sums of Telescoping and Geometric Series</h2>
+<h3>Problem Statement</h3>
+<p>Compute the exact sum for each of the following infinite series:</p>
+<ol>
+<li>\(\displaystyle \sum_{n=1}^\infty \frac{1}{n(n+1)(n+2)}\)
+</li>
+<li>\(\displaystyle \sum_{n=1}^\infty \frac{3 \cdot 2^n - 2 \cdot 3^{n-1}}{5^n}\)
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Part 1 (Telescoping Series):</strong>
+<ul>
+<li>Apply partial fraction decomposition:
+ \[\frac{1}{n(n+1)(n+2)} = \frac{1/2}{n} - \frac{1}{n+1} + \frac{1/2}{n+2} = \frac{1}{2} \left( \left(\frac{1}{n} - \frac{1}{n+1}\right) - \left(\frac{1}{n+1} - \frac{1}{n+2}\right) \right)\]
+</li>
+<li>Define \(b_n = \frac{1}{n} - \frac{1}{n+1}\). The \(N\)-th partial sum is:
+ \[s_N = \frac{1}{2} \sum_{n=1}^N (b_n - b_{n+1}) = \frac{1}{2} (b_1 - b_{N+1}) = \frac{1}{2} \left( \left(1 - \frac{1}{2}\right) - \left(\frac{1}{N+1} - \frac{1}{N+2}\right) \right)\]
+</li>
+<li>Evaluate the limit as \(N \to \infty\):
+ \[S = \lim_{N \to \infty} s_N = \frac{1}{2} \left( \frac{1}{2} - 0 \right) = \frac{1}{4}\]
+</li>
+</ul>
+</li>
+<li><strong>Part 2 (Geometric Series):</strong>
+<ul>
+<li>Split the series into two separate geometric series \(\sum_{n=1}^\infty a r^{n-1}\):
+ \[\sum_{n=1}^\infty \frac{3 \cdot 2^n}{5^n} - \sum_{n=1}^\infty \frac{2 \cdot 3^{n-1}}{5^n} = \sum_{n=1}^\infty \frac{6}{5} \left(\frac{2}{5}\right)^{n-1} - \sum_{n=1}^\infty \frac{2}{5} \left(\frac{3}{5}\right)^{n-1}\]
+</li>
+<li>Both series satisfy \(|r| &lt; 1\) (\(r_1 = 2/5\) and \(r_2 = 3/5\)), so both converge:
+ \[S_1 = \frac{6/5}{1 - 2/5} = \frac{6/5}{3/5} = 2, \quad S_2 = \frac{2/5}{1 - 3/5} = \frac{2/5}{2/5} = 1\]
+</li>
+<li>The sum is \(S_1 - S_2 = 2 - 1 = 1\).
+</li>
+</ul>
+</li>
+</ol>
+<h3>Answer</h3>
+<ol>
+<li>\(\displaystyle \sum_{n=1}^\infty \frac{1}{n(n+1)(n+2)} = \frac{1}{4}\)
+</li>
+<li>\(\displaystyle \sum_{n=1}^\infty \frac{3 \cdot 2^n - 2 \cdot 3^{n-1}}{5^n} = 1\)
+</li>
+</ol>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3: Convergence Tests for Infinite Series</h2>
+<h3>Problem Statement</h3>
+<p>For each series below, determine whether it converges or diverges. Explicitly state the test or theorem applied, verify all required hypotheses, and show your work:</p>
+<ol>
+<li>\(\displaystyle \sum_{n=1}^\infty \frac{n^2 + 1}{3^n}\)
+</li>
+<li>\(\displaystyle \sum_{n=1}^\infty (-1)^{n+1} \frac{\ln n}{n}\)
+</li>
+<li>\(\displaystyle \sum_{n=1}^\infty \frac{\sqrt{n+1} - \sqrt{n}}{\sqrt{n}}\)
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Series 1:</strong> Apply Cauchy's <strong>Ratio Test</strong>:
+ \[L = \lim_{n \to \infty} \left| \frac{a_{n+1}}{a_n} \right| = \lim_{n \to \infty} \frac{(n+1)^2 + 1}{3^{n+1}} \cdot \frac{3^n}{n^2 + 1} = \lim_{n \to \infty} \frac{1}{3} \cdot \frac{n^2 + 2n + 2}{n^2 + 1} = \frac{1}{3}\]
+ Since \(L = \frac{1}{3} &lt; 1\), the Ratio Test guarantees that the series converges absolutely (and hence converges).
+</li>
+<li><strong>Series 2:</strong> Apply the <strong>Alternating Series Test</strong> (Leibniz's Test):
+<ul>
+<li>Identify \(b_n = \frac{\ln n}{n} &gt; 0\) for \(n \ge 2\).
+</li>
+<li>Verify Condition (i): \(\lim_{n \to \infty} b_n = \lim_{n \to \infty} \frac{\ln n}{n} = 0\) (via L'Hôpital's Rule).
+</li>
+<li>Verify Condition (ii): To show \((b_n)\) is eventually decreasing, consider \(f(x) = \frac{\ln x}{x}\) for \(x \ge 2\). Its derivative \(f'(x) = \frac{1 - \ln x}{x^2} &lt; 0\) for \(x &gt; e \approx 2.718\). Thus, \(b_n \ge b_{n+1}\) for all \(n \ge 3\).
+</li>
+<li>By the Alternating Series Test, the series converges.
+</li>
+</ul>
+</li>
+<li><strong>Series 3:</strong> Rationalize the numerator and use the <strong>Limit Comparison Test</strong>:
+ \[a_n = \frac{(\sqrt{n+1} - \sqrt{n})(\sqrt{n+1} + \sqrt{n})}{\sqrt{n}(\sqrt{n+1} + \sqrt{n})} = \frac{1}{\sqrt{n^2 + n} + n}\]
+ Compare with \(b_n = \frac{1}{n}\):
+ \[\lim_{n \to \infty} \frac{a_n}{b_n} = \lim_{n \to \infty} \frac{n}{\sqrt{n^2 + n} + n} = \lim_{n \to \infty} \frac{1}{\sqrt{1 + 1/n} + 1} = \frac{1}{2}\]
+ Since \(\frac{1}{2} &gt; 0\) and \(\sum_{n=1}^\infty \frac{1}{n}\) is the divergent harmonic series (\(p\)-series with \(p=1\)), the Limit Comparison Test establishes that \(\sum_{n=1}^\infty a_n\) diverges.
+</li>
+</ol>
+<h3>Answer</h3>
+<ol>
+<li><strong>Converges</strong> (by the Ratio Test, \(L = 1/3 &lt; 1\)).
+</li>
+<li><strong>Converges</strong> (by the Alternating Series Test).
+</li>
+<li><strong>Diverges</strong> (by the Limit Comparison Test with the harmonic series).
+</li>
+</ol>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4: Power Series and Interval of Convergence</h2>
+<h3>Problem Statement</h3>
+<p>Determine the radius of convergence \(R\) and the exact interval of convergence \(I\) for the power series: \[\sum_{n=1}^\infty \frac{(-1)^n (x - 3)^n}{n \cdot 2^n}\] Analyze convergence at both endpoints explicitly.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Radius of Convergence via Ratio Test:</strong> Apply the Ratio Test for absolute convergence:
+ \[L = \lim_{n \to \infty} \left| \frac{a_{n+1}(x)}{a_n(x)} \right| = \lim_{n \to \infty} \left| \frac{(-1)^{n+1} (x - 3)^{n+1}}{(n+1) 2^{n+1}} \cdot \frac{n \cdot 2^n}{(-1)^n (x - 3)^n} \right| = |x - 3| \lim_{n \to \infty} \frac{n}{2(n+1)} = \frac{|x - 3|}{2}\]
+ The series converges absolutely when \(L &lt; 1 \implies \frac{|x - 3|}{2} &lt; 1 \implies |x - 3| &lt; 2\).
+ Therefore, the radius of convergence is <strong>\(R = 2\)</strong>.
+ The open interval of convergence is \((3 - 2, 3 + 2) = (1, 5)\).
+</li>
+<li><strong>Endpoint Analysis:</strong>
+<ul>
+<li><strong>At \(x = 5\):</strong> The power series becomes:
+ \[\sum_{n=1}^\infty \frac{(-1)^n (5 - 3)^n}{n \cdot 2^n} = \sum_{n=1}^\infty \frac{(-1)^n 2^n}{n \cdot 2^n} = \sum_{n=1}^\infty \frac{(-1)^n}{n}\]
+ This is the alternating harmonic series, which converges by the Alternating Series Test.
+</li>
+<li><strong>At \(x = 1\):</strong> The power series becomes:
+ \[\sum_{n=1}^\infty \frac{(-1)^n (1 - 3)^n}{n \cdot 2^n} = \sum_{n=1}^\infty \frac{(-1)^n (-2)^n}{n \cdot 2^n} = \sum_{n=1}^\infty \frac{(-1)^{2n} 2^n}{n \cdot 2^n} = \sum_{n=1}^\infty \frac{1}{n}\]
+ This is the standard harmonic series, which diverges (\(p\)-series with \(p=1\)).
+</li>
+</ul>
+</li>
+</ol>
+<h3>Answer</h3>
+<ul>
+<li><strong>Radius of Convergence:</strong> \(R = 2\)
+</li>
+<li><strong>Interval of Convergence:</strong> \(I = (1, 5]\)
+</li>
+</ul>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5: Critical Evaluation of Convergence Claims</h2>
+<h3>Problem Statement</h3>
+<p>A student claims: <em>"If \(\lim_{n \to \infty} a_n = 0\), then the infinite series \(\sum_{n=1}^\infty a_n\) must converge."</em></p>
+<ol>
+<li>Disprove the student's claim by providing an explicit counterexample and proving that your counterexample diverges.
+</li>
+<li>State the correct <strong>\(n\)-th Term Test for Divergence</strong>.
+</li>
+<li>Prove the \(n\)-th Term Test theorem: <em>If \(\sum_{n=1}^\infty a_n\) converges, then \(\lim_{n \to \infty} a_n = 0\)</em>.
+</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Counterexample:</strong> Consider the harmonic series \(a_n = \frac{1}{n}\).
+<ul>
+<li>The sequence of terms satisfies \(\lim_{n \to \infty} \frac{1}{n} = 0\).
+</li>
+<li>To prove divergence, group the terms in partial sums of powers of two \(s_{2^k}\):
+ \[s_{2^k} = 1 + \frac{1}{2} + \left(\frac{1}{3} + \frac{1}{4}\right) + \left(\frac{1}{5} + \dots + \frac{1}{8}\right) + \dots + \left(\frac{1}{2^{k-1}+1} + \dots + \frac{1}{2^k}\right)\]
+ \[s_{2^k} &gt; 1 + \frac{1}{2} + \left(\frac{1}{4} + \frac{1}{4}\right) + \left(\frac{1}{8} + \dots + \frac{1}{8}\right) + \dots = 1 + \frac{k}{2}\]
+</li>
+<li>Since \(\lim_{k \to \infty} \left(1 + \frac{k}{2}\right) = \infty\), the sequence of partial sums \((s_n)\) is unbounded and therefore diverges.
+</li>
+</ul>
+</li>
+<li><strong>Correct \(n\)-th Term Test for Divergence:</strong>
+ If \(\lim_{n \to \infty} a_n \neq 0\) or if \(\lim_{n \to \infty} a_n\) does not exist, then the series \(\sum_{n=1}^\infty a_n\) diverges.
+</li>
+<li><strong>Formal Proof of Necessary Condition:</strong>
+<ul>
+<li>Let \(s_n = \sum_{k=1}^n a_k\) denote the \(n\)-th partial sum.
+</li>
+<li>By definition of series convergence, \(\sum_{n=1}^\infty a_n = S \implies \lim_{n \to \infty} s_n = S\).
+</li>
+<li>Note that \(a_n = s_n - s_{n-1}\) for all \(n \ge 2\).
+</li>
+<li>Applying the Algebraic Limit Laws for convergent sequences:
+ \[\lim_{n \to \infty} a_n = \lim_{n \to \infty} (s_n - s_{n-1}) = \lim_{n \to \infty} s_n - \lim_{n \to \infty} s_{n-1} = S - S = 0 \quad \blacksquare\]
+</li>
+</ul>
+</li>
+</ol>
+<h3>Answer</h3>
+<ol>
+<li><strong>Counterexample:</strong> The harmonic series \(a_n = \frac{1}{n}\) has \(\lim_{n \to \infty} \frac{1}{n} = 0\), yet \(\sum_{n=1}^\infty \frac{1}{n}\) diverges to \(\infty\).
+</li>
+<li><strong>\(n\)-th Term Test for Divergence:</strong> If \(\lim_{n \to \infty} a_n \neq 0\) (or does not exist), then \(\sum_{n=1}^\infty a_n\) diverges.
+</li>
+<li><strong>Proof:</strong> Expressing \(a_n = s_n - s_{n-1}\) yields \(\lim a_n = S - S = 0\).
+</li>
+</ol>
+</div>
+</section>
+</main>
+<script>
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show Solution" : "Hide Solution";
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

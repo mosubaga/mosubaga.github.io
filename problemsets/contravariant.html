@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Problem Set: Covariant and Contravariant Tensors</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Covariant and Contravariant Tensors</h1>
+<p class="meta"><strong>Level:</strong> Introductory undergraduate tensor calculus<br>
+<strong>Topic:</strong> Covariant and Contravariant Tensors<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Foundations: Two Ways for a Component to Change</h2>
+<p>A tensor's components change when you change coordinates, but not all components change the same way. A <strong>contravariant</strong> component, written with an upper index \(V^i\), transforms like a coordinate displacement \(dx^i\)&mdash;it scales the same way the coordinates themselves do. A <strong>covariant</strong> component, written with a lower index \(V_i\), transforms like a gradient \(\partial\phi/\partial x^i\)&mdash;it scales the opposite way, so that pairing one of each always produces a coordinate-independent number.</p>
+<p>That pairing is the Einstein summation convention: whenever an index appears once as a superscript and once as a subscript in the same term, it is implicitly summed over all dimensions, and the result, \(A_i V^i = \sum_i A_i V^i\), is a scalar &mdash; the same number no matter what coordinates you compute it in.</p>
+<p>The <strong>metric tensor</strong> \(g_{ij}\) is what lets you convert between the two flavors: it lowers an index, \(U_i = g_{ij}U^j\), while its matrix inverse \(g^{ij}\) (satisfying \(g_{ij}g^{jk} = \delta_i^k\)) raises one back, \(U^i = g^{ij}U_j\). The <strong>Kronecker delta</strong> \(\delta^i_j\) is the identity tensor: it acts as a substitution operator, \(\delta^i_j V^j = V^i\), and its self-contraction \(\delta^i_i\) simply counts dimensions.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 1 &mdash; Identifying Tensor Character and Index Placement</h2>
+<p><strong>Scenario:</strong> A vector \(\mathbf{V}\) can be represented by its contravariant components \(V^i\) (upper index) or its covariant components \(V_i\) (lower index).</p>
+<ol>
+<li>State the prototype geometric object for a contravariant vector \(V^i\) and for a covariant vector \(V_i\).</li>
+<li>Given the scalar field \(\phi(x^1,x^2,x^3) = (x^1)^2 x^2 + 3x^3\) in 3-dimensional Euclidean space:
+<ul>
+<li>(a) Compute the gradient components \(A_i = \dfrac{\partial \phi}{\partial x^i}\) and identify whether \(A_i\) is contravariant or covariant.</li>
+<li>(b) Write out the expansion of \(A_i V^i\) for \(i \in \{1,2,3\}\) using the Einstein summation convention.</li>
+</ul>
+</li>
+</ol>
+<blockquote class="directions"><strong>Hint:</strong> Coordinate displacements \(dx^i\) are the prototype for contravariant vectors, while gradients \(\partial\phi/\partial x^i\) are the prototype for covariant vectors. An index appearing once as a superscript and once as a subscript implies summation over all dimensions.</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Prototype contravariant vector: the coordinate differential \(dx^i\). Prototype covariant vector: the gradient \(\partial\phi/\partial x^i\).</p>
+<p><strong>2(a).</strong> Differentiating \(\phi = (x^1)^2 x^2 + 3x^3\):</p>
+<p>\[A_1 = \frac{\partial \phi}{\partial x^1} = 2x^1x^2, \qquad A_2 = \frac{\partial \phi}{\partial x^2} = (x^1)^2, \qquad A_3 = \frac{\partial \phi}{\partial x^3} = 3.\]</p>
+<p>Since \(A_i\) is built from a gradient, it is a <strong>covariant</strong> vector.</p>
+<p><strong>2(b).</strong> Expanding the repeated index \(i\):</p>
+<p>\[A_i V^i = A_1 V^1 + A_2 V^2 + A_3 V^3 = 2x^1x^2\,V^1 + (x^1)^2\,V^2 + 3\,V^3.\]</p>
+</div>
+<p class="narrative">Knowing which prototype a component follows only matters because it dictates how that component must transform when the coordinate system itself changes &mdash; the subject of the next problem.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 2 &mdash; Transformation Laws for Vectors</h2>
+<p><strong>Scenario:</strong> Consider the transformation in \(\mathbb{R}^2\) from Cartesian coordinates \((x^1,x^2)=(x,y)\) to polar coordinates \((\bar x^1,\bar x^2)=(r,\theta)\), defined by \(x = r\cos\theta\), \(y = r\sin\theta\).</p>
+<ol>
+<li>Compute the Jacobian matrix elements \(\partial x^j/\partial \bar x^i\) and its inverse \(\partial \bar x^i/\partial x^j\).</li>
+<li>Given the contravariant vector field in Cartesian coordinates
+<div class="given-block"><p>\[V^j = (y,\,-x)^T = ((x^2),\,-(x^1))^T,\]</p></div>
+use the contravariant transformation law \(\bar V^i = V^j\,\dfrac{\partial \bar x^i}{\partial x^j}\) to find \(\bar V^1\) and \(\bar V^2\) in polar coordinates.</li>
+</ol>
+<blockquote class="directions"><strong>Hint:</strong> In \(\bar V^i = V^j\,\partial \bar x^i/\partial x^j\), the target coordinate \(\bar x^i\) sits in the numerator of the partial derivative &mdash; the opposite placement from a covariant transformation.</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> The forward Jacobian and its inverse:</p>
+<p>\[J = \begin{pmatrix}\dfrac{\partial x}{\partial r} & \dfrac{\partial x}{\partial \theta}\\[4pt] \dfrac{\partial y}{\partial r} & \dfrac{\partial y}{\partial \theta}\end{pmatrix} = \begin{pmatrix}\cos\theta & -r\sin\theta\\ \sin\theta & r\cos\theta\end{pmatrix}, \qquad \det J = r.\]</p>
+<p>\[J^{-1} = \begin{pmatrix}\dfrac{\partial r}{\partial x} & \dfrac{\partial r}{\partial y}\\[4pt] \dfrac{\partial \theta}{\partial x} & \dfrac{\partial \theta}{\partial y}\end{pmatrix} = \begin{pmatrix}\cos\theta & \sin\theta\\[2pt] -\dfrac{\sin\theta}{r} & \dfrac{\cos\theta}{r}\end{pmatrix}.\]</p>
+<p><strong>2.</strong> With \(V^1=y\), \(V^2=-x\):</p>
+<p>\[\bar V^1 = V^1\frac{\partial r}{\partial x} + V^2\frac{\partial r}{\partial y} = y\cos\theta - x\sin\theta = (r\sin\theta)\cos\theta - (r\cos\theta)\sin\theta = 0.\]</p>
+<p>\[\bar V^2 = V^1\frac{\partial \theta}{\partial x} + V^2\frac{\partial \theta}{\partial y} = -\frac{y\sin\theta}{r} - \frac{x\cos\theta}{r} = -\sin^2\theta - \cos^2\theta = -1.\]</p>
+<p>So \(\bar V^1 = 0\) and \(\bar V^2 = -1\): a purely angular field with no radial component, matching the fact that \((y,-x)\) generates clockwise rotation about the origin.</p>
+</div>
+<p class="narrative">The Jacobian factors that raised and lowered coordinate indices above are the same objects, built from the metric, that raise and lower vector indices &mdash; the tool introduced next.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 3 &mdash; Index Raising and Lowering via the Metric Tensor</h2>
+<p><strong>Scenario:</strong> In 2D polar coordinates \((x^1,x^2)=(r,\theta)\), the line element is
+<div class="given-block"><p>\[ds^2 = (dr)^2 + r^2(d\theta)^2.\]</p></div></p>
+<ol>
+<li>Write down the covariant metric tensor \(g_{ij}\) and its inverse, the contravariant metric tensor \(g^{ij}\).</li>
+<li>Given the contravariant vector \(U^i = \left(1,\, \dfrac{1}{r}\right)^T\):
+<ul>
+<li>(a) Calculate the covariant components \(U_i = g_{ij}U^j\).</li>
+<li>(b) Calculate the invariant magnitude squared \(\|\mathbf{U}\|^2 = g_{ij}U^iU^j = U_iU^i\).</li>
+</ul>
+</li>
+</ol>
+<blockquote class="directions"><strong>Hint:</strong> For an orthogonal coordinate system, \(g_{ij}\) is diagonal, so raising or lowering an index just multiplies or divides that component by the corresponding diagonal entry.</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Reading the coefficients off \(ds^2 = g_{11}(dx^1)^2 + g_{22}(dx^2)^2\):</p>
+<p>\[g_{ij} = \begin{pmatrix}1 & 0\\ 0 & r^2\end{pmatrix}, \qquad g^{ij} = \begin{pmatrix}1 & 0\\ 0 & \dfrac{1}{r^2}\end{pmatrix}.\]</p>
+<p><strong>2(a).</strong> Lowering the index on \(U^i = (1,\, 1/r)\):</p>
+<p>\[U_1 = g_{11}U^1 + g_{12}U^2 = (1)(1) + 0 = 1, \qquad U_2 = g_{21}U^1 + g_{22}U^2 = 0 + (r^2)\left(\frac{1}{r}\right) = r.\]</p>
+<p><strong>2(b).</strong></p>
+<p>\[\|\mathbf{U}\|^2 = U_1U^1 + U_2U^2 = (1)(1) + (r)\left(\frac{1}{r}\right) = 1 + 1 = 2.\]</p>
+<p>The magnitude is a pure number, independent of \(r\) &mdash; exactly what is required of an invariant scalar built by fully contracting a tensor.</p>
+</div>
+<p class="narrative">Contracting a pair of matched indices always removes them from the expression; the next problem studies that contraction operation on its own, stripped of any specific vector.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 4 &mdash; Tensor Contraction and the Kronecker Delta</h2>
+<ol>
+<li>Let \(T^i_j\) be a mixed second-order tensor in an \(n\)-dimensional space. Show that contracting the indices (setting \(j=i\)) yields an invariant scalar \(T^i_i = \operatorname{Tr}(T)\).</li>
+<li>Evaluate, in \(n\) dimensions:
+<ul>
+<li>(a) \(\delta^i_i\)</li>
+<li>(b) \(g_{ij}\,g^{jk}\,\delta^i_k\)</li>
+<li>(c) \(A_iB_j\,g^{ij} - A^kB_k\)</li>
+</ul>
+</li>
+</ol>
+<blockquote class="directions"><strong>Hint:</strong> Contracting an upper index with a lower index reduces a tensor's rank by 2. The Kronecker delta acts as a substitution operator: \(\delta^i_j V^j = V^i\).</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> A mixed tensor transforms as \(\bar T^i_j = T^k_l\,\dfrac{\partial \bar x^i}{\partial x^k}\dfrac{\partial x^l}{\partial \bar x^j}\). Setting \(j=i\) and summing:</p>
+<p>\[\bar T^i_i = T^k_l\,\frac{\partial \bar x^i}{\partial x^k}\frac{\partial x^l}{\partial \bar x^i} = T^k_l\,\frac{\partial x^l}{\partial x^k} = T^k_l\,\delta^l_k = T^k_k.\]</p>
+<p>So \(\bar T^i_i = T^k_k\): the contracted trace has the same value in every coordinate system, i.e. it is an invariant scalar.</p>
+<p><strong>2(a).</strong> \(\delta^i_i = \displaystyle\sum_{i=1}^n 1 = n.\)</p>
+<p><strong>2(b).</strong> By definition of the inverse metric, \(g_{ij}g^{jk} = \delta_i^k\), so the expression becomes \(\delta_i^k\,\delta^i_k\). Summing over \(k\) first, only \(k=i\) survives, leaving \(\delta^i_i\); summing that over \(i\) gives</p>
+<p>\[g_{ij}\,g^{jk}\,\delta^i_k = \delta_i^k\,\delta^i_k = \delta^i_i = n.\]</p>
+<p><strong>2(c).</strong> The contraction \(g^{ij}A_i\) raises the index on \(A_i\), giving \(A^j\), so \(A_iB_j\,g^{ij} = A^jB_j\). Relabeling the dummy index \(j\to k\) makes this exactly \(A^kB_k\), hence</p>
+<p>\[A_iB_j\,g^{ij} - A^kB_k = A^kB_k - A^kB_k = 0.\]</p>
+</div>
+<p class="narrative">These contraction identities are exactly the algebra used to build and verify a dual basis directly from geometry, which is where the last problem takes them.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 5 &mdash; Covariant and Contravariant Basis Vectors</h2>
+<p><strong>Scenario:</strong> In a 2D oblique affine coordinate system \((x^1,x^2)\), the position vector of a point is
+<div class="given-block"><p>\[\mathbf{r}(x^1,x^2) = x^1\,\mathbf{i} + (x^1 + 2x^2)\,\mathbf{j},\]</p></div>
+where \(\{\mathbf i,\mathbf j\}\) are standard orthonormal Cartesian basis vectors.</p>
+<ol>
+<li>Calculate the covariant basis vectors \(\mathbf e_1 = \partial \mathbf r/\partial x^1\) and \(\mathbf e_2 = \partial \mathbf r/\partial x^2\) in terms of \(\{\mathbf i,\mathbf j\}\).</li>
+<li>Compute the metric tensor components \(g_{ij} = \mathbf e_i\cdot\mathbf e_j\).</li>
+<li>Find the contravariant (dual) basis vectors \(\mathbf e^1,\mathbf e^2\) using \(\mathbf e^i = g^{ij}\mathbf e_j\).</li>
+<li>Verify the orthogonality relation \(\mathbf e_i\cdot\mathbf e^j = \delta_i^j\) for all \(i,j\in\{1,2\}\).</li>
+</ol>
+<blockquote class="directions"><strong>Hint:</strong> The covariant basis vectors \(\mathbf e_i\) are tangent to the coordinate curves; the contravariant (dual) basis vectors \(\mathbf e^i\) satisfy \(\mathbf e_i\cdot\mathbf e^j=\delta_i^j\).</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Differentiating \(\mathbf r\):</p>
+<p>\[\mathbf e_1 = \frac{\partial \mathbf r}{\partial x^1} = \mathbf i + \mathbf j = (1,1), \qquad \mathbf e_2 = \frac{\partial \mathbf r}{\partial x^2} = 2\mathbf j = (0,2).\]</p>
+<p><strong>2.</strong> Dot products:</p>
+<p>\[g_{11} = \mathbf e_1\cdot\mathbf e_1 = 2, \quad g_{12}=g_{21}=\mathbf e_1\cdot\mathbf e_2 = 2, \quad g_{22} = \mathbf e_2\cdot\mathbf e_2 = 4, \qquad g_{ij} = \begin{pmatrix}2 & 2\\ 2 & 4\end{pmatrix}.\]</p>
+<p><strong>3.</strong> Inverting (\(\det g_{ij} = 4\)):</p>
+<p>\[g^{ij} = \frac{1}{4}\begin{pmatrix}4 & -2\\ -2 & 2\end{pmatrix} = \begin{pmatrix}1 & -\tfrac12\\ -\tfrac12 & \tfrac12\end{pmatrix}.\]</p>
+<p>So:</p>
+<p>\[\mathbf e^1 = g^{11}\mathbf e_1 + g^{12}\mathbf e_2 = (1)(1,1) + \left(-\tfrac12\right)(0,2) = (1,0),\]</p>
+<p>\[\mathbf e^2 = g^{21}\mathbf e_1 + g^{22}\mathbf e_2 = \left(-\tfrac12\right)(1,1) + \left(\tfrac12\right)(0,2) = \left(-\tfrac12, \tfrac12\right).\]</p>
+<p><strong>4.</strong> Checking all four dot products:</p>
+<p>\[\mathbf e_1\cdot\mathbf e^1 = (1,1)\cdot(1,0) = 1, \qquad \mathbf e_1\cdot\mathbf e^2 = (1,1)\cdot\left(-\tfrac12,\tfrac12\right) = 0,\]</p>
+<p>\[\mathbf e_2\cdot\mathbf e^1 = (0,2)\cdot(1,0) = 0, \qquad \mathbf e_2\cdot\mathbf e^2 = (0,2)\cdot\left(-\tfrac12,\tfrac12\right) = 1.\]</p>
+<p>These match \(\delta_i^j\) exactly: 1 on the matching pairs, 0 otherwise, confirming \(\{\mathbf e^1,\mathbf e^2\}\) is the dual basis to \(\{\mathbf e_1,\mathbf e_2\}\).</p>
+</div>
+<p class="narrative">Every calculation above &mdash; gradients, transformation laws, raising and lowering, contraction, and dual bases &mdash; is one instance of the same bookkeeping rule for how upper and lower indices must balance.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Quick Reference: Index Identities Used Above</h2>
+<p>A summary of the core relations exercised in Problems 1&ndash;5.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-6" aria-expanded="false" aria-controls="solution-6">Show Table</button>
+<div class="solution" id="solution-6" hidden>
+<div class="table-scroll">
+<table>
+<thead>
+<tr><th>Identity</th><th>Meaning</th><th>Used In</th></tr>
+</thead>
+<tbody>
+<tr><td>\(dx^i\)</td><td>Prototype contravariant vector</td><td>Problem 1</td></tr>
+<tr><td>\(\partial\phi/\partial x^i\)</td><td>Prototype covariant vector (gradient)</td><td>Problem 1</td></tr>
+<tr><td>\(\bar V^i = V^j\,\partial \bar x^i/\partial x^j\)</td><td>Contravariant transformation law</td><td>Problem 2</td></tr>
+<tr><td>\(g_{ij}g^{jk} = \delta_i^k\)</td><td>Metric tensor and its inverse</td><td>Problems 3, 4</td></tr>
+<tr><td>\(U_i = g_{ij}U^j\), \(U^i = g^{ij}U_j\)</td><td>Lowering / raising an index</td><td>Problems 3, 5</td></tr>
+<tr><td>\(\delta^i_j\), \(\delta^i_i = n\)</td><td>Kronecker delta as substitution operator</td><td>Problem 4</td></tr>
+<tr><td>\(\mathbf e_i\cdot\mathbf e^j = \delta_i^j\)</td><td>Covariant / dual basis orthogonality</td><td>Problem 5</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>
