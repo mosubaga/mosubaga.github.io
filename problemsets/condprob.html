@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Problem Set: Mastering Conditional Probability</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Mastering Conditional Probability</h1>
+<p class="meta"><strong>Level:</strong> Undergraduate probability<br>
+<strong>Topic:</strong> Conditional Probability and the Trace of a Borel Field<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Foundations: The Language of Conditioning</h2>
+<p>In the rigorous architecture of probability theory, as established in the seminal work of Kai Lai Chung, we move beyond mere frequency to the study of measures on set functions. A probability measure \(\mathscr{P}(\cdot)\) on a Borel Field (B.F.) \(\mathcal{F}\) must satisfy (i) non-negativity \(\mathscr{P}(E) \geq 0\), (ii) countable additivity for disjoint sets, and (iii) the normalization \(\mathscr{P}(\Omega) = 1\).</p>
+<p>When we &ldquo;condition&rdquo; an event, we are effectively restricting the domain of the probability measure to a subspace. According to the &ldquo;trace&rdquo; concept, if we have a probability space \((\Omega, \mathcal{F}, \mathscr{P})\) and a subset \(\Delta \in \mathcal{F}\) such that \(\mathscr{P}(\Delta) > 0\), the trace of the B.F. \(\mathcal{F}\) on \(\Delta\) is the collection of all sets of the form \(\Delta \cap F\), where \(F \in \mathcal{F}\). This trace field is itself a B.F. of subsets of \(\Delta\).</p>
+<p>For any event \(E\) belonging to the trace field \(\Delta \cap \mathcal{F}\), we define the set function \(\mathscr{P}_\Delta\) as \(\mathscr{P}_\Delta(E) = \dfrac{\mathscr{P}(E)}{\mathscr{P}(\Delta)}\). In the common language of conditional probability, where we let \(\Delta = B\) and \(E = A \cap B\), this is expressed as:</p>
+<p>\[\mathscr{P}(A \mid B) = \frac{\mathscr{P}(A \cap B)}{\mathscr{P}(B)}\]</p>
+<p>The five problems below transition from these abstract axioms to concrete decision-making scenarios&mdash;academia, technology, manufacturing, hiring, and public health&mdash;showing how conditioning &ldquo;shrinks&rdquo; our focus, discarding the mass outside of \(\Delta\) to uncover localized truths.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 1 &mdash; Academic Course Enrollment</h2>
+<p><strong>Scenario:</strong> A university registrar analyzes the enrollment patterns of 1,000 students to understand the synergy between departments. Let Event \(A\) be enrollment in Advanced Statistics and Event \(B\) be enrollment in Linear Algebra.</p>
+<ul>
+<li><strong>Joint Probability:</strong> \(\mathscr{P}(A \cap B) = 0.15\)</li>
+<li><strong>Marginal Probability (Linear Algebra):</strong> \(\mathscr{P}(B) = 0.40\)</li>
+<li><strong>Marginal Probability (Advanced Statistics):</strong> \(\mathscr{P}(A) = 0.30\)</li>
+</ul>
+<p><strong>Problem:</strong> Calculate the probability that a student is enrolled in Advanced Statistics given that they are already enrolled in Linear Algebra. Based on this result, are the two enrollment events independent?</p>
+<blockquote class="directions"><strong>Hint:</strong> Restrict the measure to the subspace \(B\) using \(\mathscr{P}(A|B) = \mathscr{P}(A \cap B)/\mathscr{P}(B)\), then compare the result to the marginal \(\mathscr{P}(A)\) to test independence.</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Identify the conditional probability by restricting the measure to the subspace \(B\):</p>
+<p>\[\mathscr{P}(A|B) = \frac{\mathscr{P}(A \cap B)}{\mathscr{P}(B)}\]</p>
+<p><strong>2.</strong> Substitute the provided values (noting that \(A \cap B\) is a member of the trace field \(B \cap \mathcal{F}\)):</p>
+<p>\[\mathscr{P}(A|B) = \frac{0.15}{0.40} = 0.375\]</p>
+<p><strong>3.</strong> Test for independence by comparing \(\mathscr{P}(A|B)\) to the marginal \(\mathscr{P}(A)\): \(0.375 \neq 0.30 \implies \mathscr{P}(A|B) \neq \mathscr{P}(A)\).</p>
+<p><strong>Answer:</strong> \(\mathscr{P}(A|B) = 0.375\)</p>
+<h3>Interpretation</h3>
+<p>Knowledge of enrollment in Linear Algebra provides a &ldquo;predictive boost,&rdquo; raising the expectation of Statistics enrollment from 30% to 37.5%. Because the equality \(\mathscr{P}(A|B) = \mathscr{P}(A)\) fails, the events are dependent. This suggests a pedagogical path where students in one discipline are naturally drawn to the other.</p>
+</div>
+<p class="narrative">We now move from an academic proxy for interest to a corporate proxy for risk: how a triage tag predicts the true severity of a support ticket.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 2 &mdash; Tech Support Ticket Classification</h2>
+<p><strong>Scenario:</strong> A support manager examines the efficiency of triage tags. Let Event \(A\) be a ticket requiring &ldquo;Level 2&rdquo; intervention and Event \(B\) be a ticket tagged as a &ldquo;Software Bug.&rdquo;</p>
+<ul>
+<li><strong>Marginal (Software Bug):</strong> \(\mathscr{P}(B) = 0.25\)</li>
+<li><strong>Joint Probability:</strong> \(\mathscr{P}(A \cap B) = 0.10\)</li>
+<li><strong>Global Rate (Level 2):</strong> \(\mathscr{P}(A) = 0.40\)</li>
+</ul>
+<p><strong>Problem:</strong> Determine the probability that a ticket requires Level 2 intervention given it is tagged as a Software Bug. Are Level 2 interventions independent of the &ldquo;Software Bug&rdquo; tag?</p>
+<blockquote class="directions"><strong>Hint:</strong> Apply the trace measure formula, then check whether the conditional probability matches the marginal \(\mathscr{P}(A)\) exactly.</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Apply the trace measure formula to calculate the localized probability:</p>
+<p>\[\mathscr{P}(A|B) = \frac{\mathscr{P}(A \cap B)}{\mathscr{P}(B)} = \frac{0.10}{0.25}\]</p>
+<p><strong>2.</strong> Perform the division: \(\mathscr{P}(A|B) = 0.40\).</p>
+<p><strong>3.</strong> Check the independence criterion \(\mathscr{P}(A|B) = \mathscr{P}(A)\): \(\mathscr{P}(A|B) = 0.40\) and \(\mathscr{P}(A) = 0.40\).</p>
+<p><strong>Answer:</strong> \(\mathscr{P}(A|B) = 0.40\)</p>
+<h3>Interpretation</h3>
+<p>In this instance, the events are independent. For a manager, this implies that the &ldquo;Software Bug&rdquo; tag is not a significant filter for resource allocation; Level 2 expertise is required at the same rate for bugs as it is for the general population of tickets.</p>
+</div>
+<p class="narrative">While we have examined tech support, the same probabilistic logic is applied in manufacturing to ensure quality control standards are met across different production stages.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 3 &mdash; Manufacturing Defect Inspection</h2>
+<p><strong>Scenario:</strong> An automated production line utilizes a sensor to flag potential failures. Let Event \(A\) be that the item is truly defective and Event \(B\) be that the automated sensor flags the item as &ldquo;Fail.&rdquo;</p>
+<ul>
+<li><strong>Marginal (Sensor Fail):</strong> \(\mathscr{P}(B) = 0.05\)</li>
+<li><strong>Joint Probability:</strong> \(\mathscr{P}(A \cap B) = 0.04\)</li>
+<li><strong>Base Defect Rate:</strong> \(\mathscr{P}(A) = 0.02\)</li>
+</ul>
+<p><strong>Problem:</strong> Calculate the probability that an item is truly defective given a &ldquo;Fail&rdquo; sensor reading. Determine if the sensor's flag is independent of the defect status.</p>
+<blockquote class="directions"><strong>Hint:</strong> The conditional probability here is a &ldquo;true positive&rdquo; rate&mdash;compare its size to the tiny base rate \(\mathscr{P}(A)\) to see how strong a filter the sensor is.</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Calculate the conditional probability (the probability of a &ldquo;True Positive&rdquo;):</p>
+<p>\[\mathscr{P}(A|B) = \frac{\mathscr{P}(A \cap B)}{\mathscr{P}(B)} = \frac{0.04}{0.05}\]</p>
+<p><strong>2.</strong> Simplify the result: \(\mathscr{P}(A|B) = 0.80\).</p>
+<p><strong>3.</strong> Evaluate independence by comparing the localized truth to the global defect rate: \(0.80 \neq 0.02 \implies \mathscr{P}(A|B) \neq \mathscr{P}(A)\).</p>
+<p><strong>Answer:</strong> \(\mathscr{P}(A|B) = 0.80\)</p>
+<h3>Interpretation</h3>
+<p>There is a profound distinction between the observation (\(B\)) and the underlying truth (\(A\)). Here, the sensor acts as a powerful filter, concentrating the defect probability from a mere 2% to a significant 80%. The events are strictly dependent.</p>
+</div>
+<p class="narrative">While we have examined mechanical sensors, the same probabilistic filtering applies when institutions &ldquo;flag&rdquo; human potential through selection criteria.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 4 &mdash; Student Internship Selection</h2>
+<p><strong>Scenario:</strong> A competitive firm uses academic metrics as a proxy for candidate potential.</p>
+<ul>
+<li><strong>Selected for Interview:</strong> \(\mathscr{P}(A) = 0.20\)</li>
+<li><strong>High GPA (&gt; 3.8):</strong> \(\mathscr{P}(B) = 0.30\)</li>
+<li><strong>High GPA and Selected:</strong> \(\mathscr{P}(A \cap B) = 0.18\)</li>
+</ul>
+<p><strong>Problem:</strong> Using the trace field derivation, find the probability that a candidate is selected for an interview given they have a high GPA. Is high GPA a significant predictor?</p>
+<blockquote class="directions"><strong>Hint:</strong> Make sure \(A \cap B \in B \cap \mathcal{F}\) before applying the conditional measure, then compare the resulting probability to the marginal \(\mathscr{P}(A) = 0.20\).</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Apply the conditional measure, ensuring \(A \cap B \in B \cap \mathcal{F}\):</p>
+<p>\[\mathscr{P}(A|B) = \frac{\mathscr{P}(A \cap B)}{\mathscr{P}(B)}\]</p>
+<p><strong>2.</strong> Substitute the data points: \(\mathscr{P}(A|B) = \dfrac{0.18}{0.30} = 0.60\).</p>
+<p><strong>3.</strong> Compare the conditional probability (0.60) to the marginal probability \(\mathscr{P}(A) = 0.20\).</p>
+<p><strong>Answer:</strong> \(\mathscr{P}(A|B) = 0.60\)</p>
+<h3>Interpretation</h3>
+<p>The high GPA serves as a major gateway; a candidate's likelihood of selection triples from 20% to 60%. The dependency is strong and positive.</p>
+</div>
+<p class="narrative">We conclude this set by applying this logic to population-wide trends in health, to observe how specific behaviors shift energy outcomes.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Problem 5 &mdash; Health Survey Statistics</h2>
+<p><strong>Scenario:</strong> A health organization analyzes the correlation between exercise and energy levels using the trace measure to isolate specific lifestyle subsets. Let Event \(A\) be reporting &ldquo;High Energy Levels&rdquo; and Event \(B\) be exercising more than 3 times a week.</p>
+<ul>
+<li><strong>High Energy (\(A\)):</strong> \(\mathscr{P}(A) = 0.50\)</li>
+<li><strong>Exercises &gt; 3x/week (\(B\)):</strong> \(\mathscr{P}(B) = 0.45\)</li>
+<li><strong>Joint (\(A \cap B\)):</strong> \(\mathscr{P}(A \cap B) = 0.35\)</li>
+</ul>
+<p><strong>Problem:</strong> Find the probability that an individual reports High Energy Levels (\(A\)) given that they exercise regularly (\(B\)).</p>
+<blockquote class="directions"><strong>Hint:</strong> Define the probability measure on the subspace of &ldquo;exercisers&rdquo; and compare the result to the global rate \(\mathscr{P}(A) = 0.50\).</blockquote>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Solution</h3>
+<p><strong>1.</strong> Define the probability measure on the subspace of &ldquo;exercisers&rdquo;:</p>
+<p>\[\mathscr{P}(A|B) = \frac{\mathscr{P}(A \cap B)}{\mathscr{P}(B)}\]</p>
+<p><strong>2.</strong> Compute the value: \(\mathscr{P}(A|B) = \dfrac{0.35}{0.45} \approx 0.7778\).</p>
+<p><strong>3.</strong> Test for independence: \(\mathscr{P}(A|B) \approx 0.778\) vs \(\mathscr{P}(A) = 0.50\). Since \(0.778 \neq 0.50\), the events are dependent.</p>
+<p><strong>Answer:</strong> \(\mathscr{P}(A|B) \approx 0.778\)</p>
+<h3>Interpretation</h3>
+<p>By restricting the domain of our probability measure to the subspace of regular exercisers (\(B\)), we uncover a &ldquo;localized&rdquo; truth: regular activity significantly elevates the energy baseline compared to the global population. This dependency reinforces the &ldquo;Trace of the B.F.&rdquo; as a tool to zoom in on specific truths within a larger probability space that the global \(\mathscr{P}(A)\) might otherwise obscure.</p>
+</div>
+<p class="narrative">Every problem above rests on the same restriction of a measure to a subspace &mdash; the self-check table below collects the numbers side by side.</p>
+</section>
+
+<section class="pastel-card problem-card">
+<h2>Self-Check Summary Table</h2>
+<p>Compare the joint probability, conditioning event, and resulting conditional probability across all five scenarios above.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-6" aria-expanded="false" aria-controls="solution-6">Show Table</button>
+<div class="solution" id="solution-6" hidden>
+<div class="table-scroll">
+<table>
+<thead>
+<tr><th>Problem Topic</th><th>\(\mathscr{P}(A \cap B)\)</th><th>\(\mathscr{P}(B)\)</th><th>Resulting \(\mathscr{P}(A|B)\)</th><th>Independent?</th></tr>
+</thead>
+<tbody>
+<tr><td>Course Enrollment</td><td>0.15</td><td>0.40</td><td>0.375</td><td>No</td></tr>
+<tr><td>Tech Support</td><td>0.10</td><td>0.25</td><td>0.40</td><td>Yes</td></tr>
+<tr><td>Manufacturing</td><td>0.04</td><td>0.05</td><td>0.80</td><td>No</td></tr>
+<tr><td>Internships</td><td>0.18</td><td>0.30</td><td>0.60</td><td>No</td></tr>
+<tr><td>Health Survey</td><td>0.35</td><td>0.45</td><td>\(\approx 0.778\)</td><td>No</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>
