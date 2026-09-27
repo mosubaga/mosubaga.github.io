@@ -25,7 +25,7 @@
   },
   {
     "country": "Netherlands Antilles",
-    "capital": "Willemstad"
+    "capital": "Willemstad (historical; dissolved in 2010)"
   },
   {
     "country": "United Arab Emirates",
@@ -41,11 +41,11 @@
   },
   {
     "country": "American Samoa",
-    "capital": "Fagatogo"
+    "capital": "Pago Pago"
   },
   {
     "country": "Antigua and Barbuda",
-    "capital": "Saint John´s"
+    "capital": "Saint John's"
   },
   {
     "country": "Australia",
@@ -53,23 +53,23 @@
   },
   {
     "country": "Austria",
-    "capital": "Wien"
+    "capital": "Vienna"
   },
   {
     "country": "Azerbaijan",
-    "capital": "Bakı"
+    "capital": "Baku"
   },
   {
     "country": "Burundi",
-    "capital": "Bujumbura"
+    "capital": "Gitega (political); Bujumbura (economic)"
   },
   {
     "country": "Belgium",
-    "capital": "Bruxelles [Brussel]"
+    "capital": "Brussels"
   },
   {
     "country": "Benin",
-    "capital": "Porto-Novo"
+    "capital": "Porto-Novo; Cotonou (seat of government)"
   },
   {
     "country": "Burkina Faso",
@@ -81,11 +81,11 @@
   },
   {
     "country": "Bulgaria",
-    "capital": "Sofija"
+    "capital": "Sofia"
   },
   {
     "country": "Bahrain",
-    "capital": "al-Manama"
+    "capital": "Manama"
   },
   {
     "country": "Bahamas",
@@ -109,7 +109,7 @@
   },
   {
     "country": "Bolivia",
-    "capital": "La Paz"
+    "capital": "La Paz (administrative); Sucre (legislative and judicial)"
   },
   {
     "country": "Brazil",
@@ -149,15 +149,15 @@
   },
   {
     "country": "Chile",
-    "capital": "Santiago de Chile"
+    "capital": "Santiago"
   },
   {
     "country": "China",
-    "capital": "Peking"
+    "capital": "Beijing"
   },
   {
     "country": "Côte d’Ivoire",
-    "capital": "Yamoussoukro"
+    "capital": "Yamoussoukro; Abidjan (seat of government)"
   },
   {
     "country": "Cameroon",
@@ -177,7 +177,7 @@
   },
   {
     "country": "Colombia",
-    "capital": "Santafé de Bogotá"
+    "capital": "Bogotá"
   },
   {
     "country": "Comoros",
@@ -193,7 +193,7 @@
   },
   {
     "country": "Cuba",
-    "capital": "La Habana"
+    "capital": "Havana"
   },
   {
     "country": "Christmas Island",
@@ -209,7 +209,7 @@
   },
   {
     "country": "Czech Republic",
-    "capital": "Praha"
+    "capital": "Prague"
   },
   {
     "country": "Germany",
@@ -225,15 +225,15 @@
   },
   {
     "country": "Denmark",
-    "capital": "København"
+    "capital": "Copenhagen"
   },
   {
     "country": "Dominican Republic",
-    "capital": "Santo Domingo de Guzmán"
+    "capital": "Santo Domingo"
   },
   {
     "country": "Algeria",
-    "capital": "Alger"
+    "capital": "Algiers"
   },
   {
     "country": "Ecuador",
@@ -249,7 +249,7 @@
   },
   {
     "country": "Western Sahara",
-    "capital": "El-Aaiún"
+    "capital": "Laayoune (administrative center; status disputed)"
   },
   {
     "country": "Spain",
@@ -261,11 +261,11 @@
   },
   {
     "country": "Ethiopia",
-    "capital": "Addis Abeba"
+    "capital": "Addis Ababa"
   },
   {
     "country": "Finland",
-    "capital": "Helsinki [Helsingfors]"
+    "capital": "Helsinki"
   },
   {
     "country": "Fiji Islands",
@@ -325,15 +325,15 @@
   },
   {
     "country": "Equatorial Guinea",
-    "capital": "Malabo"
+    "capital": "Ciudad de la Paz"
   },
   {
     "country": "Greece",
-    "capital": "Athenai"
+    "capital": "Athens"
   },
   {
     "country": "Grenada",
-    "capital": "Saint George´s"
+    "capital": "Saint George's"
   },
   {
     "country": "Greenland",
@@ -341,7 +341,7 @@
   },
   {
     "country": "Guatemala",
-    "capital": "Ciudad de Guatemala"
+    "capital": "Guatemala City"
   },
   {
     "country": "French Guiana",
@@ -349,7 +349,7 @@
   },
   {
     "country": "Guam",
-    "capital": "Agaña"
+    "capital": "Hagåtña"
   },
   {
     "country": "Guyana",
@@ -357,7 +357,7 @@
   },
   {
     "country": "Hong Kong",
-    "capital": "Victoria"
+    "capital": "No official capital"
   },
   {
     "country": "Honduras",
@@ -389,7 +389,7 @@
   },
   {
     "country": "Iran",
-    "capital": "Teheran"
+    "capital": "Tehran"
   },
   {
     "country": "Iraq",
@@ -405,7 +405,7 @@
   },
   {
     "country": "Italy",
-    "capital": "Roma"
+    "capital": "Rome"
   },
   {
     "country": "Jamaica",
@@ -437,7 +437,7 @@
   },
   {
     "country": "Kiribati",
-    "capital": "Bairiki"
+    "capital": "Tarawa"
   },
   {
     "country": "Saint Kitts and Nevis",
@@ -449,7 +449,7 @@
   },
   {
     "country": "Kuwait",
-    "capital": "Kuwait"
+    "capital": "Kuwait City"
   },
   {
     "country": "Laos",
@@ -477,7 +477,7 @@
   },
   {
     "country": "Sri Lanka",
-    "capital": "Colombo"
+    "capital": "Colombo; Sri Jayewardenepura Kotte (legislative)"
   },
   {
     "country": "Lesotho",
@@ -489,7 +489,7 @@
   },
   {
     "country": "Luxembourg",
-    "capital": "Luxembourg [Luxemburg/Lëtzebuerg]"
+    "capital": "Luxembourg"
   },
   {
     "country": "Latvia",
@@ -497,7 +497,7 @@
   },
   {
     "country": "Macao",
-    "capital": "Macao"
+    "capital": "Macau"
   },
   {
     "country": "Morocco",
@@ -505,7 +505,7 @@
   },
   {
     "country": "Monaco",
-    "capital": "Monaco-Ville"
+    "capital": "Monaco"
   },
   {
     "country": "Moldova",
@@ -517,15 +517,15 @@
   },
   {
     "country": "Maldives",
-    "capital": "Male"
+    "capital": "Malé"
   },
   {
     "country": "Mexico",
-    "capital": "Ciudad de México"
+    "capital": "Mexico City"
   },
   {
     "country": "Marshall Islands",
-    "capital": "Dalap-Uliga-Darrit"
+    "capital": "Majuro"
   },
   {
     "country": "Macedonia",
@@ -541,15 +541,15 @@
   },
   {
     "country": "Myanmar",
-    "capital": "Rangoon (Yangon)"
+    "capital": "Nay Pyi Taw"
   },
   {
     "country": "Mongolia",
-    "capital": "Ulan Bator"
+    "capital": "Ulaanbaatar"
   },
   {
     "country": "Northern Mariana Islands",
-    "capital": "Garapan"
+    "capital": "Saipan"
   },
   {
     "country": "Mozambique",
@@ -569,7 +569,7 @@
   },
   {
     "country": "Mauritius",
-    "capital": "Port-Louis"
+    "capital": "Port Louis"
   },
   {
     "country": "Malawi",
@@ -577,11 +577,11 @@
   },
   {
     "country": "Malaysia",
-    "capital": "Kuala Lumpur"
+    "capital": "Kuala Lumpur; Putrajaya (administrative center)"
   },
   {
     "country": "Mayotte",
-    "capital": "Mamoutzou"
+    "capital": "Mamoudzou"
   },
   {
     "country": "Namibia",
@@ -613,7 +613,7 @@
   },
   {
     "country": "Netherlands",
-    "capital": "Amsterdam"
+    "capital": "Amsterdam; The Hague (seat of government)"
   },
   {
     "country": "Norway",
@@ -625,7 +625,7 @@
   },
   {
     "country": "Nauru",
-    "capital": "Yaren"
+    "capital": "Yaren District (no official capital city)"
   },
   {
     "country": "New Zealand",
@@ -633,7 +633,7 @@
   },
   {
     "country": "Oman",
-    "capital": "Masqat"
+    "capital": "Muscat"
   },
   {
     "country": "Pakistan",
@@ -641,7 +641,7 @@
   },
   {
     "country": "Panama",
-    "capital": "Ciudad de Panamá"
+    "capital": "Panama City"
   },
   {
     "country": "Pitcairn",
@@ -657,7 +657,7 @@
   },
   {
     "country": "Palau",
-    "capital": "Koror"
+    "capital": "Ngerulmud"
   },
   {
     "country": "Papua New Guinea",
@@ -665,7 +665,7 @@
   },
   {
     "country": "Poland",
-    "capital": "Warszawa"
+    "capital": "Warsaw"
   },
   {
     "country": "Puerto Rico",
@@ -677,7 +677,7 @@
   },
   {
     "country": "Portugal",
-    "capital": "Lisboa"
+    "capital": "Lisbon"
   },
   {
     "country": "Paraguay",
@@ -685,7 +685,7 @@
   },
   {
     "country": "Palestine",
-    "capital": "Gaza"
+    "capital": "East Jerusalem (claimed); Ramallah (administrative center)"
   },
   {
     "country": "French Polynesia",
@@ -701,7 +701,7 @@
   },
   {
     "country": "Romania",
-    "capital": "Bucuresti"
+    "capital": "Bucharest"
   },
   {
     "country": "Russian Federation",
@@ -733,7 +733,7 @@
   },
   {
     "country": "Svalbard and Jan Mayen",
-    "capital": "Longyearbyen"
+    "capital": "Longyearbyen (Svalbard); Oslo (Jan Mayen administration)"
   },
   {
     "country": "Solomon Islands",
@@ -781,7 +781,7 @@
   },
   {
     "country": "Swaziland",
-    "capital": "Mbabane"
+    "capital": "Mbabane (administrative); Lobamba (royal and legislative)"
   },
   {
     "country": "Seychelles",
@@ -797,7 +797,7 @@
   },
   {
     "country": "Chad",
-    "capital": "N´Djaména"
+    "capital": "N'Djamena"
   },
   {
     "country": "Togo",
@@ -813,7 +813,7 @@
   },
   {
     "country": "Tokelau",
-    "capital": "Fakaofo"
+    "capital": "No official capital"
   },
   {
     "country": "Turkmenistan",
@@ -825,11 +825,11 @@
   },
   {
     "country": "Tonga",
-    "capital": "Nuku´alofa"
+    "capital": "Nuku'alofa"
   },
   {
     "country": "Trinidad and Tobago",
-    "capital": "Port-of-Spain"
+    "capital": "Port of Spain"
   },
   {
     "country": "Tunisia",
@@ -865,15 +865,15 @@
   },
   {
     "country": "United States",
-    "capital": "Washington"
+    "capital": "Washington, D.C."
   },
   {
     "country": "Uzbekistan",
-    "capital": "Toskent"
+    "capital": "Tashkent"
   },
   {
     "country": "Holy See (Vatican City State)",
-    "capital": "Città del Vaticano"
+    "capital": "Vatican City"
   },
   {
     "country": "Saint Vincent and the Grenadines",
@@ -897,7 +897,7 @@
   },
   {
     "country": "Vanuatu",
-    "capital": "Port-Vila"
+    "capital": "Port Vila"
   },
   {
     "country": "Wallis and Futuna",
@@ -913,11 +913,11 @@
   },
   {
     "country": "Yugoslavia",
-    "capital": "Beograd"
+    "capital": "Belgrade (historical; dissolved in 2003)"
   },
   {
     "country": "South Africa",
-    "capital": "Pretoria"
+    "capital": "Pretoria (administrative); Cape Town (legislative); Bloemfontein (judicial)"
   },
   {
     "country": "Zambia",
