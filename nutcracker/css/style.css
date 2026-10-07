@@ -379,7 +379,7 @@ a:hover { border-bottom-color: var(--color-pink); }
   background: var(--color-black);
   line-height: 0;
 }
-.canvas-wrap canvas { display: block; width: 100% !important; height: auto !important; touch-action: none; }
+.canvas-wrap canvas { display: block; width: 100% !important; height: auto !important; touch-action: pan-y; }
 .canvas-caption {
   text-align: center;
   color: var(--color-gray);
