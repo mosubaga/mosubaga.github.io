@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01 Basic Pointers · Kaisetsu</title>
+<meta name="description" content="Lesson 01 explains 01_basic_pointers.cpp: addresses, pointer declaration, dereferencing, reassignment and passing by pointer.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar"><div class="container topbar__inner"><a class="brand" href="index.html"><i class="fa-solid fa-code" aria-hidden="true"></i> Kaisetsu <span class="brand__sub">C++ Pointers</span></a><nav aria-label="Lessons"><ul class="topnav"><li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li><li><a href="01-basic-pointers.html" aria-current="page"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span class="nav-num">01</span> Basics</a></li><li><a href="02-advanced-pointers.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span class="nav-num">02</span> Advanced</a></li><li><a href="03-pointers-in-oop.html"><i class="fa-solid fa-cubes" aria-hidden="true"></i> <span class="nav-num">03</span> OOP</a></li><li><a href="04-smart-pointers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <span class="nav-num">04</span> Smart</a></li><li><a href="05-string-pointers.html"><i class="fa-solid fa-font" aria-hidden="true"></i> <span class="nav-num">05</span> Strings</a></li></ul></nav></div></header>
+<main id="main">
+<section class="hero gradient-bloom">
+  <div class="container">
+    <div class="hero__eyebrow">
+      <span class="tag tag--sub">Lesson 01</span>
+      <span class="tag tag--accent"><i class="fa-solid fa-signal" aria-hidden="true"></i> Beginner</span>
+    </div>
+    <h1>Basic Pointers</h1>
+    <p class="hero__lead">Your first look at memory addresses. This program shows how to get an address with <code>&amp;</code>,
+      store it in a pointer, use <code>*</code> to reach the value at that address, and why passing an address to a function
+      is different from passing a value.</p>
+    <div class="hero__actions">
+      <a class="btn btn--secondary" href="#full-source"><i class="fa-solid fa-code" aria-hidden="true"></i>Full source</a>
+      <a class="btn btn--outline" href="cpp/01_basic_pointers.cpp" download><i class="fa-solid fa-download" aria-hidden="true"></i>Download .cpp</a>
+    </div>
+  </div>
+</section>
+
+<div class="container container--narrow lesson">
+  <nav class="toc card card--sub" aria-label="On this page"><h3><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</h3><ol><li><a href="#goals">What the programmer wants you to learn</a></li><li><a href="#helpers">The two helper functions</a></li><li><a href="#section-1">Section 1: Variables and addresses</a></li><li><a href="#section-2">Section 2: Declaration and initialization</a></li><li><a href="#section-3">Section 3: Reading and writing through a pointer</a></li><li><a href="#section-4">Section 4: Reassigning the pointer</a></li><li><a href="#section-5">Section 5: Value versus pointer parameters</a></li><li><a href="#takeaways">Takeaways</a></li><li><a href="#full-source">Full source code</a></li></ol></nav>
+
+  <section class="lesson-section" id="goals">
+    <h2><i class="fa-solid fa-bullseye" aria-hidden="true"></i> What the programmer wants you to learn</h2>
+    <p>The first comment in the file states the goal:</p>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 1&ndash;2</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">1
+2</span><code class="language-cpp">// Learn addresses, pointer initialization, dereferencing, reassignment,
+// and the difference between passing a value and passing its address.</code></pre></figure>
+    <ul class="goals">
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Every variable has an <strong>address</strong>, and <code>&amp;</code> gives it to you.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>A pointer must be <strong>initialized</strong>, and <code>nullptr</code> means "points nowhere".</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><code>*pointer</code> <strong>dereferences</strong>: it reads or writes the variable being pointed to.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>A pointer can be <strong>reassigned</strong> to point somewhere else.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Passing a <strong>value</strong> gives a function a copy; passing an <strong>address</strong> lets it change the original.</span></li>
+    </ul>
+    <p>The program is split into five numbered sections, each printing a heading like <code>=== Section 1 ... ===</code>,
+      so you can match the output to the code.</p>
+  </section>
+
+  <section class="lesson-section" id="helpers">
+    <h2><i class="fa-solid fa-toolbox" aria-hidden="true"></i> The two helper functions</h2>
+    <p>Before <code>main()</code>, the program defines two functions that both try to set a number to <code>99</code>.
+      They are used in Section 5, but reading them first makes the ending easier to follow.</p>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 5&ndash;17</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17</span><code class="language-cpp">void change_copy(int value) {
+    value = 99;
+    std::cout &lt;&lt; "Inside change_copy: " &lt;&lt; value &lt;&lt; '\n';
+}
+
+void change_target(int* value) {
+    // A pointer parameter can be null; check before dereferencing it.
+    if (value != nullptr) {
+        *value = 99;
+    } else {
+        std::cout &lt;&lt; "Null argument: no value to modify.\n";
+    }
+}</code></pre></figure>
+    <ul>
+      <li><code>change_copy(int value)</code> receives an <strong>int</strong>. C++ copies the argument into the parameter, so
+        <code>value = 99</code> only changes the function's private copy.</li>
+      <li><code>change_target(int* value)</code> receives a <strong>pointer to an int</strong>, that is, an address.
+        <code>*value = 99</code> writes 99 <em>at that address</em>, which changes the caller's variable.</li>
+    </ul>
+    <div class="alert alert--notice">
+      <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+      <div>
+        <strong>Why the <code>nullptr</code> check?</strong>
+        <p>As the comment on line 11 says, someone could call <code>change_target(nullptr)</code>. Dereferencing a null
+          pointer is <em>undefined behavior</em>: usually a crash, but the language makes no promises. A function
+          that accepts a pointer should check it before using <code>*</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="section-1">
+    <h2><i class="fa-solid fa-house" aria-hidden="true"></i> Section 1: Variables and addresses</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 20&ndash;25</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">20
+21
+22
+23
+24
+25</span><code class="language-cpp">std::cout &lt;&lt; "=== Section 1: Variables and addresses ===\n";
+int apples = 10;
+int oranges = 20;
+std::cout &lt;&lt; "apples = " &lt;&lt; apples &lt;&lt; ", address = " &lt;&lt; &amp;apples &lt;&lt; '\n';
+std::cout &lt;&lt; "oranges = " &lt;&lt; oranges &lt;&lt; ", address = " &lt;&lt; &amp;oranges &lt;&lt; '\n';
+// Addresses vary between executions; do not rely on particular numbers.</code></pre></figure>
+    <p>Two ordinary <code>int</code> variables are created. Writing <code>&amp;apples</code> means "the address of
+      <code>apples</code>". When you print an address with <code>std::cout</code>, you get a hexadecimal number such as
+      <code>0x16ee6e15c</code>.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">apples = 10, address = 0x16ee6e15c
+oranges = 20, address = 0x16ee6e158</code></pre></figure>
+    <div class="alert alert--info">
+      <i class="fa-solid fa-dice" aria-hidden="true"></i>
+      <div>
+        <strong>Your numbers will be different</strong>
+        <p>The comment on line 25 warns that addresses change every time you run the program (operating systems
+          deliberately randomize them). The <em>idea</em> matters, not the specific number.</p>
+      </div>
+    </div>
+    <p><strong>Syntax notes:</strong> <code>std::cout &lt;&lt; x</code> prints <code>x</code>, and <code>'\n'</code> is a newline
+      character. <code>std::</code> means the name comes from the C++ standard library.</p>
+  </section>
+
+  <section class="lesson-section" id="section-2">
+    <h2><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Section 2: Declaration and initialization</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 27&ndash;36</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">27
+28
+29
+30
+31
+32
+33
+34
+35
+36</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 2: Declaration and initialization ===\n";
+int* fruit_pointer = nullptr; // Never leave a pointer uninitialized.
+std::cout &lt;&lt; std::boolalpha &lt;&lt; "Initially null: "
+          &lt;&lt; (fruit_pointer == nullptr) &lt;&lt; '\n';
+fruit_pointer = &amp;apples;
+std::cout &lt;&lt; "Pointer now stores " &lt;&lt; fruit_pointer &lt;&lt; '\n';
+/* Local storage (conceptual):
+   fruit_pointer [address of apples] ----&gt; apples [10]
+   The pointer stores an address, not a separate copy of apples.
+*/</code></pre></figure>
+    <p><code>int* fruit_pointer</code> declares a variable whose type is <strong>"pointer to int"</strong>. It can only hold
+      addresses of <code>int</code> variables. It starts as <code>nullptr</code> on purpose: the comment says
+      <em>"Never leave a pointer uninitialized."</em> An uninitialized pointer holds a random leftover address, and using
+      it could corrupt any part of memory.</p>
+    <p>Then <code>fruit_pointer = &amp;apples;</code> stores the address of <code>apples</code> in the pointer. The
+      programmer drew a small diagram in the comment on lines 33–36. Here it is as a picture:</p>
+    <div class="memory" role="img" aria-label="fruit_pointer stores the address of apples; apples holds 10.">
+      <div class="mem-box mem-box--ptr"><span class="mem-name">fruit_pointer</span><span class="mem-value">0x...15c</span><span class="mem-type">int*</span></div>
+      <div class="mem-arrow"><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i><small>points to</small></div>
+      <div class="mem-box"><span class="mem-name">apples</span><span class="mem-value">10</span><span class="mem-addr">at 0x...15c</span></div>
+      <p class="memory__caption">"The pointer stores an address, not a separate copy of apples."</p>
+    </div>
+    <p><code>std::boolalpha</code> makes <code>cout</code> print <code>true</code>/<code>false</code> instead of
+      <code>1</code>/<code>0</code>, which is why the output says <code>Initially null: true</code>.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Initially null: true
+Pointer now stores 0x16ee6e15c</code></pre></figure>
+    <p>Notice that the pointer's value is exactly the address of <code>apples</code> printed in Section 1.</p>
+  </section>
+
+  <section class="lesson-section" id="section-3">
+    <h2><i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i> Section 3: Reading and writing through a pointer</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 38&ndash;41</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">38
+39
+40
+41</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 3: Reading and writing through a pointer ===\n";
+std::cout &lt;&lt; "*fruit_pointer = " &lt;&lt; *fruit_pointer &lt;&lt; '\n';
+*fruit_pointer = 15;
+std::cout &lt;&lt; "After *fruit_pointer = 15, apples = " &lt;&lt; apples &lt;&lt; '\n';</code></pre></figure>
+    <p>Putting <code>*</code> in front of a pointer <strong>dereferences</strong> it: "go to the address stored in the
+      pointer and use what is there."</p>
+    <ul>
+      <li><code>*fruit_pointer</code> on the right side <strong>reads</strong> <code>apples</code> → 10.</li>
+      <li><code>*fruit_pointer = 15;</code> <strong>writes</strong> to <code>apples</code>. We never mentioned
+        <code>apples</code> by name, yet it changed to 15.</li>
+    </ul>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">*fruit_pointer = 10
+After *fruit_pointer = 15, apples = 15</code></pre></figure>
+    <div class="alert alert--success">
+      <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+      <div>
+        <strong>OOP connection</strong>
+        <p>This is like two Java variables referring to the same object: modify it through one name, and the other
+          name sees the change. Here <code>apples</code> and <code>*fruit_pointer</code> are two names for the same int.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="section-4">
+    <h2><i class="fa-solid fa-shuffle" aria-hidden="true"></i> Section 4: Reassigning the pointer</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 43&ndash;48</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">43
+44
+45
+46
+47
+48</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 4: Reassigning the pointer ===\n";
+fruit_pointer = &amp;oranges; // Changes the address, not the previous target.
+*fruit_pointer = 25;
+std::cout &lt;&lt; "apples = " &lt;&lt; apples &lt;&lt; ", oranges = " &lt;&lt; oranges &lt;&lt; '\n';
+// These pointers borrow local variables. Do not delete them or return
+// their addresses from this function: the variables die at scope exit.</code></pre></figure>
+    <p>Assigning to the pointer itself (no <code>*</code>) changes <em>which</em> variable it points to. As the comment
+      says, this "changes the address, not the previous target": <code>apples</code> keeps its value 15. The following
+      write <code>*fruit_pointer = 25</code> now goes to <code>oranges</code>.</p>
+    <div class="memory" role="img" aria-label="After reassignment fruit_pointer points to oranges (25); apples (15) is no longer pointed to.">
+      <div class="mem-box mem-box--gone"><span class="mem-name">apples</span><span class="mem-value">15</span></div>
+      <div class="mem-box mem-box--ptr"><span class="mem-name">fruit_pointer</span><span class="mem-value">0x...158</span><span class="mem-type">int*</span></div>
+      <div class="mem-arrow"><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i><small>now points to</small></div>
+      <div class="mem-box"><span class="mem-name">oranges</span><span class="mem-value">25</span><span class="mem-addr">at 0x...158</span></div>
+    </div>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">apples = 15, oranges = 25</code></pre></figure>
+    <table class="table">
+      <thead><tr><th>Statement</th><th>What changes</th></tr></thead>
+      <tbody>
+        <tr><td><code>fruit_pointer = &amp;oranges;</code></td><td>The pointer (the address it holds)</td></tr>
+        <tr><td><code>*fruit_pointer = 25;</code></td><td>The target (<code>oranges</code>)</td></tr>
+      </tbody>
+    </table>
+    <div class="alert alert--notice">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <div>
+        <strong>Borrowed, not owned</strong>
+        <p>Lines 47–48 warn that these pointers only <em>borrow</em> local variables. You must not <code>delete</code>
+          them (they were not created with <code>new</code>), and you must not return their addresses from a
+          function: local variables are destroyed when the function ends, leaving a <strong>dangling pointer</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="section-5">
+    <h2><i class="fa-solid fa-right-left" aria-hidden="true"></i> Section 5: Value versus pointer parameters</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 50&ndash;56</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">50
+51
+52
+53
+54
+55
+56</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 5: Value versus pointer parameters ===\n";
+change_copy(apples);
+std::cout &lt;&lt; "After change_copy, apples = " &lt;&lt; apples &lt;&lt; " (unchanged)\n";
+change_target(&amp;apples);
+std::cout &lt;&lt; "After change_target, apples = " &lt;&lt; apples &lt;&lt; '\n';
+change_target(nullptr);
+fruit_pointer = nullptr; // No target; dereferencing now would be invalid.</code></pre></figure>
+    <p>Now the helper functions from the top of the file are put to work:</p>
+    <ol>
+      <li><code>change_copy(apples)</code>: the function receives a <strong>copy</strong> of 15, sets the copy to 99,
+        prints 99, then the copy disappears. <code>apples</code> is still 15.</li>
+      <li><code>change_target(&amp;apples)</code>: the function receives the <strong>address</strong> of
+        <code>apples</code> and writes 99 there. <code>apples</code> becomes 99.</li>
+      <li><code>change_target(nullptr)</code>: the null check catches it and prints a message instead of crashing.</li>
+      <li>Finally the pointer is reset to <code>nullptr</code> so it is clearly marked "no target".</li>
+    </ol>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Inside change_copy: 99
+After change_copy, apples = 15 (unchanged)
+After change_target, apples = 99
+Null argument: no value to modify.</code></pre></figure>
+    <div class="alert alert--info">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      <div>
+        <strong>The pointer itself is still copied</strong>
+        <p>The closing comment points out a subtle detail: "A pointer parameter is itself copied, but can modify the
+          pointee." <code>change_target</code> gets its own copy of the <em>address</em>. Both copies point to the
+          same <code>apples</code>, which is why the change is visible outside.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="takeaways">
+    <h2><i class="fa-solid fa-star" aria-hidden="true"></i> Takeaways</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; lines 59&ndash;61</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">59
+60
+61</span><code class="language-cpp">// Takeaways: &amp; obtains an address; * accesses its target. Reassignment changes
+// the target. A pointer parameter is itself copied, but can modify the pointee.
+// Check null pointers and ensure every pointee outlives accesses through it.</code></pre></figure>
+    <ul class="goals">
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><code>&amp;x</code> gets an address; <code>*p</code> accesses the target.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><code>p = &amp;y</code> changes where the pointer points, not the old target.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Pass an address when a function must modify the caller's variable.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Check for <code>nullptr</code>, and make sure the target is still alive whenever you use the pointer.</span></li>
+    </ul>
+    <div class="alert alert--success">
+      <i class="fa-solid fa-flask" aria-hidden="true"></i>
+      <div>
+        <strong>Try it yourself</strong>
+        <p>Add <code>std::cout &lt;&lt; *fruit_pointer;</code> after line 56. The program now dereferences
+          <code>nullptr</code>. Run it and see what happens, then remove the line again.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="full-source">
+    <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Full source code</h2>
+    <figure class="code-block code-block--full"><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 01_basic_pointers.cpp &middot; complete program</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61</span><code class="language-cpp">// Learn addresses, pointer initialization, dereferencing, reassignment,
+// and the difference between passing a value and passing its address.
+#include &lt;iostream&gt;
+
+void change_copy(int value) {
+    value = 99;
+    std::cout &lt;&lt; "Inside change_copy: " &lt;&lt; value &lt;&lt; '\n';
+}
+
+void change_target(int* value) {
+    // A pointer parameter can be null; check before dereferencing it.
+    if (value != nullptr) {
+        *value = 99;
+    } else {
+        std::cout &lt;&lt; "Null argument: no value to modify.\n";
+    }
+}
+
+int main() {
+    std::cout &lt;&lt; "=== Section 1: Variables and addresses ===\n";
+    int apples = 10;
+    int oranges = 20;
+    std::cout &lt;&lt; "apples = " &lt;&lt; apples &lt;&lt; ", address = " &lt;&lt; &amp;apples &lt;&lt; '\n';
+    std::cout &lt;&lt; "oranges = " &lt;&lt; oranges &lt;&lt; ", address = " &lt;&lt; &amp;oranges &lt;&lt; '\n';
+    // Addresses vary between executions; do not rely on particular numbers.
+
+    std::cout &lt;&lt; "\n=== Section 2: Declaration and initialization ===\n";
+    int* fruit_pointer = nullptr; // Never leave a pointer uninitialized.
+    std::cout &lt;&lt; std::boolalpha &lt;&lt; "Initially null: "
+              &lt;&lt; (fruit_pointer == nullptr) &lt;&lt; '\n';
+    fruit_pointer = &amp;apples;
+    std::cout &lt;&lt; "Pointer now stores " &lt;&lt; fruit_pointer &lt;&lt; '\n';
+    /* Local storage (conceptual):
+       fruit_pointer [address of apples] ----&gt; apples [10]
+       The pointer stores an address, not a separate copy of apples.
+    */
+
+    std::cout &lt;&lt; "\n=== Section 3: Reading and writing through a pointer ===\n";
+    std::cout &lt;&lt; "*fruit_pointer = " &lt;&lt; *fruit_pointer &lt;&lt; '\n';
+    *fruit_pointer = 15;
+    std::cout &lt;&lt; "After *fruit_pointer = 15, apples = " &lt;&lt; apples &lt;&lt; '\n';
+
+    std::cout &lt;&lt; "\n=== Section 4: Reassigning the pointer ===\n";
+    fruit_pointer = &amp;oranges; // Changes the address, not the previous target.
+    *fruit_pointer = 25;
+    std::cout &lt;&lt; "apples = " &lt;&lt; apples &lt;&lt; ", oranges = " &lt;&lt; oranges &lt;&lt; '\n';
+    // These pointers borrow local variables. Do not delete them or return
+    // their addresses from this function: the variables die at scope exit.
+
+    std::cout &lt;&lt; "\n=== Section 5: Value versus pointer parameters ===\n";
+    change_copy(apples);
+    std::cout &lt;&lt; "After change_copy, apples = " &lt;&lt; apples &lt;&lt; " (unchanged)\n";
+    change_target(&amp;apples);
+    std::cout &lt;&lt; "After change_target, apples = " &lt;&lt; apples &lt;&lt; '\n';
+    change_target(nullptr);
+    fruit_pointer = nullptr; // No target; dereferencing now would be invalid.
+}
+
+// Takeaways: &amp; obtains an address; * accesses its target. Reassignment changes
+// the target. A pointer parameter is itself copied, but can modify the pointee.
+// Check null pointers and ensure every pointee outlives accesses through it.</code></pre></figure>
+    <h3><i class="fa-solid fa-terminal" aria-hidden="true"></i> Complete output</h3>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Sample run &middot; <code>./program</code></figcaption><pre><code class="nohighlight">=== Section 1: Variables and addresses ===
+apples = 10, address = 0x16fc0a16c
+oranges = 20, address = 0x16fc0a168
+
+=== Section 2: Declaration and initialization ===
+Initially null: true
+Pointer now stores 0x16fc0a16c
+
+=== Section 3: Reading and writing through a pointer ===
+*fruit_pointer = 10
+After *fruit_pointer = 15, apples = 15
+
+=== Section 4: Reassigning the pointer ===
+apples = 15, oranges = 25
+
+=== Section 5: Value versus pointer parameters ===
+Inside change_copy: 99
+After change_copy, apples = 15 (unchanged)
+After change_target, apples = 99
+Null argument: no value to modify.</code></pre></figure>
+  </section>
+</div>
+<nav class="pager container container--narrow" aria-label="Lesson navigation"><a class="pager__link" href="index.html"><span class="pager__dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back</span><span class="pager__title">Pointer overview</span></a><a class="pager__link pager__link--next" href="02-advanced-pointers.html"><span class="pager__dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="pager__title">02 &middot; Advanced Pointers</span></a></nav>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <p><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Kaisetsu &middot; C++ Pointers for Students</p>
+    <p class="site-footer__small"><a href="../index.html"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> mosubaga.github.io</a></p>
+  </div>
+</footer>
+<button class="to-top" type="button" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>03 Pointers in OOP · Kaisetsu</title>
+<meta name="description" content="Lesson 03 explains 03_pointers_in_oop.cpp: the arrow operator, the this pointer, new and delete, polymorphism through base pointers and pointers to members.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar"><div class="container topbar__inner"><a class="brand" href="index.html"><i class="fa-solid fa-code" aria-hidden="true"></i> Kaisetsu <span class="brand__sub">C++ Pointers</span></a><nav aria-label="Lessons"><ul class="topnav"><li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li><li><a href="01-basic-pointers.html"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span class="nav-num">01</span> Basics</a></li><li><a href="02-advanced-pointers.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span class="nav-num">02</span> Advanced</a></li><li><a href="03-pointers-in-oop.html" aria-current="page"><i class="fa-solid fa-cubes" aria-hidden="true"></i> <span class="nav-num">03</span> OOP</a></li><li><a href="04-smart-pointers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <span class="nav-num">04</span> Smart</a></li><li><a href="05-string-pointers.html"><i class="fa-solid fa-font" aria-hidden="true"></i> <span class="nav-num">05</span> Strings</a></li></ul></nav></div></header>
+<main id="main">
+<section class="hero gradient-bloom">
+  <div class="container">
+    <div class="hero__eyebrow">
+      <span class="tag tag--sub">Lesson 03</span>
+      <span class="tag tag--accent"><i class="fa-solid fa-signal" aria-hidden="true"></i> Intermediate</span>
+    </div>
+    <h1>Pointers in OOP</h1>
+    <p class="hero__lead">Where pointers meet classes. You will see how to call methods through a pointer, what
+      <code>this</code> really is, how to create and destroy objects by hand with <code>new</code> and <code>delete</code>,
+      and why polymorphism in C++ needs pointers (or references).</p>
+    <div class="hero__actions">
+      <a class="btn btn--secondary" href="#full-source"><i class="fa-solid fa-code" aria-hidden="true"></i>Full source</a>
+      <a class="btn btn--outline" href="cpp/03_pointers_in_oop.cpp" download><i class="fa-solid fa-download" aria-hidden="true"></i>Download .cpp</a>
+    </div>
+  </div>
+</section>
+
+<div class="container container--narrow lesson">
+  <nav class="toc card card--sub" aria-label="On this page"><h3><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</h3><ol><li><a href="#goals">What the programmer wants you to learn</a></li><li><a href="#classes">The classes</a></li><li><a href="#section-1">Section 1: Member access</a></li><li><a href="#section-2">Section 2: The <code>this</code> pointer and chaining</a></li><li><a href="#section-3">Section 3: Raw dynamic allocation</a></li><li><a href="#section-4">Section 4: Polymorphism through base pointers</a></li><li><a href="#section-5">Section 5: Pointers to class members</a></li><li><a href="#takeaways">Takeaways</a></li><li><a href="#full-source">Full source code</a></li></ol></nav>
+
+  <section class="lesson-section" id="goals">
+    <h2><i class="fa-solid fa-bullseye" aria-hidden="true"></i> What the programmer wants you to learn</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 1&ndash;5</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">1
+2
+3
+4
+5</span><code class="language-cpp">// Learn member access, this, raw allocation, virtual dispatch, and pointers
+// to class members. Raw ownership here is educational; prefer RAII in practice.
+#include &lt;iostream&gt;
+#include &lt;new&gt;
+#include &lt;string&gt;</code></pre></figure>
+    <ul class="goals">
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Access members through a pointer with <code>-&gt;</code>.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Understand <code>this</code>, the pointer every method receives to "its" object.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Allocate and free objects manually, and the rules that come with it.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Get overridden methods to run through a base-class pointer (<strong>virtual dispatch</strong>).</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>See the rarely used but interesting <strong>pointers to members</strong>.</span></li>
+    </ul>
+    <div class="alert alert--notice">
+      <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+      <div>
+        <strong>"Raw ownership here is educational"</strong>
+        <p>The author warns up front: this lesson uses <code>new</code>/<code>delete</code> directly so you understand what
+          is happening underneath. In real code you should prefer <strong>RAII</strong> (smart pointers), covered in
+          <a href="04-smart-pointers.html">Lesson 04</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="classes">
+    <h2><i class="fa-solid fa-shapes" aria-hidden="true"></i> The classes</h2>
+    <h3><i class="fa-solid fa-hashtag" aria-hidden="true"></i> <code>Counter</code></h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 7&ndash;25</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</span><code class="language-cpp">class Counter {
+public:
+    int value;
+
+    explicit Counter(int initial = 0) : value(initial) {}
+
+    Counter&amp; set(int value) {
+        this-&gt;value = value; // Distinguishes the member from the parameter.
+        std::cout &lt;&lt; "set on instance " &lt;&lt; this &lt;&lt; ": " &lt;&lt; this-&gt;value &lt;&lt; '\n';
+        return *this; // Reference to current object enables chaining.
+    }
+
+    Counter&amp; add(int amount) {
+        this-&gt;value += amount;
+        return *this;
+    }
+
+    void show() const { std::cout &lt;&lt; "Counter value = " &lt;&lt; value &lt;&lt; '\n'; }
+};</code></pre></figure>
+    <ul>
+      <li><code>explicit Counter(int initial = 0) : value(initial) {}</code> is a constructor. The part after the colon is
+        a <strong>member initializer list</strong>: it sets <code>value</code> to <code>initial</code>. <code>= 0</code> is a
+        default argument, and <code>explicit</code> prevents an <code>int</code> from silently converting into a <code>Counter</code>.</li>
+      <li><code>set</code> and <code>add</code> return <code>Counter&amp;</code>, a <strong>reference</strong> to the same
+        object, so calls can be chained (see Section 2).</li>
+      <li><code>show() const</code>: the <code>const</code> after the parameter list promises this method does not modify the object.</li>
+    </ul>
+    <h3><i class="fa-solid fa-dog" aria-hidden="true"></i> <code>Animal</code> and <code>Dog</code></h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 27&ndash;37</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</span><code class="language-cpp">class Animal {
+public:
+    virtual void speak() const { std::cout &lt;&lt; "Animal sound\n"; }
+    virtual ~Animal() { std::cout &lt;&lt; "Animal destructor\n"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() const override { std::cout &lt;&lt; "Dog says woof\n"; }
+    ~Dog() override { std::cout &lt;&lt; "Dog destructor\n"; }
+};</code></pre></figure>
+    <p>In Java every method can be overridden by default. In C++ a method must be marked <code>virtual</code> for that to
+      work through a base-class pointer. <code>override</code> in <code>Dog</code> asks the compiler to check that it really
+      overrides something. The destructor (<code>~Animal</code>) is also virtual. Section 4 shows why that matters.</p>
+  </section>
+
+  <section class="lesson-section" id="section-1">
+    <h2><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> Section 1: Member access</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 40&ndash;45</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">40
+41
+42
+43
+44
+45</span><code class="language-cpp">std::cout &lt;&lt; "=== Section 1: Member access ===\n";
+Counter counter(5);
+Counter* counter_pointer = &amp;counter;
+counter_pointer-&gt;show();
+(*counter_pointer).show(); // Equivalent member access syntax.
+std::cout &lt;&lt; "Public property via -&gt;: " &lt;&lt; counter_pointer-&gt;value &lt;&lt; '\n';</code></pre></figure>
+    <p><code>counter</code> is an object (not a reference like in Java: the object itself lives in this variable).
+      <code>counter_pointer</code> holds its address. To reach a member through the pointer you have two options:</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Syntax</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>(*counter_pointer).show()</code></td><td>Dereference to get the object, then use <code>.</code></td></tr>
+          <tr><td><code>counter_pointer-&gt;show()</code></td><td>Exactly the same, but easier to read and type</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The parentheses in the first form are required because <code>.</code> binds more tightly than <code>*</code>. That
+      awkwardness is the reason <code>-&gt;</code> exists. Rule of thumb: <strong>object → use <code>.</code>; pointer → use <code>-&gt;</code></strong>.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Counter value = 5
+Counter value = 5
+Public property via -&gt;: 5</code></pre></figure>
+  </section>
+
+  <section class="lesson-section" id="section-2">
+    <h2><i class="fa-solid fa-fingerprint" aria-hidden="true"></i> Section 2: The <code>this</code> pointer and chaining</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 47&ndash;48</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">47
+48</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 2: The this pointer and chaining ===\n";
+counter_pointer-&gt;set(10).add(3).show();</code></pre></figure>
+    <p>Inside a method, <code>this</code> is a pointer to the object the method was called on. It is the same idea as
+      <code>this</code> in Java/C# or <code>self</code> in Python, except that in C++ it is a real pointer, so you use
+      <code>this-&gt;value</code>.</p>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> Counter::set (from the class above)</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">13
+14
+15
+16
+17</span><code class="language-cpp">Counter&amp; set(int value) {
+    this-&gt;value = value; // Distinguishes the member from the parameter.
+    std::cout &lt;&lt; "set on instance " &lt;&lt; this &lt;&lt; ": " &lt;&lt; this-&gt;value &lt;&lt; '\n';
+    return *this; // Reference to current object enables chaining.
+}</code></pre></figure>
+    <ul>
+      <li><code>this-&gt;value = value;</code>: the parameter is also named <code>value</code>, so <code>this-&gt;</code> tells
+        the compiler you mean the <em>member</em>.</li>
+      <li>Printing <code>this</code> shows the object's address.</li>
+      <li><code>return *this;</code>: <code>this</code> is a pointer; <code>*this</code> is the object itself. Returning it
+        as a reference lets the next call continue on the same object.</li>
+    </ul>
+    <p>So <code>counter_pointer-&gt;set(10).add(3).show()</code> runs as: set to 10 → add 3 → show 13.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">set on instance 0x16d482148: 10
+Counter value = 13</code></pre></figure>
+  </section>
+
+  <section class="lesson-section" id="section-3">
+    <h2><i class="fa-solid fa-memory" aria-hidden="true"></i> Section 3: Raw dynamic allocation</h2>
+    <p>So far every object has been a <strong>local</strong> variable, destroyed automatically at the end of its scope.
+      <code>new</code> creates an object in <strong>dynamic storage</strong> (the "heap") instead. It stays alive until you
+      explicitly <code>delete</code> it.</p>
+    <h3><i class="fa-solid fa-cube" aria-hidden="true"></i> A single object</h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 50&ndash;64</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 3: Raw dynamic allocation ===\n";
+/* Local pointer              Dynamic storage (often called heap)
+   heap_counter [address] ---&gt; Counter { value: 20 }
+   Deleting the object does not automatically clear aliases to it.
+*/
+// nothrow new returns nullptr on allocation failure. Ordinary new instead
+// throws std::bad_alloc. This simple constructor does not throw.
+Counter* heap_counter = new (std::nothrow) Counter(20);
+if (heap_counter != nullptr) {
+    heap_counter-&gt;show();
+    delete heap_counter; // Single-object new pairs with delete.
+    heap_counter = nullptr; // Avoid using this pointer after destruction.
+} else {
+    std::cout &lt;&lt; "Single-object allocation failed.\n";
+}</code></pre></figure>
+    <div class="memory" role="img" aria-label="Local pointer heap_counter on the stack points to a Counter object with value 20 in dynamic storage.">
+      <div class="mem-box mem-box--ptr"><span class="mem-name">heap_counter</span><span class="mem-value">0x...</span><span class="mem-type">Counter* &middot; local</span></div>
+      <div class="mem-arrow"><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i><small>points to</small></div>
+      <div class="mem-box mem-box--heap"><span class="mem-name">Counter</span><span class="mem-value">value: 20</span><span class="mem-type">dynamic storage (heap)</span></div>
+      <p class="memory__caption">The pointer is a normal local variable; the object it points to is not.</p>
+    </div>
+    <ul>
+      <li><code>new (std::nothrow) Counter(20)</code>: normally <code>new</code> throws an exception
+        (<code>std::bad_alloc</code>) if memory runs out. The <code>std::nothrow</code> version returns <code>nullptr</code>
+        instead, which is why the code checks for null. This is what <code>&lt;new&gt;</code> is included for.</li>
+      <li><code>delete heap_counter;</code> runs the destructor and frees the memory.</li>
+      <li><code>heap_counter = nullptr;</code> afterwards: the pointer still holds the old address, which is now invalid.
+        Setting it to null avoids accidentally using it.</li>
+    </ul>
+    <h3><i class="fa-solid fa-cubes-stacked" aria-hidden="true"></i> An array of objects</h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 66&ndash;76</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76</span><code class="language-cpp">constexpr int array_count = 3;
+Counter* counters = new (std::nothrow) Counter[array_count];
+if (counters != nullptr) {
+    for (int index = 0; index &lt; array_count; ++index) {
+        counters[index].set(index + 1).show();
+    }
+    delete[] counters; // Array new MUST pair with delete[].
+    counters = nullptr;
+} else {
+    std::cout &lt;&lt; "Array allocation failed.\n";
+}</code></pre></figure>
+    <p><code>new Counter[3]</code> creates three <code>Counter</code> objects in a row (each built with the default
+      constructor, value 0). The loop calls <code>set(index + 1)</code> on each, which prints each element's address.
+      Look at the output: the addresses go up by 4 bytes, the size of one <code>Counter</code> (it contains a single int).</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Counter value = 20
+set on instance 0x102f75860: 1
+Counter value = 1
+set on instance 0x102f75864: 2
+Counter value = 2
+set on instance 0x102f75868: 3
+Counter value = 3</code></pre></figure>
+    <div class="alert alert--notice">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <div>
+        <strong>The rules of manual memory (lines 72 and 77–79)</strong>
+        <ul>
+          <li><code>new</code> pairs with <code>delete</code>; <code>new[]</code> <strong>must</strong> pair with <code>delete[]</code>.</li>
+          <li>Never <code>delete</code> an object that was not created with <code>new</code> (such as <code>counter</code>).</li>
+          <li>Never <code>delete</code> twice, and never use an object after deleting it.</li>
+          <li>Setting one pointer to <code>nullptr</code> does not fix <em>other</em> pointers to the same object. They now dangle.</li>
+          <li>If an exception is thrown between <code>new</code> and <code>delete</code>, the <code>delete</code> is skipped and memory leaks.</li>
+        </ul>
+        <p>Every one of these is a reason to use smart pointers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="section-4">
+    <h2><i class="fa-solid fa-masks-theater" aria-hidden="true"></i> Section 4: Polymorphism through base pointers</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 81&ndash;89</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">81
+82
+83
+84
+85
+86
+87
+88
+89</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 4: Polymorphism through base pointers ===\n";
+Animal* animal = new (std::nothrow) Dog;
+if (animal != nullptr) {
+    animal-&gt;speak(); // Dynamic dispatch selects Dog::speak.
+    delete animal; // Virtual destructor runs Dog then Animal destruction.
+    animal = nullptr;
+} else {
+    std::cout &lt;&lt; "Dog allocation failed.\n";
+}</code></pre></figure>
+    <p><code>Animal* animal = new Dog;</code>: the pointer's type is <code>Animal*</code>, but the object is a <code>Dog</code>.
+      Because <code>speak()</code> is <code>virtual</code>, the call is decided at run time by the <em>real</em> object's
+      type, so it prints <code>Dog says woof</code>. This is <strong>dynamic dispatch</strong>, the behavior you are used to
+      from Java or C#.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Dog says woof
+Dog destructor
+Animal destructor</code></pre></figure>
+    <p>When the object is deleted, both destructors run: the derived part (<code>Dog</code>) first, then the base part
+      (<code>Animal</code>). That only happens because <code>~Animal()</code> is <code>virtual</code>.</p>
+    <div class="alert alert--info">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      <div>
+        <strong>Why pointers are needed for polymorphism</strong>
+        <p>If you write <code>Animal a = Dog();</code> (no pointer), C++ <em>copies</em> only the <code>Animal</code> part
+          into <code>a</code>. The <code>Dog</code> part is "sliced off" and <code>a.speak()</code> prints
+          <code>Animal sound</code>. A pointer or reference refers to the full original object, so dispatch works.</p>
+      </div>
+    </div>
+    <div class="alert alert--notice">
+      <i class="fa-solid fa-skull-crossbones" aria-hidden="true"></i>
+      <div>
+        <strong>Forget <code>virtual</code> on the destructor and...</strong>
+        <p>deleting a <code>Dog</code> through an <code>Animal*</code> is undefined behavior; typically only
+          <code>~Animal</code> runs and the <code>Dog</code> part is never cleaned up. Rule: if a class has virtual methods,
+          give it a virtual destructor.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="section-5">
+    <h2><i class="fa-solid fa-crosshairs" aria-hidden="true"></i> Section 5: Pointers to class members</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 91&ndash;99</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">91
+92
+93
+94
+95
+96
+97
+98
+99</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 5: Pointers to class members ===\n";
+int Counter::* data_member = &amp;Counter::value;
+counter.*data_member = 50; // .* applies a member pointer to an object.
+std::cout &lt;&lt; "Member via -&gt;*: " &lt;&lt; counter_pointer-&gt;*data_member &lt;&lt; '\n';
+void (Counter::* member_function)() const = &amp;Counter::show;
+(counter.*member_function)();
+(counter_pointer-&gt;*member_function)();
+// Member pointers need an instance; they are not ordinary addresses of
+// standalone variables/functions. Parentheses are needed for these calls.</code></pre></figure>
+    <p>This is an advanced feature you will rarely write yourself, but it shows how far the pointer idea goes. A
+      <strong>pointer to member</strong> does not point to a particular object's data. It says "the <code>value</code>
+      member of <em>some</em> <code>Counter</code>". You supply the object later:</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>int Counter::* data_member = &amp;Counter::value;</code></td><td>"which int member of Counter": <code>value</code></td></tr>
+          <tr><td><code>counter.*data_member = 50;</code></td><td>Apply it to an <strong>object</strong> with <code>.*</code></td></tr>
+          <tr><td><code>counter_pointer-&gt;*data_member</code></td><td>Apply it to a <strong>pointer</strong> with <code>-&gt;*</code></td></tr>
+          <tr><td><code>void (Counter::* member_function)() const = &amp;Counter::show;</code></td><td>"which const, no-argument method": <code>show</code></td></tr>
+          <tr><td><code>(counter.*member_function)();</code></td><td>Call it on an object (parentheses required)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Since <code>counter_pointer</code> points to <code>counter</code>, every line operates on the same object.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Member via -&gt;*: 50
+Counter value = 50
+Counter value = 50</code></pre></figure>
+    <p>Where is this useful? Generic code that needs to choose <em>which</em> field or method to use at run time, such as
+      sorting by a chosen field. The standard library's <code>std::invoke</code> and <code>std::mem_fn</code> are built on it.</p>
+  </section>
+
+  <section class="lesson-section" id="takeaways">
+    <h2><i class="fa-solid fa-star" aria-hidden="true"></i> Takeaways</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; lines 102&ndash;104</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">102
+103
+104</span><code class="language-cpp">// Takeaways: -&gt; accesses an object through a pointer; this identifies that
+// instance. Match new/delete and new[]/delete[]. Polymorphic deletion requires
+// a virtual base destructor. Member pointers are applied with .* or -&gt;*.</code></pre></figure>
+    <ul class="goals">
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><code>p-&gt;m</code> is <code>(*p).m</code>. <code>this</code> is a pointer to the current object.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Match <code>new</code>/<code>delete</code> and <code>new[]</code>/<code>delete[]</code>, exactly once.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Polymorphism needs a pointer or reference, <code>virtual</code> methods and a virtual destructor.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Member pointers are applied with <code>.*</code> or <code>-&gt;*</code>.</span></li>
+    </ul>
+    <div class="alert alert--success">
+      <i class="fa-solid fa-flask" aria-hidden="true"></i>
+      <div>
+        <strong>Try it yourself</strong>
+        <p>Remove the word <code>virtual</code> from <code>speak()</code> in <code>Animal</code> (and remove
+          <code>override</code> from <code>Dog</code>, which would no longer compile). Run again: what does
+          <code>animal-&gt;speak()</code> print now?</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="full-source">
+    <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Full source code</h2>
+    <figure class="code-block code-block--full"><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 03_pointers_in_oop.cpp &middot; complete program</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104</span><code class="language-cpp">// Learn member access, this, raw allocation, virtual dispatch, and pointers
+// to class members. Raw ownership here is educational; prefer RAII in practice.
+#include &lt;iostream&gt;
+#include &lt;new&gt;
+#include &lt;string&gt;
+
+class Counter {
+public:
+    int value;
+
+    explicit Counter(int initial = 0) : value(initial) {}
+
+    Counter&amp; set(int value) {
+        this-&gt;value = value; // Distinguishes the member from the parameter.
+        std::cout &lt;&lt; "set on instance " &lt;&lt; this &lt;&lt; ": " &lt;&lt; this-&gt;value &lt;&lt; '\n';
+        return *this; // Reference to current object enables chaining.
+    }
+
+    Counter&amp; add(int amount) {
+        this-&gt;value += amount;
+        return *this;
+    }
+
+    void show() const { std::cout &lt;&lt; "Counter value = " &lt;&lt; value &lt;&lt; '\n'; }
+};
+
+class Animal {
+public:
+    virtual void speak() const { std::cout &lt;&lt; "Animal sound\n"; }
+    virtual ~Animal() { std::cout &lt;&lt; "Animal destructor\n"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() const override { std::cout &lt;&lt; "Dog says woof\n"; }
+    ~Dog() override { std::cout &lt;&lt; "Dog destructor\n"; }
+};
+
+int main() {
+    std::cout &lt;&lt; "=== Section 1: Member access ===\n";
+    Counter counter(5);
+    Counter* counter_pointer = &amp;counter;
+    counter_pointer-&gt;show();
+    (*counter_pointer).show(); // Equivalent member access syntax.
+    std::cout &lt;&lt; "Public property via -&gt;: " &lt;&lt; counter_pointer-&gt;value &lt;&lt; '\n';
+
+    std::cout &lt;&lt; "\n=== Section 2: The this pointer and chaining ===\n";
+    counter_pointer-&gt;set(10).add(3).show();
+
+    std::cout &lt;&lt; "\n=== Section 3: Raw dynamic allocation ===\n";
+    /* Local pointer              Dynamic storage (often called heap)
+       heap_counter [address] ---&gt; Counter { value: 20 }
+       Deleting the object does not automatically clear aliases to it.
+    */
+    // nothrow new returns nullptr on allocation failure. Ordinary new instead
+    // throws std::bad_alloc. This simple constructor does not throw.
+    Counter* heap_counter = new (std::nothrow) Counter(20);
+    if (heap_counter != nullptr) {
+        heap_counter-&gt;show();
+        delete heap_counter; // Single-object new pairs with delete.
+        heap_counter = nullptr; // Avoid using this pointer after destruction.
+    } else {
+        std::cout &lt;&lt; "Single-object allocation failed.\n";
+    }
+
+    constexpr int array_count = 3;
+    Counter* counters = new (std::nothrow) Counter[array_count];
+    if (counters != nullptr) {
+        for (int index = 0; index &lt; array_count; ++index) {
+            counters[index].set(index + 1).show();
+        }
+        delete[] counters; // Array new MUST pair with delete[].
+        counters = nullptr;
+    } else {
+        std::cout &lt;&lt; "Array allocation failed.\n";
+    }
+    // Never delete a stack object, delete twice, or access a deleted object.
+    // Resetting one pointer does not fix other aliases: they would dangle.
+    // Raw owners also risk leaks if an exception skips their cleanup.
+
+    std::cout &lt;&lt; "\n=== Section 4: Polymorphism through base pointers ===\n";
+    Animal* animal = new (std::nothrow) Dog;
+    if (animal != nullptr) {
+        animal-&gt;speak(); // Dynamic dispatch selects Dog::speak.
+        delete animal; // Virtual destructor runs Dog then Animal destruction.
+        animal = nullptr;
+    } else {
+        std::cout &lt;&lt; "Dog allocation failed.\n";
+    }
+
+    std::cout &lt;&lt; "\n=== Section 5: Pointers to class members ===\n";
+    int Counter::* data_member = &amp;Counter::value;
+    counter.*data_member = 50; // .* applies a member pointer to an object.
+    std::cout &lt;&lt; "Member via -&gt;*: " &lt;&lt; counter_pointer-&gt;*data_member &lt;&lt; '\n';
+    void (Counter::* member_function)() const = &amp;Counter::show;
+    (counter.*member_function)();
+    (counter_pointer-&gt;*member_function)();
+    // Member pointers need an instance; they are not ordinary addresses of
+    // standalone variables/functions. Parentheses are needed for these calls.
+}
+
+// Takeaways: -&gt; accesses an object through a pointer; this identifies that
+// instance. Match new/delete and new[]/delete[]. Polymorphic deletion requires
+// a virtual base destructor. Member pointers are applied with .* or -&gt;*.</code></pre></figure>
+    <h3><i class="fa-solid fa-terminal" aria-hidden="true"></i> Complete output</h3>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Sample run &middot; <code>./program</code></figcaption><pre><code class="nohighlight">=== Section 1: Member access ===
+Counter value = 5
+Counter value = 5
+Public property via -&gt;: 5
+
+=== Section 2: The this pointer and chaining ===
+set on instance 0x16fbee158: 10
+Counter value = 13
+
+=== Section 3: Raw dynamic allocation ===
+Counter value = 20
+set on instance 0x100969700: 1
+Counter value = 1
+set on instance 0x100969704: 2
+Counter value = 2
+set on instance 0x100969708: 3
+Counter value = 3
+
+=== Section 4: Polymorphism through base pointers ===
+Dog says woof
+Dog destructor
+Animal destructor
+
+=== Section 5: Pointers to class members ===
+Member via -&gt;*: 50
+Counter value = 50
+Counter value = 50</code></pre></figure>
+  </section>
+</div>
+<nav class="pager container container--narrow" aria-label="Lesson navigation"><a class="pager__link" href="02-advanced-pointers.html"><span class="pager__dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="pager__title">02 &middot; Advanced Pointers</span></a><a class="pager__link pager__link--next" href="04-smart-pointers.html"><span class="pager__dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="pager__title">04 &middot; Smart Pointers</span></a></nav>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <p><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Kaisetsu &middot; C++ Pointers for Students</p>
+    <p class="site-footer__small"><a href="../index.html"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> mosubaga.github.io</a></p>
+  </div>
+</footer>
+<button class="to-top" type="button" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

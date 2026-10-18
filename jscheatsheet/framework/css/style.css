@@ -108,12 +108,118 @@ kbd {
 }
 
 pre {
+  position: relative;
   overflow: auto;
   padding: 1rem;
   border: 1px solid var(--cc-border);
   border-radius: var(--cc-radius-md);
   color: var(--cc-text);
   background: var(--cc-surface-tint);
+}
+
+pre.has-copy-btn {
+  padding-top: 2.75rem;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  min-height: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 999px;
+  color: var(--cc-text);
+  font: 700 0.72rem/1 var(--cc-font);
+  background: var(--cc-pink-soft);
+  box-shadow: 0 6px 14px var(--cc-pink-shadow);
+  cursor: pointer;
+  z-index: 2;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.copy-btn:hover {
+  border-color: var(--cc-pink-hover);
+  background: var(--cc-pink-hover);
+  transform: translateY(-1px);
+}
+
+.copy-btn.copied {
+  border-color: var(--cc-mint-strong);
+  background: var(--cc-success);
+}
+
+/* Cross-page navigation for the frameworks section */
+.fw-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fw-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--cc-border);
+  border-radius: 999px;
+  color: var(--cc-text);
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.78);
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.fw-nav a:hover {
+  border-color: var(--cc-pink-hover);
+  background: var(--cc-pink-soft);
+  color: var(--cc-text-strong);
+  transform: translateY(-1px);
+}
+
+.fw-nav a.active {
+  color: #fff;
+  border-color: transparent;
+  background: var(--cc-pink);
+}
+
+/* Back-to-top button */
+#back-to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  min-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--cc-border-strong);
+  background: var(--cc-pink-soft);
+  color: var(--cc-text);
+  box-shadow: var(--cc-shadow);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 200ms ease, transform 200ms ease;
+  z-index: 999;
+}
+
+#back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+#back-to-top:hover {
+  background: var(--cc-pink-hover);
 }
 
 .cc-page {

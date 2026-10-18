@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 Smart Pointers · Kaisetsu</title>
+<meta name="description" content="Lesson 04 explains 04_smart_pointers.cpp: RAII, unique_ptr, shared_ptr, custom deleters and weak_ptr for breaking ownership cycles.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar"><div class="container topbar__inner"><a class="brand" href="index.html"><i class="fa-solid fa-code" aria-hidden="true"></i> Kaisetsu <span class="brand__sub">C++ Pointers</span></a><nav aria-label="Lessons"><ul class="topnav"><li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li><li><a href="01-basic-pointers.html"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span class="nav-num">01</span> Basics</a></li><li><a href="02-advanced-pointers.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span class="nav-num">02</span> Advanced</a></li><li><a href="03-pointers-in-oop.html"><i class="fa-solid fa-cubes" aria-hidden="true"></i> <span class="nav-num">03</span> OOP</a></li><li><a href="04-smart-pointers.html" aria-current="page"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <span class="nav-num">04</span> Smart</a></li><li><a href="05-string-pointers.html"><i class="fa-solid fa-font" aria-hidden="true"></i> <span class="nav-num">05</span> Strings</a></li></ul></nav></div></header>
+<main id="main">
+<section class="hero gradient-bloom">
+  <div class="container">
+    <div class="hero__eyebrow">
+      <span class="tag tag--sub">Lesson 04</span>
+      <span class="tag tag--accent"><i class="fa-solid fa-signal" aria-hidden="true"></i> Intermediate</span>
+    </div>
+    <h1>Smart Pointers</h1>
+    <p class="hero__lead">Modern C++ lets objects clean themselves up. This program shows <strong>RAII</strong> and the three
+      standard smart pointers, <code>unique_ptr</code>, <code>shared_ptr</code> and <code>weak_ptr</code>, and there is not
+      a single <code>delete</code> in <code>main</code>.</p>
+    <div class="hero__actions">
+      <a class="btn btn--secondary" href="#full-source"><i class="fa-solid fa-code" aria-hidden="true"></i>Full source</a>
+      <a class="btn btn--outline" href="cpp/04_smart_pointers.cpp" download><i class="fa-solid fa-download" aria-hidden="true"></i>Download .cpp</a>
+    </div>
+  </div>
+</section>
+
+<div class="container container--narrow lesson">
+  <nav class="toc card card--sub" aria-label="On this page"><h3><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</h3><ol><li><a href="#goals">What the programmer wants you to learn</a></li><li><a href="#types">The helper types</a></li><li><a href="#section-1">Section 1: RAII and scope-based cleanup</a></li><li><a href="#section-2">Section 2: <code>unique_ptr</code>, exclusive ownership</a></li><li><a href="#section-3">Section 3: <code>shared_ptr</code>, shared ownership</a></li><li><a href="#section-4">Section 4: <code>weak_ptr</code> and ownership cycles</a></li><li><a href="#takeaways">Takeaways</a></li><li><a href="#full-source">Full source code</a></li></ol></nav>
+
+  <section class="lesson-section" id="goals">
+    <h2><i class="fa-solid fa-bullseye" aria-hidden="true"></i> What the programmer wants you to learn</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 1&ndash;6</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">1
+2
+3
+4
+5
+6</span><code class="language-cpp">// Learn RAII, exclusive/shared ownership, custom deleters, and weak references
+// that break ownership cycles. No explicit delete is needed in main.
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;string&gt;
+#include &lt;utility&gt;</code></pre></figure>
+    <p>Lesson 03 ended with a list of things that can go wrong with <code>new</code>/<code>delete</code>: leaks, double
+      deletes, dangling pointers. Smart pointers solve these by giving every dynamic object a clear <strong>owner</strong>
+      that deletes it automatically.</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Smart pointer</th><th>Ownership</th><th>Created with</th><th>Think of it as</th></tr></thead>
+        <tbody>
+          <tr><td><code>std::unique_ptr&lt;T&gt;</code></td><td>Exactly one owner</td><td><code>std::make_unique&lt;T&gt;(...)</code></td><td>A house key with no copies</td></tr>
+          <tr><td><code>std::shared_ptr&lt;T&gt;</code></td><td>Several owners; last one cleans up</td><td><code>std::make_shared&lt;T&gt;(...)</code></td><td>A shared flat: the last to leave turns off the lights</td></tr>
+          <tr><td><code>std::weak_ptr&lt;T&gt;</code></td><td>Not an owner; only observes</td><td>From a <code>shared_ptr</code></td><td>Knowing the address, but not holding a key</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>All three live in <code>&lt;memory&gt;</code>. <code>&lt;utility&gt;</code> provides <code>std::move</code>.</p>
+  </section>
+
+  <section class="lesson-section" id="types">
+    <h2><i class="fa-solid fa-shapes" aria-hidden="true"></i> The helper types</h2>
+    <h3><i class="fa-solid fa-box" aria-hidden="true"></i> <code>Resource</code>: a noisy object</h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 8&ndash;15</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">8
+9
+10
+11
+12
+13
+14
+15</span><code class="language-cpp">struct Resource {
+    std::string name;
+    explicit Resource(std::string label) : name(std::move(label)) {
+        std::cout &lt;&lt; "Acquired " &lt;&lt; name &lt;&lt; '\n';
+    }
+    ~Resource() { std::cout &lt;&lt; "Released " &lt;&lt; name &lt;&lt; '\n'; }
+    void use() const { std::cout &lt;&lt; "Using " &lt;&lt; name &lt;&lt; '\n'; }
+};</code></pre></figure>
+    <p><code>Resource</code> prints a message when it is created (<strong>Acquired</strong>) and when it is destroyed
+      (<strong>Released</strong>). By reading the output, you can see exactly when each object dies, even though nobody calls
+      <code>delete</code>. (A <code>struct</code> is a class whose members are public by default.)</p>
+    <p><code>name(std::move(label))</code> <em>moves</em> the string into the member rather than copying it, a small
+      efficiency habit. You will see <code>std::move</code> again in Section 2.</p>
+    <h3><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> <code>share_resource</code></h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 17&ndash;21</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">17
+18
+19
+20
+21</span><code class="language-cpp">void share_resource(std::shared_ptr&lt;Resource&gt; resource) {
+    // By-value deliberately takes an additional share of ownership.
+    std::cout &lt;&lt; "Inside function, owners = " &lt;&lt; resource.use_count() &lt;&lt; '\n';
+    resource-&gt;use(); // Caller supplies a non-null shared_ptr in this example.
+}</code></pre></figure>
+    <p>The parameter is a <code>shared_ptr</code> taken <strong>by value</strong>, so calling this function creates one more
+      owner for as long as the function runs. The comment says it is "deliberate", to show the owner count go up.</p>
+    <h3><i class="fa-solid fa-sitemap" aria-hidden="true"></i> <code>Node</code>: a parent/child pair</h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 23&ndash;29</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">23
+24
+25
+26
+27
+28
+29</span><code class="language-cpp">struct Node {
+    std::string name;
+    std::shared_ptr&lt;Node&gt; child; // Own the child.
+    std::weak_ptr&lt;Node&gt; parent; // Observe the parent without owning it.
+    explicit Node(std::string label) : name(std::move(label)) {}
+    ~Node() { std::cout &lt;&lt; "Destroyed node " &lt;&lt; name &lt;&lt; '\n'; }
+};</code></pre></figure>
+    <p>A node <em>owns</em> its child (<code>shared_ptr</code>) but only <em>observes</em> its parent (<code>weak_ptr</code>).
+      Section 4 explains why that asymmetry matters.</p>
+  </section>
+
+  <section class="lesson-section" id="section-1">
+    <h2><i class="fa-solid fa-broom" aria-hidden="true"></i> Section 1: RAII and scope-based cleanup</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 32&ndash;40</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">32
+33
+34
+35
+36
+37
+38
+39
+40</span><code class="language-cpp">std::cout &lt;&lt; "=== Section 1: RAII and scope-based cleanup ===\n";
+{
+    auto scoped_resource = std::make_unique&lt;Resource&gt;("scoped resource");
+    scoped_resource-&gt;use();
+    std::cout &lt;&lt; "Leaving scope triggers automatic cleanup.\n";
+}
+// Resource Acquisition Is Initialization ties lifetime to an owner object.
+// Destruction also happens during exception unwinding, preventing the
+// leaks that arise when manual delete is skipped by an early exit.</code></pre></figure>
+    <p>The extra pair of braces <code>{ ... }</code> creates an inner <strong>scope</strong>. <code>scoped_resource</code>
+      is a local variable inside it. When execution reaches the closing brace, every local variable in the scope is
+      destroyed. The <code>unique_ptr</code>'s destructor then deletes the <code>Resource</code> it owns.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Acquired scoped resource
+Using scoped resource
+Leaving scope triggers automatic cleanup.
+Released scoped resource</code></pre></figure>
+    <div class="alert alert--info">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      <div>
+        <strong>RAII = Resource Acquisition Is Initialization</strong>
+        <p>A long name for a simple idea: tie a resource's lifetime to an object on the stack. When the object is created it
+          takes the resource; when it is destroyed it gives it back. Because C++ destroys local objects at a predictable
+          moment, even when an exception is thrown (lines 39–40), cleanup cannot be forgotten. Java's
+          <code>try-with-resources</code> and Python's <code>with</code> are the closest equivalents, but in C++ it works for
+          every scope automatically.</p>
+      </div>
+    </div>
+    <p><strong>Syntax note:</strong> <code>auto</code> lets the compiler deduce the type; here it is
+      <code>std::unique_ptr&lt;Resource&gt;</code>.</p>
+  </section>
+
+  <section class="lesson-section" id="section-2">
+    <h2><i class="fa-solid fa-key" aria-hidden="true"></i> Section 2: <code>unique_ptr</code>, exclusive ownership</h2>
+    <h3><i class="fa-solid fa-right-long" aria-hidden="true"></i> Moving ownership</h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 42&ndash;48</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">42
+43
+44
+45
+46
+47
+48</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 2: unique_ptr exclusive ownership ===\n";
+auto original = std::make_unique&lt;Resource&gt;("exclusive resource");
+// auto copy = original; // Error: unique_ptr cannot be copied.
+auto owner = std::move(original);
+std::cout &lt;&lt; std::boolalpha &lt;&lt; "Original is empty after move: "
+          &lt;&lt; (original == nullptr) &lt;&lt; '\n';
+owner-&gt;use(); // Never dereference the moved-from, empty original.</code></pre></figure>
+    <p>A <code>unique_ptr</code> cannot be copied; line 44 would not compile. If two pointers both owned the object, both
+      would try to delete it. Instead ownership is <strong>moved</strong>: <code>std::move(original)</code> hands the object
+      to <code>owner</code> and leaves <code>original</code> empty (null).</p>
+    <div class="memory" role="img" aria-label="After the move, original is empty and owner points to the exclusive resource.">
+      <div class="mem-box mem-box--gone"><span class="mem-name">original</span><span class="mem-value">nullptr</span><span class="mem-type">unique_ptr</span></div>
+      <div class="mem-box mem-box--ptr"><span class="mem-name">owner</span><span class="mem-value">0x...</span><span class="mem-type">unique_ptr</span></div>
+      <div class="mem-arrow"><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i><small>owns</small></div>
+      <div class="mem-box mem-box--heap"><span class="mem-name">Resource</span><span class="mem-value">"exclusive resource"</span></div>
+    </div>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Acquired exclusive resource
+Original is empty after move: true
+Using exclusive resource</code></pre></figure>
+    <h3><i class="fa-solid fa-table-cells" aria-hidden="true"></i> Arrays</h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 49&ndash;53</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">49
+50
+51
+52
+53</span><code class="language-cpp">auto values = std::make_unique&lt;int[]&gt;(3); // Value-initialized to zero.
+values[1] = 42;
+std::cout &lt;&lt; "Smart array: " &lt;&lt; values[0] &lt;&lt; ", " &lt;&lt; values[1]
+          &lt;&lt; ", " &lt;&lt; values[2] &lt;&lt; '\n';
+// unique_ptr&lt;T[]&gt; uses delete[] automatically; indexing must be in bounds.</code></pre></figure>
+    <p><code>std::make_unique&lt;int[]&gt;(3)</code> creates an array of three ints set to zero. The <code>[]</code> in the
+      type means it will automatically use <code>delete[]</code>, so the mismatch problem from Lesson 03 cannot happen.
+      Bounds are still not checked, though. (In practice, <code>std::vector</code> is usually the better choice for arrays.)</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Smart array: 0, 42, 0</code></pre></figure>
+    <h3><i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i> A custom deleter</h3>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 54&ndash;64</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</span><code class="language-cpp">{
+    auto deleter = [](Resource* resource) noexcept {
+        std::cout &lt;&lt; "Custom deleter invoked\n";
+        delete resource;
+    };
+    // Explicit new here illustrates supplying a custom cleanup operation.
+    std::unique_ptr&lt;Resource, decltype(deleter)&gt; custom(
+        new Resource("custom cleanup resource"), deleter);
+    custom-&gt;use();
+}
+// get() borrows a raw pointer; do not delete it or wrap it in a second owner.</code></pre></figure>
+    <p>Sometimes "clean up" means something other than <code>delete</code>, such as closing a file or releasing a
+      network connection. A <code>unique_ptr</code> can be given a <strong>custom deleter</strong> to call instead. Here it is a
+      <strong>lambda</strong> (an anonymous function, like <code>(r) -&gt; { ... }</code> in Java): it prints a message and then
+      deletes. <code>decltype(deleter)</code> asks the compiler for the lambda's type, because the deleter type is part of
+      the <code>unique_ptr</code>'s type.</p>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Acquired custom cleanup resource
+Using custom cleanup resource
+Custom deleter invoked
+Released custom cleanup resource</code></pre></figure>
+    <div class="alert alert--notice">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <div>
+        <strong>Borrowing with <code>get()</code> (line 64)</strong>
+        <p><code>ptr.get()</code> returns a plain raw pointer to the owned object, useful for calling older functions that
+          take <code>T*</code>. That raw pointer is only <em>borrowed</em>: never <code>delete</code> it and never wrap it in a
+          second smart pointer, or the object would be deleted twice.</p>
+      </div>
+    </div>
+    <p>Notice that <code>exclusive resource</code> is <strong>not</strong> released here. <code>owner</code> belongs to
+      <code>main</code>'s outer scope, so it lives until the very end of the program (look at the last line of the full output).</p>
+  </section>
+
+  <section class="lesson-section" id="section-3">
+    <h2><i class="fa-solid fa-users" aria-hidden="true"></i> Section 3: <code>shared_ptr</code>, shared ownership</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 66&ndash;77</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 3: shared_ptr shared ownership ===\n";
+auto shared = std::make_shared&lt;Resource&gt;("shared resource");
+std::cout &lt;&lt; "Initial owners = " &lt;&lt; shared.use_count() &lt;&lt; '\n';
+{
+    auto second_owner = shared;
+    std::cout &lt;&lt; "After copying, owners = " &lt;&lt; shared.use_count() &lt;&lt; '\n';
+    share_resource(second_owner);
+}
+std::cout &lt;&lt; "After inner scope, owners = " &lt;&lt; shared.use_count() &lt;&lt; '\n';
+shared.reset(); // Last owner releases the resource now.
+// use_count is illustrative, not a synchronization mechanism. Shared
+// ownership does not make concurrent access to the resource safe.</code></pre></figure>
+    <p>A <code>shared_ptr</code> keeps a <strong>reference count</strong>: how many <code>shared_ptr</code>s currently own
+      the object. Copying one adds an owner; destroying or resetting one removes an owner. When the count reaches zero, the
+      object is deleted. <code>use_count()</code> lets you peek at the number.</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Moment</th><th>Owners</th><th>Who owns it</th></tr></thead>
+        <tbody>
+          <tr><td>After <code>make_shared</code></td><td>1</td><td><code>shared</code></td></tr>
+          <tr><td>After <code>auto second_owner = shared;</code></td><td>2</td><td><code>shared</code>, <code>second_owner</code></td></tr>
+          <tr><td>Inside <code>share_resource</code></td><td>3</td><td>+ the by-value parameter <code>resource</code></td></tr>
+          <tr><td>After the inner <code>}</code></td><td>1</td><td><code>shared</code> (the other two were destroyed)</td></tr>
+          <tr><td>After <code>shared.reset()</code></td><td>0</td><td>nobody, so <strong>Released</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Acquired shared resource
+Initial owners = 1
+After copying, owners = 2
+Inside function, owners = 3
+Using shared resource
+After inner scope, owners = 1
+Released shared resource</code></pre></figure>
+    <p>This is the closest thing in C++ to how Java or Python manage objects: an object lives as long as someone refers to it.</p>
+    <div class="alert alert--info">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      <div>
+        <strong>Two warnings from the comments</strong>
+        <p><code>use_count()</code> is for illustration and debugging; don't base program logic on it. And shared
+          <em>ownership</em> is not shared <em>safety</em>: if two threads modify the <code>Resource</code> at the same time,
+          you still need a lock.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="section-4">
+    <h2><i class="fa-solid fa-eye" aria-hidden="true"></i> Section 4: <code>weak_ptr</code> and ownership cycles</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 79&ndash;104</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104</span><code class="language-cpp">std::cout &lt;&lt; "\n=== Section 4: weak_ptr and ownership cycles ===\n";
+std::weak_ptr&lt;Node&gt; observer;
+{
+    auto parent = std::make_shared&lt;Node&gt;("parent");
+    auto child = std::make_shared&lt;Node&gt;("child");
+    parent-&gt;child = child;
+    child-&gt;parent = parent;
+    observer = parent;
+    /* Owning edge: parent --shared_ptr--&gt; child
+       Observing edge: child --weak_ptr--&gt; parent
+       If both edges owned, the reference counts could never reach zero
+       after external owners disappear, leaking both objects.
+    */
+    std::cout &lt;&lt; "Observer expired: " &lt;&lt; observer.expired() &lt;&lt; '\n';
+    if (auto temporary_owner = child-&gt;parent.lock()) {
+        std::cout &lt;&lt; "Locked parent: " &lt;&lt; temporary_owner-&gt;name &lt;&lt; '\n';
+    } // Temporary shared ownership ends here.
+} // Both nodes are destroyed: the weak back-reference cannot keep them alive.
+std::cout &lt;&lt; "After scope, observer expired: " &lt;&lt; observer.expired() &lt;&lt; '\n';
+if (auto temporary_owner = observer.lock()) {
+    std::cout &lt;&lt; "Still alive: " &lt;&lt; temporary_owner-&gt;name &lt;&lt; '\n';
+} else {
+    std::cout &lt;&lt; "lock() returned empty; target no longer exists.\n";
+}
+// expired() is a snapshot. Use lock() and check its result before access;
+// lock() acquires ownership if the object is still alive.</code></pre></figure>
+    <h3><i class="fa-solid fa-rotate" aria-hidden="true"></i> The problem: cycles</h3>
+    <p>Reference counting has a weakness. If a parent owns its child <em>and</em> the child owns its parent, each keeps
+      the other's count at least 1. When the outside world lets go, neither count reaches zero and both objects leak.
+      (A garbage collector would detect this; reference counting cannot.)</p>
+    <h3><i class="fa-solid fa-scissors" aria-hidden="true"></i> The fix: one direction only observes</h3>
+    <div class="memory" role="img" aria-label="parent owns child through shared_ptr; child observes parent through weak_ptr.">
+      <div class="mem-box mem-box--heap"><span class="mem-name">Node "parent"</span><span class="mem-type">child: shared_ptr</span></div>
+      <div class="mem-arrow"><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i><small>owns (shared_ptr)</small></div>
+      <div class="mem-box mem-box--heap"><span class="mem-name">Node "child"</span><span class="mem-type">parent: weak_ptr</span></div>
+      <div class="mem-arrow mem-arrow--weak"><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i><small>observes (weak_ptr)</small></div>
+      <p class="memory__caption">Only the downward edge counts as ownership, so there is no cycle of owners.</p>
+    </div>
+    <p>Step by step:</p>
+    <ol>
+      <li>Two nodes are created; <code>parent-&gt;child</code> owns the child, <code>child-&gt;parent</code> only observes the parent.</li>
+      <li><code>observer</code> is a <code>weak_ptr</code> declared <em>outside</em> the scope so we can check on the parent later.</li>
+      <li><code>observer.expired()</code> is <code>false</code>: the parent still exists.</li>
+      <li><code>child-&gt;parent.lock()</code> tries to get a temporary <code>shared_ptr</code>. If the parent is alive, it
+        succeeds and we can safely use it inside the <code>if</code>.</li>
+      <li>At the closing brace, the local <code>parent</code> and <code>child</code> variables are destroyed. The parent's count
+        drops to 0, so it is destroyed; that releases its <code>child</code> member, so the child is destroyed too.</li>
+      <li>Now <code>observer.expired()</code> is <code>true</code> and <code>lock()</code> returns an empty pointer.</li>
+    </ol>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Output</figcaption><pre><code class="nohighlight">Observer expired: false
+Locked parent: parent
+Destroyed node parent
+Destroyed node child
+After scope, observer expired: true
+lock() returned empty; target no longer exists.</code></pre></figure>
+    <div class="alert alert--notice">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <div>
+        <strong>Always <code>lock()</code>, then check</strong>
+        <p>A <code>weak_ptr</code> cannot be dereferenced directly. As lines 103–104 explain, <code>expired()</code> is only a
+          snapshot (the object could disappear right after you check). The safe pattern is
+          <code>if (auto p = weak.lock()) { ... }</code>: you hold a real owner while you use the object.</p>
+      </div>
+    </div>
+    <p><strong>Syntax note:</strong> <code>if (auto x = ...)</code> declares a variable and tests it in one step. A smart
+      pointer counts as <code>true</code> when it is not empty.</p>
+  </section>
+
+  <section class="lesson-section" id="takeaways">
+    <h2><i class="fa-solid fa-star" aria-hidden="true"></i> Takeaways</h2>
+    <figure class="code-block "><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; lines 107&ndash;110</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">107
+108
+109
+110</span><code class="language-cpp">// Takeaways: prefer make_unique for one owner, make_shared for shared lifetime,
+// and weak_ptr for non-owning observation or cycle-breaking back-references.
+// RAII makes resource release automatic; borrowed raw pointers still require
+// lifetime discipline. Remaining unique owners clean up when main exits.</code></pre></figure>
+    <ul class="goals">
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Default to <code>std::make_unique</code>. Move it with <code>std::move</code> when ownership changes hands.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Use <code>std::make_shared</code> when several parts of the program genuinely share an object's lifetime.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Use <code>std::weak_ptr</code> for back-references and observers, so cycles cannot leak.</span></li>
+      <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>Raw pointers from <code>get()</code> are borrowed: never delete them, and keep the owner alive while you use them.</span></li>
+    </ul>
+    <div class="alert alert--success">
+      <i class="fa-solid fa-flask" aria-hidden="true"></i>
+      <div>
+        <strong>Try it yourself</strong>
+        <p>Change line 26 to <code>std::shared_ptr&lt;Node&gt; parent;</code> and line 93 to
+          <code>if (auto temporary_owner = child-&gt;parent) {</code>. Run the program: the
+          <code>Destroyed node</code> messages disappear. That is the leak caused by an ownership cycle.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lesson-section" id="full-source">
+    <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Full source code</h2>
+    <figure class="code-block code-block--full"><figcaption><i class="fa-solid fa-file-code" aria-hidden="true"></i> 04_smart_pointers.cpp &middot; complete program</figcaption><pre class="numbered"><span class="gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110</span><code class="language-cpp">// Learn RAII, exclusive/shared ownership, custom deleters, and weak references
+// that break ownership cycles. No explicit delete is needed in main.
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;string&gt;
+#include &lt;utility&gt;
+
+struct Resource {
+    std::string name;
+    explicit Resource(std::string label) : name(std::move(label)) {
+        std::cout &lt;&lt; "Acquired " &lt;&lt; name &lt;&lt; '\n';
+    }
+    ~Resource() { std::cout &lt;&lt; "Released " &lt;&lt; name &lt;&lt; '\n'; }
+    void use() const { std::cout &lt;&lt; "Using " &lt;&lt; name &lt;&lt; '\n'; }
+};
+
+void share_resource(std::shared_ptr&lt;Resource&gt; resource) {
+    // By-value deliberately takes an additional share of ownership.
+    std::cout &lt;&lt; "Inside function, owners = " &lt;&lt; resource.use_count() &lt;&lt; '\n';
+    resource-&gt;use(); // Caller supplies a non-null shared_ptr in this example.
+}
+
+struct Node {
+    std::string name;
+    std::shared_ptr&lt;Node&gt; child; // Own the child.
+    std::weak_ptr&lt;Node&gt; parent; // Observe the parent without owning it.
+    explicit Node(std::string label) : name(std::move(label)) {}
+    ~Node() { std::cout &lt;&lt; "Destroyed node " &lt;&lt; name &lt;&lt; '\n'; }
+};
+
+int main() {
+    std::cout &lt;&lt; "=== Section 1: RAII and scope-based cleanup ===\n";
+    {
+        auto scoped_resource = std::make_unique&lt;Resource&gt;("scoped resource");
+        scoped_resource-&gt;use();
+        std::cout &lt;&lt; "Leaving scope triggers automatic cleanup.\n";
+    }
+    // Resource Acquisition Is Initialization ties lifetime to an owner object.
+    // Destruction also happens during exception unwinding, preventing the
+    // leaks that arise when manual delete is skipped by an early exit.
+
+    std::cout &lt;&lt; "\n=== Section 2: unique_ptr exclusive ownership ===\n";
+    auto original = std::make_unique&lt;Resource&gt;("exclusive resource");
+    // auto copy = original; // Error: unique_ptr cannot be copied.
+    auto owner = std::move(original);
+    std::cout &lt;&lt; std::boolalpha &lt;&lt; "Original is empty after move: "
+              &lt;&lt; (original == nullptr) &lt;&lt; '\n';
+    owner-&gt;use(); // Never dereference the moved-from, empty original.
+    auto values = std::make_unique&lt;int[]&gt;(3); // Value-initialized to zero.
+    values[1] = 42;
+    std::cout &lt;&lt; "Smart array: " &lt;&lt; values[0] &lt;&lt; ", " &lt;&lt; values[1]
+              &lt;&lt; ", " &lt;&lt; values[2] &lt;&lt; '\n';
+    // unique_ptr&lt;T[]&gt; uses delete[] automatically; indexing must be in bounds.
+    {
+        auto deleter = [](Resource* resource) noexcept {
+            std::cout &lt;&lt; "Custom deleter invoked\n";
+            delete resource;
+        };
+        // Explicit new here illustrates supplying a custom cleanup operation.
+        std::unique_ptr&lt;Resource, decltype(deleter)&gt; custom(
+            new Resource("custom cleanup resource"), deleter);
+        custom-&gt;use();
+    }
+    // get() borrows a raw pointer; do not delete it or wrap it in a second owner.
+
+    std::cout &lt;&lt; "\n=== Section 3: shared_ptr shared ownership ===\n";
+    auto shared = std::make_shared&lt;Resource&gt;("shared resource");
+    std::cout &lt;&lt; "Initial owners = " &lt;&lt; shared.use_count() &lt;&lt; '\n';
+    {
+        auto second_owner = shared;
+        std::cout &lt;&lt; "After copying, owners = " &lt;&lt; shared.use_count() &lt;&lt; '\n';
+        share_resource(second_owner);
+    }
+    std::cout &lt;&lt; "After inner scope, owners = " &lt;&lt; shared.use_count() &lt;&lt; '\n';
+    shared.reset(); // Last owner releases the resource now.
+    // use_count is illustrative, not a synchronization mechanism. Shared
+    // ownership does not make concurrent access to the resource safe.
+
+    std::cout &lt;&lt; "\n=== Section 4: weak_ptr and ownership cycles ===\n";
+    std::weak_ptr&lt;Node&gt; observer;
+    {
+        auto parent = std::make_shared&lt;Node&gt;("parent");
+        auto child = std::make_shared&lt;Node&gt;("child");
+        parent-&gt;child = child;
+        child-&gt;parent = parent;
+        observer = parent;
+        /* Owning edge: parent --shared_ptr--&gt; child
+           Observing edge: child --weak_ptr--&gt; parent
+           If both edges owned, the reference counts could never reach zero
+           after external owners disappear, leaking both objects.
+        */
+        std::cout &lt;&lt; "Observer expired: " &lt;&lt; observer.expired() &lt;&lt; '\n';
+        if (auto temporary_owner = child-&gt;parent.lock()) {
+            std::cout &lt;&lt; "Locked parent: " &lt;&lt; temporary_owner-&gt;name &lt;&lt; '\n';
+        } // Temporary shared ownership ends here.
+    } // Both nodes are destroyed: the weak back-reference cannot keep them alive.
+    std::cout &lt;&lt; "After scope, observer expired: " &lt;&lt; observer.expired() &lt;&lt; '\n';
+    if (auto temporary_owner = observer.lock()) {
+        std::cout &lt;&lt; "Still alive: " &lt;&lt; temporary_owner-&gt;name &lt;&lt; '\n';
+    } else {
+        std::cout &lt;&lt; "lock() returned empty; target no longer exists.\n";
+    }
+    // expired() is a snapshot. Use lock() and check its result before access;
+    // lock() acquires ownership if the object is still alive.
+}
+
+// Takeaways: prefer make_unique for one owner, make_shared for shared lifetime,
+// and weak_ptr for non-owning observation or cycle-breaking back-references.
+// RAII makes resource release automatic; borrowed raw pointers still require
+// lifetime discipline. Remaining unique owners clean up when main exits.</code></pre></figure>
+    <h3><i class="fa-solid fa-terminal" aria-hidden="true"></i> Complete output</h3>
+    <figure class="output-block"><figcaption><i class="fa-solid fa-terminal" aria-hidden="true"></i> Sample run &middot; <code>./program</code></figcaption><pre><code class="nohighlight">=== Section 1: RAII and scope-based cleanup ===
+Acquired scoped resource
+Using scoped resource
+Leaving scope triggers automatic cleanup.
+Released scoped resource
+
+=== Section 2: unique_ptr exclusive ownership ===
+Acquired exclusive resource
+Original is empty after move: true
+Using exclusive resource
+Smart array: 0, 42, 0
+Acquired custom cleanup resource
+Using custom cleanup resource
+Custom deleter invoked
+Released custom cleanup resource
+
+=== Section 3: shared_ptr shared ownership ===
+Acquired shared resource
+Initial owners = 1
+After copying, owners = 2
+Inside function, owners = 3
+Using shared resource
+After inner scope, owners = 1
+Released shared resource
+
+=== Section 4: weak_ptr and ownership cycles ===
+Observer expired: false
+Locked parent: parent
+Destroyed node parent
+Destroyed node child
+After scope, observer expired: true
+lock() returned empty; target no longer exists.
+Released exclusive resource</code></pre></figure>
+    <p>The very last line, <code>Released exclusive resource</code>, is printed when <code>main</code> returns and
+      <code>owner</code> from Section 2 is finally destroyed.</p>
+  </section>
+</div>
+<nav class="pager container container--narrow" aria-label="Lesson navigation"><a class="pager__link" href="03-pointers-in-oop.html"><span class="pager__dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="pager__title">03 &middot; Pointers in OOP</span></a><a class="pager__link pager__link--next" href="05-string-pointers.html"><span class="pager__dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="pager__title">05 &middot; String Pointers</span></a></nav>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <p><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Kaisetsu &middot; C++ Pointers for Students</p>
+    <p class="site-footer__small"><a href="../index.html"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> mosubaga.github.io</a></p>
+  </div>
+</footer>
+<button class="to-top" type="button" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

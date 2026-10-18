@@ -7,6 +7,7 @@
   <title>TypeScript & JavaScript Cheat Sheets</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
   <script>hljs.highlightAll();</script>
@@ -24,31 +25,6 @@
 
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#fafafa">
-  <style>
-    code {
-      font-family: 'Fira Code', 'Courier New', monospace;
-      padding: 0.2rem 0.4rem;
-      border-radius: 5px;
-    }
-    pre code {
-      background: transparent !important;
-      padding: 0 !important;
-    }
-    pre {
-      background: #ffffff !important;
-      padding: 1.5rem;
-      border-radius: 20px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      border: 3px solid #ffdab9; /* Peach Sorbet placeholder */
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-    }
-    h3 {
-      font-family: 'Comfortaa', cursive;
-      color: #5d4037; /* Chocolate Brown placeholder */
-      margin-top: 1.5rem;
-    }
-  </style>
 </head>
 
 <body>
@@ -62,12 +38,13 @@
     <a href="async.html">Async</a>
     <a href="fp.html">FP</a>
     <a href="dom.html">DOM</a>
+    <a href="framework/reacthooks.html">Frameworks</a>
   </nav>
 
 
 
   <div class="card">
-    <h1 style="font-family: 'Comfortaa', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;">Sweet Typescript & Javascript Cheat Sheets</h1>
+    <h1 style="font-family: 'Comfortaa', cursive; font-size: 3rem; text-align: center; margin-bottom: 2rem;"><i class="fa-solid fa-ice-cream" aria-hidden="true"></i> Sweet Typescript & Javascript Cheat Sheets</h1>
     <p style="text-align: center; font-size: 1.2rem;">Welcome to the most delicious resource for mastering TypeScript and JavaScript! Explore our sugary cheat sheets below.</p>
     <div class="subcard">
       <p style="text-align: left; font-size: 1.2rem;">JavaScript, created by Brendan Eich in just 10 days back in 1995, has evolved from a simple scripting language for adding basic interactivity to web pages into one of the most influential programming languages in the world.
@@ -78,40 +55,67 @@
         foundation you need to bring your ideas to life.</p>
     </div>
 
-    <div class="subcard">
-      <h2>Object-Oriented JavaScript</h2>
-      <p>Learn how JavaScript approaches OOP through objects, prototypes, classes, encapsulation, and composition instead of the fully class-centric model you might know from Java or Python.</p>
-      <p><a href="oop.html">Go to Object-Oriented JavaScript →</a></p>
+    <div class="grid">
+      <div class="subcard">
+        <h2><i class="fa-solid fa-list" aria-hidden="true"></i> Arrays</h2>
+        <p>Master the built-in array toolkit — push, pop, map, filter, reduce, sort, and the newer non-mutating methods like toSorted().</p>
+        <p><a href="arrays.html">Go to Arrays →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-cube" aria-hidden="true"></i> Objects</h2>
+        <p>Create, access, and reshape key-value data with destructuring, spread, computed properties, and Map/Set.</p>
+        <p><a href="objects.html">Go to Objects →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-sitemap" aria-hidden="true"></i> Object-Oriented JavaScript</h2>
+        <p>Learn how JavaScript approaches OOP through objects, prototypes, classes, encapsulation, and composition instead of the fully class-centric model you might know from Java or Python.</p>
+        <p><a href="oop.html">Go to Object-Oriented JavaScript →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-bolt" aria-hidden="true"></i> Everyday Patterns</h2>
+        <p>Make your code cleaner and safer with optional chaining, nullish coalescing, destructuring, and spread/rest. Quick examples and practical reminders are waiting in the Everyday section.</p>
+        <p><a href="everyday.html">Go to Everyday Patterns →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-bug" aria-hidden="true"></i> Debugging & Errors</h2>
+        <p>Sharpen your debugging instincts with console tricks, breakpoints, and clean error handling patterns.</p>
+        <p><a href="debug.html">Go to Debugging & Errors →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-clock" aria-hidden="true"></i> Asynchronous JavaScript</h2>
+        <p>Handle time-consuming tasks without freezing the browser using callbacks, Promises, async/await, and the Fetch API.</p>
+        <p><a href="async.html">Go to Asynchronous JavaScript →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> DOM & Events</h2>
+        <p>Learn to select elements, handle user interactions, and dynamically update the page — the core of web programming with JavaScript.</p>
+        <p><a href="dom.html">Go to DOM & Events →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-code-branch" aria-hidden="true"></i> Functional Programming</h2>
+        <p>Write cleaner code with pure functions, immutable data, and composition patterns.</p>
+        <p><a href="fp.html">Go to Functional Programming →</a></p>
+      </div>
+
+      <div class="subcard">
+        <h2><i class="fa-solid fa-puzzle-piece" aria-hidden="true"></i> Frameworks</h2>
+        <p>Jump into focused cheat sheets for React Hooks, Redux Toolkit, and Playwright end-to-end testing.</p>
+        <p><a href="framework/reacthooks.html">Go to Frameworks →</a></p>
+      </div>
     </div>
 
     <div class="subcard">
-      <h2>Everyday Patterns</h2>
-      <p>Make your code cleaner and safer with optional chaining, nullish coalescing, destructuring, and spread/rest. Quick examples and practical reminders are waiting in the Everyday section.</p>
-      <p><a href="everyday.html">Go to Everyday Patterns →</a></p>
+      <h2><i class="fa-solid fa-book" aria-hidden="true"></i> Basic Syntax</h2>
     </div>
 
     <div class="subcard">
-      <h2>Debugging & Errors</h2>
-      <p>Sharpen your debugging instincts with console tricks, breakpoints, and clean error handling patterns.</p>
-      <p><a href="debug.html">Go to Debugging & Errors →</a></p>
-    </div>
-
-    <div class="subcard">
-      <h2>DOM & Events</h2>
-      <p>Learn to select elements, handle user interactions, and dynamically update the page — the core of web programming with JavaScript.</p>
-      <p><a href="dom.html">Go to DOM & Events →</a></p>
-    </div>
-
-    <div class="subcard">
-      <h2>Functional Programming</h2>
-      <p>Write cleaner code with pure functions, immutable data, and composition patterns.</p>
-      <p><a href="fp.html">Go to Functional Programming →</a></p>
-    </div>
-
-    <div class="subcard">
-      <h2>Basic Syntax</h2>
-
-      <br>
       <h3>Control Flow (If...Else)</h3>
       <pre><code class="language-typescript">
 const temperature = 25;
@@ -124,7 +128,9 @@ if (temperature > 30) {
   console.log("Grab a sweater! 🧥");
 }
         </code></pre>
-      <br>
+    </div>
+
+    <div class="subcard">
       <h3>Loops</h3>
       <pre><code class="language-typescript">
 // Standard for loop
@@ -138,8 +144,9 @@ for (const topping of toppings) {
   console.log(`Adding ${topping}...`);
 }
         </code></pre>
+    </div>
 
-      <br>
+    <div class="subcard">
       <h3>TypeScript Interfaces</h3>
       <p>Interfaces define the "shape" of an object, ensuring type safety.</p>
       <pre><code class="language-typescript">
@@ -156,6 +163,7 @@ const myOrder: Sundae = {
   hasSyrup: true
 };
         </code></pre>
+    </div>
 
     <div class="subcard">
       <h3>Variables & Types</h3>
@@ -201,7 +209,6 @@ function serve(flavor = 'Vanilla', scoops = 1) {
   return `${scoops} scoop(s) of ${flavor}`;
 }
       </code></pre>
-    </div>
     </div>
   </div>
 

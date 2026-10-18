@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Christoffel Symbols - Pastel Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <span class="tagline">Connection Coefficients in Pastel Space</span>
+      <h1>How Basis Vectors Twist Across Curved Coordinates</h1>
+      <p>
+        Christoffel symbols, developed by Elwin Bruno Christoffel in 1869, are the "connective tissue"
+        of tensor calculus. They track how basis vectors change from point to point, making calculus
+        possible on curved manifolds and in general curvilinear coordinate systems.
+      </p>
+      <a class="back-link" href="index.html">Go Back</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="artwork">
+      <h2>Visual: Basis Vectors Riding a Circle</h2>
+      <p>
+        As the point travels around the circle, its radial vector $\mathbf{e}_r$ and tangential vector
+        $\mathbf{e}_\theta$ rotate along with it. That continuous turning of the local basis is exactly
+        what Christoffel symbols are built to measure.
+      </p>
+      <div id="sketch-christoffel" class="sketch-frame"></div>
+    </section>
+
+    <section id="meaning">
+      <h2>1) Conceptual and Geometric Meaning</h2>
+      <p>
+        In standard Cartesian coordinates, the basis vectors $\mathbf{i}, \mathbf{j}, \mathbf{k}$ are
+        fixed in direction and length everywhere, so their derivatives vanish. In curvilinear
+        coordinates (polar, cylindrical, spherical) or on curved surfaces, the basis vectors instead
+        change direction or length from point to point.
+      </p>
+      <p>
+        Because the derivative of a basis vector $\mathbf{e}_i$ with respect to a coordinate $x^j$ is
+        itself a vector, it can be written as a linear combination of the local basis vectors:
+      </p>
+      <div class="formula">
+        $$\frac{\partial \mathbf{e}_i}{\partial x^j} = \Gamma^k_{ij} \mathbf{e}_k$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>Index $i$</strong>
+          Which basis vector is being differentiated.
+        </div>
+        <div class="card">
+          <strong>Index $j$</strong>
+          Which coordinate is being varied.
+        </div>
+        <div class="card">
+          <strong>Index $k$</strong>
+          The component direction of the resulting derivative vector.
+        </div>
+      </div>
+    </section>
+
+    <section id="kinds">
+      <h2>2) First and Second Kinds</h2>
+      <p>
+        Christoffel symbols come in two forms, linked algebraically by the metric tensor.
+      </p>
+      <p>
+        <strong>First kind</strong> $[ij,k]$ or $\Gamma_{ij,k}$, built directly from partial
+        derivatives of the covariant metric tensor $g_{ij}$:
+      </p>
+      <div class="formula">
+        $$\Gamma_{ij,k} = \frac{1}{2} \left( \frac{\partial g_{jk}}{\partial x^i} + \frac{\partial g_{ik}}{\partial x^j} - \frac{\partial g_{ij}}{\partial x^k} \right)$$
+      </div>
+      <p>
+        <strong>Second kind</strong> $\Gamma^k_{ij}$, obtained by raising the last index of the first
+        kind with the contravariant metric tensor $g^{km}$:
+      </p>
+      <div class="formula">
+        $$\Gamma^k_{ij} = g^{km} \Gamma_{ij,m} = \frac{1}{2} g^{km} \left( \frac{\partial g_{jm}}{\partial x^i} + \frac{\partial g_{im}}{\partial x^j} - \frac{\partial g_{ij}}{\partial x^m} \right)$$
+      </div>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Symmetry</h3>
+          <p>
+            In standard Riemannian geometry (torsion-free space), the lower indices are symmetric:
+            $\Gamma^k_{ij} = \Gamma^k_{ji}$.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Vanishing in flat space</h3>
+          <p>
+            In rectangular Cartesian coordinates, where the metric components are constant, all
+            Christoffel symbols vanish: $\Gamma^k_{ij} = 0$.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="non-tensorial">
+      <h2>3) Non-Tensorial Nature</h2>
+      <p>
+        Despite having indices, Christoffel symbols are <strong>not tensors</strong>. Under a general
+        change of coordinates from $x$ to $\bar{x}$, their transformation law carries an extra
+        non-linear term:
+      </p>
+      <div class="formula">
+        $$\bar{\Gamma}^k_{ij} = \Gamma^r_{pq} \frac{\partial x^p}{\partial \bar{x}^i} \frac{\partial x^q}{\partial \bar{x}^j} \frac{\partial \bar{x}^k}{\partial x^r} + \frac{\partial^2 x^r}{\partial \bar{x}^i \partial \bar{x}^j} \frac{\partial \bar{x}^k}{\partial x^r}$$
+      </div>
+      <div class="note">
+        The second-derivative term spoils the standard tensor transformation property. This reflects
+        how Christoffel symbols capture coordinate-dependent inertial artifacts, like centrifugal and
+        Coriolis effects, rather than intrinsic tensor fields alone. Under purely linear coordinate
+        transformations the second derivative vanishes, and they do transform like tensors.
+      </div>
+    </section>
+
+    <section id="applications">
+      <h2>4) Major Applications in Tensor Calculus</h2>
+      <p>
+        Christoffel symbols are the connective glue behind several core constructions in differential
+        geometry and physics.
+      </p>
+      <div class="columns">
+        <div class="example-card">
+          <h3>A. Covariant differentiation</h3>
+          <p>
+            An ordinary partial derivative of a vector's components, $\partial_j V^i$, ignores how the
+            basis vectors themselves vary. The covariant derivative corrects for this:
+          </p>
+          <div class="formula">
+            $$\nabla_j V^i = \frac{\partial V^i}{\partial x^j} + \Gamma^i_{kj} V^k$$
+            $$\nabla_j V_i = \frac{\partial V_i}{\partial x^j} - \Gamma^k_{ij} V_k$$
+          </div>
+          <p>
+            This keeps the derivative of a tensor a valid tensor across every coordinate system.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>B. Geodesics and motion</h3>
+          <p>
+            The "straightest possible path" between two points on a curved space is a geodesic,
+            governed by:
+          </p>
+          <div class="formula">
+            $$\frac{d^2 x^k}{ds^2} + \Gamma^k_{ij} \frac{dx^i}{ds} \frac{dx^j}{ds} = 0$$
+          </div>
+          <p>
+            In General Relativity this describes a freely falling particle, with gravity interpreted
+            as spacetime curvature encoded by Christoffel symbols.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>C. Riemann curvature tensor</h3>
+          <p>
+            To test whether a space is intrinsically curved, build the Riemann-Christoffel curvature
+            tensor from the symbols and their partial derivatives:
+          </p>
+          <div class="formula">
+            $$R^\sigma_{\alpha\beta\gamma} = \frac{\partial \Gamma^\sigma_{\alpha\gamma}}{\partial x^\beta} - \frac{\partial \Gamma^\sigma_{\alpha\beta}}{\partial x^\gamma} + \Gamma^\tau_{\alpha\gamma} \Gamma^\sigma_{\tau\beta} - \Gamma^\tau_{\alpha\beta} \Gamma^\sigma_{\tau\gamma}$$
+          </div>
+          <p>
+            If every component vanishes everywhere, the space is flat and a coordinate system exists
+            where all Christoffel symbols vanish too.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>D. Curvilinear differential operators</h3>
+          <p>
+            Christoffel symbols let classical operators such as divergence, curl, and the Laplacian
+            be rigorously formulated in non-Cartesian systems, like spherical or cylindrical polar
+            coordinates, while preserving coordinate invariance.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Divergence</span>
+            <span class="pill">Curl</span>
+            <span class="pill">Laplacian</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.4/lib/p5.min.js"></script>
+  <script src="js/christoffel-sketch.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

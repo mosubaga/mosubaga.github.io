@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Playwright JS/TS Cheatsheet</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     body {
       font-size: 14px;
@@ -128,6 +129,17 @@
       white-space: pre-wrap;
       overflow-wrap: normal;
       word-break: normal;
+    }
+
+    .cheat-card pre.has-copy-btn {
+      padding-top: 2.5rem;
+    }
+
+    .cheat-card .copy-btn {
+      top: 0.4rem;
+      right: 0.4rem;
+      font-size: 0.66rem;
+      padding: 0.25rem 0.55rem;
     }
 
     .cheat-card code {
@@ -322,6 +334,12 @@
 </head>
 <body>
   <div class="cc-page sheet">
+    <nav class="fw-nav" aria-label="Frameworks section">
+      <a href="../index.html">Home</a>
+      <a href="reacthooks.html">React Hooks</a>
+      <a href="redux.html">Redux</a>
+      <a href="playwright.html" class="active">Playwright</a>
+    </nav>
     <div class="sheet-hero">
       <div>
         <p class="eyebrow">JavaScript and TypeScript quick reference</p>
@@ -670,5 +688,6 @@ npx playwright codegen https://example.com</code></pre>
       });
     })();
   </script>
+  <script src="../js/app.js"></script>
 </body>
 </html>

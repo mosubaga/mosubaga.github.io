@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C++ Pointers · Kaisetsu</title>
+<meta name="description" content="A friendly, step-by-step walkthrough of five C++ programs that teach pointers, from addresses to smart pointers.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar"><div class="container topbar__inner"><a class="brand" href="index.html"><i class="fa-solid fa-code" aria-hidden="true"></i> Kaisetsu <span class="brand__sub">C++ Pointers</span></a><nav aria-label="Lessons"><ul class="topnav"><li><a href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li><li><a href="01-basic-pointers.html"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span class="nav-num">01</span> Basics</a></li><li><a href="02-advanced-pointers.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span class="nav-num">02</span> Advanced</a></li><li><a href="03-pointers-in-oop.html"><i class="fa-solid fa-cubes" aria-hidden="true"></i> <span class="nav-num">03</span> OOP</a></li><li><a href="04-smart-pointers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <span class="nav-num">04</span> Smart</a></li><li><a href="05-string-pointers.html"><i class="fa-solid fa-font" aria-hidden="true"></i> <span class="nav-num">05</span> Strings</a></li></ul></nav></div></header>
+<main id="main">
+<section class="hero gradient-bloom">
+  <div class="container">
+    <div class="hero__eyebrow">
+      <span class="tag tag--sub"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Kaisetsu &middot; 解説</span>
+      <span class="tag tag--accent">5 lessons</span>
+    </div>
+    <h1>Understanding Pointers in C++</h1>
+    <p class="hero__lead">A guided tour of five small C++ programs. Each one focuses on a different side of
+      <strong>pointers</strong>: what they are, how to use them safely, how they work with classes, and how modern C++
+      manages memory for you.</p>
+    <div class="hero__actions">
+      <a class="btn btn--secondary" href="01-basic-pointers.html"><i class="fa-solid fa-play" aria-hidden="true"></i>Start lesson 01</a>
+      <a class="btn btn--outline" href="#what-is-a-pointer"><i class="fa-solid fa-circle-question" aria-hidden="true"></i>What is a pointer?</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--paper" style="padding-top: 0">
+  <div class="container container--narrow lesson">
+
+    <div class="alert alert--info">
+      <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
+      <div>
+        <strong>Who this is for</strong>
+        <p>You already know basic C++ syntax (variables, <code>if</code>, loops, functions) and you have written
+          object-oriented code in another language such as Java, C#, Python or JavaScript. You do <em>not</em> need
+          to know anything about memory or pointers yet.</p>
+      </div>
+    </div>
+
+    <section class="lesson-section" id="what-is-a-pointer">
+      <h2><i class="fa-solid fa-location-dot" aria-hidden="true"></i> What is a pointer?</h2>
+      <p>Every variable in your program lives somewhere in the computer's memory. You can picture memory as a very long
+        street of numbered houses. Each house holds a value, and each house has a number: its <strong>address</strong>.</p>
+      <p>A <strong>pointer</strong> is a variable whose value is an address. It does not hold the data itself; it tells
+        you <em>where</em> the data is. Think of it as a slip of paper with a house number written on it.</p>
+
+      <div class="memory" role="img" aria-label="Diagram: the pointer p stores the address 0x1000, which is where the variable score lives with the value 42.">
+        <div class="mem-box mem-box--ptr">
+          <span class="mem-name">p</span>
+          <span class="mem-value">0x1000</span>
+          <span class="mem-type">int*</span>
+        </div>
+        <div class="mem-arrow"><i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i><small>points to</small></div>
+        <div class="mem-box">
+          <span class="mem-name">score</span>
+          <span class="mem-value">42</span>
+          <span class="mem-type">int</span>
+          <span class="mem-addr">lives at 0x1000</span>
+        </div>
+        <p class="memory__caption">The pointer <code>p</code> holds the address of <code>score</code>, not a copy of 42.</p>
+      </div>
+
+      <figure class="code-block code-block--sketch"><figcaption><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> The whole idea in four lines</figcaption><pre><code class="language-cpp">int score = 42;       // an ordinary int variable
+int* p = &amp;score;      // p is a "pointer to int"; &amp;score means "the address of score"
+std::cout &lt;&lt; *p;      // *p means "the value at that address"  -&gt; prints 42
+*p = 50;              // write through the pointer: score is now 50</code></pre></figure>
+
+      <h3><i class="fa-solid fa-key" aria-hidden="true"></i> The symbols you will see</h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Syntax</th><th>Read it as</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>int* p</code></td><td>"p is a pointer to an int"</td><td>Declares a pointer. The <code>*</code> here is part of the <em>type</em>.</td></tr>
+            <tr><td><code>&amp;x</code></td><td>"address of x"</td><td>Gives the memory address where <code>x</code> lives.</td></tr>
+            <tr><td><code>*p</code></td><td>"the thing p points to"</td><td><strong>Dereferences</strong> the pointer: reads or writes the target.</td></tr>
+            <tr><td><code>p-&gt;member</code></td><td>"member of the object p points to"</td><td>Shortcut for <code>(*p).member</code>; used with objects.</td></tr>
+            <tr><td><code>nullptr</code></td><td>"points to nothing"</td><td>A special value meaning "no target". Never dereference it.</td></tr>
+            <tr><td><code>new</code> / <code>delete</code></td><td>"create / destroy on the heap"</td><td>Manual creation and destruction of objects (modern code prefers smart pointers).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert--notice">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        <div>
+          <strong>Same symbol, two jobs</strong>
+          <p>In a <em>declaration</em> (<code>int* p</code>) the star says "this is a pointer type". In an
+            <em>expression</em> (<code>*p = 5</code>) the star says "go to the target". Likewise <code>&amp;</code>
+            means "address of" in an expression, but in a declaration such as <code>int&amp; r</code> it creates a
+            <em>reference</em>, a different feature.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson-section" id="coming-from-oop">
+      <h2><i class="fa-solid fa-right-left" aria-hidden="true"></i> Coming from Java, C# or Python?</h2>
+      <p>You have actually been using something pointer-like all along. In Java or Python, a variable that "holds" an
+        object really holds a <em>reference</em> to it. Two variables can refer to the same object, and changing it
+        through one is visible through the other.</p>
+      <p>C++ makes this explicit and gives you a choice:</p>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Idea</th><th>Java / Python</th><th>C++</th></tr></thead>
+          <tbody>
+            <tr><td>Object variable</td><td>Always a reference</td><td><code>Dog d;</code> is the object itself (a value)</td></tr>
+            <tr><td>Refer to an object elsewhere</td><td>Automatic</td><td><code>Dog* p = &amp;d;</code> (pointer) or <code>Dog&amp; r = d;</code> (reference)</td></tr>
+            <tr><td>"No object"</td><td><code>null</code> / <code>None</code></td><td><code>nullptr</code></td></tr>
+            <tr><td>Create an object dynamically</td><td><code>new Dog()</code> / <code>Dog()</code></td><td><code>new Dog</code>, or better <code>std::make_unique&lt;Dog&gt;()</code></td></tr>
+            <tr><td>Freeing memory</td><td>Garbage collector</td><td>You, via <code>delete</code>, or automatically via smart pointers</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The big difference: C++ has <strong>no garbage collector</strong>. Someone must decide when an object
+        is destroyed. That "someone" is called the object's <strong>owner</strong>, and much of this course is about
+        making ownership clear and safe.</p>
+    </section>
+
+    <section class="lesson-section" id="why-pointers">
+      <h2><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Why use pointers at all?</h2>
+      <div class="grid">
+        <div class="card">
+          <h3><i class="fa-solid fa-pen" aria-hidden="true"></i> Modify the caller's data</h3>
+          <p>C++ copies function arguments by default. Passing an address lets a function change the original.</p>
+        </div>
+        <div class="card card--accent">
+          <h3><i class="fa-solid fa-dog" aria-hidden="true"></i> Polymorphism</h3>
+          <p>A <code>Animal*</code> can point to a <code>Dog</code>, so the right overridden method is called at run time.</p>
+        </div>
+        <div class="card card--sub">
+          <h3><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Control lifetime</h3>
+          <p>Objects created dynamically can outlive the function that made them, and be shared between parts of a program.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Optional &amp; linked data</h3>
+          <p>A pointer can be <code>nullptr</code> ("nothing here"), and objects can link to each other, as in trees and lists.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson-section" id="golden-rules">
+      <h2><i class="fa-solid fa-shield-heart" aria-hidden="true"></i> Golden rules of pointer safety</h2>
+      <p>Pointers are powerful but the compiler will not stop many mistakes. These rules appear again and again in the
+        comments of every lesson:</p>
+      <ul class="goals">
+        <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><strong>Always initialize</strong> a pointer, to a real address or to <code>nullptr</code>.</span></li>
+        <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><strong>Check for <code>nullptr</code></strong> before dereferencing a pointer that might be empty.</span></li>
+        <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><strong>The target must outlive the pointer's use.</strong> A pointer to a variable that has gone out of scope is "dangling".</span></li>
+        <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><strong>Only <code>delete</code> what you got from <code>new</code></strong>, exactly once, and match <code>new[]</code> with <code>delete[]</code>.</span></li>
+        <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><strong>Prefer smart pointers</strong> (<code>std::unique_ptr</code>, <code>std::shared_ptr</code>) when you own dynamic memory.</span></li>
+      </ul>
+    </section>
+
+    <section class="lesson-section" id="lessons">
+      <h2><i class="fa-solid fa-book-open" aria-hidden="true"></i> The lessons</h2>
+      <p>Each lesson page explains one program section by section, shows the related code, and shows what the program prints.
+        The full source appears at the bottom of each page.</p>
+    </section>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+      <a class="card lesson-card" href="01-basic-pointers.html">
+        <span class="lesson-card__icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span>
+        <h3>01 &middot; Basic Pointers</h3>
+        <p>Addresses, declaring and initializing pointers, reading and writing through them, and passing an address to a function.</p>
+        <div class="tags"><span class="tag tag--base">&amp; and *</span><span class="tag tag--base">nullptr</span><span class="tag tag--base">pass by pointer</span></div>
+        <span class="lesson-card__go">Read lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="card card--sub lesson-card" href="02-advanced-pointers.html">
+        <span class="lesson-card__icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+        <h3>02 &middot; Advanced Pointers</h3>
+        <p><code>const</code> with pointers, walking arrays with pointer arithmetic, pointers to pointers, and function pointers as callbacks.</p>
+        <div class="tags"><span class="tag tag--sub">const</span><span class="tag tag--sub">arrays</span><span class="tag tag--sub">int**</span><span class="tag tag--sub">callbacks</span></div>
+        <span class="lesson-card__go">Read lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="card card--accent lesson-card" href="03-pointers-in-oop.html">
+        <span class="lesson-card__icon"><i class="fa-solid fa-cubes" aria-hidden="true"></i></span>
+        <h3>03 &middot; Pointers in OOP</h3>
+        <p>The <code>-&gt;</code> operator, the <code>this</code> pointer, <code>new</code>/<code>delete</code>, virtual methods through base-class pointers, and member pointers.</p>
+        <div class="tags"><span class="tag tag--accent">-&gt;</span><span class="tag tag--accent">this</span><span class="tag tag--accent">new / delete</span><span class="tag tag--accent">virtual</span></div>
+        <span class="lesson-card__go">Read lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="card lesson-card" href="04-smart-pointers.html">
+        <span class="lesson-card__icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+        <h3>04 &middot; Smart Pointers</h3>
+        <p>RAII and automatic cleanup with <code>unique_ptr</code>, <code>shared_ptr</code> and <code>weak_ptr</code>. No manual <code>delete</code> needed.</p>
+        <div class="tags"><span class="tag tag--base">RAII</span><span class="tag tag--base">unique_ptr</span><span class="tag tag--base">shared_ptr</span><span class="tag tag--base">weak_ptr</span></div>
+        <span class="lesson-card__go">Read lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="card card--sub lesson-card" href="05-string-pointers.html">
+        <span class="lesson-card__icon"><i class="fa-solid fa-font" aria-hidden="true"></i></span>
+        <h3>05 &middot; String Pointers</h3>
+        <p>A review lesson: everything from lesson 01 applied to <code>std::string</code> objects, including <code>const</code> access and method calls.</p>
+        <div class="tags"><span class="tag tag--sub">std::string*</span><span class="tag tag--sub">-&gt;append()</span><span class="tag tag--sub">review</span></div>
+        <span class="lesson-card__go">Read lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="container container--narrow lesson">
+    <section class="lesson-section" id="run-the-code">
+      <h2><i class="fa-solid fa-terminal" aria-hidden="true"></i> Running the programs yourself</h2>
+      <p>The best way to learn is to run each program, read its output next to the code, then change something and run it again.
+        The source files are in the <code>cpp/</code> folder. With a C++17 compiler installed:</p>
+      <ol class="step-list">
+        <li><span>Open a terminal in the folder containing the <code>.cpp</code> file.</span></li>
+        <li><span>Compile: <code>g++ -std=c++17 -Wall 01_basic_pointers.cpp -o basics</code> (or use <code>clang++</code>).</span></li>
+        <li><span>Run: <code>./basics</code> (on Windows: <code>basics.exe</code>).</span></li>
+        <li><span>Experiment: un-comment a line marked <code>// Error</code> and read the compiler message. Learning what the compiler rejects is part of the lesson.</span></li>
+      </ol>
+      <div class="alert alert--success">
+        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+        <div>
+          <strong>No compiler on your tablet?</strong>
+          <p>Paste the code into an online compiler such as <a href="https://godbolt.org/" target="_blank" rel="noopener">Compiler Explorer</a>
+            or <a href="https://wandbox.org/" target="_blank" rel="noopener">Wandbox</a>. Every code block on this site has a
+            <strong>Copy</strong> button.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <p><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Kaisetsu &middot; C++ Pointers for Students</p>
+    <p class="site-footer__small"><a href="../index.html"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> mosubaga.github.io</a></p>
+  </div>
+</footer>
+<button class="to-top" type="button" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>
