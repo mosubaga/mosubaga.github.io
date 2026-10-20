@@ -120,8 +120,182 @@
       </div>
     </section>
 
+    <section id="polar-example">
+      <h2>4) Worked Example: Cartesian to Polar Coordinates</h2>
+      <p>
+        The flat plane is the simplest place to watch Christoffel symbols appear. In Cartesian
+        coordinates $(x, y)$ they are all zero, yet in polar coordinates $(r, \theta)$ describing the
+        <em>same</em> flat plane, some of them are not. Here we compute them three ways and then put
+        them to work.
+      </p>
+
+      <h3>Step 1: The coordinate transformation</h3>
+      <div class="formula">
+        $$x = r\cos\theta, \qquad y = r\sin\theta$$
+        $$r = \sqrt{x^2 + y^2}, \qquad \theta = \operatorname{atan2}(y, x)$$
+      </div>
+      <p>
+        The position vector is $\mathbf{R} = r\cos\theta\,\mathbf{i} + r\sin\theta\,\mathbf{j}$. The
+        natural (coordinate) basis vectors are its partial derivatives:
+      </p>
+      <div class="formula">
+        $$\mathbf{e}_r = \frac{\partial \mathbf{R}}{\partial r} = \cos\theta\,\mathbf{i} + \sin\theta\,\mathbf{j}, \qquad
+          \mathbf{e}_\theta = \frac{\partial \mathbf{R}}{\partial \theta} = -r\sin\theta\,\mathbf{i} + r\cos\theta\,\mathbf{j}$$
+      </div>
+      <p>
+        Unlike $\mathbf{i}$ and $\mathbf{j}$, these change direction with $\theta$, and
+        $\mathbf{e}_\theta$ also grows in length with $r$.
+      </p>
+
+      <h3>Step 2: The metric tensor</h3>
+      <p>
+        Dot products of the basis vectors give the metric, equivalently the line element
+        $ds^2 = dx^2 + dy^2$ rewritten in polar form:
+      </p>
+      <div class="formula">
+        $$g_{ij} = \begin{pmatrix} \mathbf{e}_r\cdot\mathbf{e}_r & \mathbf{e}_r\cdot\mathbf{e}_\theta \\ \mathbf{e}_\theta\cdot\mathbf{e}_r & \mathbf{e}_\theta\cdot\mathbf{e}_\theta \end{pmatrix}
+          = \begin{pmatrix} 1 & 0 \\ 0 & r^2 \end{pmatrix}, \qquad
+          g^{ij} = \begin{pmatrix} 1 & 0 \\ 0 & 1/r^2 \end{pmatrix}$$
+        $$ds^2 = dr^2 + r^2\,d\theta^2$$
+      </div>
+
+      <h3>Step 3a: Christoffel symbols from differentiating the basis</h3>
+      <p>
+        Apply the defining relation $\partial_j \mathbf{e}_i = \Gamma^k_{ij}\mathbf{e}_k$ directly:
+      </p>
+      <div class="formula">
+        $$\frac{\partial \mathbf{e}_r}{\partial r} = \mathbf{0}$$
+        $$\frac{\partial \mathbf{e}_r}{\partial \theta} = -\sin\theta\,\mathbf{i} + \cos\theta\,\mathbf{j} = \frac{1}{r}\,\mathbf{e}_\theta$$
+        $$\frac{\partial \mathbf{e}_\theta}{\partial r} = -\sin\theta\,\mathbf{i} + \cos\theta\,\mathbf{j} = \frac{1}{r}\,\mathbf{e}_\theta$$
+        $$\frac{\partial \mathbf{e}_\theta}{\partial \theta} = -r\cos\theta\,\mathbf{i} - r\sin\theta\,\mathbf{j} = -r\,\mathbf{e}_r$$
+      </div>
+      <p>Reading off the coefficients:</p>
+      <div class="grid">
+        <div class="card">
+          <strong>$\Gamma^r_{\theta\theta} = -r$</strong>
+          Moving in $\theta$ turns $\mathbf{e}_\theta$ inward, toward the center.
+        </div>
+        <div class="card">
+          <strong>$\Gamma^\theta_{r\theta} = \Gamma^\theta_{\theta r} = \dfrac{1}{r}$</strong>
+          $\mathbf{e}_\theta$ stretches with $r$, and $\mathbf{e}_r$ rotates with $\theta$.
+        </div>
+        <div class="card">
+          <strong>All others $= 0$</strong>
+          $\Gamma^r_{rr} = \Gamma^r_{r\theta} = \Gamma^\theta_{rr} = \Gamma^\theta_{\theta\theta} = 0$.
+        </div>
+      </div>
+
+      <h3>Step 3b: The same result from the metric</h3>
+      <p>
+        Only $g_{\theta\theta} = r^2$ depends on a coordinate, and only through
+        $\partial_r g_{\theta\theta} = 2r$. Plugging into the second-kind formula:
+      </p>
+      <div class="formula">
+        $$\Gamma^r_{\theta\theta} = \tfrac{1}{2} g^{rr}\left( \partial_\theta g_{\theta r} + \partial_\theta g_{\theta r} - \partial_r g_{\theta\theta} \right) = \tfrac{1}{2}(1)(0 + 0 - 2r) = -r$$
+        $$\Gamma^\theta_{r\theta} = \tfrac{1}{2} g^{\theta\theta}\left( \partial_r g_{\theta\theta} + \partial_\theta g_{r\theta} - \partial_\theta g_{r\theta} \right) = \tfrac{1}{2}\cdot\frac{1}{r^2}\cdot 2r = \frac{1}{r}$$
+      </div>
+
+      <h3>Step 3c: The same result from the transformation law</h3>
+      <p>
+        Take the unbarred coordinates to be Cartesian $(x, y)$, where $\Gamma = 0$, and the barred
+        coordinates to be $(r, \theta)$. The tensorial term in the transformation law drops out, and
+        only the inhomogeneous second-derivative term survives:
+      </p>
+      <div class="formula">
+        $$\bar{\Gamma}^k_{ij} = \underbrace{0}_{\text{Cartesian}} + \frac{\partial^2 x^m}{\partial \bar{x}^i\,\partial \bar{x}^j}\,\frac{\partial \bar{x}^k}{\partial x^m}$$
+      </div>
+      <p>The ingredients are the inverse Jacobian and the second derivatives of $x(r,\theta)$, $y(r,\theta)$:</p>
+      <div class="formula">
+        $$\frac{\partial r}{\partial x} = \cos\theta, \quad \frac{\partial r}{\partial y} = \sin\theta, \quad
+          \frac{\partial \theta}{\partial x} = -\frac{\sin\theta}{r}, \quad \frac{\partial \theta}{\partial y} = \frac{\cos\theta}{r}$$
+        $$\frac{\partial^2 (x, y)}{\partial \theta^2} = (-r\cos\theta,\ -r\sin\theta), \qquad
+          \frac{\partial^2 (x, y)}{\partial r\,\partial\theta} = (-\sin\theta,\ \cos\theta), \qquad
+          \frac{\partial^2 (x, y)}{\partial r^2} = (0,\ 0)$$
+      </div>
+      <p>Contracting them:</p>
+      <div class="formula">
+        $$\Gamma^r_{\theta\theta} = (-r\cos\theta)(\cos\theta) + (-r\sin\theta)(\sin\theta) = -r$$
+        $$\Gamma^\theta_{r\theta} = (-\sin\theta)\left(-\frac{\sin\theta}{r}\right) + (\cos\theta)\left(\frac{\cos\theta}{r}\right) = \frac{1}{r}$$
+        $$\Gamma^r_{r\theta} = (-\sin\theta)(\cos\theta) + (\cos\theta)(\sin\theta) = 0, \qquad
+          \Gamma^\theta_{\theta\theta} = (-r\cos\theta)\left(-\frac{\sin\theta}{r}\right) + (-r\sin\theta)\left(\frac{\cos\theta}{r}\right) = 0$$
+      </div>
+      <div class="note">
+        This is the non-tensorial nature from Section 3 in action. A genuine tensor that is zero in one
+        coordinate system is zero in every coordinate system. Christoffel symbols are zero in
+        Cartesian coordinates but not in polar coordinates, purely because the transformation
+        $x = r\cos\theta,\ y = r\sin\theta$ is nonlinear. The plane itself has not become curved.
+      </div>
+
+      <h3>Step 4: Using the symbols</h3>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Straight lines (geodesics)</h3>
+          <p>
+            Inserting the polar symbols into the geodesic equation gives two equations:
+          </p>
+          <div class="formula">
+            $$\ddot{r} - r\,\dot{\theta}^2 = 0$$
+            $$\ddot{\theta} + \frac{2}{r}\,\dot{r}\,\dot{\theta} = 0$$
+          </div>
+          <p>
+            Their solutions are exactly the straight lines $r\cos(\theta - \theta_0) = d$. In
+            Cartesian coordinates the same lines are simply $\ddot{x} = \ddot{y} = 0$.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Centrifugal and Coriolis terms</h3>
+          <p>
+            For any moving particle, the acceleration written in the unit polar basis is
+          </p>
+          <div class="formula">
+            $$\mathbf{a} = \left(\ddot{r} - r\dot{\theta}^2\right)\hat{\mathbf{r}} + \left(r\ddot{\theta} + 2\dot{r}\dot{\theta}\right)\hat{\boldsymbol{\theta}}$$
+          </div>
+          <p>
+            The $-r\dot{\theta}^2$ term comes from $\Gamma^r_{\theta\theta}$ (centripetal) and the
+            $2\dot{r}\dot{\theta}$ term from $\Gamma^\theta_{r\theta}$ (Coriolis). They are
+            artifacts of the coordinates, not real forces. Setting $\mathbf{a} = \mathbf{0}$ gives
+            back the geodesic equations.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Divergence</h3>
+          <p>
+            Contracting the covariant derivative gives $\nabla_i V^i = \partial_i V^i + \Gamma^i_{ik} V^k$,
+            with $\Gamma^i_{ir} = \Gamma^r_{rr} + \Gamma^\theta_{\theta r} = 1/r$ and
+            $\Gamma^i_{i\theta} = 0$:
+          </p>
+          <div class="formula">
+            $$\nabla\cdot\mathbf{V} = \frac{\partial V^r}{\partial r} + \frac{\partial V^\theta}{\partial \theta} + \frac{V^r}{r}$$
+          </div>
+          <p>
+            The extra $V^r/r$ accounts for the radial lines spreading apart.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Laplacian</h3>
+          <p>
+            For a scalar $f$, $\nabla^2 f = g^{ij}\left(\partial_i\partial_j f - \Gamma^k_{ij}\,\partial_k f\right)$.
+            Only $\Gamma^r_{\theta\theta} = -r$ contributes the correction:
+          </p>
+          <div class="formula">
+            $$\nabla^2 f = \frac{\partial^2 f}{\partial r^2} + \frac{1}{r}\frac{\partial f}{\partial r} + \frac{1}{r^2}\frac{\partial^2 f}{\partial \theta^2}$$
+          </div>
+          <p>
+            This recovers the familiar polar Laplacian. The $\frac{1}{r}\partial_r f$ term comes
+            entirely from the Christoffel symbol.
+          </p>
+        </div>
+      </div>
+      <div class="pill-row">
+        <span class="pill">$\Gamma^r_{\theta\theta} = -r$</span>
+        <span class="pill">$\Gamma^\theta_{r\theta} = 1/r$</span>
+        <span class="pill">Cartesian: all $\Gamma = 0$</span>
+        <span class="pill">Curvature $R = 0$: still flat</span>
+      </div>
+    </section>
+
     <section id="applications">
-      <h2>4) Major Applications in Tensor Calculus</h2>
+      <h2>5) Major Applications in Tensor Calculus</h2>
       <p>
         Christoffel symbols are the connective glue behind several core constructions in differential
         geometry and physics.

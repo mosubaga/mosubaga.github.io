@@ -145,6 +145,171 @@
         </div>
       </div>
     </section>
+
+    <section id="quantum-mechanics">
+      <h2>4) Fourier in Quantum Mechanics</h2>
+      <p>
+        In quantum mechanics the Fourier transform is not just a computational tool. It is built
+        into the theory. A particle's state can be described by a wavefunction in
+        <strong>position space</strong>, $\psi(x)$, or in <strong>momentum space</strong>,
+        $\phi(p)$. These are two views of the same state, and the Fourier transform converts one
+        into the other.
+      </p>
+
+      <h3>Waves carry momentum</h3>
+      <p>
+        The bridge is the de Broglie relation: a particle with momentum $p$ behaves like a wave with
+        wavenumber $k = p/\hbar$. A state with one definite momentum is a pure plane wave:
+      </p>
+      <div class="formula">
+        $$\psi_p(x) = \frac{1}{\sqrt{2\pi\hbar}}\, e^{ipx/\hbar}$$
+      </div>
+      <p>
+        So "which frequencies are in this wave?" becomes "which momenta does this particle have?".
+        Any wavefunction is a superposition of these plane waves, and the weight of each one is
+        the momentum-space wavefunction.
+      </p>
+
+      <h3>The position–momentum transform pair</h3>
+      <div class="formula">
+        $$\phi(p) = \frac{1}{\sqrt{2\pi\hbar}} \int_{-\infty}^{\infty} \psi(x)\, e^{-ipx/\hbar}\, dx$$
+        $$\psi(x) = \frac{1}{\sqrt{2\pi\hbar}} \int_{-\infty}^{\infty} \phi(p)\, e^{ipx/\hbar}\, dp$$
+      </div>
+      <p>
+        This is the same transform as in Section 1, with time $t$ replaced by position $x$ and
+        angular frequency $\omega$ replaced by $p/\hbar$. The symmetric $1/\sqrt{2\pi\hbar}$ factor
+        is chosen so that probability is preserved (Plancherel's theorem):
+      </p>
+      <div class="formula">
+        $$\int_{-\infty}^{\infty} |\psi(x)|^2\, dx = \int_{-\infty}^{\infty} |\phi(p)|^2\, dp = 1$$
+      </div>
+      <div class="grid">
+        <div class="card">
+          <strong>$|\psi(x)|^2$</strong>
+          Probability density for finding the particle at position $x$.
+        </div>
+        <div class="card">
+          <strong>$|\phi(p)|^2$</strong>
+          Probability density for measuring momentum $p$. It is the particle's "spectrum".
+        </div>
+        <div class="card">
+          <strong>Dirac notation</strong>
+          The transform kernel is the overlap $\langle x | p \rangle = \frac{1}{\sqrt{2\pi\hbar}} e^{ipx/\hbar}$,
+          so $\phi(p) = \langle p | \psi \rangle$ is just a change of basis.
+        </div>
+      </div>
+
+      <h3>Derivatives become multiplication</h3>
+      <p>
+        Differentiating a plane wave just pulls down a factor:
+        $-i\hbar\,\frac{d}{dx} e^{ipx/\hbar} = p\, e^{ipx/\hbar}$. This is why the momentum operator
+        in position space is a derivative, while in momentum space it is plain multiplication:
+      </p>
+      <div class="formula">
+        $$\hat{p}\,\psi(x) = -i\hbar\,\frac{\partial \psi}{\partial x} \quad \overset{\mathcal{F}}{\longleftrightarrow} \quad \hat{p}\,\phi(p) = p\,\phi(p)$$
+        $$\hat{x}\,\psi(x) = x\,\psi(x) \quad \overset{\mathcal{F}}{\longleftrightarrow} \quad \hat{x}\,\phi(p) = i\hbar\,\frac{\partial \phi}{\partial p}$$
+      </div>
+      <p>
+        It is the same trick as "convolution becomes multiplication" in Section 3. Hard calculus in
+        one space becomes simple algebra in the other.
+      </p>
+
+      <h3>The uncertainty principle is a Fourier fact</h3>
+      <p>
+        A signal that is short in time must have a broad frequency spectrum, and vice versa. In
+        quantum mechanics, this bandwidth trade-off is the Heisenberg uncertainty principle. A
+        Gaussian wave packet shows it exactly:
+      </p>
+      <div class="formula">
+        $$\psi(x) = \left(2\pi\sigma_x^2\right)^{-1/4} \exp\!\left(-\frac{x^2}{4\sigma_x^2} + \frac{i p_0 x}{\hbar}\right)$$
+        $$\phi(p) = \left(2\pi\sigma_p^2\right)^{-1/4} \exp\!\left(-\frac{(p - p_0)^2}{4\sigma_p^2}\right), \qquad \sigma_p = \frac{\hbar}{2\sigma_x}$$
+      </div>
+      <p>
+        The Fourier transform of a Gaussian is another Gaussian, and the widths are inversely
+        related. Squeezing the particle into a smaller region (small $\sigma_x$) spreads its
+        momentum (large $\sigma_p$). Gaussians are the tightest possible case, and every other
+        state does worse:
+      </p>
+      <div class="formula">
+        $$\sigma_x\,\sigma_p \geq \frac{\hbar}{2}$$
+      </div>
+      <div class="note">
+        The uncertainty principle is not about clumsy measurements. It follows from the
+        mathematics: no function and its Fourier transform can both be sharply concentrated. The
+        same limit governs time and frequency in audio, which is why a very short click has no
+        clear pitch.
+      </div>
+
+      <h3>Solving the Schrödinger equation</h3>
+      <div class="columns">
+        <div class="example-card">
+          <h3>Free particle evolution</h3>
+          <p>
+            For a free particle, $\hat{H} = \hat{p}^2/2m$. In momentum space $\hat{H}$ is just
+            multiplication by $p^2/2m$, so each plane wave only picks up a phase:
+          </p>
+          <div class="formula">
+            $$\phi(p, t) = \phi(p, 0)\, e^{-i p^2 t / 2m\hbar}$$
+            $$\psi(x, t) = \frac{1}{\sqrt{2\pi\hbar}} \int \phi(p, 0)\, e^{i(px - p^2 t/2m)/\hbar}\, dp$$
+          </div>
+          <p>
+            Transform to momentum space, multiply by phases, transform back. A differential
+            equation becomes a multiplication.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Wave packet spreading</h3>
+          <p>
+            Different momenta travel at different speeds, so the Gaussian packet above drifts at
+            $p_0/m$ and widens over time:
+          </p>
+          <div class="formula">
+            $$\sigma_x(t) = \sigma_x \sqrt{1 + \left(\frac{\hbar t}{2m\sigma_x^2}\right)^2}$$
+          </div>
+          <p>
+            The momentum distribution $|\phi(p)|^2$ never changes. Only the relative phases do,
+            and that is what reshapes $|\psi(x)|^2$.
+          </p>
+        </div>
+        <div class="example-card">
+          <h3>Split-step numerical methods</h3>
+          <p>
+            For $\hat{H} = \hat{p}^2/2m + V(x)$, simulations alternate between spaces: apply the
+            potential in position space, FFT to momentum space, apply the kinetic phase, and inverse
+            FFT back. The FFT makes this fast and accurate.
+          </p>
+          <div class="pill-row">
+            <span class="pill">Split-operator</span>
+            <span class="pill">FFT</span>
+            <span class="pill">Time evolution</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>Where else it appears</h3>
+      <div class="grid">
+        <div class="card">
+          <strong>Scattering</strong>
+          In the Born approximation, the scattering amplitude is the Fourier transform of the
+          potential $V(\mathbf{r})$ evaluated at the momentum transfer $\mathbf{q}$.
+        </div>
+        <div class="card">
+          <strong>Crystals &amp; band structure</strong>
+          Periodic lattices are described in reciprocal (momentum) space. Bloch waves and X-ray
+          diffraction patterns are Fourier pictures of the lattice.
+        </div>
+        <div class="card">
+          <strong>Quantum field theory</strong>
+          Fields are expanded in Fourier modes, and each mode $\mathbf{k}$ behaves like a harmonic
+          oscillator whose quanta are particles.
+        </div>
+        <div class="card">
+          <strong>Quantum computing</strong>
+          The Quantum Fourier Transform is the core of Shor's factoring algorithm and of phase
+          estimation, finding hidden periods exponentially faster than the best known classical methods.
+        </div>
+      </div>
+    </section>
   </main>
 
   <script>
