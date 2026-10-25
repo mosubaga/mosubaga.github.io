@@ -18,7 +18,7 @@
 <h1>Gauss's and Stokes' Theorems</h1>
 <p class="meta"><strong>Level:</strong> Undergraduate vector calculus<br>
 <strong>Topic:</strong> Gauss's and Stokes' Theorems<br>
-<strong>Problems:</strong> 5</p>
+<strong>Problems:</strong> 15</p>
 <nav>
 <a class="back-link" href="index.html">All Problem Sets</a>
 </nav>
@@ -236,6 +236,352 @@
 </ol>
 <h3>Answer</h3>
 <p>Gauss's Theorem is chosen because \(\operatorname{div} \mathbf{F} = 3(x^2 + y^2 + z^2)\) eliminates transcendental terms. The exact total flux is: \[\iint_S \mathbf{F} \cdot \mathbf{n} \, dS = \frac{12\pi}{5}\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 6: Gauss's Theorem — Position Field Through a Sphere</h2>
+<p><strong>Topic:</strong> Divergence Theorem</p>
+<h3>Statement</h3>
+<p>Let \(\mathbf{F}(x,y,z) = x\,\mathbf{i} + y\,\mathbf{j} + z\,\mathbf{k}\) and let \(S\) be the sphere \(x^2+y^2+z^2=a^2\) with outward orientation. Compute the outward flux \(\displaystyle\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS\).</p>
+<p>Then check your answer by evaluating the surface integral directly.</p>
+<p><em>Hint:</em> On the sphere, \(\mathbf{n} = \mathbf{r}/a\) where \(\mathbf{r}=(x,y,z)\).</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-6">Show Solution</button>
+<div class="solution" id="solution-6" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Via the Divergence Theorem:</strong>
+The divergence is constant:
+\[\nabla\cdot\mathbf{F} = \frac{\partial x}{\partial x}+\frac{\partial y}{\partial y}+\frac{\partial z}{\partial z} = 3.\]
+Therefore
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = \iiint_V 3\,dV = 3\cdot\operatorname{Vol}(V) = 3\cdot\tfrac{4}{3}\pi a^3 = 4\pi a^3.\]
+</li>
+<li><strong>Direct Check:</strong>
+On the sphere \(\mathbf{n} = \mathbf{r}/|\mathbf{r}| = \mathbf{r}/a\), and \(\mathbf{F}=\mathbf{r}\), so
+\[\mathbf{F}\cdot\mathbf{n} = \frac{\mathbf{r}\cdot\mathbf{r}}{a} = \frac{a^2}{a} = a,\]
+a constant on \(S\). Hence the flux is \(a\cdot\operatorname{Area}(S) = a\cdot 4\pi a^2 = 4\pi a^3\).
+</li>
+</ol>
+<p><em>Remark:</em> Because \(\nabla\cdot\mathbf{r}=3\), the identity \(\oiint_S \mathbf{r}\cdot\mathbf{n}\,dS = 3\operatorname{Vol}(V)\) holds for every closed surface.</p>
+<h3>Answer</h3>
+<p>\[4\pi a^3\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 7: Gauss's Theorem — Flux Through the Unit Cube</h2>
+<p><strong>Topic:</strong> Divergence Theorem</p>
+<h3>Statement</h3>
+<p>Let \(\mathbf{F} = x^2\,\mathbf{i} + y^2\,\mathbf{j} + z^2\,\mathbf{k}\) and let \(S\) be the boundary of the cube \(V=[0,1]\times[0,1]\times[0,1]\), outward oriented. Find the total outward flux.</p>
+<p>How much work would the direct approach have been?</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-7">Show Solution</button>
+<div class="solution" id="solution-7" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Compute Divergence:</strong>
+\[\nabla\cdot\mathbf{F} = 2x + 2y + 2z.\]
+By the divergence theorem,
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = \int_0^1\!\!\int_0^1\!\!\int_0^1 (2x+2y+2z)\,dx\,dy\,dz.\]
+By symmetry the three terms are equal, and
+\[\int_0^1\!\!\int_0^1\!\!\int_0^1 2x\,dx\,dy\,dz = 2\cdot\tfrac12 = 1.\]
+So the total is \(1+1+1 = 3\).
+</li>
+<li><strong>Direct Verification:</strong>
+Six faces. On the face \(x=1\) (normal \(\mathbf{i}\)) the integrand is \(x^2=1\), giving \(+1\); on \(x=0\) (normal \(-\mathbf{i}\)) the integrand is \(-x^2=0\), giving \(0\). Same for the \(y\) and \(z\) pairs: \(1+0+1+0+1+0 = 3\).
+</li>
+</ol>
+<p>Here the direct computation is easy, but it required six separate parametrizations and six sign checks. That bookkeeping is exactly what the divergence theorem removes.</p>
+<h3>Answer</h3>
+<p>\[3\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 8: Stokes' Theorem — Verifying Stokes on a Disk</h2>
+<p><strong>Topic:</strong> Stokes' Theorem</p>
+<h3>Statement</h3>
+<p>Let \(\mathbf{F} = -y\,\mathbf{i} + x\,\mathbf{j}\) and let \(C\) be the unit circle \(x^2+y^2=1\) in the plane \(z=0\), traversed counterclockwise when viewed from the positive \(z\)-axis.</p>
+<ol>
+<li>Compute \(\oint_C \mathbf{F}\cdot d\mathbf{r}\) directly.</li>
+<li>Compute \(\iint_S (\nabla\times\mathbf{F})\cdot\mathbf{n}\,dS\) where \(S\) is the unit disk with upward normal, and confirm the two agree.</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-8">Show Solution</button>
+<div class="solution" id="solution-8" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Line Integral:</strong>
+Parametrize \(\mathbf{r}(t) = (\cos t,\ \sin t,\ 0)\), \(t\in[0,2\pi]\), so \(d\mathbf{r} = (-\sin t,\ \cos t,\ 0)\,dt\). Along \(C\),
+\[\mathbf{F}(\mathbf{r}(t)) = (-\sin t,\ \cos t,\ 0),\]
+\[\mathbf{F}\cdot d\mathbf{r} = (\sin^2 t + \cos^2 t)\,dt = dt.\]
+Hence \(\oint_C \mathbf{F}\cdot d\mathbf{r} = \int_0^{2\pi} dt = 2\pi\).
+</li>
+<li><strong>Curl Integral:</strong>
+\[\nabla\times\mathbf{F} = \begin{vmatrix}\mathbf{i}&\mathbf{j}&\mathbf{k}\\[2pt] \partial_x&\partial_y&\partial_z\\[2pt] -y&x&0\end{vmatrix} = (0,\,0,\,2).\]
+With \(\mathbf{n} = \mathbf{k}\) on the disk,
+\[\iint_S (\nabla\times\mathbf{F})\cdot\mathbf{n}\,dS = \iint_D 2\,dA = 2\cdot\pi(1)^2 = 2\pi.\]
+</li>
+</ol>
+<p><em>Interpretation:</em> \(\mathbf{F}\) is the velocity field of rigid rotation with angular velocity \(\boldsymbol{\omega} = \mathbf{k}\), and indeed \(\nabla\times\mathbf{F} = 2\boldsymbol{\omega}\). Curl measures local spin; Stokes says the total local spin over the disk equals the net circulation around its rim.</p>
+<h3>Answer</h3>
+<p>Both equal \(2\pi\)</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 9: Gauss's Theorem — Cubic Field Through a Solid Cylinder</h2>
+<p><strong>Topic:</strong> Divergence Theorem / Cylindrical Coordinates</p>
+<h3>Statement</h3>
+<p>Let \(\mathbf{F} = x^3\,\mathbf{i} + y^3\,\mathbf{j} + z^3\,\mathbf{k}\) and let \(S\) be the closed boundary of the solid cylinder
+\[V = \{(x,y,z) : x^2+y^2 \le a^2,\ 0\le z\le h\}\]
+(lateral wall, top disk, bottom disk), outward oriented. Find the total outward flux.</p>
+<p><em>Hint:</em> In cylindrical coordinates \(x^2+y^2 = r^2\) and \(dV = r\,dr\,d\theta\,dz\).</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-9">Show Solution</button>
+<div class="solution" id="solution-9" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Compute Divergence:</strong>
+\[\nabla\cdot\mathbf{F} = 3x^2 + 3y^2 + 3z^2 = 3\big[(x^2+y^2) + z^2\big].\]
+So
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = 3\iiint_V (x^2+y^2)\,dV + 3\iiint_V z^2\,dV.\]
+</li>
+<li><strong>First Piece:</strong>
+In cylindrical coordinates \(x^2+y^2 = r^2\):
+\[\iiint_V (x^2+y^2)\,dV = \int_0^h\!\!\int_0^{2\pi}\!\!\int_0^a r^2\cdot r\,dr\,d\theta\,dz = h\cdot 2\pi\cdot\frac{a^4}{4} = \frac{\pi a^4 h}{2}.\]
+</li>
+<li><strong>Second Piece:</strong>
+The cross-sectional area is \(\pi a^2\) for every \(z\), so
+\[\iiint_V z^2\,dV = \pi a^2\int_0^h z^2\,dz = \frac{\pi a^2 h^3}{3}.\]
+</li>
+<li><strong>Combine:</strong>
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = 3\left(\frac{\pi a^4 h}{2}\right) + 3\left(\frac{\pi a^2 h^3}{3}\right) = \frac{3\pi a^4 h}{2} + \pi a^2 h^3.\]
+</li>
+</ol>
+<p><em>Sanity check on dimensions:</em> both terms scale like (length)\(^5\), consistent with \(\mathbf{F}\sim L^3\) integrated over an area \(\sim L^2\).</p>
+<h3>Answer</h3>
+<p>\[\frac{3\pi a^4 h}{2} + \pi a^2 h^3 = \pi a^2 h\left(\frac{3a^2}{2} + h^2\right)\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 10: Stokes' Theorem — Circulation on a Tilted Circle</h2>
+<p><strong>Topic:</strong> Stokes' Theorem / Projecting onto a Plane</p>
+<h3>Statement</h3>
+<p>Evaluate \(\displaystyle\oint_C \mathbf{F}\cdot d\mathbf{r}\) where
+\[\mathbf{F} = -y^2\,\mathbf{i} + x\,\mathbf{j} + z^2\,\mathbf{k}\]
+and \(C\) is the curve of intersection of the plane \(y+z=2\) with the cylinder \(x^2+y^2=1\), oriented counterclockwise as seen from above.</p>
+<p><em>Hint:</em> The curve bounds the elliptical piece of the plane \(z=2-y\) lying over the unit disk. For a graph \(z=g(x,y)\) with upward orientation, \(\mathbf{n}\,dS = (-g_x,\,-g_y,\,1)\,dA\).</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-10">Show Solution</button>
+<div class="solution" id="solution-10" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Compute Curl:</strong>
+With \(P=-y^2\), \(Q=x\), \(R=z^2\):
+\[\nabla\times\mathbf{F} = (R_y - Q_z,\ P_z - R_x,\ Q_x - P_y) = (0-0,\ 0-0,\ 1-(-2y)) = (0,\ 0,\ 1+2y).\]
+</li>
+<li><strong>Choose the Surface:</strong>
+Take \(S\) to be the flat piece of the plane \(z = g(x,y) = 2-y\) lying above the unit disk \(D=\{x^2+y^2\le 1\}\), with upward normal. Then
+\[\mathbf{n}\,dS = (-g_x,\,-g_y,\,1)\,dA = (0,\ 1,\ 1)\,dA.\]
+</li>
+<li><strong>Integrate:</strong>
+\[(\nabla\times\mathbf{F})\cdot(0,1,1) = (0)(0) + (0)(1) + (1+2y)(1) = 1+2y,\]
+so
+\[\oint_C \mathbf{F}\cdot d\mathbf{r} = \iint_D (1+2y)\,dA.\]
+The term \(\iint_D 2y\,dA\) vanishes because \(D\) is symmetric about the \(x\)-axis and \(y\) is odd in \(y\). What remains is \(\iint_D 1\,dA = \operatorname{Area}(D) = \pi\).
+</li>
+</ol>
+<p>Notice the two \(z\)-dependent pieces of \(\mathbf{F}\) never entered: \(z^2\mathbf{k}\) is a gradient field, so it contributes nothing to any closed circulation.</p>
+<h3>Answer</h3>
+<p>\[\pi\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 11: Gauss's Theorem — An Open Hemisphere: Close It Off</h2>
+<p><strong>Topic:</strong> Divergence Theorem / Adding a Cap</p>
+<h3>Statement</h3>
+<p>Let \(\mathbf{F} = x\,\mathbf{i} + y\,\mathbf{j} + (z+1)\,\mathbf{k}\) and let \(H\) be the <em>open</em> upper hemisphere
+\[H = \{x^2+y^2+z^2 = a^2,\ z\ge 0\},\]
+oriented with the normal pointing away from the origin. Compute \(\displaystyle\iint_H \mathbf{F}\cdot\mathbf{n}\,dS\).</p>
+<p>The divergence theorem needs a <em>closed</em> surface — so build one.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-11">Show Solution</button>
+<div class="solution" id="solution-11" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Close the Surface:</strong>
+Let \(D\) be the flat disk \(\{x^2+y^2\le a^2,\ z=0\}\). Then \(S = H\cup D\) is the closed boundary of the solid half-ball \(V\). For \(S\) to carry the outward orientation, \(D\) must take the <em>downward</em> normal \(\mathbf{n}_D = -\mathbf{k}\). Thus
+\[\underbrace{\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS}_{\text{divergence theorem}} = \iint_H \mathbf{F}\cdot\mathbf{n}\,dS + \iint_D \mathbf{F}\cdot\mathbf{n}_D\,dS.\]
+</li>
+<li><strong>The Closed Flux:</strong>
+\(\nabla\cdot\mathbf{F} = 1+1+1 = 3\), and \(V\) is a half-ball of volume \(\tfrac12\cdot\tfrac43\pi a^3 = \tfrac23\pi a^3\). So
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = 3\cdot\frac{2}{3}\pi a^3 = 2\pi a^3.\]
+</li>
+<li><strong>The Cap:</strong>
+On \(D\) we have \(z=0\), so \(\mathbf{F} = (x,\,y,\,1)\) and
+\[\mathbf{F}\cdot\mathbf{n}_D = \mathbf{F}\cdot(0,0,-1) = -1.\]
+Therefore \(\displaystyle\iint_D \mathbf{F}\cdot\mathbf{n}_D\,dS = -\operatorname{Area}(D) = -\pi a^2\).
+</li>
+<li><strong>Subtract:</strong>
+\[\iint_H \mathbf{F}\cdot\mathbf{n}\,dS = 2\pi a^3 - (-\pi a^2) = 2\pi a^3 + \pi a^2.\]
+</li>
+</ol>
+<p><em>Common trap:</em> Forgetting that the cap's normal must point <em>down</em>. Getting the sign wrong here would give \(2\pi a^3 - \pi a^2\).</p>
+<h3>Answer</h3>
+<p>\[2\pi a^3 + \pi a^2\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 12: Stokes' Theorem — Surface Independence: Paraboloid vs. Disk</h2>
+<p><strong>Topic:</strong> Stokes' Theorem / Two Surfaces, One Boundary</p>
+<h3>Statement</h3>
+<p>Let \(\mathbf{F} = y\,\mathbf{i} + z\,\mathbf{j} + x\,\mathbf{k}\) and let \(S\) be the part of the paraboloid \(z = 1 - x^2 - y^2\) with \(z\ge 0\), oriented upward.</p>
+<ol>
+<li>Compute \(\displaystyle\iint_S (\nabla\times\mathbf{F})\cdot\mathbf{n}\,dS\) directly.</li>
+<li>Recompute it by replacing \(S\) with the flat unit disk in \(z=0\), and explain why this is legitimate.</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-12">Show Solution</button>
+<div class="solution" id="solution-12" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Compute Curl:</strong>
+With \(P=y\), \(Q=z\), \(R=x\):
+\[\nabla\times\mathbf{F} = (R_y-Q_z,\ P_z-R_x,\ Q_x-P_y) = (0-1,\ 0-1,\ 0-1) = (-1,\,-1,\,-1).\]
+</li>
+<li><strong>Over the Paraboloid:</strong>
+Writing \(z = g(x,y) = 1-x^2-y^2\) with upward orientation,
+\[\mathbf{n}\,dS = (-g_x,\,-g_y,\,1)\,dA = (2x,\ 2y,\ 1)\,dA,\]
+over the shadow region \(D = \{x^2+y^2\le 1\}\). Then
+\[(\nabla\times\mathbf{F})\cdot(2x,2y,1) = -2x - 2y - 1,\]
+\[\iint_S (\nabla\times\mathbf{F})\cdot\mathbf{n}\,dS = \iint_D (-2x-2y-1)\,dA.\]
+The \(x\) and \(y\) terms integrate to zero by symmetry of the disk, leaving \(-\operatorname{Area}(D) = -\pi\).
+</li>
+<li><strong>Over the Flat Disk:</strong>
+Both surfaces have the same boundary curve \(C:\ x^2+y^2=1,\ z=0\), and the upward normals induce the same orientation on \(C\). By Stokes both flux integrals equal \(\oint_C\mathbf{F}\cdot d\mathbf{r}\), hence they are equal. On the flat disk \(\mathbf{n}=\mathbf{k}\), so
+\[\iint_{D} (\nabla\times\mathbf{F})\cdot\mathbf{k}\,dA = \iint_D (-1)\,dA = -\pi.\]
+</li>
+<li><strong>Why It's Legitimate:</strong>
+If \(S_1\) and \(S_2\) are two oriented surfaces sharing the same boundary curve with the same induced orientation, and \(\mathbf{F}\) is \(C^1\) on a region containing both, then
+\[\iint_{S_1}(\nabla\times\mathbf{F})\cdot\mathbf{n}\,dS = \oint_C \mathbf{F}\cdot d\mathbf{r} = \iint_{S_2}(\nabla\times\mathbf{F})\cdot\mathbf{n}\,dS.\]
+Equivalently: \(S_1\) glued to \(-S_2\) is a closed surface, and by the divergence theorem the flux of a curl through any closed surface is zero, since \(\nabla\cdot(\nabla\times\mathbf{F})\equiv 0\).
+</li>
+</ol>
+<h3>Answer</h3>
+<p>\(-\pi\) by either route</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 13: Gauss's Theorem — Volume as a Surface Integral (Ellipsoid)</h2>
+<p><strong>Topic:</strong> Divergence Theorem / Turning a Theorem into a Tool</p>
+<h3>Statement</h3>
+<ol>
+<li>Show that for any solid region \(V\) with piecewise-smooth boundary \(S\),
+\[\operatorname{Vol}(V) = \frac{1}{3}\oiint_{S}\mathbf{r}\cdot\mathbf{n}\,dS, \qquad \mathbf{r}=(x,y,z).\]</li>
+<li>Use this to compute the volume enclosed by the ellipsoid \(\dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}+\dfrac{z^2}{c^2}=1\), using the parametrization
+\[\mathbf{r}(\varphi,\theta) = (a\sin\varphi\cos\theta,\ b\sin\varphi\sin\theta,\ c\cos\varphi), \quad \varphi\in[0,\pi],\ \theta\in[0,2\pi].\]</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-13">Show Solution</button>
+<div class="solution" id="solution-13" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>Prove the Identity:</strong>
+Since \(\nabla\cdot\mathbf{r} = 3\), the divergence theorem gives
+\[\oiint_S \mathbf{r}\cdot\mathbf{n}\,dS = \iiint_V 3\,dV = 3\operatorname{Vol}(V),\]
+and dividing by 3 gives the identity. (This is the 3-D analogue of the shoelace/Green's-theorem area formula \(A = \tfrac12\oint (x\,dy - y\,dx)\).)
+</li>
+<li><strong>Compute the Cross Product:</strong>
+We need \(\mathbf{r}\cdot(\mathbf{r}_\varphi\times\mathbf{r}_\theta)\). Differentiating the parametrization,
+\[\mathbf{r}_\varphi = (a\cos\varphi\cos\theta,\ b\cos\varphi\sin\theta,\ -c\sin\varphi),\]
+\[\mathbf{r}_\theta = (-a\sin\varphi\sin\theta,\ b\sin\varphi\cos\theta,\ 0).\]
+Taking the cross product:
+\[\mathbf{r}_\varphi\times\mathbf{r}_\theta = (bc\sin^2\varphi\cos\theta,\ ac\sin^2\varphi\sin\theta,\ ab\sin\varphi\cos\varphi).\]
+</li>
+<li><strong>Dot with \(\mathbf{r}\):</strong>
+\[\mathbf{r}\cdot(\mathbf{r}_\varphi\times\mathbf{r}_\theta) = abc\sin^3\varphi\cos^2\theta + abc\sin^3\varphi\sin^2\theta + abc\sin\varphi\cos^2\varphi\]
+\[= abc\sin^3\varphi + abc\sin\varphi\cos^2\varphi = abc\sin\varphi.\]
+</li>
+<li><strong>Integrate:</strong>
+\[\oiint_S \mathbf{r}\cdot\mathbf{n}\,dS = \int_0^{2\pi}\!\!\int_0^{\pi} abc\sin\varphi\,d\varphi\,d\theta = abc\cdot 2\pi\cdot 2 = 4\pi abc,\]
+and
+\[\operatorname{Vol} = \frac{1}{3}(4\pi abc) = \frac{4}{3}\pi abc.\]
+Setting \(a=b=c=R\) recovers \(\tfrac43\pi R^3\).
+</li>
+</ol>
+<h3>Answer</h3>
+<p>\[\operatorname{Vol} = \tfrac{4}{3}\pi abc\]</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 14: Gauss's Theorem — The Inverse-Square Field and Gauss's Law</h2>
+<p><strong>Topic:</strong> Divergence Theorem / Excising a Singularity</p>
+<h3>Statement</h3>
+<p>Let
+\[\mathbf{F}(\mathbf{r}) = \frac{\mathbf{r}}{|\mathbf{r}|^3} = \frac{\hat{\mathbf{r}}}{r^2}, \qquad \mathbf{r}=(x,y,z)\ne\mathbf{0}.\]</p>
+<ol>
+<li>Show that \(\nabla\cdot\mathbf{F} = 0\) everywhere except at the origin.</li>
+<li>Let \(S\) be a closed surface that does <em>not</em> enclose the origin. Show the outward flux is \(0\).</li>
+<li>Let \(S\) be <em>any</em> closed surface that does enclose the origin. Show the outward flux is \(4\pi\) — regardless of the shape of \(S\).</li>
+</ol>
+<p><em>Hint for (3):</em> The divergence theorem does not apply directly, because \(\mathbf{F}\) is not \(C^1\) on the enclosed solid. Remove a small ball around the origin and apply the theorem to what's left.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-14">Show Solution</button>
+<div class="solution" id="solution-14" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>The Divergence Vanishes:</strong>
+Use the product rule \(\nabla\cdot(f\mathbf{G}) = f\,\nabla\cdot\mathbf{G} + \nabla f\cdot\mathbf{G}\) with \(f = r^{-3}\) and \(\mathbf{G}=\mathbf{r}\). Since \(\nabla r = \hat{\mathbf{r}}\) we get \(\nabla(r^{-3}) = -3r^{-4}\hat{\mathbf{r}}\), and so
+\[\nabla\cdot\left(\frac{\mathbf{r}}{r^3}\right) = \frac{1}{r^3}(\nabla\cdot\mathbf{r}) + \left(-\frac{3}{r^4}\hat{\mathbf{r}}\right)\cdot\mathbf{r} = \frac{3}{r^3} - \frac{3}{r^4}\,r = \frac{3}{r^3} - \frac{3}{r^3} = 0,\]
+valid for all \(r>0\).
+</li>
+<li><strong>Origin Outside:</strong>
+If \(S=\partial V\) and \(\mathbf{0}\notin V\), then \(\mathbf{F}\) is \(C^1\) on an open set containing \(V\), so the divergence theorem applies:
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = \iiint_V 0\,dV = 0.\]
+</li>
+<li><strong>Origin Inside:</strong>
+Choose \(\varepsilon>0\) small enough that the ball \(B_\varepsilon = \{r\le\varepsilon\}\) lies entirely inside \(S\), and let \(W = V \setminus B_\varepsilon\) be the shell between them. \(\mathbf{F}\) is \(C^1\) on \(W\), whose boundary consists of \(S\) (outward) together with the sphere \(S_\varepsilon\) oriented <em>inward</em> toward the origin. So
+\[0 = \iiint_W \nabla\cdot\mathbf{F}\,dV = \oiint_S \mathbf{F}\cdot\mathbf{n}\,dS - \oiint_{S_\varepsilon} \mathbf{F}\cdot\hat{\mathbf{r}}\,dS,\]
+hence
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = \oiint_{S_\varepsilon} \mathbf{F}\cdot\hat{\mathbf{r}}\,dS.\]
+On \(S_\varepsilon\) the integrand is \(\mathbf{F}\cdot\hat{\mathbf{r}} = 1/\varepsilon^2\), a constant, and \(\operatorname{Area}(S_\varepsilon) = 4\pi\varepsilon^2\). Therefore
+\[\oiint_S \mathbf{F}\cdot\mathbf{n}\,dS = \frac{1}{\varepsilon^2}\cdot 4\pi\varepsilon^2 = 4\pi,\]
+independent of \(\varepsilon\) and of the shape of \(S\).
+</li>
+</ol>
+<p><strong>Physical significance:</strong> The electric field of a point charge \(q\) at the origin is \(\mathbf{E} = \dfrac{q}{4\pi\epsilon_0}\dfrac{\hat{\mathbf{r}}}{r^2}\), so part (3) gives \(\oiint_S \mathbf{E}\cdot\mathbf{n}\,dS = q/\epsilon_0\), which is Gauss's law in integral form. In distributional language, \(\nabla\cdot(\hat{\mathbf{r}}/r^2) = 4\pi\,\delta^3(\mathbf{r})\).</p>
+<h3>Answer</h3>
+<p>\(0\) if the origin is outside; \(4\pi\) if it is inside</p>
+</div>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 15: Stokes' Theorem — A Curl-Free Field with Nonzero Circulation</h2>
+<p><strong>Topic:</strong> Stokes' Theorem / Where the Hypotheses Bite</p>
+<h3>Statement</h3>
+<p>Consider the "vortex" field, defined everywhere except on the \(z\)-axis:
+\[\mathbf{F} = \frac{-y}{x^2+y^2}\,\mathbf{i} + \frac{x}{x^2+y^2}\,\mathbf{j}.\]</p>
+<ol>
+<li>Show that \(\nabla\times\mathbf{F} = \mathbf{0}\) on its whole domain.</li>
+<li>Compute \(\oint_C \mathbf{F}\cdot d\mathbf{r}\) for \(C\) the unit circle in the plane \(z=0\), counterclockwise.</li>
+<li>These two results appear to contradict Stokes' theorem. Explain precisely which hypothesis fails.</li>
+<li>What is \(\oint_{C'}\mathbf{F}\cdot d\mathbf{r}\) for a closed curve \(C'\) in the plane \(z=0\) that does <em>not</em> wind around the origin?</li>
+</ol>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-15">Show Solution</button>
+<div class="solution" id="solution-15" hidden>
+<h3>Solution Steps</h3>
+<ol>
+<li><strong>The Curl Is Zero:</strong>
+Write \(P = -y/(x^2+y^2)\), \(Q = x/(x^2+y^2)\), \(R=0\). Since \(P,Q\) do not depend on \(z\) and \(R\equiv 0\), the \(\mathbf{i}\)- and \(\mathbf{j}\)-components of the curl vanish. For the \(\mathbf{k}\)-component:
+\[\frac{\partial Q}{\partial x} = \frac{(x^2+y^2)\cdot 1 - x\cdot 2x}{(x^2+y^2)^2} = \frac{y^2-x^2}{(x^2+y^2)^2},\]
+\[\frac{\partial P}{\partial y} = \frac{-(x^2+y^2) - (-y)(2y)}{(x^2+y^2)^2} = \frac{y^2-x^2}{(x^2+y^2)^2}.\]
+They are identical, so \(Q_x - P_y = 0\) and \(\nabla\times\mathbf{F} = \mathbf{0}\) everywhere on \(\mathbb{R}^3\setminus\{x=y=0\}\).
+</li>
+<li><strong>The Circulation Is Not Zero:</strong>
+With \(\mathbf{r}(t) = (\cos t,\sin t,0)\) we have \(x^2+y^2=1\), so \(\mathbf{F} = (-\sin t,\ \cos t,\ 0)\) and \(d\mathbf{r} = (-\sin t,\ \cos t,\ 0)\,dt\). Then
+\[\mathbf{F}\cdot d\mathbf{r} = (\sin^2 t + \cos^2 t)\,dt = dt \implies \oint_C \mathbf{F}\cdot d\mathbf{r} = 2\pi.\]
+</li>
+<li><strong>Which Hypothesis Fails:</strong>
+Stokes' theorem requires a surface \(S\) with \(\partial S = C\) on which \(\mathbf{F}\) is \(C^1\). But \(C\) encircles the \(z\)-axis, and every surface whose boundary is \(C\) must intersect the \(z\)-axis at least once. On that intersection point \(\mathbf{F}\) is undefined, so no admissible \(S\) exists and Stokes simply does not apply. The structural reason is that the domain \(\mathbb{R}^3\setminus z\text{-axis}\) is <strong>not simply connected</strong>.
+Here \(\mathbf{F} = \nabla\theta\) where \(\theta = \arctan(y/x)\) is the polar angle — but \(\theta\) is only defined up to multiples of \(2\pi\), and going once around \(C\) advances it by exactly \(2\pi\).
+</li>
+<li><strong>Curves That Miss the Origin:</strong>
+If \(C'\) does not wind around the origin, it bounds a region \(D'\) in the plane \(z=0\) that avoids the \(z\)-axis entirely. Now \(\mathbf{F}\) is \(C^1\) on a neighbourhood of \(D'\), Stokes applies, and
+\[\oint_{C'}\mathbf{F}\cdot d\mathbf{r} = \iint_{D'}(\nabla\times\mathbf{F})\cdot\mathbf{k}\,dA = 0.\]
+More generally, the circulation around any closed curve equals \(2\pi n\) where \(n\) is the winding number about the \(z\)-axis.
+</li>
+</ol>
+<p><em>Physical connection:</em> The magnetic field of a straight current-carrying wire is exactly this field (up to constants), and Ampere's law \(\oint\mathbf{B}\cdot d\mathbf{r} = \mu_0 I_{\text{enc}}\) is the physical statement of "circulation counts what you enclose". The same phenomenon is the residue theorem in complex analysis: \(\oint dz/z = 2\pi i\).</p>
+<h3>Answer</h3>
+<p>(1) \(\nabla\times\mathbf{F}=\mathbf{0}\) · (2) \(2\pi\) · (3) No admissible surface exists; the domain is not simply connected · (4) \(0\)</p>
 </div>
 </section>
 </main>
