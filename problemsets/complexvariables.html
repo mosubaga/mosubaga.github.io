@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Problem Set: Complex Variables and Conformal Mapping</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Problem Set: Complex Variables and Conformal Mapping</h1>
+<p class="meta"><strong>Level:</strong> Introductory undergraduate<br>
+<strong>Topic:</strong> Analytic Functions, Residues, and Conformal Mapping<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Foundations: Calculus in the Complex Plane</h2>
+<p>A complex function \(f(z) = u(x,y) + i\,v(x,y)\) of \(z = x + iy\) is <strong>analytic</strong> at a point if its derivative</p>
+<p>\[f'(z) = \lim_{\Delta z \to 0} \frac{f(z + \Delta z) - f(z)}{\Delta z}\]</p>
+<p>exists in a whole neighborhood of that point. Because \(\Delta z\) may approach zero from <em>any</em> direction, this is far more demanding than real differentiability. Requiring the horizontal and vertical limits to agree gives the <strong>Cauchy&ndash;Riemann equations</strong>:</p>
+<p>\[u_x = v_y, \qquad u_y = -v_x.\]</p>
+<p>Several consequences drive everything below:</p>
+<ul>
+<li><strong>Harmonicity</strong> &mdash; the real and imaginary parts of an analytic function each satisfy Laplace's equation, \(\nabla^2 u = \nabla^2 v = 0\).</li>
+<li><strong>Residues</strong> &mdash; near an isolated singularity \(z_0\), \(f\) has a Laurent series; the coefficient of \((z-z_0)^{-1}\) is the <em>residue</em>, and contour integrals reduce to sums of residues.</li>
+<li><strong>Conformality</strong> &mdash; wherever \(f'(z) \neq 0\), the map \(w = f(z)\) preserves angles, so it can carry a hard region onto a simple one while keeping Laplace's equation intact.</li>
+</ul>
+<p>The five problems below move from checking analyticity, to computing derivatives and residues, to using conformal maps and harmonic functions to solve a boundary-value problem.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 1 &mdash; Cauchy&ndash;Riemann Equations Verification</h2>
+<p><strong>Task:</strong> Verify whether the function \(f(z) = \dfrac{1}{z^2 + 1}\) satisfies the Cauchy&ndash;Riemann equations in the complex plane.</p>
+<ul>
+<li>Express \(f(z)\) as \(u(x, y) + i\,v(x, y)\).</li>
+<li>Compute the partial derivatives \(u_x, u_y, v_x, v_y\).</li>
+<li>State where the Cauchy&ndash;Riemann equations hold.</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Instructor Solution</h3>
+<p>Write the denominator as \(g(z) = z^2 + 1 = a + ib\) with</p>
+<p>\[a(x,y) = x^2 - y^2 + 1, \qquad b(x,y) = 2xy.\]</p>
+<p>Since \(\dfrac{1}{a + ib} = \dfrac{a - ib}{a^2 + b^2}\), setting \(N = a^2 + b^2 = (x^2 - y^2 + 1)^2 + 4x^2y^2\) gives</p>
+<p>\[u(x, y) = \frac{x^2 - y^2 + 1}{N}, \qquad v(x, y) = -\frac{2xy}{N}.\]</p>
+<p>Differentiate with the quotient rule, using \(N_x = 2aa_x + 2bb_x\) and \(N_y = 2aa_y + 2bb_y\):</p>
+<p>\[u_x = \frac{a_x(b^2 - a^2) - 2ab\,b_x}{N^2}, \qquad v_y = \frac{b_y(b^2 - a^2) + 2ab\,a_y}{N^2},\]</p>
+<p>\[u_y = \frac{a_y(b^2 - a^2) - 2ab\,b_y}{N^2}, \qquad v_x = \frac{b_x(b^2 - a^2) + 2ab\,a_x}{N^2}.\]</p>
+<p>The polynomial \(g(z) = z^2 + 1\) is itself analytic, so \(a_x = b_y = 2x\) and \(a_y = -b_x = -2y\). Substituting these relations shows directly that</p>
+<p>\[v_y = \frac{a_x(b^2 - a^2) - 2ab\,b_x}{N^2} = u_x, \qquad -v_x = \frac{a_y(b^2 - a^2) - 2ab\,b_y}{N^2} = u_y.\]</p>
+<p>Explicitly, for example,</p>
+<p>\[u_x = v_y = \frac{2x\bigl[4x^2y^2 - (x^2 - y^2 + 1)^2\bigr] - 8xy^2(x^2 - y^2 + 1)}{N^2}.\]</p>
+<h3>Interpretation</h3>
+<p>The Cauchy&ndash;Riemann equations hold wherever \(N \neq 0\), i.e. everywhere except \(z = \pm i\), where \(z^2 + 1 = 0\) and \(f\) is undefined. As a check, \(f'(z) = u_x + i v_x = -\dfrac{2z}{(z^2 + 1)^2}\), exactly what the ordinary quotient rule gives. A quotient of analytic functions is analytic away from the zeros of its denominator.</p>
+</div>
+<p class="narrative">Once the Cauchy&ndash;Riemann equations are established, we can return to the limit definition itself and compute a derivative directly in the complex variable \(z\), with no splitting into \(u\) and \(v\) at all.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2 &mdash; Derivative of a Complex Function</h2>
+<p><strong>Task:</strong> Compute the derivative \(f'(z)\) for \(f(z) = e^{z^2}\) using the definition of the complex derivative. Show that the function is analytic everywhere in the complex plane.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Instructor Solution</h3>
+<p>Start from the definition and expand \((z + \Delta z)^2 = z^2 + 2z\,\Delta z + (\Delta z)^2\):</p>
+<p>\[f'(z) = \lim_{\Delta z \to 0} \frac{e^{(z + \Delta z)^2} - e^{z^2}}{\Delta z} = e^{z^2} \lim_{\Delta z \to 0} \frac{e^{h} - 1}{\Delta z}, \qquad h = 2z\,\Delta z + (\Delta z)^2.\]</p>
+<p>As \(\Delta z \to 0\) we also have \(h \to 0\), and \(\dfrac{e^h - 1}{h} \to 1\) (from the power series \(e^h = 1 + h + h^2/2! + \cdots\)). Therefore</p>
+<p>\[\frac{e^{h} - 1}{\Delta z} = \frac{e^{h} - 1}{h} \cdot \frac{h}{\Delta z} = \frac{e^{h} - 1}{h} \cdot (2z + \Delta z) \;\longrightarrow\; 1 \cdot 2z,\]</p>
+<p>so</p>
+<p>\[f'(z) = 2z\,e^{z^2}.\]</p>
+<h3>Interpretation</h3>
+<p>The limit exists for every \(z \in \mathbb{C}\), and the result does not depend on the direction in which \(\Delta z \to 0\). Hence \(e^{z^2}\) is differentiable in a neighborhood of every point: it is <em>entire</em> (analytic on the whole plane). The familiar chain rule from real calculus carries over unchanged.</p>
+</div>
+<p class="narrative">Entire functions have no singularities at all; most interesting functions do, and the residue measures what an isolated singularity contributes to a contour integral.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3 &mdash; Residue Calculation at a Singularity</h2>
+<p><strong>Task:</strong> Let \(f(z) = \dfrac{\sin z}{z^3(z - \pi)}\).</p>
+<ul>
+<li><strong>(a)</strong> Find the residue of \(f\) at \(z = \pi\) using the formula for simple poles. Is \(z = \pi\) really a pole?</li>
+<li><strong>(b)</strong> Find the residue of \(f\) at \(z = 0\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Instructor Solution</h3>
+<p><strong>(a)</strong> The denominator has a simple linear factor \((z - \pi)\), so applying the simple-pole formula gives</p>
+<p>\[\operatorname*{Res}_{z=\pi} f(z) = \lim_{z \to \pi} (z - \pi) \cdot \frac{\sin z}{z^3(z - \pi)} = \frac{\sin \pi}{\pi^3} = 0.\]</p>
+<p>However, the numerator also vanishes at \(z = \pi\): \(\sin z = -(z - \pi) + \tfrac{1}{6}(z - \pi)^3 - \cdots\). The factor \((z - \pi)\) cancels, and \(f\) extends analytically to \(z = \pi\) with value \(-1/\pi^3\). So \(z = \pi\) is a <strong>removable singularity</strong>, not a pole, and its residue is \(0\).</p>
+<p><strong>(b)</strong> Near \(z = 0\), use \(\dfrac{\sin z}{z} = 1 - \dfrac{z^2}{6} + \cdots\) and \(\dfrac{1}{z - \pi} = -\dfrac{1}{\pi}\left(1 + \dfrac{z}{\pi} + \dfrac{z^2}{\pi^2} + \cdots\right)\):</p>
+<p>\[f(z) = \frac{1}{z^2} \cdot \frac{\sin z}{z} \cdot \frac{1}{z - \pi} = -\frac{1}{\pi z^2}\left(1 + \frac{z}{\pi} + \cdots\right)\left(1 - \frac{z^2}{6} + \cdots\right).\]</p>
+<p>So \(z = 0\) is a pole of order 2, and the coefficient of \(z^{-1}\) is</p>
+<p>\[\operatorname*{Res}_{z=0} f(z) = -\frac{1}{\pi^2}.\]</p>
+<h3>Interpretation</h3>
+<p>A factor \((z - z_0)\) in the denominator does not on its own make \(z_0\) a pole; you must check whether the numerator vanishes there too. In this example the only genuine singularity is at the origin, so for any simple closed contour enclosing both points, \(\oint f\,dz = 2\pi i \cdot (-1/\pi^2) = -2i/\pi\).</p>
+</div>
+<p class="narrative">Residues are a local, algebraic tool. Conformal maps are global and geometric: they reshape an entire region of the plane.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4 &mdash; Conformal Mapping of a Half-Plane</h2>
+<p><strong>Task:</strong> Use the transformation \(w = \dfrac{z - i}{z + i}\) to map the upper half-plane \(\operatorname{Im}(z) &gt; 0\) to the unit disk \(|w| &lt; 1\). Verify that the real axis maps to the boundary of the unit disk.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Instructor Solution</h3>
+<p>Substitute \(z = x + iy\):</p>
+<p>\[w = \frac{x + i(y - 1)}{x + i(y + 1)}, \qquad |w|^2 = \frac{x^2 + (y - 1)^2}{x^2 + (y + 1)^2}.\]</p>
+<p>The difference of the denominator and numerator is</p>
+<p>\[\bigl[x^2 + (y + 1)^2\bigr] - \bigl[x^2 + (y - 1)^2\bigr] = 4y.\]</p>
+<p>Therefore:</p>
+<ul>
+<li>\(y = 0\) (the real axis) \(\;\Rightarrow\; |w| = 1\): the finite real axis maps onto the unit circle with the point \(w=1\) omitted. Including \(z=\infty\), which maps to \(w=1\), gives the entire circle.</li>
+<li>\(y &gt; 0\) (upper half-plane) \(\;\Rightarrow\; |w| &lt; 1\): the interior of the disk.</li>
+<li>\(y &lt; 0\) (lower half-plane) \(\;\Rightarrow\; |w| &gt; 1\): the exterior of the disk.</li>
+</ul>
+<p>Geometrically, \(|w| = |z - i|/|z + i|\) compares the distance from \(z\) to \(i\) with the distance to \(-i\). Points above the real axis are closer to \(i\).</p>
+<h3>Interpretation</h3>
+<p>This M&ouml;bius (Cayley) transformation is analytic with \(w'(z) = \dfrac{2i}{(z + i)^2} \neq 0\) on the upper half-plane, so it is conformal there. It sends \(z = i \mapsto 0\), \(z = 0 \mapsto -1\), and \(z \to \infty \mapsto 1\). Any problem posed on a half-plane can therefore be moved to the disk, and back again, without losing the structure of Laplace's equation.</p>
+</div>
+<p class="narrative">The final problem combines the two big ideas: harmonic functions come from analytic ones, and the half-plane is a natural domain for boundary-value problems.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5 &mdash; Solving Laplace's Equation in the Half-Plane</h2>
+<p><strong>Task:</strong> Find the bounded solution of Laplace's equation \(\nabla^2 u = 0\) in the upper half-plane \(y &gt; 0\) with boundary condition \(u(x, 0) = \sin x\).</p>
+<ul>
+<li><strong>Hint:</strong> Look for an entire function \(F(z)\) whose imaginary part equals \(\sin x\) on the real axis, then take \(u = \operatorname{Im} F\).</li>
+<li>Confirm your answer against the Poisson integral formula for the upper half-plane.</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Instructor Solution</h3>
+<p>Take \(F(z) = e^{iz}\), which is entire. With \(z = x + iy\),</p>
+<p>\[e^{iz} = e^{ix - y} = e^{-y}(\cos x + i \sin x).\]</p>
+<p>The imaginary part of an analytic function is harmonic, so</p>
+<p>\[u(x, y) = \operatorname{Im} e^{iz} = e^{-y} \sin x\]</p>
+<p>satisfies \(\nabla^2 u = 0\). Direct check: \(u_{xx} = -e^{-y}\sin x\) and \(u_{yy} = e^{-y}\sin x\), which sum to zero. On the boundary, \(u(x, 0) = \sin x\). For \(y \ge 0\), \(|u| \le 1\), so \(u\) is bounded.</p>
+<p><strong>Poisson check.</strong> The half-plane Poisson formula is</p>
+<p>\[u(x, y) = \frac{1}{\pi} \int_{-\infty}^{\infty} \frac{y\,\sin t}{(x - t)^2 + y^2}\,dt.\]</p>
+<p>Substitute \(t = x + s\) and use \(\sin(x + s) = \sin x \cos s + \cos x \sin s\). The odd \(\sin s\) term integrates to zero, and \(\dfrac{1}{\pi}\displaystyle\int_{-\infty}^{\infty} \frac{y \cos s}{s^2 + y^2}\,ds = e^{-y}\), which recovers \(u = e^{-y}\sin x\).</p>
+<h3>Interpretation</h3>
+<p>The boundedness condition is essential for uniqueness. For example, \(\sinh y \sin x\) is also harmonic and vanishes on \(y = 0\), so adding it would still satisfy the boundary condition, but it grows without bound. Each Fourier mode on the boundary decays into the domain at a rate set by its frequency. That is the same separation-of-variables picture you get from solving the PDE directly.</p>
+</div>
+<p class="narrative">All five problems rest on a single fact. Complex differentiability is a rigid condition, and that rigidity is what gives us the Cauchy&ndash;Riemann equations, Laurent series, angle-preserving maps, and a ready supply of harmonic functions.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Synthesis and Self-Check Table</h2>
+<p>Summarize the key object and result from each of the five problems above.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-6" aria-expanded="false" aria-controls="solution-6">Show Answers</button>
+<div class="solution" id="solution-6" hidden>
+<div class="table-scroll">
+<table>
+<thead>
+<tr><th>Problem</th><th>Function / Map</th><th>Key Tool</th><th>Result</th></tr>
+</thead>
+<tbody>
+<tr><td>1. Cauchy&ndash;Riemann</td><td>\(\dfrac{1}{z^2+1}\)</td><td>\(u_x = v_y,\ u_y = -v_x\)</td><td>Analytic for \(z \neq \pm i\)</td></tr>
+<tr><td>2. Derivative</td><td>\(e^{z^2}\)</td><td>Limit definition</td><td>\(f'(z) = 2z\,e^{z^2}\), entire</td></tr>
+<tr><td>3. Residues</td><td>\(\dfrac{\sin z}{z^3(z-\pi)}\)</td><td>Laurent series</td><td>\(\operatorname{Res}_{\pi} = 0\) (removable), \(\operatorname{Res}_{0} = -1/\pi^2\)</td></tr>
+<tr><td>4. Conformal map</td><td>\(w = \dfrac{z-i}{z+i}\)</td><td>\(|w|^2\) comparison</td><td>\(\operatorname{Im} z &gt; 0 \to |w| &lt; 1\), \(\mathbb{R} \to |w| = 1\)</td></tr>
+<tr><td>5. Laplace</td><td>\(\operatorname{Im} e^{iz}\)</td><td>Harmonic parts / Poisson</td><td>\(u = e^{-y}\sin x\)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

@@ -95,14 +95,14 @@
 <li><strong>State 1:</strong> Recurrent and Aperiodic.
 <ul><li>Rule: This is an absorbing state. The return probability \(f_{11} = 1\) is satisfied in a single step (\(P_{11}=1\)), making it recurrent. Since it can return in any number of steps, its period \(d=1\).</li></ul>
 </li>
-<li><strong>State 2:</strong> Transient.
-<ul><li>Rule: The return probability \(f_{22} < 1\). Specifically, there is a 0.5 probability of moving to State 1, from which return to State 2 is impossible.</li></ul>
+<li><strong>State 2:</strong> Transient; no positive-time return is possible.
+<ul><li>Rule: After leaving State 2, the chain enters State 1 or the closed class \(\{3,4\}\), neither of which can reach State 2. Thus \(f_{22}=0\) and \(\{n\ge1:(P^n)_{22}>0\}\) is empty. Its period is undefined under the usual greatest-common-divisor definition; some conventions assign period 0 to this case.</li></ul>
 </li>
 <li><strong>States 3 &amp; 4:</strong> Recurrent and Periodic (Period \(d=2\)).
 <ul><li>Rule: These states form a closed communication class. Since they only communicate with each other (\(3 \to 4 \to 3\)), the return probability \(f_{ii} = 1\). The period is 2 because a return to state \(i\) is only possible at \(t=2, 4, 6, \dots\).</li></ul>
 </li>
-<li><strong>State 5:</strong> Transient.
-<ul><li>Rule: \(f_{55} < 1\). There are exit paths to State 2 and State 4. Trajectories starting here will eventually be &ldquo;lost&rdquo; to the absorbing state or the periodic cycle.</li></ul>
+<li><strong>State 5:</strong> Transient and Aperiodic (Period \(d=1\)).
+<ul><li>Rule: \(f_{55}=0.6<1\): a self-loop is a return, but after an exit to State 2 or State 4, return to State 5 is impossible. Since \(P_{55}=0.6>0\), a one-step return is possible and the period is 1.</li></ul>
 </li>
 </ul>
 </div>
@@ -155,10 +155,10 @@
  \[I - Q = \begin{bmatrix} 1 & -0.6 & 0 \\ -0.4 & 1 & -0.6 \\ 0 & -0.4 & 1 \end{bmatrix}\]
 </li>
 <li>Matrix Inversion for \(N\): Solving \((I-Q)N = I\) via row reduction or Cramer's rule:
- \[N = (I - Q)^{-1} = \begin{bmatrix} 1.4286 & 1.0714 & 0.6429 \\ 0.7143 & 1.7857 & 1.0714 \\ 0.2857 & 0.7143 & 1.4286 \end{bmatrix}\]
+ \[N = (I - Q)^{-1} = \frac{1}{13}\begin{bmatrix} 19 & 15 & 9 \\ 10 & 25 & 15 \\ 4 & 10 & 19 \end{bmatrix} \approx \begin{bmatrix} 1.4615 & 1.1538 & 0.6923 \\ 0.7692 & 1.9231 & 1.1538 \\ 0.3077 & 0.7692 & 1.4615 \end{bmatrix}\]
 </li>
 <li>Expected Time: The expected time to absorption starting from state \(i\) is the sum of the \(i\)-th row of \(N\). For a student starting at Chapter 1:
- \[\begin{gather*} E[T \mid X_0 = 1] = 1.4286 + 1.0714 + 0.6429 = \mathbf{3.1429 \text{ steps}} \end{gather*}\]
+ \[\begin{gather*} E[T \mid X_0 = 1] = \frac{19+15+9}{13} = \frac{43}{13} \approx \mathbf{3.3077 \text{ steps}} \end{gather*}\]
 </li>
 </ol>
 <p><strong>Insight for the Learner:</strong> By inverting \((I-Q)\), we transform static probability measures into a dynamic timeline. This is the essence of decision science: we move from &ldquo;Can it happen?&rdquo; to &ldquo;How long must we wait?&rdquo;</p>

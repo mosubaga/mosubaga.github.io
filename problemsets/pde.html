@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Problem Set: Partial Differential Equations</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" async></script>
+</head>
+<body>
+<header class="site-header">
+<h1>Problem Set: Partial Differential Equations</h1>
+<p class="meta"><strong>Level:</strong> Introductory undergraduate<br>
+<strong>Topic:</strong> Classification and Solution Methods for PDEs<br>
+<strong>Problems:</strong> 5</p>
+<nav>
+<a class="back-link" href="index.html">All Problem Sets</a>
+</nav>
+</header>
+<main class="page-wrap">
+<section class="pastel-card problem-card">
+<h2>Foundations: Equations in Several Variables</h2>
+<p>A <strong>partial differential equation</strong> relates an unknown function \(u\) of several independent variables (space \(x, y, z\), time \(t\)) to its partial derivatives. Three model equations cover most of the physics met at this level:</p>
+<ul>
+<li><strong>Laplace's equation</strong> \(\nabla^2 u = 0\) &mdash; steady states such as equilibrium temperature or electrostatic potential (<em>elliptic</em>).</li>
+<li><strong>The heat equation</strong> \(u_t = k\,\nabla^2 u\) &mdash; diffusion, which smooths and spreads (<em>parabolic</em>).</li>
+<li><strong>The wave equation</strong> \(u_{tt} = c^2 \nabla^2 u\) &mdash; vibration, where signals travel at finite speed (<em>hyperbolic</em>).</li>
+</ul>
+<p>For a second-order equation in two variables, \(A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0\), the type is set by the discriminant:</p>
+<p>\[B^2 - 4AC \;\begin{cases} &lt; 0 &amp; \text{elliptic} \\ = 0 &amp; \text{parabolic} \\ &gt; 0 &amp; \text{hyperbolic.} \end{cases}\]</p>
+<p>The type tells you which side conditions make a problem well-posed and which solution methods fit. The five problems below practise the main methods in turn: separation of variables, classification, Laplace transforms, Fourier series, and characteristics.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 1 &mdash; Steady-State Temperature in a Cylinder</h2>
+<p><strong>Scenario:</strong> A solid cylinder of radius \(a\) and length \(L\) has its curved surface \(r = a\) held at temperature \(0\). Its ends are held at fixed temperatures:</p>
+<ul>
+<li><strong>Bottom face \(z=0\):</strong> \(u=u_0\) for \(0\le r&lt;a\).</li>
+<li><strong>Top face \(z=L\):</strong> \(u=0\).</li>
+</ul>
+<p>Use separation of variables to find the axisymmetric steady-state temperature \(u(r, z)\), where \(r\) is the radial coordinate.</p>
+<p>For \(u_0\ne0\), the hot-bottom and cold-side data have incompatible limits at the rim \((r,z)=(a,0)\). Impose them on the respective open faces; a solution continuous across that rim is not required.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-1" aria-expanded="false" aria-controls="solution-1">Show Solution</button>
+<div class="solution" id="solution-1" hidden>
+<h3>Instructor Solution</h3>
+<p>In the steady state, \(u\) satisfies Laplace's equation in cylindrical coordinates, with no \(\theta\)-dependence:</p>
+<p>\[\frac{1}{r}\frac{\partial}{\partial r}\!\left(r\frac{\partial u}{\partial r}\right) + \frac{\partial^2 u}{\partial z^2} = 0.\]</p>
+<p>Set \(u = R(r)Z(z)\) and separate with constant \(-\lambda^2\):</p>
+<p>\[r^2 R'' + r R' + \lambda^2 r^2 R = 0, \qquad Z'' - \lambda^2 Z = 0.\]</p>
+<p>The radial equation is Bessel's equation of order zero. Boundedness at \(r = 0\) rules out \(Y_0\), so \(R = J_0(\lambda r)\). The condition \(u(a, z) = 0\) requires \(J_0(\lambda a) = 0\), so</p>
+<p>\[\lambda_n = \frac{\alpha_n}{a}, \qquad \alpha_n = n\text{th positive zero of } J_0 \quad (\alpha_1 \approx 2.405,\ \alpha_2 \approx 5.520, \dots).\]</p>
+<p>The axial equation, together with \(Z(L) = 0\), gives \(Z_n = \sinh\bigl(\lambda_n (L - z)\bigr)\). Superposing these modes:</p>
+<p>\[u(r, z) = \sum_{n=1}^{\infty} A_n\, J_0(\lambda_n r)\, \frac{\sinh\bigl(\lambda_n (L - z)\bigr)}{\sinh(\lambda_n L)}.\]</p>
+<p>At \(z = 0\) this requires \(\sum A_n J_0(\lambda_n r) = u_0\). By the orthogonality of \(J_0(\lambda_n r)\) with weight \(r\) on \([0, a]\), and the identity \(\int_0^a r J_0(\lambda_n r)\,dr = \dfrac{a}{\lambda_n} J_1(\alpha_n)\),</p>
+<p>\[A_n = \frac{2u_0}{\alpha_n J_1(\alpha_n)}.\]</p>
+<h3>Interpretation</h3>
+<p>The temperature is a Fourier&ndash;Bessel series. Each radial mode decays away from the hot face like \(\sinh(\lambda_n(L - z))\), and higher modes (larger \(\alpha_n\)) decay faster. Far from \(z = 0\), the profile is therefore dominated by the first mode \(J_0(2.405\,r/a)\).</p>
+</div>
+<p class="narrative">Separation of variables worked here because Laplace's equation is elliptic and the boundary data were given on all sides. Before choosing a method, it helps to know an equation's type, which is the subject of the next problem.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 2 &mdash; Classification of PDEs</h2>
+<p><strong>Task:</strong> Classify each PDE as elliptic, hyperbolic, or parabolic, and state its independent and dependent variables:</p>
+<ul>
+<li><strong>(a)</strong> \(u_{xx} + u_{yy} + u_{zz} = 0\)</li>
+<li><strong>(b)</strong> \(u_{tt} - u_{xx} + u_{yy} = 0\)</li>
+<li><strong>(c)</strong> \(u_{xx} + 2u_{xy} + u_{yy} = 0\)</li>
+<li><strong>(d)</strong> \(u_{xx} + u_{yy} + u_{tt} = 0\)</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
+<div class="solution" id="solution-2" hidden>
+<h3>Instructor Solution</h3>
+<p>In every case the dependent variable is \(u\). Write the principal part using a symmetric coefficient matrix, \(\sum a_{ij}u_{x_i x_j}\), and inspect its eigenvalues. If all are nonzero with the same sign, the equation is elliptic. If all are nonzero and exactly one has the opposite sign to the rest, it is hyperbolic. The parabolic principal-part case has one zero eigenvalue and all remaining eigenvalues nonzero with the same sign. A zero eigenvalue alone does not establish parabolic type in higher dimensions, and lower-order terms matter for an evolution interpretation.</p>
+<ul>
+<li><strong>(a) Elliptic.</strong> Independent variables \(x, y, z\). The coefficients \((1, 1, 1)\) all have the same sign: this is the 3-D Laplace equation.</li>
+<li><strong>(b) Hyperbolic.</strong> Independent variables \(t, x, y\). The coefficients \((1, -1, 1)\) have exactly one opposite sign. Rewritten as \(u_{xx} = u_{tt} + u_{yy}\), it is a wave equation in which \(x\) plays the time-like role.</li>
+<li><strong>(c) Parabolic.</strong> Independent variables \(x, y\). With \(A = 1\), \(B = 2\), \(C = 1\): \(B^2 - 4AC = 4 - 4 = 0\). Since the equation is \((\partial_x + \partial_y)^2 u = 0\), the substitution \(\xi = x - y\), \(\eta = x + y\) reduces it to the canonical form \(u_{\eta\eta} = 0\).</li>
+<li><strong>(d) Elliptic.</strong> Independent variables \(x, y, t\). The coefficients \((1, 1, 1)\) all have the same sign. Although one variable is named \(t\), this is Laplace's equation in three variables, not an evolution equation.</li>
+</ul>
+<h3>Interpretation</h3>
+<p>The type comes from the signs of the coefficients, not from the names of the variables. Part (d) looks like it involves time, but it behaves like a steady-state problem and needs boundary data on a closed surface rather than initial data.</p>
+</div>
+<p class="narrative">The next two problems take the two classic evolution types in turn, starting with the parabolic heat equation on a half-line, where a Laplace transform in time turns the PDE into an ODE in space.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 3 &mdash; Laplace Transform Solution for the Heat Equation</h2>
+<p><strong>Scenario:</strong> Solve the heat equation \(u_t = u_{xx}\) on the half-line \(0 &lt; x &lt; \infty\), \(t &gt; 0\), using Laplace transforms in \(t\).</p>
+<ul>
+<li><strong>Initial condition:</strong> \(u(x,0)=f(x)=e^{-x}\) for \(x>0\).</li>
+<li><strong>Boundary condition:</strong> \(u(0,t)=0\) for \(t>0\), and \(u\) stays bounded as \(x\to\infty\).</li>
+</ul>
+<p>The initial profile approaches 1 as \(x\to0^+\), while the boundary is held at 0 for \(t>0\). These data are incompatible at \((0,0)\); no continuous extension to that corner is imposed.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
+<div class="solution" id="solution-3" hidden>
+<h3>Instructor Solution</h3>
+<p>Let \(\bar u(x, s) = \mathcal{L}\{u(x, t)\}\). Since \(\mathcal{L}\{u_t\} = s\bar u - u(x, 0)\), the PDE becomes an ODE in \(x\):</p>
+<p>\[\bar u_{xx} - s\,\bar u = -e^{-x}.\]</p>
+<p>A particular solution \(C e^{-x}\) requires \(C - sC = -1\), so \(C = \dfrac{1}{s - 1}\). Of the homogeneous solutions \(e^{\pm\sqrt{s}\,x}\), only \(e^{-\sqrt{s}\,x}\) stays bounded. Imposing \(\bar u(0, s) = 0\):</p>
+<p>\[\bar u(x, s) = \frac{e^{-x} - e^{-\sqrt{s}\,x}}{s - 1}.\]</p>
+<p>Invert term by term. \(\mathcal{L}^{-1}\{e^{-x}/(s - 1)\} = e^{t - x}\), and from the standard table entry for \(e^{-k\sqrt{s}}/(s - a)\),</p>
+<p>\[\mathcal{L}^{-1}\!\left\{\frac{e^{-\sqrt{s}\,x}}{s - 1}\right\} = \tfrac12 e^{t}\Bigl[e^{-x}\operatorname{erfc}\!\Bigl(\tfrac{x}{2\sqrt t} - \sqrt t\Bigr) + e^{x}\operatorname{erfc}\!\Bigl(\tfrac{x}{2\sqrt t} + \sqrt t\Bigr)\Bigr].\]</p>
+<p>Combining the two and using \(1 - \tfrac12\operatorname{erfc}(\zeta) = \tfrac12\operatorname{erfc}(-\zeta)\):</p>
+<p>\[u(x, t) = \tfrac12 e^{t - x}\operatorname{erfc}\!\Bigl(\sqrt t - \frac{x}{2\sqrt t}\Bigr) - \tfrac12 e^{t + x}\operatorname{erfc}\!\Bigl(\sqrt t + \frac{x}{2\sqrt t}\Bigr).\]</p>
+<h3>Interpretation</h3>
+<p>Checks: at \(x = 0\) the two terms cancel, since \(\operatorname{erfc}(-\zeta) + \operatorname{erfc}(\zeta) = 2\) gives \(u = 0\). As \(t \to 0^+\), the first erfc tends to \(2\) and the second to \(0\), recovering \(u = e^{-x}\). The cold boundary drains heat from the initial profile, and the error functions describe how that cooling spreads into the rod at the diffusive rate \(x \sim \sqrt t\). The same result follows from extending \(f\) as an odd function and convolving it with the heat kernel.</p>
+</div>
+<p class="narrative">On a finite interval with fixed ends, the natural tool is a Fourier sine series. We apply it to the hyperbolic member of the family, the vibrating string.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 4 &mdash; Fourier Series Solution for the Wave Equation</h2>
+<p><strong>Scenario:</strong> A string of length \(L\) is fixed at both ends and released from rest. Solve \(u_{tt} = c^2 u_{xx}\) on \(0 &lt; x &lt; L\).</p>
+<ul>
+<li><strong>Initial displacement:</strong> \(u(x, 0) = f(x) = x(L - x)\).</li>
+<li><strong>Initial velocity:</strong> \(u_t(x, 0) = 0\).</li>
+<li><strong>Boundary conditions:</strong> \(u(0, t) = u(L, t) = 0\).</li>
+</ul>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-4" aria-expanded="false" aria-controls="solution-4">Show Solution</button>
+<div class="solution" id="solution-4" hidden>
+<h3>Instructor Solution</h3>
+<p>Separate \(u = X(x)T(t)\): \(X'' + \lambda^2 X = 0\) and \(T'' + c^2\lambda^2 T = 0\). The conditions \(X(0) = X(L) = 0\) give \(\lambda_n = n\pi/L\) and \(X_n = \sin(n\pi x/L)\). Zero initial velocity keeps only the cosine in time:</p>
+<p>\[u(x, t) = \sum_{n=1}^{\infty} B_n \sin\!\left(\frac{n\pi x}{L}\right) \cos\!\left(\frac{n\pi c t}{L}\right).\]</p>
+<p>The coefficients are the Fourier sine coefficients of \(f\). Integrating by parts twice:</p>
+<p>\[B_n = \frac{2}{L}\int_0^L x(L - x)\sin\!\left(\frac{n\pi x}{L}\right)dx = \frac{4L^2}{n^3\pi^3}\bigl(1 - (-1)^n\bigr) = \begin{cases} \dfrac{8L^2}{n^3\pi^3} &amp; n \text{ odd}, \\[4pt] 0 &amp; n \text{ even}. \end{cases}\]</p>
+<p>Hence</p>
+<p>\[u(x, t) = \frac{8L^2}{\pi^3} \sum_{n \text{ odd}} \frac{1}{n^3} \sin\!\left(\frac{n\pi x}{L}\right) \cos\!\left(\frac{n\pi c t}{L}\right).\]</p>
+<h3>Interpretation</h3>
+<p>The even modes vanish because \(x(L - x)\) is symmetric about the midpoint, while the even-\(n\) sine modes are antisymmetric about it. The \(1/n^3\) decay is fast: the first mode alone has amplitude \(B_1 = 8L^2/\pi^3 \approx 0.258\,L^2\), compared with the true peak \(f(L/2) = 0.25\,L^2\). So the string vibrates almost purely in its fundamental mode, with period \(2L/c\).</p>
+</div>
+<p class="narrative">Series methods build solutions mode by mode. For first-order equations there is a more direct route: follow the curves along which the PDE reduces to an ODE.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Problem 5 &mdash; Method of Characteristics for a First-Order PDE</h2>
+<p><strong>Task:</strong> Solve the PDE \(u_x + u_y = 0\) with initial condition \(u(x, 0) = f(x)\), using the method of characteristics.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
+<div class="solution" id="solution-5" hidden>
+<h3>Instructor Solution</h3>
+<p>The left-hand side is the directional derivative of \(u\) along \((1, 1)\). Parametrize curves starting from the point \((x_0, 0)\) on the initial line:</p>
+<p>\[\frac{dx}{ds} = 1, \qquad \frac{dy}{ds} = 1, \qquad \frac{du}{ds} = 0.\]</p>
+<p>Integrating gives \(x = x_0 + s\), \(y = s\), and \(u = f(x_0)\). Eliminating the parameter, \(s = y\) and \(x_0 = x - y\), so</p>
+<p>\[u(x, y) = f(x - y).\]</p>
+<p>Check: \(u_x = f'(x - y)\) and \(u_y = -f'(x - y)\), which sum to zero, and \(u(x, 0) = f(x)\).</p>
+<h3>Interpretation</h3>
+<p>The characteristics are the lines \(x - y = \text{const}\), and \(u\) is constant along each one. The initial profile is carried rigidly along them. If \(y\) is read as time, this is a wave moving right at unit speed without changing shape. It is the first-order building block of the wave equation: d'Alembert's solution of Problem 4's equation is a superposition \(F(x - ct) + G(x + ct)\) of two such transported profiles.</p>
+</div>
+<p class="narrative">Each method in this set follows from an equation's type and its side conditions: Bessel and Fourier series for bounded domains, transforms for unbounded ones, and characteristics wherever information travels along curves.</p>
+</section>
+<section class="pastel-card problem-card">
+<h2>Synthesis and Self-Check Table</h2>
+<p>Match each problem to its equation type, solution method, and the form of its answer.</p>
+<button type="button" class="pastel-btn solution-toggle" data-target="solution-6" aria-expanded="false" aria-controls="solution-6">Show Answers</button>
+<div class="solution" id="solution-6" hidden>
+<div class="table-scroll">
+<table>
+<thead>
+<tr><th>Problem</th><th>Equation</th><th>Type</th><th>Method</th><th>Solution Form</th></tr>
+</thead>
+<tbody>
+<tr><td>1. Cylinder</td><td>\(\nabla^2 u = 0\)</td><td>Elliptic</td><td>Separation of variables</td><td>\(\sum A_n J_0(\lambda_n r)\sinh(\lambda_n(L-z))\)</td></tr>
+<tr><td>2. Classification</td><td>(a)&ndash;(d)</td><td>E, H, P, E</td><td>Sign of coefficients / \(B^2 - 4AC\)</td><td>&mdash;</td></tr>
+<tr><td>3. Heat (half-line)</td><td>\(u_t = u_{xx}\)</td><td>Parabolic</td><td>Laplace transform</td><td>Combination of \(e^{t \mp x}\operatorname{erfc}(\cdot)\)</td></tr>
+<tr><td>4. Wave (string)</td><td>\(u_{tt} = c^2 u_{xx}\)</td><td>Hyperbolic</td><td>Fourier sine series</td><td>\(\frac{8L^2}{\pi^3}\sum_{n\ \text{odd}} \frac{\sin(n\pi x/L)\cos(n\pi ct/L)}{n^3}\)</td></tr>
+<tr><td>5. Transport</td><td>\(u_x + u_y = 0\)</td><td>First order</td><td>Characteristics</td><td>\(u = f(x - y)\)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+</main>
+<script>
+  document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+    if (!btn.dataset.label) {
+      btn.dataset.label = btn.textContent.replace(/^Show /, "");
+    }
+  });
+
+    document.querySelectorAll(".solution-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var nowHidden = !target.hidden;
+        target.hidden = nowHidden;
+        btn.textContent = nowHidden ? "Show " + btn.dataset.label : "Hide " + btn.dataset.label;
+        btn.setAttribute("aria-expanded", String(!nowHidden));
+      });
+    });
+
+</script>
+</body>
+</html>

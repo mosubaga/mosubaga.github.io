@@ -555,7 +555,7 @@ p\approx0.0060.
 \]</p>
 <p>Thus,</p>
 <p>\[
-\boxed{\text{There is strong evidence that the intervention changes average late-night phone use.}}
+\boxed{\text{There is strong evidence that mean late-night phone use differs between the before and after measurements.}}
 \]</p>
 <h3>Step 4: Confidence interval</h3>
 <p>The interval is</p>
@@ -576,11 +576,12 @@ p\approx0.0060.
 d=\text{after}-\text{before},
 \]</p>
 <p>a negative value means that phone use decreased after the intervention.</p>
-<p>The data estimate that the intervention reduces late-night phone use by approximately</p>
+<p>The data estimate that mean late-night phone use after the intervention is lower by approximately</p>
 <p>\[
 1.07 \text{ to }5.33
 \]</p>
 <p>hours per week on average.</p>
+<p>This before-and-after comparison establishes a change over time, but without a randomized control comparison it does not establish that the intervention caused the decrease.</p>
 <h3>Why paired analysis is necessary</h3>
 <p>Each student's after-intervention observation is naturally matched to that same student's before-intervention observation.</p>
 <p>The observations within a student's pair are therefore not independent.</p>
@@ -766,11 +767,11 @@ SE=
 \]</p>
 <p>This gives approximately</p>
 <p>\[
-SE\approx0.03076.
+SE\approx0.03100645.
 \]</p>
 <p>The interval is</p>
 <p>\[
-0.05\pm1.96(0.03076).
+0.05\pm1.96(0.03100645).
 \]</p>
 <p>Therefore,</p>
 <p>\[
@@ -872,10 +873,11 @@ p_R-p_S,
 <p>\[
 \alpha=0.05,
 \]</p>
-<p>the test and corresponding \(95\%\) confidence interval generally agree:</p>
+<p>a test and a \(95\%\) confidence interval obtained by inverting that same test agree:</p>
 <p>\[
 \boxed{\text{reject }H_0 \iff \text{the null value is outside the }95\%\text{ confidence interval}.}
 \]</p>
+<p>This equivalence requires matched methods. The mean tests and intervals above use matching \(t\)-procedures. The proportion examples use score-style tests and Wald confidence intervals; their conclusions agree for these data, but those two methods need not agree for every dataset.</p>
 <p>Students should also distinguish between</p>
 <p>\[
 \boxed{\text{statistical significance}}

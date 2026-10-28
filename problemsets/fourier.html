@@ -30,7 +30,7 @@
 <p>\[f(x) \sim \frac{a_0}{2} + \sum_{n=1}^{\infty}\bigl(a_n\cos(nx) + b_n\sin(nx)\bigr),\]</p>
 <p>with coefficients recovered by the Euler formulas</p>
 <p>\[a_n = \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)\cos(nx)\,dx, \qquad b_n = \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)\sin(nx)\,dx.\]</p>
-<p>If \(f\) meets the <strong>Dirichlet conditions</strong> on a period&mdash;periodicity, piecewise continuity (single-valued with finitely many jump discontinuities), finitely many extrema per period, and absolute integrability&mdash;the series converges to \(f(x)\) at every point of continuity, and to the average of the left- and right-hand limits, \(\tfrac12\bigl[f(x^-)+f(x^+)\bigr]\), at every jump.</p>
+<p>A sufficient version of the <strong>Dirichlet conditions</strong> is that \(f\) is single-valued and periodic, piecewise continuous with finite one-sided limits, piecewise monotone on finitely many subintervals of a period, and absolutely integrable on that period. Constant pieces are allowed. The series converges to \(f(x)\) at every point of continuity and to \(\tfrac12[f(x^-)+f(x^+)]\) at each jump.</p>
 <p>For a non-periodic function, the analogous decomposition is the <strong>Fourier transform</strong>, which trades a discrete sum over integer frequencies for a continuous integral over all real frequencies \(\omega\). Using the symmetric convention,</p>
 <p>\[\hat f(\omega) = \mathcal F\{f(x)\}(\omega) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} f(x)e^{-i\omega x}\,dx, \qquad f(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} \hat f(\omega)e^{i\omega x}\,d\omega.\]</p>
 <p>The five problems below move from building a Fourier series by hand, to the subtleties of its convergence, to the transform's integral form, its operational rules, and finally its use in solving a driven differential equation.</p>
@@ -63,7 +63,7 @@
 <section class="pastel-card problem-card">
 <h2>Problem 2 &mdash; Dirichlet Conditions, Pointwise Convergence, and the Gibbs Phenomenon</h2>
 <p><strong>Scenario:</strong> Consider the periodic square wave of period \(2\pi\)
-<div class="given-block"><p>\[g(x) = \begin{cases}-1, & -\pi \le x < 0\\ 1, & 0 \le x \le \pi\end{cases}, \qquad g(x) \sim \frac{4}{\pi}\sum_{k=0}^{\infty}\frac{\sin\bigl((2k+1)x\bigr)}{2k+1}.\]</p></div></p>
+<div class="given-block"><p>\[g(x) = \begin{cases}-1, & -\pi \le x &lt; 0\\ 1, & 0 \le x &lt; \pi\end{cases}, \qquad g(x+2\pi)=g(x), \qquad g(x) \sim \frac{4}{\pi}\sum_{k=0}^{\infty}\frac{\sin\bigl((2k+1)x\bigr)}{2k+1}.\]</p></div></p>
 <ol>
 <li><strong>Dirichlet conditions:</strong> Verify that \(g(x)\) satisfies the four Dirichlet conditions on \([-\pi,\pi]\).</li>
 <li><strong>Pointwise convergence:</strong> By Dirichlet's theorem, find the value the series converges to at \(x=\pi/2\) (continuity), \(x=0\) (jump), and \(x=\pi\) (boundary).</li>
@@ -73,7 +73,7 @@
 <button type="button" class="pastel-btn solution-toggle" data-target="solution-2" aria-expanded="false" aria-controls="solution-2">Show Solution</button>
 <div class="solution" id="solution-2" hidden>
 <h3>Solution</h3>
-<p><strong>1.</strong> \(g\) is periodic with period \(2\pi\) by construction; it is single-valued and piecewise continuous, with exactly one jump per period (at \(x=0\), and the periodic identification of \(\pm\pi\)); it has a finite number of extrema per period (it is piecewise constant, so zero interior extrema); and it is absolutely integrable since \(\int_{-\pi}^{\pi}|g(x)|\,dx = 2\pi < \infty\). All four Dirichlet conditions hold.</p>
+<p><strong>1.</strong> The half-open definition and periodic extension make \(g\) single-valued with period \(2\pi\); in particular \(g(\pi)=g(-\pi)=-1\). There are two jumps per period: one at \(0\) and one at the identified endpoints \(\pm\pi\). The function is piecewise continuous with finite one-sided limits, piecewise monotone (constant on each of two subintervals), and absolutely integrable since \(\int_{-\pi}^{\pi}|g(x)|\,dx=2\pi&lt;\infty\). The stated sufficient Dirichlet conditions hold.</p>
 <p><strong>2.</strong> At a point of continuity the series converges to \(g(x)\) itself; at a jump it converges to the average of the one-sided limits.</p>
 <ul>
 <li>\(x=\pi/2\): \(g\) is continuous there with \(g(\pi/2)=1\), so the series converges to \(\mathbf{1}\).</li>
@@ -96,7 +96,7 @@
 <ol>
 <li><strong>Direct calculation:</strong> Using \(\hat f(\omega) = \dfrac{1}{\sqrt{2\pi}}\displaystyle\int_{-\infty}^{\infty} f(x)e^{-i\omega x}\,dx\), show that \(\hat f(\omega) = \sqrt{\dfrac{2}{\pi}}\,\dfrac{\sin(a\omega)}{\omega} = \sqrt{\dfrac{2}{\pi}}\,a\,\text{sinc}(a\omega)\).</li>
 <li><strong>Inverse transform:</strong> Write the inverse Fourier transform integral expression for \(f(x)\).</li>
-<li><strong>Integral evaluation:</strong> Use the result to evaluate \(\displaystyle\int_0^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega\) for \(|x|<a\) and \(|x|>a\).</li>
+<li><strong>Integral evaluation:</strong> Use the result to evaluate \(\displaystyle\int_0^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega\) for \(|x|&lt;a\), \(|x|=a\), and \(|x|>a\).</li>
 <li><strong>Conceptual question:</strong> How does increasing the pulse width \(a\) affect the spread (bandwidth) of the spectrum \(\hat f(\omega)\)?</li>
 </ol>
 <button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
@@ -106,11 +106,13 @@
 <p>\[\hat f(\omega) = \frac{1}{\sqrt{2\pi}}\int_{-a}^{a} e^{-i\omega x}\,dx = \frac{1}{\sqrt{2\pi}}\int_{-a}^{a}\bigl[\cos(\omega x) - i\sin(\omega x)\bigr]dx.\]</p>
 <p>The \(\sin(\omega x)\) term is odd and integrates to zero over the symmetric interval, leaving</p>
 <p>\[\hat f(\omega) = \frac{1}{\sqrt{2\pi}}\int_{-a}^{a}\cos(\omega x)\,dx = \frac{1}{\sqrt{2\pi}}\cdot\frac{2\sin(a\omega)}{\omega} = \sqrt{\frac{2}{\pi}}\,\frac{\sin(a\omega)}{\omega} = \sqrt{\frac{2}{\pi}}\,a\,\text{sinc}(a\omega).\]</p>
-<p><strong>2.</strong> \[f(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}\hat f(\omega)e^{i\omega x}\,d\omega = \frac{1}{\pi}\int_{-\infty}^{\infty}\frac{\sin(a\omega)}{\omega}e^{i\omega x}\,d\omega.\]</p>
+<p><strong>2.</strong> Let \(f_*(x)=\tfrac12[f(x^-)+f(x^+)]\). Fourier inversion gives the midpoint value at jumps and the original function at continuity points:</p>
+<p>\[f_*(x)=\lim_{R\to\infty}\frac{1}{\sqrt{2\pi}}\int_{-R}^{R}\hat f(\omega)e^{i\omega x}\,d\omega=\frac{1}{\pi}\lim_{R\to\infty}\int_{-R}^{R}\frac{\sin(a\omega)}{\omega}e^{i\omega x}\,d\omega.\]</p>
+<p>Here \(f_*=f\) for \(|x|\ne a\), while \(f_*(\pm a)=1/2\), even though the original endpoint values are \(f(\pm a)=1\).</p>
 <p><strong>3.</strong> Since \(\sin(a\omega)/\omega\) is an even function of \(\omega\), splitting \(e^{i\omega x} = \cos(\omega x) + i\sin(\omega x)\) makes the \(\sin(\omega x)\) piece odd overall (so it integrates to zero over \((-\infty,\infty)\)), leaving</p>
-<p>\[f(x) = \frac{1}{\pi}\int_{-\infty}^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega = \frac{2}{\pi}\int_0^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega.\]</p>
-<p>Solving for the integral, \(\displaystyle\int_0^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega = \frac{\pi}{2}f(x)\), so using the original definition of \(f(x)\):</p>
-<p>\[\int_0^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega = \begin{cases}\dfrac{\pi}{2}, & |x|<a\\[6pt] 0, & |x|>a.\end{cases}\]</p>
+<p>\[f_*(x)=\frac{2}{\pi}\int_0^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega.\]</p>
+<p>The improper integral is therefore \(\pi f_*(x)/2\), giving</p>
+<p>\[\int_0^{\infty}\frac{\sin(a\omega)\cos(\omega x)}{\omega}\,d\omega = \begin{cases}\dfrac{\pi}{2}, & |x|&lt;a,\\[6pt] \dfrac{\pi}{4}, & |x|=a,\\[6pt] 0, & |x|>a.\end{cases}\]</p>
 <p><strong>4.</strong> Increasing \(a\) widens the pulse in space; the spectrum's main lobe has width proportional to \(1/a\), so it narrows as \(a\) grows. A wider pulse in space produces a narrower, more concentrated spectrum &mdash; and vice versa &mdash; the signature time&ndash;bandwidth trade-off of the Fourier transform.</p>
 </div>
 <p class="narrative">Rather than recompute an integral like this one from scratch for every new function, it pays to build a toolkit of operational rules that transform a known spectrum into a new one &mdash; the subject of the next problem.</p>
@@ -150,11 +152,11 @@
 <h2>Problem 5 &mdash; Fourier Series and a Forced Harmonic Oscillator</h2>
 <p><strong>Scenario:</strong> A harmonic oscillator driven by a periodic force \(r(t)\) obeys
 <div class="given-block"><p>\[y''(t) + \omega_0^2\,y(t) = r(t),\]</p></div>
-where \(r(t)\), of period \(2\pi\), is defined on \([-\pi,\pi]\) by \(r(t) = |t|\), extended periodically.</p>
+where \(\omega_0>0\), and \(r(t)\), of period \(2\pi\), is defined on \([-\pi,\pi]\) by \(r(t)=|t|\), extended periodically.</p>
 <ol>
 <li><strong>Fourier series of the load:</strong> Compute the Fourier cosine series of \(r(t)=|t|\), showing \(r(t) = \dfrac{\pi}{2} - \dfrac{4}{\pi}\displaystyle\sum_{n=1,3,5,\dots}^{\infty}\dfrac{\cos(nt)}{n^2}\).</li>
 <li><strong>Harmonic response:</strong> Assume \(y_p(t) = \dfrac{A_0}{2} + \displaystyle\sum_{n=1}^{\infty} A_n\cos(nt)\); substitute into the ODE and solve for \(A_0\) and \(A_n\) in terms of \(n\) and \(\omega_0\).</li>
-<li><strong>Solution expression:</strong> Write the complete steady-state response \(y_p(t)\), assuming \(\omega_0 \ne 1,3,5,\dots\).</li>
+<li><strong>Solution expression:</strong> Write a periodic particular response \(y_p(t)\), assuming \(\omega_0 \ne 1,3,5,\dots\), and explain how it relates to the general solution.</li>
 <li><strong>Conceptual question:</strong> What happens physically if \(\omega_0\) approaches one of the odd harmonics \(n\in\{1,3,5,\dots\}\) of the driving force?</li>
 </ol>
 <button type="button" class="pastel-btn solution-toggle" data-target="solution-5" aria-expanded="false" aria-controls="solution-5">Show Solution</button>
@@ -169,9 +171,10 @@ where \(r(t)\), of period \(2\pi\), is defined on \([-\pi,\pi]\) by \(r(t) = |t|
 <p>\[r(t) = \frac{\pi}{2} + \sum_{n=1,3,5,\dots}^{\infty}\left(-\frac{4}{\pi n^2}\right)\cos(nt) = \frac{\pi}{2} - \frac{4}{\pi}\sum_{n=1,3,5,\dots}^{\infty}\frac{\cos(nt)}{n^2}.\]</p>
 <p><strong>2.</strong> Differentiating \(y_p\) twice, \(y_p''(t) = -\sum_n A_n n^2\cos(nt)\). Substituting into the ODE:</p>
 <p>\[\frac{\omega_0^2 A_0}{2} + \sum_{n=1}^{\infty}(\omega_0^2-n^2)A_n\cos(nt) = \frac{\pi}{2} - \frac{4}{\pi}\sum_{n=1,3,5,\dots}^{\infty}\frac{\cos(nt)}{n^2}.\]</p>
-<p>Matching the constant term: \(\dfrac{\omega_0^2 A_0}{2} = \dfrac{\pi}{2} \Rightarrow A_0 = \dfrac{\pi}{\omega_0^2}.\) Matching \(\cos(nt)\) coefficients for odd \(n\): \((\omega_0^2-n^2)A_n = -\dfrac{4}{\pi n^2} \Rightarrow A_n = \dfrac{4}{\pi n^2(n^2-\omega_0^2)}\). For even \(n\) the right-hand side has no \(\cos(nt)\) term, so \(A_n = 0\).</p>
+<p>Matching the constant term gives \(A_0=\pi/\omega_0^2\). For odd \(n\), \((\omega_0^2-n^2)A_n=-4/(\pi n^2)\), so \(A_n=4/[\pi n^2(n^2-\omega_0^2)]\). For even \(n\ne\omega_0\), \(A_n=0\). If \(\omega_0\) is an even integer, its equation is \(0\cdot A_{\omega_0}=0\), so that coefficient is arbitrary; choose it to be zero for this particular solution.</p>
 <p><strong>3.</strong> Provided \(\omega_0\) is not an odd integer (so no denominator vanishes),</p>
 <p>\[y_p(t) = \frac{\pi}{2\omega_0^2} + \frac{4}{\pi}\sum_{n=1,3,5,\dots}^{\infty}\frac{\cos(nt)}{n^2(n^2-\omega_0^2)}.\]</p>
+<p>The general solution is \(y(t)=y_p(t)+C_1\cos(\omega_0 t)+C_2\sin(\omega_0 t)\). With no damping, these homogeneous oscillations do not decay, so initial conditions need not lead to a unique long-time periodic response.</p>
 <p><strong>4.</strong> If \(\omega_0\) approaches an odd integer \(n\), the factor \((n^2-\omega_0^2)\) in \(A_n\) approaches zero, so that harmonic's amplitude \(A_n\) grows without bound &mdash; the classic <strong>resonance</strong> phenomenon, where the driving force's \(n\)-th harmonic pumps energy into the oscillator's natural mode with no restoring balance in an undamped system.</p>
 </div>
 <p class="narrative">From a single sawtooth's coefficients to a resonance condition inside a differential equation, every step used the same two ideas: matching symmetry to kill half the coefficients, and matching frequency components term by term.</p>
@@ -194,7 +197,7 @@ where \(r(t)\), of period \(2\pi\), is defined on \([-\pi,\pi]\) by \(r(t) = |t|
 <tr><td>\(\hat f(\omega) = \tfrac{1}{\sqrt{2\pi}}\int f(x)e^{-i\omega x}dx\)</td><td>Fourier transform (symmetric convention)</td><td>Problems 3, 4</td></tr>
 <tr><td>\(\mathcal F\{h(x-c)\} = e^{-i\omega c}\hat h(\omega)\)</td><td>Shift property</td><td>Problem 4</td></tr>
 <tr><td>\(\mathcal F\{h(bx)\} = \tfrac{1}{|b|}\hat h(\omega/b)\)</td><td>Scaling property</td><td>Problem 4</td></tr>
-<tr><td>\(A_n(n^2-\omega_0^2)^{-1}\to\infty\) as \(\omega_0\to n\)</td><td>Resonance in a driven oscillator</td><td>Problem 5</td></tr>
+<tr><td>\(\lvert A_n\rvert=\dfrac{4}{\pi n^2\lvert n^2-\omega_0^2\rvert}\to\infty\) as \(\omega_0\to n\), for odd \(n\)</td><td>Resonance in a driven oscillator</td><td>Problem 5</td></tr>
 </tbody>
 </table>
 </div>

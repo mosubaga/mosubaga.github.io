@@ -88,20 +88,20 @@
 <ul>
 <li><strong>Marginal (Sensor Fail):</strong> \(\mathscr{P}(B) = 0.05\)</li>
 <li><strong>Joint Probability:</strong> \(\mathscr{P}(A \cap B) = 0.04\)</li>
-<li><strong>Base Defect Rate:</strong> \(\mathscr{P}(A) = 0.02\)</li>
+<li><strong>Base Defect Rate:</strong> \(\mathscr{P}(A) = 0.05\)</li>
 </ul>
 <p><strong>Problem:</strong> Calculate the probability that an item is truly defective given a &ldquo;Fail&rdquo; sensor reading. Determine if the sensor's flag is independent of the defect status.</p>
-<blockquote class="directions"><strong>Hint:</strong> The conditional probability here is a &ldquo;true positive&rdquo; rate&mdash;compare its size to the tiny base rate \(\mathscr{P}(A)\) to see how strong a filter the sensor is.</blockquote>
+<blockquote class="directions"><strong>Hint:</strong> The conditional probability \(\mathscr{P}(A|B)\) is the positive predictive value (precision). Compare it to the base defect rate \(\mathscr{P}(A)\). The true positive rate (sensitivity) is instead \(\mathscr{P}(B|A)\).</blockquote>
 <button type="button" class="pastel-btn solution-toggle" data-target="solution-3" aria-expanded="false" aria-controls="solution-3">Show Solution</button>
 <div class="solution" id="solution-3" hidden>
 <h3>Solution</h3>
-<p><strong>1.</strong> Calculate the conditional probability (the probability of a &ldquo;True Positive&rdquo;):</p>
+<p><strong>1.</strong> Calculate the positive predictive value, the probability of a defect given a flag:</p>
 <p>\[\mathscr{P}(A|B) = \frac{\mathscr{P}(A \cap B)}{\mathscr{P}(B)} = \frac{0.04}{0.05}\]</p>
 <p><strong>2.</strong> Simplify the result: \(\mathscr{P}(A|B) = 0.80\).</p>
-<p><strong>3.</strong> Evaluate independence by comparing the localized truth to the global defect rate: \(0.80 \neq 0.02 \implies \mathscr{P}(A|B) \neq \mathscr{P}(A)\).</p>
+<p><strong>3.</strong> Evaluate independence by comparing the conditional probability to the global defect rate: \(0.80 \neq 0.05 \implies \mathscr{P}(A|B) \neq \mathscr{P}(A)\).</p>
 <p><strong>Answer:</strong> \(\mathscr{P}(A|B) = 0.80\)</p>
 <h3>Interpretation</h3>
-<p>There is a profound distinction between the observation (\(B\)) and the underlying truth (\(A\)). Here, the sensor acts as a powerful filter, concentrating the defect probability from a mere 2% to a significant 80%. The events are strictly dependent.</p>
+<p>A flagged item has an 80% probability of being defective, compared with the overall defect rate of 5%. The events are dependent. The inputs are consistent: the probabilities of a flagged defect, an unflagged defect, a flagged functional item, and an unflagged functional item are respectively \(0.04\), \(0.01\), \(0.01\), and \(0.94\).</p>
 </div>
 <p class="narrative">While we have examined mechanical sensors, the same probabilistic filtering applies when institutions &ldquo;flag&rdquo; human potential through selection criteria.</p>
 </section>
@@ -149,7 +149,7 @@
 <p><strong>3.</strong> Test for independence: \(\mathscr{P}(A|B) \approx 0.778\) vs \(\mathscr{P}(A) = 0.50\). Since \(0.778 \neq 0.50\), the events are dependent.</p>
 <p><strong>Answer:</strong> \(\mathscr{P}(A|B) \approx 0.778\)</p>
 <h3>Interpretation</h3>
-<p>By restricting the domain of our probability measure to the subspace of regular exercisers (\(B\)), we uncover a &ldquo;localized&rdquo; truth: regular activity significantly elevates the energy baseline compared to the global population. This dependency reinforces the &ldquo;Trace of the B.F.&rdquo; as a tool to zoom in on specific truths within a larger probability space that the global \(\mathscr{P}(A)\) might otherwise obscure.</p>
+<p>Regular exercisers report high energy more often than the overall population: approximately 77.8% versus 50%. This is an association in the survey data; these probabilities alone do not establish that exercise causes higher energy. Conditioning on \(B\) describes the exerciser subgroup.</p>
 </div>
 <p class="narrative">Every problem above rests on the same restriction of a measure to a subspace &mdash; the self-check table below collects the numbers side by side.</p>
 </section>

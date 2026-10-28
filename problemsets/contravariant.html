@@ -78,7 +78,7 @@ use the contravariant transformation law \(\bar V^i = V^j\,\dfrac{\partial \bar 
 <p>\[\bar V^2 = V^1\frac{\partial \theta}{\partial x} + V^2\frac{\partial \theta}{\partial y} = -\frac{y\sin\theta}{r} - \frac{x\cos\theta}{r} = -\sin^2\theta - \cos^2\theta = -1.\]</p>
 <p>So \(\bar V^1 = 0\) and \(\bar V^2 = -1\): a purely angular field with no radial component, matching the fact that \((y,-x)\) generates clockwise rotation about the origin.</p>
 </div>
-<p class="narrative">The Jacobian factors that raised and lowered coordinate indices above are the same objects, built from the metric, that raise and lower vector indices &mdash; the tool introduced next.</p>
+<p class="narrative">Jacobians transform components between coordinate systems. Within a given coordinate system, the metric and its inverse lower and raise vector indices &mdash; the operations introduced next.</p>
 </section>
 
 <section class="pastel-card problem-card">
@@ -104,7 +104,7 @@ use the contravariant transformation law \(\bar V^i = V^j\,\dfrac{\partial \bar 
 <p>\[U_1 = g_{11}U^1 + g_{12}U^2 = (1)(1) + 0 = 1, \qquad U_2 = g_{21}U^1 + g_{22}U^2 = 0 + (r^2)\left(\frac{1}{r}\right) = r.\]</p>
 <p><strong>2(b).</strong></p>
 <p>\[\|\mathbf{U}\|^2 = U_1U^1 + U_2U^2 = (1)(1) + (r)\left(\frac{1}{r}\right) = 1 + 1 = 2.\]</p>
-<p>The magnitude is a pure number, independent of \(r\) &mdash; exactly what is required of an invariant scalar built by fully contracting a tensor.</p>
+<p>For this particular field, the squared magnitude is the constant \(2\). Being an invariant scalar means that its value at a fixed point is unchanged by a change of coordinates; it need not be constant across points or dimensionless. For example, the radial position vector has invariant squared magnitude \(r^2\), which varies with position.</p>
 </div>
 <p class="narrative">Contracting a pair of matched indices always removes them from the expression; the next problem studies that contraction operation on its own, stripped of any specific vector.</p>
 </section>

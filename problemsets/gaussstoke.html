@@ -571,12 +571,12 @@ With \(\mathbf{r}(t) = (\cos t,\sin t,0)\) we have \(x^2+y^2=1\), so \(\mathbf{F
 </li>
 <li><strong>Which Hypothesis Fails:</strong>
 Stokes' theorem requires a surface \(S\) with \(\partial S = C\) on which \(\mathbf{F}\) is \(C^1\). But \(C\) encircles the \(z\)-axis, and every surface whose boundary is \(C\) must intersect the \(z\)-axis at least once. On that intersection point \(\mathbf{F}\) is undefined, so no admissible \(S\) exists and Stokes simply does not apply. The structural reason is that the domain \(\mathbb{R}^3\setminus z\text{-axis}\) is <strong>not simply connected</strong>.
-Here \(\mathbf{F} = \nabla\theta\) where \(\theta = \arctan(y/x)\) is the polar angle — but \(\theta\) is only defined up to multiples of \(2\pi\), and going once around \(C\) advances it by exactly \(2\pi\).
+Locally, \(\mathbf{F}=\nabla\theta\), where \(\theta\) is a continuous branch of \(\arg(x+iy)\). There is no single-valued continuous angle on the entire punctured plane: following a continuous angle once around \(C\) increases it by \(2\pi\).
 </li>
 <li><strong>Curves That Miss the Origin:</strong>
-If \(C'\) does not wind around the origin, it bounds a region \(D'\) in the plane \(z=0\) that avoids the \(z\)-axis entirely. Now \(\mathbf{F}\) is \(C^1\) on a neighbourhood of \(D'\), Stokes applies, and
+If \(C'\) is a simple closed curve whose interior avoids the origin, it bounds a planar region \(D'\) on whose neighbourhood \(\mathbf{F}\) is \(C^1\). Stokes applies and gives
 \[\oint_{C'}\mathbf{F}\cdot d\mathbf{r} = \iint_{D'}(\nabla\times\mathbf{F})\cdot\mathbf{k}\,dA = 0.\]
-More generally, the circulation around any closed curve equals \(2\pi n\) where \(n\) is the winding number about the \(z\)-axis.
+For any piecewise-smooth closed curve avoiding the axis, including self-intersecting curves, follow a continuous angle along its planar projection. Then \(\mathbf{F}\cdot d\mathbf{r}=d\theta\), and the net angle change is \(2\pi n\), where \(n\) is its winding number about the axis. Thus \(\oint_{C'}\mathbf{F}\cdot d\mathbf{r}=2\pi n\), which is zero whenever the winding number is zero, without requiring that \(C'\) bound a single planar region avoiding the origin.
 </li>
 </ol>
 <p><em>Physical connection:</em> The magnetic field of a straight current-carrying wire is exactly this field (up to constants), and Ampere's law \(\oint\mathbf{B}\cdot d\mathbf{r} = \mu_0 I_{\text{enc}}\) is the physical statement of "circulation counts what you enclose". The same phenomenon is the residue theorem in complex analysis: \(\oint dz/z = 2\pi i\).</p>

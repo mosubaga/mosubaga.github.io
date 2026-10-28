@@ -47,8 +47,8 @@
 <h3>Instructor Solution</h3>
 <p><strong>(a) Functional formulation.</strong> Here \(F(x,y,y') = \sqrt{1+y'^2}\), which depends on neither \(x\) nor \(y\) explicitly.</p>
 <p><strong>(b) Variational derivation.</strong> Since \(\partial F/\partial y = 0\), the Euler&ndash;Lagrange equation reduces to</p>
-<p>\[\frac{d}{dx}\left(\frac{\partial F}{\partial y'}\right) = 0 \quad\Longrightarrow\quad \frac{\partial F}{\partial y'} = \frac{y'}{\sqrt{1+y'^2}} = m,\]</p>
-<p>a constant. Solving for \(y'\) gives \(y' = \text{const}\), so the extremal is a straight line \(y = mx + c\). The fixed condition \(y(0)=0\) forces \(c=0\), leaving \(y = mx\).</p>
+<p>\[\frac{d}{dx}\left(\frac{\partial F}{\partial y'}\right) = 0 \quad\Longrightarrow\quad \frac{\partial F}{\partial y'} = \frac{y'}{\sqrt{1+y'^2}} = k,\]</p>
+<p>where \(|k|&lt;1\). Solving for the constant slope gives \(y'=k/\sqrt{1-k^2}\equiv m\), so the extremal is a straight line \(y=mx+c\). The fixed condition \(y(0)=0\) forces \(c=0\), leaving \(y=mx\).</p>
 <p><strong>(c) Boundary condition analysis.</strong> Because \(y(b)\) is free, the first variation contributes a boundary term \(\left.\dfrac{\partial F}{\partial y'}\right|_{x=b}\delta y(b)\), which must vanish for arbitrary \(\delta y(b)\). This yields the natural boundary condition</p>
 <p>\[\left.\frac{\partial F}{\partial y'}\right|_{x=b} = \frac{m}{\sqrt{1+m^2}} = 0 \quad\Longrightarrow\quad m = 0.\]</p>
 <p>Hence \(y(x) \equiv 0\): the shortest path is the horizontal segment from \((0,0)\) to \((b,0)\), which meets the vertical target line \(x=b\) at a right angle.</p>
@@ -60,7 +60,7 @@
 
 <section class="pastel-card problem-card">
 <h2>Problem 2 &mdash; Minimal Surface of Revolution (The Catenoid)</h2>
-<p><strong>Scenario:</strong> A curve \(y(x) > 0\) joins two fixed points \((a, y_a)\) and \((b, y_b)\), \(a<b\). Revolving it about the \(x\)-axis sweeps out a surface. Find the curve that minimizes the surface area&mdash;the shape a soap film takes when stretched between two coaxial rings.</p>
+<p><strong>Scenario:</strong> A smooth curve \(y(x)>0\) joins two fixed points \((a,y_a)\) and \((b,y_b)\), with \(a&lt;b\) and \(y_a,y_b>0\). Revolving it about the \(x\)-axis sweeps out a surface. Find the stationary profiles for the surface area, and discuss when they can represent an area-minimizing soap film between two coaxial rings.</p>
 <ul>
 <li><strong>Functional to minimize:</strong> \(\displaystyle S[y] = 2\pi\int_a^b y\sqrt{1+y'^2}\, dx\).</li>
 <li><strong>Fixed endpoints:</strong> \(y(a) = y_a\), \(y(b) = y_b\).</li>
@@ -71,12 +71,12 @@
 <p><strong>(a) Functional formulation.</strong> Drop the constant \(2\pi\) and take \(F(y,y') = y\sqrt{1+y'^2}\), which has no explicit \(x\)-dependence.</p>
 <p><strong>(b) Variational derivation.</strong> Since \(F\) is \(x\)-independent, the Beltrami identity \(F - y'\,\partial F/\partial y' = C\) applies:</p>
 <p>\[\frac{\partial F}{\partial y'} = \frac{y\,y'}{\sqrt{1+y'^2}}, \qquad F - y'\frac{\partial F}{\partial y'} = \frac{y(1+y'^2) - y\,y'^2}{\sqrt{1+y'^2}} = \frac{y}{\sqrt{1+y'^2}} = C.\]</p>
-<p>Solving for \(y'\): \(y' = \sqrt{(y/C)^2 - 1}\), which separates as \(\dfrac{dy}{\sqrt{(y/C)^2-1}} = dx\). Integrating gives \(C\cosh^{-1}(y/C) = x - x_0\), i.e.</p>
+<p>Since \(y>0\), the constant \(C\) is positive. Solving gives \(y'=\pm\sqrt{(y/C)^2-1}\); both branches are needed for the decreasing and increasing sides of a profile. Integrating on either side gives \(x-x_0=\pm C\operatorname{arcosh}(y/C)\), so the smooth stationary profile is</p>
 <p>\[y(x) = C\cosh\!\left(\frac{x-x_0}{C}\right),\]</p>
 <p>a catenoid profile.</p>
-<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed (Dirichlet conditions), so no natural boundary condition arises; instead, the two constants \(C\) and \(x_0\) are determined by solving \(y_a = C\cosh\!\big((a-x_0)/C\big)\) and \(y_b = C\cosh\!\big((b-x_0)/C\big)\) simultaneously. For endpoints spread far enough apart, no real solution exists and the area-minimizing configuration degenerates to two disks plus the axis (the Goldschmidt discontinuous solution)&mdash;a reminder that a smooth Euler&ndash;Lagrange solution is not always the global minimizer.</p>
+<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed, so no natural boundary condition arises. Solve \(y_a=C\cosh((a-x_0)/C)\) and \(y_b=C\cosh((b-x_0)/C)\) for \(C>0\) and \(x_0\). These equations may have multiple solutions or none. A stationary catenoid need not minimize area: use the second variation to test stability and compare areas of competing admissible profiles. For sufficiently separated endpoints, there is no stationary positive smooth graph and hence no minimum in that class. Two disks joined along the axis form a limiting configuration of area \(\pi(y_a^2+y_b^2)\), often called the Goldschmidt solution in a relaxed class; it is not itself an admissible strictly positive smooth graph.</p>
 <h3>Interpretation</h3>
-<p>A soap film spanning two coaxial rings minimizes surface energy, which is proportional to area; the resulting equilibrium shape is exactly this catenoid, the same curve as a hanging chain rotated about its axis of symmetry.</p>
+<p>A connected stationary soap film of revolution has a catenoid profile, formed by rotating a catenary about the axis. Stability and comparison with competing configurations determine whether a particular catenoid is an area minimum.</p>
 </div>
 <p class="narrative">Minimizing area gave a static equilibrium shape; the next problem minimizes time itself, for a bead sliding under gravity.</p>
 </section>
@@ -106,7 +106,7 @@
 
 <section class="pastel-card problem-card">
 <h2>Problem 4 &mdash; The Isoperimetric Problem (Dido's Problem)</h2>
-<p><strong>Scenario:</strong> Among all curves \(y(x)\) with \(y(-a) = y(a) = 0\) and a fixed arc length \(L > 2a\), find the curve that encloses the maximum area with the segment of the \(x\)-axis between \(-a\) and \(a\).</p>
+<p><strong>Scenario:</strong> Let \(a>0\) and \(2a&lt;L&lt;\pi a\). Among smooth graphs \(y(x)\) with \(y(-a)=y(a)=0\) and fixed arc length \(L\), find the graph that maximizes the signed area above the segment of the \(x\)-axis between \(-a\) and \(a\).</p>
 <ul>
 <li><strong>Functional to maximize:</strong> \(\displaystyle A[y] = \int_{-a}^{a} y\, dx\).</li>
 <li><strong>Constraint:</strong> \(\displaystyle \int_{-a}^{a} \sqrt{1+y'^2}\, dx = L\).</li>
@@ -117,11 +117,14 @@
 <h3>Instructor Solution</h3>
 <p><strong>(a) Functional formulation.</strong> Adjoin the constraint with a Lagrange multiplier \(\lambda\) and extremize \(J[y] = \int_{-a}^{a}\bigl(y - \lambda\sqrt{1+y'^2}\bigr)\,dx\), so \(F = y - \lambda\sqrt{1+y'^2}\).</p>
 <p><strong>(b) Variational derivation.</strong> Since \(\partial F/\partial y = 1\) and \(\partial F/\partial y' = -\lambda y'/\sqrt{1+y'^2}\), the Euler&ndash;Lagrange equation gives</p>
-<p>\[1 - \frac{d}{dx}\left(\frac{-\lambda y'}{\sqrt{1+y'^2}}\right) = 0 \quad\Longrightarrow\quad \frac{d}{dx}\left(\frac{\lambda y'}{\sqrt{1+y'^2}}\right) = 1 \quad\Longrightarrow\quad \frac{\lambda y'}{\sqrt{1+y'^2}} = x + C_1.\]</p>
-<p>By the left&ndash;right symmetry of the boundary data (\(y(-a)=y(a)=0\)), the extremal is symmetric about \(x=0\), so \(C_1 = 0\). Squaring, \(\lambda^2 y'^2 = x^2(1+y'^2)\), so</p>
-<p>\[y' = \frac{x}{\sqrt{\lambda^2 - x^2}} \quad\Longrightarrow\quad y(x) = C_2 - \sqrt{\lambda^2-x^2}.\]</p>
-<p>Rearranged, \(x^2 + (y - C_2)^2 = \lambda^2\): the extremal is a circular arc of radius \(\lambda\).</p>
-<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed, so \(y(\pm a)=0\) pins \(C_2 = \sqrt{\lambda^2-a^2}\), and the multiplier \(\lambda\) itself is fixed not by a boundary condition but by the constraint equation&mdash;substituting the arc back into \(\int\sqrt{1+y'^2}\,dx = L\) relates \(\lambda\) to \(L\) and \(a\) through the subtended angle \(L = 2\lambda\arcsin(a/\lambda)\).</p>
+<p>\[1 - \frac{d}{dx}\left(\frac{-\lambda y'}{\sqrt{1+y'^2}}\right) = 0 \quad\Longrightarrow\quad \frac{d}{dx}\left(\frac{\lambda y'}{\sqrt{1+y'^2}}\right) = -1 \quad\Longrightarrow\quad \frac{\lambda y'}{\sqrt{1+y'^2}} = -x + C_1.\]</p>
+<p>Choose \(\lambda>0\) for a concave upper arc. Integrating gives \(y=C_2+\sqrt{\lambda^2-(x-C_1)^2}\). Equal endpoint heights force \((a-C_1)^2=(-a-C_1)^2\), hence \(C_1=0\). Thus</p>
+<p>\[y'=-\frac{x}{\sqrt{\lambda^2-x^2}}, \qquad y(x)=C_2+\sqrt{\lambda^2-x^2}.\]</p>
+<p>This is the upper branch of \(x^2+(y-C_2)^2=\lambda^2\), a circular arc of radius \(\lambda\).</p>
+<p><strong>(c) Boundary condition analysis.</strong> The endpoint conditions give \(C_2=-\sqrt{\lambda^2-a^2}\). The length constraint fixes the unique \(\lambda>a\) through</p>
+<p>\[y_*(x)=\sqrt{\lambda^2-x^2}-\sqrt{\lambda^2-a^2}, \qquad L=2\lambda\arcsin(a/\lambda).\]</p>
+<p>As \(\lambda\) decreases from infinity to \(a\), this length increases from \(2a\) to \(\pi a\), explaining the stated range. The semicircle at \(L=\pi a\) is a limiting graph with vertical endpoint tangents; longer circular arcs require a broader class of parametrized curves.</p>
+<p><strong>Why this is the maximum.</strong> For \(\lambda>0\), \(F=y-\lambda\sqrt{1+y'^2}\) is concave in \((y,y')\), and strictly concave in \(y'\). Its tangent inequality, integrated using the Euler&ndash;Lagrange equation and fixed endpoints, gives \(J[y]\le J[y_*]\) for any competing graph. Since both graphs have length \(L\), this implies \(A[y]\le A[y_*]\). Equality forces identical derivatives and hence the same graph.</p>
 <h3>Interpretation</h3>
 <p>This is Dido's problem: of all curves of a given length anchored at two fixed points, the circular arc encloses the greatest area&mdash;the variational proof of the isoperimetric inequality in the plane.</p>
 </div>
@@ -130,7 +133,7 @@
 
 <section class="pastel-card problem-card">
 <h2>Problem 5 &mdash; The Catenary (Shape of a Hanging Cable)</h2>
-<p><strong>Scenario:</strong> A flexible, inextensible cable of fixed length \(L\) and linear density \(\rho\) hangs under gravity \(g\) between two fixed supports at \((-a,0)\) and \((a,0)\). Find the curve \(y(x)\) it settles into&mdash;the shape minimizing gravitational potential energy subject to the fixed-length constraint.</p>
+<p><strong>Scenario:</strong> A flexible, inextensible cable of fixed length \(L>2a\), with \(a>0\), and positive linear density \(\rho\) hangs under gravity \(g>0\) between two fixed supports at \((-a,0)\) and \((a,0)\). Take \(y\) positive upward. Find the curve \(y(x)\) that minimizes gravitational potential energy subject to the fixed-length constraint.</p>
 <ul>
 <li><strong>Functional to minimize:</strong> \(\displaystyle U[y] = \rho g\int_{-a}^{a} y\sqrt{1+y'^2}\, dx\).</li>
 <li><strong>Constraint:</strong> \(\displaystyle \int_{-a}^{a} \sqrt{1+y'^2}\, dx = L\).</li>
@@ -142,9 +145,9 @@
 <p><strong>(a) Functional formulation.</strong> Adjoin the length constraint with multiplier \(\lambda\) (absorbing \(\rho g\) into a reduced multiplier \(\mu = \lambda/(\rho g)\)) to form \(F = (y-\mu)\sqrt{1+y'^2}\), the same structural form as Problem 2 with \(y\) shifted by \(\mu\).</p>
 <p><strong>(b) Variational derivation.</strong> \(F\) has no explicit \(x\)-dependence, so the Beltrami identity gives</p>
 <p>\[\frac{y-\mu}{\sqrt{1+y'^2}} = C \quad\Longrightarrow\quad y(x) - \mu = C\cosh\!\left(\frac{x-x_0}{C}\right).\]</p>
-<p>By symmetry of the boundary data about \(x=0\), \(x_0 = 0\), giving the catenary</p>
+<p>The minimum-energy hanging branch has \(C>0\), so \(y''>0\) and the cable sags below its supports. Equal endpoint heights force \(x_0=0\), giving the catenary</p>
 <p>\[y(x) = \mu + C\cosh\!\left(\frac{x}{C}\right).\]</p>
-<p><strong>(c) Boundary condition analysis.</strong> Both endpoints are fixed, so no natural boundary condition is needed. The condition \(y(a)=y(-a)=0\) (automatically symmetric) gives one equation, \(\mu = -C\cosh(a/C)\), and the length constraint \(\int_{-a}^{a}\sqrt{1+y'^2}\,dx = 2C\sinh(a/C) = L\) supplies the second, fixing \(C\) (and hence \(\mu\)) in terms of \(a\) and \(L\).</p>
+<p><strong>(c) Boundary condition analysis.</strong> Fixed endpoints give \(\mu=-C\cosh(a/C)\), while the length constraint gives \(2C\sinh(a/C)=L\). For \(L>2a\) there is a unique positive \(C\), giving \(y(x)=C[\cosh(x/C)-\cosh(a/C)]\le0\). The negative choice of \(C\) satisfies the same length equation but produces an inverted arch, not the hanging minimum. At \(L=2a\), the cable is straight, obtained as \(C\to\infty\); \(L&lt;2a\) is infeasible.</p>
 <h3>Interpretation</h3>
 <p>Every hanging chain, cable, or power line adopts this catenary shape&mdash;not a parabola, though the two look similar&mdash;because it is precisely the configuration that minimizes gravitational potential energy while holding the cable's total length fixed.</p>
 </div>
@@ -163,10 +166,10 @@
 </thead>
 <tbody>
 <tr><td>1. Shortest path, free endpoint</td><td>\(\int\sqrt{1+y'^2}\,dx\)</td><td>None</td><td>Natural boundary condition</td><td>Straight line, \(y\equiv 0\)</td></tr>
-<tr><td>2. Minimal surface</td><td>\(2\pi\int y\sqrt{1+y'^2}\,dx\)</td><td>None</td><td>Beltrami identity</td><td>Catenoid, \(y=C\cosh\frac{x-x_0}{C}\)</td></tr>
+<tr><td>2. Minimal surface</td><td>\(2\pi\int y\sqrt{1+y'^2}\,dx\)</td><td>None</td><td>Beltrami identity; stability and area comparison</td><td>Stationary catenoid, \(y=C\cosh\frac{x-x_0}{C}\), \(C>0\)</td></tr>
 <tr><td>3. Brachistochrone</td><td>\(\int \sqrt{1+y'^2}/\sqrt{2gy}\,dx\)</td><td>None</td><td>Beltrami identity</td><td>Cycloid, \(x=a(\theta-\sin\theta)\)</td></tr>
-<tr><td>4. Isoperimetric (Dido)</td><td>\(\int y\,dx\) (maximize)</td><td>\(\int\sqrt{1+y'^2}\,dx=L\)</td><td>Lagrange multiplier</td><td>Circular arc, \(x^2+(y-C_2)^2=\lambda^2\)</td></tr>
-<tr><td>5. Catenary</td><td>\(\rho g\int y\sqrt{1+y'^2}\,dx\)</td><td>\(\int\sqrt{1+y'^2}\,dx=L\)</td><td>Lagrange multiplier + Beltrami</td><td>\(y=\mu+C\cosh(x/C)\)</td></tr>
+<tr><td>4. Isoperimetric (Dido)</td><td>\(\int y\,dx\) (maximize)</td><td>Length \(2a&lt;L&lt;\pi a\)</td><td>Lagrange multiplier + concavity</td><td>Upper arc, \(y=\sqrt{\lambda^2-x^2}-\sqrt{\lambda^2-a^2}\), \(\lambda>a\)</td></tr>
+<tr><td>5. Catenary</td><td>\(\rho g\int y\sqrt{1+y'^2}\,dx\)</td><td>Length \(L>2a\)</td><td>Lagrange multiplier + Beltrami</td><td>\(y=C[\cosh(x/C)-\cosh(a/C)]\), \(C>0\)</td></tr>
 </tbody>
 </table>
 </div>
