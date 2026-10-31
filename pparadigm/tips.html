@@ -1,0 +1,188 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Practical OOP & FP Tips — Paradigm Lab</title><meta name="description" content="Practical beginner tips for applying object-oriented and functional programming in Python, Java, JavaScript, and C++."><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/site.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><script src="../css/prism.js" data-manual defer></script><script src="js/tips.js" defer></script></head><body><a class="skip" href="#tips">Skip to tips</a><header class="topbar"><div class="container nav"><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true">{p}</span> paradigm<span class="brand-light">lab</span></a><nav aria-label="Main navigation"><a href="index.html">Concept guide</a><a href="#tips" aria-current="page">Practical tips</a></nav><span class="nav-note">SMALL STEPS. REAL PROGRESS.</span></div></header><main><section class="container tips-hero"><span class="eyebrow">FROM “I GET IT” TO “I CAN BUILD IT”</span><h1>Make the ideas<br><em>work in your code.</em></h1><p class="lead">You don’t need a perfect architecture to start. Pick your language, try a small example, and build habits that make your next project easier.</p><nav class="language-jumps" aria-label="Jump to a language"><a class="btn btn--secondary" href="#python">Python</a><a class="btn btn--primary" href="#java">Java</a><a class="btn btn--accent" href="#javascript">JavaScript</a><a class="btn btn--outline" href="#cpp">C++</a></nav><nav class="language-jumps" aria-label="Jump to engineering topics" style="margin-top:12px"><a class="btn btn--outline" href="#engineering"><i class="fa-solid fa-gear" aria-hidden="true"></i> Engineering Principles</a><a class="btn btn--outline" href="#cheatsheet"><i class="fa-solid fa-bookmark" aria-hidden="true"></i> Patterns Cheat Sheet</a></nav></section><section class="intro-strip"><div class="container intro-grid"><div><span class="eyebrow">A USEFUL STARTING POINT</span><h2>State in objects.<br>Calculations in functions.</h2></div><p>Let an object manage something that changes over time. Let small functions calculate results from inputs. This is a helpful starting point, not a rule: choose the simplest structure that makes your program clear.</p></div></section><div class="container tips-content" id="tips"><section class="language-tips" id="python"><span class="eyebrow">PYTHON / PUT IT INTO PRACTICE</span><h2>Python</h2><p class="lead">Start small; reach for a class when state belongs together.</p><div class="alert alert--info"><strong>Run it:</strong> Python 3: save as main.py and run python3 main.py.</div><article class="tip-example"><h3>OOP: keep related state and behavior together</h3><p>Use a class for something that changes over time, like a study session. Use a plain function when you only need a calculation. An underscore marks an internal attribute by convention; it does not block access.</p><div class="codebox"><div class="code-toolbar"><span>Python</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-python">class StudySession:
+    def __init__(self, subject):
+        self.subject = subject
+        self._minutes = 0
+
+    def study(self, minutes):
+        if minutes &lt;= 0:
+            raise ValueError(&quot;Minutes must be positive&quot;)
+        self._minutes += minutes
+
+    @property
+    def minutes(self):
+        return self._minutes
+
+session = StudySession(&quot;Math&quot;)
+session.study(25)
+print(session.minutes)  # 25</code></pre></div></article><article class="tip-example"><h3>FP: transform a collection without changing it</h3><p>List comprehensions are an approachable alternative to map and filter. Keep the calculation independent of input(), printing, files, and network calls so it is easy to test.</p><div class="codebox"><div class="code-toolbar"><span>Python</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-python">def passing_scores(scores):
+    return [score for score in scores if score &gt;= 60]
+
+def average(scores):
+    return sum(scores) / len(scores) if scores else 0
+
+scores = [45, 70, 95]
+passed = passing_scores(scores)
+print(passed)          # [70, 95]
+print(average(passed)) # 82.5
+print(scores)         # [45, 70, 95] — unchanged</code></pre></div></article><div class="tip-notes"><div><h3>Build this habit</h3><p>Use a dataclass when you mostly need a record of data. Prefer composition to a large inheritance tree: a Player can have an Inventory instead of inheriting from it.</p></div><div><h3>Watch out for this</h3><p>Avoid mutable default arguments such as items=[]; use None and create the list inside the function. For large collections, consider generator expressions to avoid temporary lists.</p></div></div></section><section class="language-tips" id="java"><span class="eyebrow">JAVA / PUT IT INTO PRACTICE</span><h2>Java</h2><p class="lead">Use classes for rules and identity; use streams for data transformations.</p><div class="alert alert--info"><strong>Run it:</strong> JDK 17+: save one example at a time as Main.java; run javac Main.java, then java Main.</div><article class="tip-example"><h3>OOP: protect a useful invariant</h3><p>Make fields private and offer a small set of operations that keep the object valid. This counter cannot accidentally become negative through its public methods.</p><div class="codebox"><div class="code-toolbar"><span>Java</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-java">public class Main {
+    static final class StudySession {
+        private int minutes;
+
+        void study(int amount) {
+            if (amount &lt;= 0) {
+                throw new IllegalArgumentException(&quot;Minutes must be positive&quot;);
+            }
+            minutes += amount;
+        }
+
+        int minutes() { return minutes; }
+    }
+
+    public static void main(String[] args) {
+        StudySession session = new StudySession();
+        session.study(25);
+        System.out.println(session.minutes()); // 25
+    }
+}</code></pre></div></article><article class="tip-example"><h3>FP: describe a pipeline with streams</h3><p>Filter first, then calculate. Keep stream callbacks free of changes to outside variables. A stream is consumed by its terminal operation; create a new stream when you need another pass.</p><div class="codebox"><div class="code-toolbar"><span>Java</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-java">import java.util.List;
+
+public class Main {
+    static double passingAverage(List&lt;Integer&gt; scores) {
+        return scores.stream()
+            .filter(score -&gt; score &gt;= 60)
+            .mapToInt(Integer::intValue)
+            .average()
+            .orElse(0.0);
+    }
+
+    public static void main(String[] args) {
+        var scores = List.of(45, 70, 95);
+        System.out.println(passingAverage(scores)); // 82.5
+        System.out.println(scores); // [45, 70, 95]
+    }
+}</code></pre></div></article><div class="tip-notes"><div><h3>Build this habit</h3><p>Use an interface when callers need a behavior that could have different implementations. Avoid creating an interface for every class just in case. Records are useful for compact data carriers, but their referenced objects can still be mutable.</p></div><div><h3>Watch out for this</h3><p>final prevents reassignment of a variable; it does not freeze the object. List.of creates an unmodifiable list, but mutable objects inside it can still change. Use a simple loop when a stream would make the code harder to read.</p></div></div></section><section class="language-tips" id="javascript"><span class="eyebrow">JAVASCRIPT / PUT IT INTO PRACTICE</span><h2>JavaScript</h2><p class="lead">Model lasting state with objects; keep array transformations predictable.</p><div class="alert alert--info"><strong>Run it:</strong> Modern Node.js 18+: save as main.js and run node main.js, or use your browser console.</div><article class="tip-example"><h3>OOP: give changing state a clear owner</h3><p>A class is useful when several operations manage the same state. Private fields use #. Keep DOM updates outside the class so you can test the logic without a browser.</p><div class="codebox"><div class="code-toolbar"><span>JavaScript</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-javascript">class StudySession {
+  #minutes = 0;
+
+  study(amount) {
+    if (!Number.isFinite(amount) || amount &lt;= 0) {
+      throw new Error(&quot;Minutes must be positive&quot;);
+    }
+    this.#minutes += amount;
+  }
+
+  get minutes() { return this.#minutes; }
+}
+
+const session = new StudySession();
+session.study(25);
+console.log(session.minutes); // 25</code></pre></div></article><article class="tip-example"><h3>FP: use filter and reduce for clear transformations</h3><p>filter creates a new array. reduce combines values into a result. Give functions descriptive names and handle empty input explicitly.</p><div class="codebox"><div class="code-toolbar"><span>JavaScript</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-javascript">const passingScores = scores =&gt; scores.filter(score =&gt; score &gt;= 60);
+const average = scores =&gt; scores.length === 0
+  ? 0
+  : scores.reduce((total, score) =&gt; total + score, 0) / scores.length;
+
+const scores = [45, 70, 95];
+const passed = passingScores(scores);
+console.log(passed);          // [70, 95]
+console.log(average(passed)); // 82.5
+console.log(scores);          // [45, 70, 95] — unchanged</code></pre></div></article><div class="tip-notes"><div><h3>Build this habit</h3><p>Object literals and factory functions are fine for small features; you do not need a class for every object. If a method depends on this, avoid passing it as a detached callback; wrap the call in an arrow function or bind it.</p></div><div><h3>Watch out for this</h3><p>const does not make an array immutable. sort() and reverse() mutate their arrays: copy first, for example [...scores].sort((a, b) =&gt; a - b). Spreading an array or object only makes a shallow copy.</p></div></div></section><section class="language-tips" id="cpp"><span class="eyebrow">C++ / PUT IT INTO PRACTICE</span><h2>C++</h2><p class="lead">Make ownership clear, and use small functions without unnecessary copying.</p><div class="alert alert--info"><strong>Run it:</strong> C++17: save one example at a time as main.cpp; run c++ -std=c++17 main.cpp -o example, then ./example (Windows: example.exe).</div><article class="tip-example"><h3>OOP: let the class enforce its rules</h3><p>A class can keep state private and check each update. const on the accessor promises that it will not modify the object’s ordinary state. Keep objects as local values when you can.</p><div class="codebox"><div class="code-toolbar"><span>C++</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+
+class StudySession {
+    int minutes_ = 0;
+public:
+    void study(int amount) {
+        if (amount &lt;= 0) {
+            throw std::invalid_argument(&quot;Minutes must be positive&quot;);
+        }
+        minutes_ += amount;
+    }
+
+    int minutes() const { return minutes_; }
+};
+
+int main() {
+    StudySession session;
+    session.study(25);
+    std::cout &lt;&lt; session.minutes() &lt;&lt; &quot;\n&quot;; // 25
+}</code></pre></div></article><article class="tip-example"><h3>FP: pass read-only data into a calculation</h3><p>Use const references to avoid copying a collection just to read it. A function can use local variables and a loop while still being pure: callers only observe the result, and the input stays unchanged.</p><div class="codebox"><div class="code-toolbar"><span>C++</span><button type="button" class="copy-button">Copy code</button></div><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+ double passingAverage(const std::vector&lt;int&gt;&amp; scores) {
+    int total = 0;
+    int count = 0;
+    for (int score : scores) {
+        if (score &gt;= 60) {
+            total += score;
+            ++count;
+        }
+    }
+    return count == 0 ? 0.0 : static_cast&lt;double&gt;(total) / count;
+}
+
+int main() {
+    const std::vector&lt;int&gt; scores{45, 70, 95};
+    std::cout &lt;&lt; passingAverage(scores) &lt;&lt; &quot;\n&quot;; // 82.5
+}</code></pre></div></article><div class="tip-notes"><div><h3>Build this habit</h3><p>Prefer standard containers and RAII: resources are released automatically when their owning objects leave scope. Avoid manual new/delete in beginner projects. Use std::unique_ptr when dynamic ownership is actually needed.</p></div><div><h3>Watch out for this</h3><p>Algorithms and lambdas can make transformations clear, but do not force every loop into an algorithm. Avoid reference captures in callbacks that outlive their referenced variables. Deep recursion can exhaust the stack.</p></div></div></section></div><section class="section section--accent" id="engineering"><div class="container"><span class="eyebrow">LEVEL UP YOUR CODE</span><h2>Software engineering principles.</h2><p class="lead">These ideas apply no matter which paradigm you use. They help you write code that is easier to read, test, and change.</p><div class="compare-grid" style="grid-template-columns:1fr 1fr;margin-top:24px"><article class="card card--sub"><i class="fa-solid fa-s" aria-hidden="true"></i><h3>Single Responsibility</h3><p>Each class or function should do one thing well. If you can describe what it does using "and," consider splitting it.</p><div class="codebox"><div class="code-toolbar"><span>Bad vs Good</span></div><pre><code class="language-python"># Too many jobs
+class UserManager:
+    def authenticate(self): ...
+    def send_email(self): ...
+    def generate_report(self): ...
+
+# One job each
+class Authenticator:
+    def authenticate(self): ...
+
+class Mailer:
+    def send_email(self): ...</code></pre></div></article><article class="card card--accent"><i class="fa-solid fa-lock-open" aria-hidden="true"></i><h3>Open/Closed Principle</h3><p>Open for extension, closed for modification. Add new behavior by writing new code, not by editing existing, tested code.</p><div class="codebox"><div class="code-toolbar"><span>Example</span></div><pre><code class="language-python"># Add new shapes without touching area()
+class Circle:
+    def __init__(self, r): self.r = r
+    def area(self): return 3.14 * self.r ** 2
+
+class Square:
+    def __init__(self, s): self.s = s
+    def area(self): return self.s ** 2
+
+def total_area(shapes):
+    return sum(s.area() for s in shapes)</code></pre></div></article></div><div class="compare-grid" style="grid-template-columns:1fr 1fr;margin-top:24px"><article class="card"><i class="fa-solid fa-recycle" aria-hidden="true"></i><h3>DRY — Don't Repeat Yourself</h3><p>If you find yourself copying and pasting code, extract it into a function or a shared module. But don't over-abstract too early — wait until you see the same pattern three times.</p></article><article class="card card--sub"><i class="fa-solid fa-vial" aria-hidden="true"></i><h3>Write Testable Code</h3><p>Separate logic from I/O. Functions that take inputs and return outputs are easy to test. Functions that read files, hit APIs, or print to the console are harder. Push side effects to the edges of your program.</p></article></div><div class="compare-grid" style="grid-template-columns:1fr 1fr;margin-top:24px"><article class="card card--accent"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i><h3>Composition over Inheritance</h3><p>Prefer combining simple objects over building deep inheritance trees. A <code>Player</code> can <em>have</em> an <code>Inventory</code> instead of inheriting from it. This keeps your code flexible.</p><div class="codebox"><div class="code-toolbar"><span>Python</span></div><pre><code class="language-python">class Inventory:
+    def __init__(self):
+        self.items = []
+    def add(self, item):
+        self.items.append(item)
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.inventory = Inventory()
+
+p = Player("Kai")
+p.inventory.add("sword")</code></pre></div></article><article class="card"><i class="fa-solid fa-terminal" aria-hidden="true"></i><h3>Debugging Mindset</h3><p>Read the error message carefully — it usually tells you the file and line. Reproduce the bug with the smallest possible input. Add one <code>print</code> or <code>console.log</code> at a time. Check your assumptions: what do you <em>think</em> the variable contains vs. what it actually contains?</p></article></div></div></section><section class="section section--sub" id="cheatsheet"><div class="container"><span class="eyebrow">QUICK REFERENCE</span><h2>Common patterns cheat sheet.</h2><p class="lead">Patterns you'll see in real codebases. Bookmark this section.</p><div class="compare-grid" style="grid-template-columns:1fr 1fr;margin-top:24px"><article class="card"><h3><i class="fa-solid fa-industry" aria-hidden="true"></i> Factory</h3><p>A function that creates and returns objects. The caller doesn't need to know which class is being used.</p><div class="codebox"><div class="code-toolbar"><span>JavaScript</span></div><pre><code class="language-javascript">function createUser(role) {
+  if (role === "admin") return new Admin();
+  if (role === "guest") return new Guest();
+  return new Member();
+}</code></pre></div></article><article class="card card--sub"><h3><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Builder</h3><p>Build complex objects step by step. Each method returns <code>this</code> so calls can be chained.</p><div class="codebox"><div class="code-toolbar"><span>JavaScript</span></div><pre><code class="language-javascript">class QueryBuilder {
+  #parts = { table: "", conditions: [] };
+  from(table) { this.#parts.table = table; return this; }
+  where(cond) { this.#parts.conditions.push(cond); return this; }
+  build() {
+    const w = this.#parts.conditions.join(" AND ");
+    return `SELECT * FROM ${this.#parts.table} WHERE ${w}`;
+  }
+}
+const sql = new QueryBuilder()
+  .from("users").where("age > 18").where("active = true")
+  .build();</code></pre></div></article></div><div class="compare-grid" style="grid-template-columns:1fr 1fr;margin-top:24px"><article class="card card--accent"><h3><i class="fa-solid fa-arrows-spin" aria-hidden="true"></i> Iterator</h3><p>Process items one at a time without loading everything into memory. Great for large data sets.</p><div class="codebox"><div class="code-toolbar"><span>Python</span></div><pre><code class="language-python">def fibonacci():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+for i, num in enumerate(fibonacci()):
+    if i >= 8: break
+    print(num, end=" ")
+# 0 1 1 2 3 5 8 13</code></pre></div></article><article class="card"><h3><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Guard Clauses</h3><p>Handle edge cases at the top of a function and return early. This keeps the main logic un-nested and easy to follow.</p><div class="codebox"><div class="code-toolbar"><span>JavaScript</span></div><pre><code class="language-javascript">function processOrder(order) {
+  if (!order) return { error: "no order" };
+  if (order.items.length === 0) return { error: "empty" };
+  if (!order.paid) return { error: "unpaid" };
+
+  // Main logic — clean and flat
+  return { status: "shipped", id: order.id };
+}</code></pre></div></article></div></div></section><section class="section section--sub"><div class="container"><span class="eyebrow">A SMALL PROJECT TO TRY</span><h2>Build a study-session tracker.</h2><ol class="practice-steps"><li><strong>Start with the data.</strong> A session needs a subject and a duration. Write down valid inputs before coding.</li><li><strong>Add one object.</strong> Use a StudySession to manage elapsed minutes and reject invalid updates.</li><li><strong>Extract one calculation.</strong> Write a pure function that totals the minutes from a collection of durations. Keep printing and saving outside it.</li><li><strong>Combine both ideas.</strong> Read the durations from your session objects, pass them to your total function, then display the result.</li><li><strong>Check the edges.</strong> Try no sessions, one session, and an invalid negative duration. Decide what should happen in each case.</li></ol><p class="alert alert--success"><strong>Quick self-check:</strong> Can you test your calculation without opening a file, making a network request, or clicking a button? If yes, you’ve created a useful boundary.</p><p>Refactor when a real problem appears. You can learn more from one clear working feature than from a huge class hierarchy you haven’t used yet.</p><a class="btn btn--secondary" href="index.html">Back to the concept guide <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div></section></main><footer class="site-footer"><div class="container">paradigm lab <span>Small steps. Keep building.</span><a href="#">Back to top ↑</a></div></footer><div id="copy-status" class="sr-only" role="status"></div></body></html>
