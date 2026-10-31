@@ -7,7 +7,8 @@ for (const box of document.querySelectorAll('.codebox')) {
     code.innerHTML = Prism.highlight(source, Prism.languages[syntax], syntax);
   }
   const button = box.querySelector('.copy-button');
-  const title = box.closest('article').querySelector('h3').textContent;
+  if (!button) continue;
+  const title = box.closest('article')?.querySelector('h3')?.textContent || 'Code example';
   button.setAttribute('aria-label', 'Copy ' + syntax + ' example: ' + title);
   button.addEventListener('click', async () => {
     try {
