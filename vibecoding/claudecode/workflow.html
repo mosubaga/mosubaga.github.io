@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Claude Code Workflow Loop</title>
+<meta name="description" content="The four-stage loop behind every good Claude Code session: Context, Prompting, Verification, Iterating.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i>CLAUDE // CODE</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <i class="fa-solid fa-bars" aria-hidden="true"></i>
+    </button>
+    <ul class="nav">
+      <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+      <li><a href="workflow.html" class="active"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>Workflow Loop</a></li>
+      <li><a href="simulator.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i>CLI Simulator</a></li>
+      <li><a href="blueprint.html"><i class="fa-solid fa-sitemap" aria-hidden="true"></i>Blueprint Generator</a></li>
+      <li><a href="commands.html"><i class="fa-solid fa-table-list" aria-hidden="true"></i>Command Matrix</a></li>
+      <li><a href="skills.html"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>Skills</a></li>
+      <li><a href="mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i>MCP</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-hero bg-dreamy">
+  <div class="container">
+    <p class="eyebrow">The Method</p>
+    <h1>The Claude Code Workflow Loop</h1>
+    <p style="max-width:640px;margin:0.5rem auto 0;">
+      Every productive session with Claude Code — big feature or small fix —
+      moves through the same four stages. Treat it as a loop, not a
+      checklist: you'll usually pass through it several times before a
+      change is really done.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="workflow-loop" id="loop">
+      <div class="card lavender stage-card" data-stage="0">
+        <span class="stage-num">1</span>
+        <h3><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Context</h3>
+        <p>Pass files, tests, and documentation.</p>
+      </div>
+      <div class="workflow-arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+      <div class="card pink stage-card" data-stage="1">
+        <span class="stage-num">2</span>
+        <h3><i class="fa-solid fa-keyboard" aria-hidden="true"></i>Prompting</h3>
+        <p>Issue granular, direct commands.</p>
+      </div>
+      <div class="workflow-arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+      <div class="card ice stage-card" data-stage="2">
+        <span class="stage-num">3</span>
+        <h3><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Verification</h3>
+        <p>Automatically run local build/test commands.</p>
+      </div>
+      <div class="workflow-arrow"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+      <div class="card lavender stage-card" data-stage="3">
+        <span class="stage-num">4</span>
+        <h3><i class="fa-solid fa-bug" aria-hidden="true"></i>Iterating</h3>
+        <p>Use terminal error output to refine the code.</p>
+      </div>
+    </div>
+    <p class="workflow-loop-back"><span class="arrow-circle"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></span>Stage 4 feeds back into Stage 1 — new context, next prompt.</p>
+
+    <div class="grid" id="loop-detail" style="margin-top:1rem;">
+      <!-- filled by workflow.js -->
+    </div>
+  </div>
+</section>
+
+<section class="section bg-ice">
+  <div class="container">
+    <div class="section-head align-left">
+      <p class="eyebrow">Why it works</p>
+      <h2>Verification is what makes the loop trustworthy</h2>
+    </div>
+    <ol class="step-list">
+      <li>
+        <div>
+          <b>Context sets the boundary.</b> A model that can see your actual
+          test suite, lint config, and related files makes far fewer wrong
+          guesses than one working from a description alone.
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Prompting narrows the search space.</b> "Fix the bug" invites a
+          rewrite. "The <code class="inline-code">formatDate</code> helper in
+          <code class="inline-code">utils/date.ts</code> returns UTC instead
+          of local time — fix just that" invites a diff.
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Verification is non-negotiable.</b> Always let Claude Code run
+          the build, the tests, or the linter itself. A claim of "done" that
+          hasn't been checked against real output is just a guess.
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Iterating closes the loop.</b> Paste the actual error back in.
+          Terminal output is the highest-signal context you can give — it's
+          exactly what's wrong, in the model's own working directory.
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="muted"><i class="fa-solid fa-code" aria-hidden="true"></i>Built as a learning resource for the Claude Code community. © <span data-year></span></p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/workflow.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Using Skills with Claude Code</title>
+<meta name="description" content="How to package repeatable expertise into Skills so Claude Code applies your standards automatically.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i>CLAUDE // CODE</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <i class="fa-solid fa-bars" aria-hidden="true"></i>
+    </button>
+    <ul class="nav">
+      <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a></li>
+      <li><a href="workflow.html"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>Workflow Loop</a></li>
+      <li><a href="simulator.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i>CLI Simulator</a></li>
+      <li><a href="blueprint.html"><i class="fa-solid fa-sitemap" aria-hidden="true"></i>Blueprint Generator</a></li>
+      <li><a href="commands.html"><i class="fa-solid fa-table-list" aria-hidden="true"></i>Command Matrix</a></li>
+      <li><a href="skills.html" class="active"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>Skills</a></li>
+      <li><a href="mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i>MCP</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-hero bg-dreamy">
+  <div class="container">
+    <p class="eyebrow">Quality &amp; Productivity</p>
+    <h1>Using Skills</h1>
+    <p style="max-width:640px;margin:0.5rem auto 0;">
+      A Skill packages a piece of expertise — a checklist, a workflow, a set
+      of scripts — so Claude Code can load it automatically whenever the
+      task matches, instead of you re-explaining it every session.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head align-left">
+      <p class="eyebrow">What a Skill is</p>
+      <h2>A SKILL.md file, loaded on demand</h2>
+      <p>
+        Skills live as a small folder with a <code class="inline-code">SKILL.md</code>
+        file — a name, a trigger description, and instructions — plus any
+        helper scripts or reference files it needs. Claude Code reads the
+        short description of every available skill up front, and only loads
+        the full instructions when a task actually matches it. That keeps
+        your context window clean while still giving you unlimited
+        specialized knowledge on tap.
+      </p>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-panel-head">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-panel-name"><i class="fa-solid fa-file-code" aria-hidden="true"></i>.claude/skills/api-review/SKILL.md</span>
+      </div>
+      <pre><code><span class="tok-muted">---</span>
+<span class="tok-pink">name</span>: api-review
+<span class="tok-pink">description</span>: <span class="tok-ice">Review new or changed REST endpoints for consistent error shapes, auth checks, and input validation. Use whenever routes/ or controllers/ change.</span>
+<span class="tok-muted">---</span>
+
+<span class="tok-green"># API Review Checklist</span>
+1. Every endpoint validates input before touching the DB.
+2. Auth middleware runs before the handler, not inside it.
+3. Errors return { error: { code, message } }, never a bare string.
+4. New endpoints are added to the OpenAPI spec in docs/openapi.yaml.</code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-ice">
+  <div class="container">
+    <div class="section-head align-left">
+      <p class="eyebrow">Where they help</p>
+      <h2>Skills worth building for most teams</h2>
+    </div>
+    <div class="grid">
+      <div class="card lavender">
+        <i class="fa-solid fa-list-check card-icon" aria-hidden="true"></i>
+        <span class="badge badge-lavender">Quality</span>
+        <h3>Code review checklist</h3>
+        <p>Encodes your team's actual review standards — naming, error handling, test coverage — so every review is consistent, not whatever the reviewer remembered that day.</p>
+      </div>
+      <div class="card pink">
+        <i class="fa-solid fa-scroll card-icon" aria-hidden="true"></i>
+        <span class="badge badge-pink">Productivity</span>
+        <h3>Changelog / release notes writer</h3>
+        <p>Turns a range of commits into release notes in your house style, without you re-explaining the format every release.</p>
+      </div>
+      <div class="card ice">
+        <i class="fa-solid fa-database card-icon" aria-hidden="true"></i>
+        <span class="badge badge-ice">Quality</span>
+        <h3>Database migration helper</h3>
+        <p>Knows your migration tool's conventions, how to write a safe backfill, and what "never do this in a migration" looks like.</p>
+      </div>
+      <div class="card lavender">
+        <i class="fa-solid fa-book card-icon" aria-hidden="true"></i>
+        <span class="badge badge-lavender">Productivity</span>
+        <h3>API docs generator</h3>
+        <p>Keeps endpoint documentation in sync with the actual route handlers, in a fixed template, on request.</p>
+      </div>
+      <div class="card pink">
+        <i class="fa-solid fa-shield-halved card-icon" aria-hidden="true"></i>
+        <span class="badge badge-pink">Quality</span>
+        <h3>Security review pass</h3>
+        <p>Walks changed code against an OWASP-style checklist before it ships — the same checklist, every time, not best-effort memory.</p>
+      </div>
+      <div class="card ice">
+        <i class="fa-solid fa-flask card-icon" aria-hidden="true"></i>
+        <span class="badge badge-ice">Productivity</span>
+        <h3>Test scaffolding</h3>
+        <p>Generates test files that match your project's existing test structure and naming, instead of a generic template.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head align-left">
+      <p class="eyebrow">Getting it right</p>
+      <h2>What makes a Skill actually get used</h2>
+    </div>
+    <ol class="step-list">
+      <li><div><b>Write the description for triggering, not for humans.</b> It should name concrete situations and file types — "use when editing routes/ or controllers/" — so Claude Code reliably recognizes when to load it.</div></li>
+      <li><div><b>Keep each Skill narrow.</b> One job per Skill. A "backend helper" that tries to cover migrations, API design, and testing will trigger inconsistently and dilute its own instructions.</div></li>
+      <li><div><b>Put the checklist ahead of the explanation.</b> Skills are read by a model mid-task — lead with the actionable steps, not background theory.</div></li>
+      <li><div><b>Version them with the codebase.</b> Keep Skills in the repo under <code class="inline-code">.claude/skills/</code> so they evolve alongside the conventions they describe.</div></li>
+    </ol>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="muted"><i class="fa-solid fa-code" aria-hidden="true"></i>Built as a learning resource for the Claude Code community. © <span data-year></span></p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
