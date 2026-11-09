@@ -151,7 +151,7 @@ blockquote { margin: 0; padding: 1.25rem 1.5rem; background: var(--ice); border-
 
 /* Field guide application — extends the original Mist Lavender palette. */
 :root { --ink: #302638; --purple: #705183; --border: #ded5e2; --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
-html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+html { font-size: 112.5%; scroll-behavior: smooth; scroll-padding-top: 100px; }
 body { background: #fcfafc; letter-spacing: 0; line-height: 1.65; }
 button, input, select { font: inherit; }
 button { cursor: pointer; }

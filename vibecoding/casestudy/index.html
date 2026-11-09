@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskBloom — Building a To-Do App with Claude Code &amp; Codex</title>
+<meta name="description" content="A practical, start-to-finish case study: building a FastAPI + MySQL + Vite/React to-do app with Claude Code and Codex — prompts, context engineering, workflow loops, CI/CD testing, Skills, and MCP.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="container">
+    <a class="brand" href="#top"><span class="brand-mark"><i class="fa-solid fa-leaf" aria-hidden="true"></i></span>TaskBloom Case Study</a>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <i class="fa-solid fa-bars" aria-hidden="true"></i>
+    </button>
+    <ul class="nav">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#context">Context Engineering</a></li>
+      <li><a href="#prompts">Prompts</a></li>
+      <li><a href="#workflow">Workflow &amp; Loops</a></li>
+      <li><a href="#testing">Testing &amp; CI/CD</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#mcp">MCP</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" id="top">
+  <div class="container">
+    <p class="eyebrow">A Hands-On Case Study</p>
+    <h1>Building <em>TaskBloom</em>, a real to-do app,<br>with Claude Code &amp; Codex</h1>
+    <p class="lede">
+      A guided build of an illustrative application, from scaffolding to deployment
+      checks. Use the prompts and examples to learn how to prompt,
+      manage context, loop to a working build, test for CI/CD, write Skills,
+      and connect MCP servers along the way.
+    </p>
+    <div class="btn-row">
+      <a href="#start" class="btn btn-lavender"><i class="fa-solid fa-play" aria-hidden="true"></i>Start the walkthrough</a>
+      <a href="#mcp" class="btn btn-white"><i class="fa-solid fa-plug" aria-hidden="true"></i>Jump to MCP list</a>
+    </div>
+    <div class="stack-pills">
+      <span class="tag tag--base">FastAPI</span>
+      <span class="tag tag--accent">Vite + React</span>
+      <span class="tag tag--sub">MySQL (cloud)</span>
+      <span class="tag tag--base">Claude Code</span>
+      <span class="tag tag--accent">Codex CLI</span>
+    </div>
+  </div>
+</section>
+
+<section class="section-block" id="overview">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">The Scenario</p>
+      <h2>One app, built in the open</h2>
+      <p>
+        Throughout this page we build <strong>TaskBloom</strong>: a small to-do app with
+        a FastAPI backend, a MySQL database running in the cloud, and a Vite + React
+        front end. Every example — every prompt, every terminal snippet, every Skill —
+        is written against this exact app, so you can see how the ideas connect rather
+        than reading about them in the abstract.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="card lavender">
+        <i class="fa-solid fa-server card-icon" aria-hidden="true"></i>
+        <h3>Backend</h3>
+        <p>FastAPI (Python) exposing REST endpoints for tasks: list, create, update, complete, delete. SQLAlchemy models talk to MySQL.</p>
+      </div>
+      <div class="card pink">
+        <i class="fa-solid fa-database card-icon" aria-hidden="true"></i>
+        <h3>Database</h3>
+        <p>A managed MySQL instance in the cloud (e.g. PlanetScale, AWS RDS, or Cloud SQL). Schema changes go through versioned migrations.</p>
+      </div>
+      <div class="card ice">
+        <i class="fa-solid fa-display card-icon" aria-hidden="true"></i>
+        <h3>Frontend</h3>
+        <p>Vite + React, talking to the FastAPI backend over a typed API client, with components for a task list, a task form, and filters.</p>
+      </div>
+    </div>
+
+
+    <div class="section-head" id="start" style="margin-top:3rem;">
+      <p class="eyebrow">Start here</p>
+      <h2>From an empty folder to a running app</h2>
+      <p>This is a prompt-led tutorial, not a downloadable finished application. Run the bootstrap prompt first; later examples assume its files exist. Terminal output below is illustrative, not a recorded execution.</p>
+    </div>
+    <ul class="checklist">
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Install Git, Python 3.12, Node.js 22.12 or newer, Docker with Compose, and either Claude Code or Codex CLI. Authenticate your chosen CLI.</li>
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Create an empty taskbloom folder outside this documentation site and launch your agent there.</li>
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Use local MySQL for development and a separate disposable MySQL service for tests. Connect managed cloud MySQL at deployment time.</li>
+    </ul>
+<div class="code-block">
+      <div class="code-block-head"><span>bootstrap prompt · run from the empty taskbloom folder</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="text">Scaffold TaskBloom with FastAPI, synchronous SQLAlchemy 2 + PyMySQL,
+Alembic, and Vite + React + TypeScript. Use Python 3.12 and Node 22.12+.
+Create the folder layout shown in this guide, including __init__.py files.
+
+Backend: create requirements.txt containing runtime and CI dependencies
+(FastAPI, uvicorn[standard], SQLAlchemy, PyMySQL[rsa], Alembic,
+python-dotenv, pytest, httpx, Ruff). Record resolved versions.
+Load backend/.env with python-dotenv using an explicit file path;
+existing environment variables must take precedence. Alembic must use
+the same DATABASE_URL and model metadata. Add GET /health.
+
+Add compose.yaml with a mysql:8.4 service named mysql, database taskbloom,
+user taskbloom, development-only password taskbloom_dev, root password
+local_root_only, port 127.0.0.1:3306:3306, and a mysqladmin health check.
+Commit backend/.env.example, frontend/.env.example and .gitignore;
+ignore .env files, .venv, node_modules, and database volumes.
+
+Frontend: create api/types.ts, api/client.ts, TaskForm, TaskItem, TaskList
+and App.tsx. Export a named api object with createTask(title). For now,
+show an empty list and disable submission until POST /tasks is added.
+Use VITE_API_BASE_URL for the public API origin and allow exactly
+http://localhost:5173 in development CORS. Never expose DB secrets to Vite.
+
+Configure Vitest with jsdom, React Testing Library and user-event.
+Define npm scripts: test (vitest), lint (eslint .), typecheck (tsc -b),
+and build (tsc -b &amp;&amp; vite build). Include tests/**/*.tsx in type checking
+and ESLint; configure Vitest imports rather than implicit globals.
+Commit package-lock.json so CI can use npm ci.
+
+Create backend/tests/conftest.py with a client fixture that requires
+TEST_DATABASE_URL pointing at a dedicated *_test database, refuses other
+names, and overrides the app's get_db dependency. Tests must never fall
+back to DATABASE_URL. Clean rows between tests; run migrations before
+pytest. Make app imports work with python -m pytest from backend/.
+
+Write matching CLAUDE.md and AGENTS.md with these commands and constraints.
+Run installation and available checks. Report actual output, any skipped
+checks, and the next step; do not claim unrun commands passed.</pre>
+    </div>
+    <p style="margin-top:1.5rem;">After reviewing the generated files, install dependencies from the project root. The agent must generate the files before these commands can run. Commit lockfiles and the resolved Python requirements.</p>
+<div class="code-block">
+      <div class="code-block-head"><span>terminal · project root</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="bash">python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r backend/requirements.txt
+npm ci --prefix frontend
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+docker compose up -d --wait mysql</pre>
+    </div>
+    <p style="margin-top:1.5rem;">Use these local example values in the two separate files. The MySQL credentials here are disposable development values.</p>
+<div class="code-block">
+      <div class="code-block-head"><span>backend/.env.example</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="bash">DATABASE_URL=mysql+pymysql://taskbloom:taskbloom_dev@127.0.0.1:3306/taskbloom
+CORS_ORIGINS=http://localhost:5173</pre>
+    </div><div class="code-block">
+      <div class="code-block-head"><span>frontend/.env.example</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="bash">VITE_API_BASE_URL=http://localhost:8000</pre>
+    </div>
+    <p style="margin-top:1.5rem;">After the schema prompt in section 02 creates the initial migration, run these in separate terminals with the virtual environment active. Open <code class="inline-code">http://localhost:8000/docs</code> and <code class="inline-code">http://localhost:5173</code>. A health response and an empty task list are the first checkpoint.</p>
+<div class="code-block">
+      <div class="code-block-head"><span>terminal 1 · project root</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="bash">cd backend
+python -m alembic upgrade head
+python -m uvicorn app.main:app --reload</pre>
+    </div><div class="code-block">
+      <div class="code-block-head"><span>terminal 2 · project root</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="bash">npm run dev --prefix frontend -- --port 5173 --strictPort</pre>
+    </div>
+    <div class="section-head" style="margin-top:3rem;">
+      <p class="eyebrow">How to read this page</p>
+      <h2>Six stops, one build</h2>
+      <p>Each section below tackles one part of working with Claude Code and Codex, in the order you'd actually hit them while building TaskBloom.</p>
+    </div>
+
+    <ol class="steps" style="list-style:none;padding:0;">
+      <li class="step"><span class="step-num">1</span><div><h4>Context Engineering</h4><p>Set up the repo so the agent starts every session already knowing the shape of TaskBloom.</p></div></li>
+      <li class="step"><span class="step-num">2</span><div><h4>Building Prompts</h4><p>Turn "add a task feature" into prompts specific enough to act on without guessing.</p></div></li>
+      <li class="step"><span class="step-num">3</span><div><h4>Workflow &amp; Loops</h4><p>Ship task creation end to end, then add completion using the Context → Prompt → Verify → Iterate loop.</p></div></li>
+      <li class="step"><span class="step-num">4</span><div><h4>Testing for CI/CD</h4><p>Get pytest, Vitest, and a GitHub Actions pipeline in place so merges are trustworthy.</p></div></li>
+      <li class="step"><span class="step-num">5</span><div><h4>Skills</h4><p>Package the recurring "new endpoint" and "new component" work into reusable Skills.</p></div></li>
+      <li class="step"><span class="step-num">6</span><div><h4>MCP</h4><p>Connect the agent to the real MySQL schema, GitHub, and the browser instead of guessing.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section-block" id="context">
+  <div class="container">
+    <div class="section-head">
+      <span class="step-label">01 · Context Engineering</span>
+      <h2>Give the agent the repo before you give it a task</h2>
+      <p>
+        Context engineering is deciding what the agent should already know before you
+        type your first prompt. For TaskBloom that means a predictable folder layout,
+        a short standing brief, and a clear map of where the schema and API contract live.
+      </p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-block-head"><span><i class="fa-regular fa-folder-open" aria-hidden="true"></i> project layout</span></div>
+      <pre data-lang="tree">taskbloom/
+├── backend/
+│   ├── app/
+│   │   ├── main.py            # FastAPI app + routers
+│   │   ├── models.py          # SQLAlchemy models (Task)
+│   │   ├── schemas.py         # Pydantic request/response models
+│   │   ├── db.py              # MySQL engine + session
+│   │   └── routers/tasks.py   # /tasks endpoints
+│   ├── migrations/            # Alembic migrations
+│   └── tests/
+├── frontend/
+│   ├── src/
+│   │   ├── api/client.ts      # typed fetch wrapper
+│   │   ├── components/        # TaskList, TaskForm, TaskItem
+│   │   └── App.tsx
+│   └── tests/
+├── CLAUDE.md                  # standing brief for Claude Code
+├── AGENTS.md                  # standing brief for Codex
+└── .github/workflows/ci.yml</pre>
+    </div>
+
+    <p style="margin-top:1.5rem;">
+      <code class="inline-code">CLAUDE.md</code> and <code class="inline-code">AGENTS.md</code> hold the same
+      facts, written for each CLI. Keep it short — this is a brief, not documentation.
+    </p>
+
+    <div class="code-block">
+      <div class="code-block-head"><span><i class="fa-regular fa-file-lines" aria-hidden="true"></i> CLAUDE.md</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="markdown"># TaskBloom
+
+FastAPI backend (`backend/`) + Vite/React frontend (`frontend/`), MySQL in the cloud.
+
+## Run it
+- Backend: `cd backend && python -m uvicorn app.main:app --reload`
+  (db.py explicitly loads backend/.env; exported variables take precedence)
+- Frontend: `cd frontend && npm run dev`
+- Tests: `cd backend && python -m pytest` · `npm test --prefix frontend -- --run`
+- Backend tests require TEST_DATABASE_URL for a migrated, disposable *_test DB.
+  Override get_db and clean rows between tests; never use the cloud database.
+
+## Conventions
+- All DB schema changes go through an Alembic migration — never edit tables by hand.
+- API responses are defined by Pydantic schemas in `backend/app/schemas.py`; keep
+  frontend types in `frontend/src/api/types.ts` in sync with them.
+- Every new endpoint needs a pytest test; every new component needs a Vitest test.
+- Never commit `.env` or real MySQL credentials. Use `.env.example` as the template.
+
+## Current schema (tasks table)
+id (PK), title (varchar 255), is_done (bool), created_at (datetime)</pre>
+    </div>
+
+    <div class="section-head" style="margin-top:3rem;">
+      <p class="eyebrow">What to front-load</p>
+      <h2>Four things worth loading before you start</h2>
+    </div>
+    <div class="grid">
+      <div class="card lavender">
+        <i class="fa-solid fa-diagram-project card-icon" aria-hidden="true"></i>
+        <span class="badge badge-lavender">Schema</span>
+        <h3>The real table shape</h3>
+        <p>Paste the current <code class="inline-code">CREATE TABLE</code> or point the agent at the latest Alembic migration — don't let it guess column names.</p>
+      </div>
+      <div class="card pink">
+        <i class="fa-solid fa-code-compare card-icon" aria-hidden="true"></i>
+        <span class="badge badge-pink">Contract</span>
+        <h3>The API contract</h3>
+        <p>Share <code class="inline-code">schemas.py</code> when touching the frontend, and the relevant TypeScript types when touching the backend, so both sides agree.</p>
+      </div>
+      <div class="card ice">
+        <i class="fa-solid fa-lock card-icon" aria-hidden="true"></i>
+        <span class="badge badge-ice">Secrets</span>
+        <h3>How config is loaded</h3>
+        <p>Make clear that <code class="inline-code">DATABASE_URL</code> comes from <code class="inline-code">.env</code>, never hardcoded — this heads off an agent writing a connection string into source.</p>
+      </div>
+      <div class="card lavender">
+        <i class="fa-solid fa-vial card-icon" aria-hidden="true"></i>
+        <span class="badge badge-lavender">Test posture</span>
+        <h3>How tests reach the DB</h3>
+        <p>Say whether tests run against SQLite-in-memory or a disposable MySQL container, so generated tests target the right thing.</p>
+      </div>
+    </div>
+
+    <details class="accordion" style="margin-top:2.5rem;">
+      <summary>Managing the context window during a long session</summary>
+      <div class="accordion-body">
+        <p>TaskBloom is small, but a real project grows past what fits comfortably in context. A few habits keep sessions sharp:</p>
+        <ul>
+          <li><strong>Re-ground after a detour.</strong> If you spent ten turns debugging a MySQL connection pool issue, restate the actual task before continuing — don't let the detour become the new focus.</li>
+          <li><strong>Compact, don't accumulate.</strong> Use <code class="inline-code">/compact</code> (Claude Code) once a session's history is mostly resolved back-and-forth, so the next prompt reasons over a summary, not the full transcript.</li>
+          <li><strong>Scope each prompt to one slice.</strong> "Build the whole tasks feature" pulls in router, model, migration, and component context at once. "Add the <code class="inline-code">is_done</code> column and the migration for it" doesn't.</li>
+          <li><strong>Point, don't paste, for large files.</strong> Reference <code class="inline-code">backend/app/models.py</code> by path once it's already in context rather than re-pasting it every turn.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section-block" id="prompts">
+  <div class="container">
+    <div class="section-head">
+      <span class="step-label">02 · Building Prompts</span>
+      <h2>A prompt is a spec, not a wish</h2>
+      <p>
+        A prompt that works reliably names the goal, the constraint, the files involved,
+        and how you'll know it's done. Here's the difference it makes on TaskBloom.
+      </p>
+    </div>
+
+    <div class="compare">
+      <div class="compare-card">
+        <span class="compare-label"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>Vague</span>
+        <p class="sample">"Add the ability to mark a task done."</p>
+        <ul>
+          <li>Which layer — API, DB, UI, or all three?</li>
+          <li>No mention of a migration, so the column might just get guessed.</li>
+          <li>No test expectation, so none may get written.</li>
+        </ul>
+      </div>
+      <div class="compare-card good">
+        <span class="compare-label"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Specific</span>
+        <p class="sample">"In backend/, add PATCH /tasks/{id}/complete: set is_done=true,
+return the updated Task schema. Use the existing is_done column (no migration
+needed). Add a pytest test in tests/test_tasks.py covering the happy path
+and a 404 for an unknown id."</p>
+        <ul>
+          <li>Names the endpoint, the method, and the exact behavior.</li>
+          <li>States the DB fact explicitly, closing off a wrong guess.</li>
+          <li>Defines done as "test passes," not "looks right."</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:3rem;">
+      <p class="eyebrow">By build phase</p>
+      <h2>What a good prompt looks like at each phase</h2>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Prompt examples by phase">
+      <button class="tab-btn active" data-tab="t-schema" id="tab-t-schema" type="button" role="tab" aria-controls="t-schema" aria-selected="true" tabindex="0">DB schema</button>
+      <button class="tab-btn" data-tab="t-endpoint" id="tab-t-endpoint" type="button" role="tab" aria-controls="t-endpoint" aria-selected="false" tabindex="-1">API endpoint</button>
+      <button class="tab-btn" data-tab="t-component" id="tab-t-component" type="button" role="tab" aria-controls="t-component" aria-selected="false" tabindex="-1">React component</button>
+      <button class="tab-btn" data-tab="t-fix" id="tab-t-fix" type="button" role="tab" aria-controls="t-fix" aria-selected="false" tabindex="-1">Fixing a failure</button>
+    </div>
+
+    <div class="tab-panel active" id="t-schema" role="tabpanel" aria-labelledby="tab-t-schema" tabindex="0">
+      <div class="code-block">
+        <div class="code-block-head"><span>prompt</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="text">Create an Alembic migration in backend/migrations/ that adds a
+`tasks` table: id (PK, auto-increment), title (varchar(255), not null),
+is_done (boolean, default false), created_at (datetime, default now).
+Also add the matching SQLAlchemy model in backend/app/models.py.
+From backend/, run `python -m alembic upgrade head` against local MySQL and
+paste the resulting `DESCRIBE tasks;` output so I can confirm the shape.</pre>
+      </div>
+    </div>
+    <div class="tab-panel" id="t-endpoint" role="tabpanel" aria-labelledby="tab-t-endpoint" tabindex="0" hidden>
+      <div class="code-block">
+        <div class="code-block-head"><span>prompt</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="text">Add POST /tasks to backend/app/routers/tasks.py. Request body is
+{title: string}. Create a row with is_done=false, return the created
+Task (id, title, is_done, created_at) as JSON, status 201. Validate
+title after trimming whitespace: require 1-255 chars via Pydantic,
+return 422 otherwise. Commit and refresh before returning. Add GET
+/tasks so a reload returns persisted rows in a deterministic order.
+Add pytest cases for 201, persistence, empty/whitespace-only titles,
+and a 256-character title (422). Use the isolated client fixture.</pre>
+      </div>
+    </div>
+    <div class="tab-panel" id="t-component" role="tabpanel" aria-labelledby="tab-t-component" tabindex="0" hidden>
+      <div class="code-block">
+        <div class="code-block-head"><span>prompt</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="text">In frontend/src/components/, add TaskForm.tsx: a controlled text
+input and submit button that calls api.createTask(title) from
+src/api/client.ts, clears the input on success, and calls the
+onCreated(task) prop so TaskList can prepend it. Match the existing
+TaskItem.tsx styling conventions. Add a Vitest + React Testing Library
+test that types a title, submits, and asserts onCreated was called
+with the right payload. Give the input a visible label, disable
+submission while pending, and show an accessible error on failure
+without clearing the title. Test success, duplicate-click prevention,
+and a rejected API call.</pre>
+      </div>
+    </div>
+    <div class="tab-panel" id="t-fix" role="tabpanel" aria-labelledby="tab-t-fix" tabindex="0" hidden>
+      <div class="code-block">
+        <div class="code-block-head"><span>prompt</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="text">`pytest tests/test_tasks.py::test_create_task` is failing with the
+traceback below. Don't change the test — it reflects the intended
+contract. Find the cause in routers/tasks.py or models.py and fix it.
+Re-run the test file after the fix and show me the result.
+
+[paste traceback here]</pre>
+      </div>
+    </div>
+
+    <div class="alert alert--info" style="margin-top:2rem;">
+      <strong>Pattern:</strong> goal, constraint, acceptance check. Every example above says
+      what to build, what not to touch or guess, and how the agent proves it worked —
+      usually by running something and showing you the output.
+    </div>
+  </div>
+</section>
+
+<section class="section-block" id="workflow">
+  <div class="container">
+    <div class="section-head">
+      <span class="step-label">03 · Workflow &amp; Loops</span>
+      <h2>Context → Prompt → Verify → Iterate</h2>
+      <p>Every reliable session runs this loop, even when it doesn't feel like it. Here it is shipping one real TaskBloom feature: marking a task done.</p>
+    </div>
+
+    <div class="loop-ring">
+      <div class="card lavender"><i class="fa-solid fa-folder-open stage-icon" aria-hidden="true"></i><span class="badge badge-lavender">1</span><h3>Context</h3><p>Point at models.py, the tasks router, and the current schema.</p></div>
+      <div class="card pink"><i class="fa-solid fa-keyboard stage-icon" aria-hidden="true"></i><span class="badge badge-pink">2</span><h3>Prompt</h3><p>Ask for the PATCH endpoint, scoped and with a stated test.</p></div>
+      <div class="card ice"><i class="fa-solid fa-circle-check stage-icon" aria-hidden="true"></i><span class="badge badge-ice">3</span><h3>Verify</h3><p>Run pytest. Read the actual output, not the agent's summary of it.</p></div>
+      <div class="card lavender"><i class="fa-solid fa-rotate stage-icon" aria-hidden="true"></i><span class="badge badge-lavender">4</span><h3>Iterate</h3><p>Feed the failure back in, or move to the frontend half of the slice.</p></div>
+    </div>
+
+
+    <details class="accordion" style="margin-top:2rem;">
+      <summary>Finish the first vertical slice: create → persist → display</summary>
+      <div class="accordion-body">
+        <p>Before adding completion, run the schema, POST /tasks, and TaskForm prompts from section 02, in that order. Then connect them with this prompt:</p>
+<div class="code-block">
+      <div class="code-block-head"><span>integration prompt</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="text">Wire TaskForm to App's task state: prepend the returned Task in onCreated.
+On mount, load existing tasks with api.listTasks(). Render loading, empty,
+and error states. The typed API client must check response.ok, expose
+server validation errors, and read VITE_API_BASE_URL. Keep the FastAPI
+response and TypeScript Task type aligned, including ISO 8601 timestamps.
+
+Use the running local app to create "Water the plants". Confirm a single
+POST returns 201, the row appears once, and a reload preserves it. Submit
+a whitespace-only title and confirm no row is created. Simulate a network
+failure and verify the title remains available for retry. Run backend and
+frontend tests, lint, type checking and the build; report actual results.</pre>
+    </div>
+        <p><strong>Acceptance checkpoint:</strong> one browser submission produces one database row, a visible list item, and the same item after reload. Component tests alone do not prove this connection; record a browser check or add an end-to-end test.</p>
+      </div>
+    </details>
+
+    <div class="section-head" style="margin-top:3rem;">
+      <p class="eyebrow">Worked example · illustrative transcript</p>
+      <h2>Shipping "mark task done," loop by loop</h2>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dots"><span></span><span></span><span></span></div>
+        <span class="terminal-title">claude code · taskbloom/backend</span>
+      </div>
+      <div class="terminal-body">
+<span class="prompt">&gt; </span>Add PATCH /tasks/{id}/complete: set is_done=true on the row,
+return the updated Task. 404 if the id doesn't exist. Add a pytest
+test for both cases in tests/test_tasks.py.
+
+<span class="out">Reading app/routers/tasks.py, app/models.py, tests/test_tasks.py…</span>
+<span class="out">Editing app/routers/tasks.py — adding complete_task handler</span>
+<span class="out">Editing tests/test_tasks.py — adding 2 test cases</span>
+<span class="dim">Running: pytest tests/test_tasks.py -q</span>
+<span class="warn">FAILED tests/test_tasks.py::test_complete_unknown_id - assert 500 == 404</span>
+<span class="dim">1 failed, 4 passed</span>
+
+<span class="prompt">&gt; </span>The 404 case is returning 500 instead. Fix it and re-run.
+
+<span class="out">Found it — missing a None check before .is_done = True on the
+query result. Adding `if task is None: raise HTTPException(404)`.
+Tests use raise_server_exceptions=False to inspect HTTP 500 responses;
+with the TestClient default, this bug would instead raise in the test.</span>
+<span class="dim">Running: pytest tests/test_tasks.py -q</span>
+<span class="out">5 passed in 0.41s</span>
+              </div>
+    </div>
+
+<div class="code-block">
+      <div class="code-block-head"><span>independent review prompt · after the backend checkpoint</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="text">Use a separate review agent if this session supports sub-agents; otherwise
+run this in a second CLI session on the same checkout. Review only the
+current diff; do not edit files. Check PATCH /tasks/{id}/complete for 404
+handling, persisted updates, repeated completion, and test DB isolation.
+Report concrete findings with file:line references and reproduction steps.
+Wait for the review result before merging. Keep concurrent reviewers read-only.</pre>
+    </div>
+    <details class="accordion" style="margin-top:2rem;">
+      <summary>Loops for bigger slices — checkpoints and sub-agents</summary>
+      <div class="accordion-body">
+        <p>"Mark task done" is small enough for one pass. For a bigger slice — say, the whole filtering feature across backend and frontend — stretch the same loop over checkpoints:</p>
+        <ul>
+          <li><strong>Commit at each green state.</strong> After backend tests pass, commit before starting the frontend half — it gives you a clean point to roll back to.</li>
+          <li><strong>Split by concern, not by file count.</strong> One pass for the API + its tests, a second pass for the component + its tests, rather than one giant prompt for both.</li>
+          <li><strong>Use a sub-agent for an independent check.</strong> While the main session keeps building, ask a second agent to review the diff for the first half — it isn't carrying the same assumptions.</li>
+          <li><strong>Schedule checks deliberately.</strong> Claude Code's <code class="inline-code">/loop</code> repeats a prompt on an interval, for example checking CI status. For a feature, give the agent a bounded implement → test → fix task with explicit acceptance criteria. See the <a href="https://code.claude.com/docs/en/scheduled-tasks">official scheduling guide</a>.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section-block" id="testing">
+  <div class="container">
+    <div class="section-head">
+      <span class="step-label">04 · Testing for CI/CD</span>
+      <h2>"Works on my machine" doesn't ship</h2>
+      <p>A feature isn't done when the terminal says tests passed locally — it's done when the same checks pass in CI, against a clean checkout, every time.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Testing examples">
+      <button class="tab-btn active" data-tab="t-pytest" id="tab-t-pytest" type="button" role="tab" aria-controls="t-pytest" aria-selected="true" tabindex="0">Backend · pytest</button>
+      <button class="tab-btn" data-tab="t-vitest" id="tab-t-vitest" type="button" role="tab" aria-controls="t-vitest" aria-selected="false" tabindex="-1">Frontend · Vitest</button>
+      <button class="tab-btn" data-tab="t-ci" id="tab-t-ci" type="button" role="tab" aria-controls="t-ci" aria-selected="false" tabindex="-1">GitHub Actions</button>
+    </div>
+
+    <div class="tab-panel active" id="t-pytest" role="tabpanel" aria-labelledby="tab-t-pytest" tabindex="0">
+      <div class="code-block">
+        <div class="code-block-head"><span>backend/tests/test_tasks.py</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="python">def test_create_task(client):
+    resp = client.post("/tasks", json={"title": "Water the plants"})
+    assert resp.status_code == 201
+    body = resp.json()
+    assert body["title"] == "Water the plants"
+    assert body["is_done"] is False
+
+def test_complete_unknown_id(client):
+    resp = client.patch("/tasks/999999/complete")
+    assert resp.status_code == 404</pre>
+      </div>
+      <p class="text-muted" style="margin-top:0.75rem;">
+        These tests require the isolated client fixture generated in the bootstrap step.
+        Migrate a disposable MySQL test database first and pass TEST_DATABASE_URL;
+        SQLite-only tests cannot establish MySQL migration compatibility. Record this in <code class="inline-code">CLAUDE.md</code>.
+      </p>
+    </div>
+
+    <div class="tab-panel" id="t-vitest" role="tabpanel" aria-labelledby="tab-t-vitest" tabindex="0" hidden>
+      <div class="code-block">
+        <div class="code-block-head"><span>frontend/tests/TaskForm.test.tsx</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="js">// Vitest must use environment: "jsdom". Run from frontend/.
+import { afterEach, expect, test, vi } from "vitest";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import TaskForm from "../src/components/TaskForm";
+import { api } from "../src/api/client";
+
+vi.mock("../src/api/client", () =&gt; ({
+  api: { createTask: vi.fn() },
+}));
+afterEach(() =&gt; {
+  cleanup();
+  vi.resetAllMocks();
+});
+
+test("submits a new task title", async () =&gt; {
+  const task = {
+    id: 1, title: "Water the plants", is_done: false,
+    created_at: "2026-01-01T00:00:00Z",
+  };
+  vi.mocked(api.createTask).mockResolvedValue(task);
+  const user = userEvent.setup();
+  const onCreated = vi.fn();
+  render(&lt;TaskForm onCreated={onCreated} /&gt;);
+
+  await user.type(screen.getByRole("textbox"), task.title);
+  await user.click(screen.getByRole("button", { name: /add/i }));
+
+  await waitFor(() =&gt; expect(onCreated).toHaveBeenCalledWith(task));
+  expect(api.createTask).toHaveBeenCalledExactlyOnceWith(task.title);
+  expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("");
+});</pre>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="t-ci" role="tabpanel" aria-labelledby="tab-t-ci" tabindex="0" hidden>
+      <div class="code-block">
+        <div class="code-block-head"><span>.github/workflows/ci.yml</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="yaml">name: CI
+on: [pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: mysql+pymysql://taskbloom:ci_only@127.0.0.1:3306/taskbloom_test
+      TEST_DATABASE_URL: mysql+pymysql://taskbloom:ci_only@127.0.0.1:3306/taskbloom_test
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci_root_only
+          MYSQL_DATABASE: taskbloom_test
+          MYSQL_USER: taskbloom
+          MYSQL_PASSWORD: ci_only
+        ports: ["3306:3306"]
+        options: &gt;-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -r requirements.txt
+      - run: python -m ruff check app tests
+      - run: python -m alembic upgrade head
+      - run: python -m pytest tests -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test -- --run
+      - run: npm run build</pre>
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem;">This is the CI stage. It assumes the bootstrap's npm scripts, Ruff dependency, Alembic configuration and isolated pytest fixture. The passwords provision only the disposable CI database; production credentials belong in deployment secrets. Require both jobs in branch protection. Deployment is a separate stage described below.</p>
+
+    <div class="section-head" style="margin-top:3rem;">
+      <p class="eyebrow">Before it merges</p>
+      <h2>CI/CD readiness checklist</h2>
+    </div>
+    <ul class="checklist">
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Every new endpoint has a pytest covering the happy path and at least one failure case.</li>
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Every new component has a Vitest + Testing Library test for its user-visible behavior.</li>
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Tests run against a disposable database, never the cloud MySQL instance.</li>
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>The agent actually ran the full suite before calling the slice done — ask it to paste the output.</li>
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Lint and type-check run in CI, not just locally, so a skipped local step can't slip through.</li>
+      <li><i class="fa-solid fa-square-check" aria-hidden="true"></i>Secrets (DB URL, API keys) come from CI secrets/env, never committed or hardcoded by a generated fix.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section-block" id="skills">
+  <div class="container">
+    <div class="section-head">
+      <span class="step-label">05 · Skills</span>
+      <h2>Package the repeatable 20% of the work</h2>
+      <p>
+        TaskBloom's backend grows by adding the same shape of thing over and over: a new
+        endpoint, with a schema, a route, and a test. A Skill captures that shape once so
+        every future endpoint follows it without being re-explained.
+      </p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Skill examples">
+      <button class="tab-btn active" data-tab="s-endpoint" id="tab-s-endpoint" type="button" role="tab" aria-controls="s-endpoint" aria-selected="true" tabindex="0">fastapi-endpoint</button>
+      <button class="tab-btn" data-tab="s-component" id="tab-s-component" type="button" role="tab" aria-controls="s-component" aria-selected="false" tabindex="-1">react-component</button>
+      <button class="tab-btn" data-tab="s-migration" id="tab-s-migration" type="button" role="tab" aria-controls="s-migration" aria-selected="false" tabindex="-1">migration-review</button>
+    </div>
+
+    <div class="tab-panel active" id="s-endpoint" role="tabpanel" aria-labelledby="tab-s-endpoint" tabindex="0">
+      <div class="code-block">
+        <div class="code-block-head"><span>.claude/skills/fastapi-endpoint/SKILL.md</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="markdown">---
+name: fastapi-endpoint
+description: Add a new REST endpoint to the TaskBloom FastAPI backend,
+  with its Pydantic schema and a pytest test. Use when asked to add
+  or change a /tasks route.
+---
+1. Read backend/app/routers/tasks.py and schemas.py for existing
+   conventions (naming, status codes, error shapes).
+2. Add or update the Pydantic request/response schema.
+3. Implement the route, reusing the existing DB session dependency.
+4. Add a pytest test covering the happy path and the main failure case.
+5. From backend/, run `python -m pytest tests -q` with TEST_DATABASE_URL
+   pointing at the migrated disposable test DB and report the result.
+6. If the frontend type in frontend/src/api/types.ts would now be
+   stale, say so explicitly rather than editing it silently.</pre>
+      </div>
+    </div>
+    <div class="tab-panel" id="s-component" role="tabpanel" aria-labelledby="tab-s-component" tabindex="0" hidden>
+      <div class="code-block">
+        <div class="code-block-head"><span>.claude/skills/react-component/SKILL.md</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="markdown">---
+name: react-component
+description: Add a new presentational component under
+  frontend/src/components/, matching TaskBloom's existing component
+  and test conventions.
+---
+1. Read one existing component (e.g. TaskItem.tsx) and its test file
+   to match naming, prop typing, and styling approach.
+2. Implement the component with typed props — no `any`.
+3. Wire it through src/api/client.ts for any network call; never
+   call fetch directly from a component.
+4. Add a Vitest + React Testing Library test for the user-visible
+   behavior, not implementation details.
+5. Run `npm test --prefix frontend -- --run` from the project root
+   and report the result.</pre>
+      </div>
+    </div>
+    <div class="tab-panel" id="s-migration" role="tabpanel" aria-labelledby="tab-s-migration" tabindex="0" hidden>
+      <div class="code-block">
+        <div class="code-block-head"><span>.claude/skills/migration-review/SKILL.md</span><button class="copy-btn" data-copy>Copy</button></div>
+        <pre data-lang="markdown">---
+name: migration-review
+description: Review a new Alembic migration for TaskBloom before it
+  runs against the cloud MySQL instance. Use before merging any PR
+  that touches backend/migrations/.
+---
+1. Check the migration has a working `downgrade()`, not just `upgrade()`.
+2. Check for a destructive change (dropped/renamed column) without a
+   backward-compatible intermediate step.
+3. Check new non-nullable columns have a server_default or a backfill
+   step; check behavior against the actual MySQL version and SQL mode.
+4. Flag any migration that would lock the tasks table for longer than
+   a few seconds under production-sized data.
+5. Report findings with file + line references, tests performed, and
+   unknowns. Do not promise production lock times from static review.</pre>
+      </div>
+    </div>
+
+<div class="code-block">
+      <div class="code-block-head"><span>invoke a Skill · inside your agent session</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="text"># Claude Code (after saving .claude/skills/fastapi-endpoint/SKILL.md)
+/fastapi-endpoint Add PATCH /tasks/{id}/complete with success and 404 tests.
+
+# Codex (after saving .agents/skills/fastapi-endpoint/SKILL.md)
+$fastapi-endpoint Add PATCH /tasks/{id}/complete with success and 404 tests.</pre>
+    </div>
+    <p style="margin-top:1.5rem;">Save the same Skill content in the path for your chosen CLI; saving it only under .claude does not install it for Codex. See <a href="https://learn.chatgpt.com/docs/build-skills">OpenAI's Skills documentation</a> and <a href="https://code.claude.com/docs/en/skills">Claude Code's Skills documentation</a>.</p>
+    <div class="alert alert--notice" style="margin-top:2rem;">
+      <strong>Where Skills live:</strong> for Claude Code, repo-shared Skills go in
+      <code class="inline-code">.claude/skills/&lt;name&gt;/SKILL.md</code>; personal ones in
+      <code class="inline-code">~/.claude/skills/</code>. For Codex, the equivalent path is
+      <code class="inline-code">.agents/skills/&lt;name&gt;/SKILL.md</code>. Both tools pick a
+      Skill by matching its <code class="inline-code">description</code> against the task —
+      write that line around concrete triggers ("Use when...") rather than a vague summary.
+    </div>
+  </div>
+</section>
+
+<section class="section-block" id="mcp">
+  <div class="container">
+    <div class="section-head">
+      <span class="step-label">06 · MCP</span>
+      <h2>Connect the agent to the real thing</h2>
+      <p>
+        MCP (Model Context Protocol) servers give Claude Code and Codex direct access to
+        external tools and live data — the real MySQL schema instead of a remembered one,
+        the real GitHub issue instead of a pasted summary, a real browser instead of a guess
+        about what rendered.
+      </p>
+    </div>
+
+    <div class="mcp-grid">
+      <div class="mcp-card">
+        <h4><i class="fa-solid fa-database" aria-hidden="true"></i>Database / MySQL MCP</h4>
+        <p>Lets the agent introspect the real tasks table, run read-only queries, and check a migration actually matches production — instead of trusting the last schema it saw in context.</p>
+        <span class="tag tag--sub">Backend</span>
+      </div>
+      <div class="mcp-card">
+        <h4><i class="fa-brands fa-github" aria-hidden="true"></i>GitHub MCP</h4>
+        <p>Reads issues, PR review comments, and CI run status directly, so "fix the bug from issue #42" doesn't need the issue pasted in by hand.</p>
+        <span class="tag tag--base">Repo &amp; CI</span>
+      </div>
+      <div class="mcp-card">
+        <h4><i class="fa-regular fa-window-maximize" aria-hidden="true"></i>Playwright MCP</h4>
+        <p>Drives a real browser against the running Vite dev server, so a claim like "the task list updates after submit" can actually be checked, not assumed.</p>
+        <span class="tag tag--accent">Frontend</span>
+      </div>
+      <div class="mcp-card">
+        <h4><i class="fa-solid fa-book" aria-hidden="true"></i>Context7</h4>
+        <p>Pulls current FastAPI, SQLAlchemy, and React library docs into context — useful when a package version is newer than the model's training data.</p>
+        <span class="tag tag--sub">Docs</span>
+      </div>
+      <div class="mcp-card">
+        <h4><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>Sentry / observability MCP</h4>
+        <p>Connects a production error directly to its stack trace and the release that introduced it — turns "users report tasks disappear" into an actual reproduction.</p>
+        <span class="tag tag--base">Ops</span>
+      </div>
+      <div class="mcp-card">
+        <h4><i class="fa-solid fa-list-check" aria-hidden="true"></i>Linear / Jira MCP</h4>
+        <p>Brings the acceptance criteria from a real ticket into the prompt, so "build the filter feature" matches what was actually scoped, not a guess at it.</p>
+        <span class="tag tag--accent">Planning</span>
+      </div>
+    </div>
+
+<div class="code-block">
+      <div class="code-block-head"><span>connect Context7 · terminal at the project root</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="bash"># Claude Code: local stdio process launched by the client
+claude mcp add --transport stdio context7 -- npx -y @upstash/context7-mcp
+claude mcp list
+
+# Codex: same server, same transport
+codex mcp add context7 -- npx -y @upstash/context7-mcp
+codex mcp list</pre>
+    </div>
+    <p style="margin-top:1.5rem;">This example connects documentation tools, not MySQL. Node.js must be installed; the first run downloads the package. Check the server's authentication and usage requirements, then use <code class="inline-code">/mcp</code> inside your CLI to confirm it is connected. Ask: “Use Context7 to find the SQLAlchemy documentation matching our installed version; cite the relevant page.” See the <a href="https://learn.chatgpt.com/docs/extend/mcp?surface=cli">Codex MCP guide</a> and <a href="https://code.claude.com/docs/en/mcp">Claude Code MCP guide</a>.</p>
+    <p>For MySQL, choose a server that explicitly supports MySQL and follow its own installation, credential and transport documentation. There is no universal MySQL MCP package or connection-string flag. Use a dedicated read-only account for schema inspection. A stdio server is launched by the client; an HTTP server must already be running at its documented MCP endpoint before you register its URL.</p>
+
+    <div class="section-head" style="margin-top:3rem;">
+      <p class="eyebrow">Match the connection to the task</p>
+      <h2>Don't connect everything — connect what today's task needs</h2>
+    </div>
+    <div class="table-wrap" style="overflow-x:auto;">
+      <table class="table">
+        <thead><tr><th>Context you need</th><th>MCP to reach for</th><th>On TaskBloom</th></tr></thead>
+        <tbody>
+          <tr><td>Real schema / data shape</td><td>Database MCP</td><td>Confirm the <code class="inline-code">tasks</code> table before writing a migration.</td></tr>
+          <tr><td>Issue or ticket detail</td><td>GitHub / Linear MCP</td><td>Pull the acceptance criteria for "add due dates" instead of re-typing it.</td></tr>
+          <tr><td>Does it actually render?</td><td>Playwright MCP</td><td>Check the task list re-renders after a completed PATCH call.</td></tr>
+          <tr><td>Library behavior changed</td><td>Context7</td><td>Confirm the current SQLAlchemy 2.0 async session API before using it.</td></tr>
+          <tr><td>Production incident</td><td>Observability MCP</td><td>Trace a 500 on <code class="inline-code">/tasks</code> back to the deploy that caused it.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert--info" style="margin-top:2rem;">
+      <strong>Scope access deliberately.</strong> Use a read-only DB credential for the
+      MySQL MCP unless the task is specifically a migration you intend to apply. Remove a
+      server once the task that needed it is done, and treat anything it returns — a row,
+      an issue body, a page of text — as data to read, not instructions to follow.
+    </div>
+  </div>
+</section>
+
+<section class="section-block" id="deployment">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">After CI passes</p>
+      <h2>Deploy, verify, and keep a recovery path</h2>
+      <p>Choose a host that can run a Python web service, a static host for Vite's output, and managed MySQL. This guide's demo has no authentication or per-user ownership; add both before exposing private tasks publicly.</p>
+    </div>
+    <ol class="steps" style="list-style:none;padding:0;">
+      <li class="step"><span class="step-num">1</span><div><h4>Configure the release</h4><p>Set DATABASE_URL and the exact frontend origin in backend secrets/config. Use the provider's required MySQL TLS settings. Build the frontend with VITE_API_BASE_URL pointing to the public HTTPS API; Vite variables are public and embedded at build time.</p></div></li>
+      <li class="step"><span class="step-num">2</span><div><h4>Apply the migration once</h4><p>Back up the database and test the migration on staging first. Run python -m alembic upgrade head as a single release job from backend/. Keep schema changes compatible with the previous application release during rollout.</p></div></li>
+      <li class="step"><span class="step-num">3</span><div><h4>Start both services</h4><p>From backend/, run python -m uvicorn app.main:app --host 0.0.0.0 --port "$PORT", with PORT supplied by the host. Publish frontend/dist after npm ci and npm run build. Serve both over HTTPS and configure SPA fallback if client-side routes are added.</p></div></li>
+      <li class="step"><span class="step-num">4</span><div><h4>Check and recover</h4><p>Verify /health, create a disposable task through the browser, reload, complete it, then delete it. Check API logs for errors. Retain the previous deployment; roll back application code only while the schema remains compatible. A destructive database downgrade can lose data—use a tested restore or forward fix when needed.</p></div></li>
+    </ol>
+    <details class="accordion">
+      <summary>Prompt for a provider-specific deployment plan</summary>
+      <div class="accordion-body">
+<div class="code-block">
+      <div class="code-block-head"><span>deployment prompt · replace the bracketed values</span><button class="copy-btn" data-copy>Copy</button></div>
+      <pre data-lang="text">Prepare deployment configuration for [Python host], [static host], and
+[managed MySQL provider]. Read their current official documentation.
+List required environment variables, build/start/release commands, TLS
+settings, health checks, and a rollback plan. Keep secrets out of source.
+Run available local checks and show the configuration diff. Deploy only
+to the environment I explicitly authorize; report unavailable checks.</pre>
+    </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section-block" id="troubleshooting">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">When a checkpoint fails</p>
+      <h2>Debug the boundary that failed</h2>
+    </div>
+    <div class="table-wrap" style="overflow-x:auto;">
+      <table class="table">
+        <thead><tr><th>Symptom</th><th>Check first</th><th>Next action</th></tr></thead>
+        <tbody>
+          <tr><td>MySQL connection refused</td><td>Container health, port and DATABASE_URL host</td><td>Run docker compose ps and docker compose logs mysql. Containers use the service name; host processes use 127.0.0.1.</td></tr>
+          <tr><td>Table tasks does not exist</td><td>Database target and Alembic revision</td><td>From backend/, run python -m alembic current, then upgrade head against the intended local/test database.</td></tr>
+          <tr><td>Browser fetch fails or CORS is blocked</td><td>Network request URL and exact allowed origin</td><td>Check VITE_API_BASE_URL, API availability and CORS config. Restart Vite after .env edits; rebuild deployed assets after build-time config changes.</td></tr>
+          <tr><td>pytest cannot find client</td><td>backend/tests/conftest.py</td><td>Generate the dependency override fixture from the bootstrap prompt; provide a dedicated migrated TEST_DATABASE_URL. Never fix this by pointing tests at production.</td></tr>
+          <tr><td>Vitest reports document is not defined</td><td>Vitest environment and jsdom dependency</td><td>Use environment: "jsdom" and include tests/**/*.tsx. Mock api.createTask and await callback assertions with waitFor.</td></tr>
+          <tr><td>MCP appears configured but tools fail</td><td>/mcp connection status, runtime and authentication</td><td>Inspect the server error. Confirm the stdio command can launch or the HTTP MCP endpoint is running; registration alone does not establish a healthy connection.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1.5rem;">For asynchronous UI tests, see <a href="https://testing-library.com/docs/dom-testing-library/api-async/">Testing Library's waitFor documentation</a>. For a handoff, record the current commit, passing checks, failing command, and next task in a short session note; keep credentials out.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-links">
+      <a href="../claudecode/index.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Claude Code guide</a>
+      <a href="../codex/index.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Codex guide</a>
+      <a href="#deployment">Deployment</a>
+      <a href="#troubleshooting">Troubleshooting</a>
+      <a href="#top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a>
+    </div>
+    <small>TaskBloom is an illustrative project built for this guide. © <span data-year></span></small>
+  </div>
+</footer>
+
+<a href="#top" class="back-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></a>
+
+<script src="js/main.js"></script>
+</body>
+</html>
