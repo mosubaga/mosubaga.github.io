@@ -4,21 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Intermediate Python - Concurrency</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
   <header class="yk-header">
     <nav class="yk-nav yk-container">
-      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Python</a>
+      <a class="yk-logo yk-gradient-text" href="index.html"><i class="fa-brands fa-python" aria-hidden="true"></i> Intermediate Python</a>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="oop.html">OOP</a></li>
-        <li><a href="collections.html">Collections</a></li>
-        <li><a href="advfunctions.html">Functions</a></li>
-        <li><a href="generators.html">Generators</a></li>
-        <li><a href="concurrency.html" class="active">Concurrency</a></li>
-        <li><a href="async.html">Async</a></li>
+        <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+        <li><a href="oop.html"><i class="fa-solid fa-shapes" aria-hidden="true"></i> OOP</a></li>
+        <li><a href="collections.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+        <li><a href="advfunctions.html"><i class="fa-solid fa-gears" aria-hidden="true"></i> Functions</a></li>
+        <li><a href="generators.html"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Generators</a></li>
+        <li><a href="concurrency.html" class="active"><i class="fa-solid fa-shuffle" aria-hidden="true"></i> Concurrency</a></li>
+        <li><a href="async.html"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Async</a></li>
       </ul>
     </nav>
   </header>
@@ -26,7 +27,7 @@
   <main>
     <section class="yk-hero">
       <div class="yk-container">
-        <h1>Concurrency in Python (Threads &amp; Processes)</h1>
+        <h1><i class="fa-solid fa-shuffle" aria-hidden="true"></i> Concurrency in Python (Threads &amp; Processes)</h1>
         <p>
           Concurrency lets your program make progress on multiple tasks within the same time window.
           In Python, you typically use threads for I/O-bound work and processes for CPU-bound work.
@@ -37,7 +38,7 @@
 
     <div class="yk-container">
       <section>
-        <h2>Key Ideas</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Key Ideas</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Concurrency vs Parallelism</h3>
@@ -64,7 +65,7 @@
       </section>
 
       <section>
-        <h2>Executors</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Executors</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>ThreadPoolExecutor</h3>
@@ -111,7 +112,7 @@ print(results)</code></pre>
       </section>
 
       <section>
-        <h2>Futures and Result Handling</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Futures and Result Handling</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>submit() and Future Objects</h3>
@@ -158,7 +159,7 @@ with ThreadPoolExecutor(max_workers=3) as pool:
       </section>
 
       <section>
-        <h2>Timeouts, Cancellation, and Errors</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Timeouts, Cancellation, and Errors</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Timeouts</h3>
@@ -203,7 +204,7 @@ with ThreadPoolExecutor(max_workers=1) as pool:
       </section>
 
       <section>
-        <h2>Shared State and Synchronization</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Shared State and Synchronization</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Race Conditions</h3>
@@ -259,7 +260,7 @@ with ThreadPoolExecutor(max_workers=2) as pool:
       </section>
 
       <section>
-        <h2>Process Pools: Practical Tips</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Process Pools: Practical Tips</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Picklable Functions and Data</h3>
@@ -291,7 +292,7 @@ with ProcessPoolExecutor() as pool:
       </section>
 
       <section>
-        <h2>Mini Example</h2>
+        <h2><i class="fa-solid fa-table" aria-hidden="true"></i> Mini Example</h2>
         <table class="yk-table">
           <thead>
             <tr>
@@ -321,7 +322,7 @@ with ProcessPoolExecutor() as pool:
       </section>
 
       <section>
-        <h2>Sample Code: Batch Image Resize (Simulated)</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Sample Code: Batch Image Resize (Simulated)</h2>
         <pre><code class="language-python">from concurrent.futures import ProcessPoolExecutor
 import time
 
@@ -346,7 +347,7 @@ with ProcessPoolExecutor() as pool:
 
   <footer class="yk-footer">
     <div class="yk-container">
-      <p>Use threads to hide I/O latency and processes to unlock multi-core performance.</p>
+      <p><i class="fa-brands fa-python" aria-hidden="true"></i> Use threads to hide I/O latency and processes to unlock multi-core performance.</p>
     </div>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

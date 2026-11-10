@@ -4,21 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Intermediate Python - Collections</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
   <header class="yk-header">
     <nav class="yk-nav yk-container">
-      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Python</a>
+      <a class="yk-logo yk-gradient-text" href="index.html"><i class="fa-brands fa-python" aria-hidden="true"></i> Intermediate Python</a>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="oop.html">OOP</a></li>
-        <li><a href="collections.html" class="active">Collections</a></li>
-        <li><a href="advfunctions.html">Functions</a></li>
-        <li><a href="generators.html">Generators</a></li>
-        <li><a href="concurrency.html">Concurrency</a></li>
-        <li><a href="async.html">Async</a></li>
+        <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+        <li><a href="oop.html"><i class="fa-solid fa-shapes" aria-hidden="true"></i> OOP</a></li>
+        <li><a href="collections.html" class="active"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+        <li><a href="advfunctions.html"><i class="fa-solid fa-gears" aria-hidden="true"></i> Functions</a></li>
+        <li><a href="generators.html"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Generators</a></li>
+        <li><a href="concurrency.html"><i class="fa-solid fa-shuffle" aria-hidden="true"></i> Concurrency</a></li>
+        <li><a href="async.html"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Async</a></li>
       </ul>
     </nav>
   </header>
@@ -26,7 +27,7 @@
   <main>
     <section class="yk-hero">
       <div class="yk-container">
-        <h1>Advanced Data Structures (collections)</h1>
+        <h1><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Advanced Data Structures (collections)</h1>
         <p>
           The <code>collections</code> module provides specialized containers that are faster
           and more expressive than basic lists and dicts. They help you model real-world data
@@ -37,7 +38,7 @@
 
     <div class="yk-container">
       <section>
-        <h2>Core Structures</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Core Structures</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>deque</h3>
@@ -140,7 +141,7 @@ print(config["timeout"]) # 30</code></pre>
       </section>
 
       <section>
-        <h2>Common Usage Patterns</h2>
+        <h2><i class="fa-solid fa-table" aria-hidden="true"></i> Common Usage Patterns</h2>
         <table class="yk-table">
           <thead>
             <tr>
@@ -180,7 +181,7 @@ print(config["timeout"]) # 30</code></pre>
       </section>
 
       <section>
-        <h2>Mini Example: Frequency Report</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Mini Example: Frequency Report</h2>
         <pre><code class="language-python">from collections import Counter
 
 text = "the quick brown fox jumps over the lazy dog"
@@ -191,7 +192,7 @@ for word, freq in counts.most_common():
       </section>
 
       <section>
-        <h2>Sample Code: Log Aggregator</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Sample Code: Log Aggregator</h2>
         <pre><code class="language-python">from collections import defaultdict, Counter
 
 logs = [
@@ -218,7 +219,7 @@ for service, entries in by_service.items():
 
   <footer class="yk-footer">
     <div class="yk-container">
-      <p>Specialized collections make Python code faster, cleaner, and easier to reason about.</p>
+      <p><i class="fa-brands fa-python" aria-hidden="true"></i> Specialized collections make Python code faster, cleaner, and easier to reason about.</p>
     </div>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

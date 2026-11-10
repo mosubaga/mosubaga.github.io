@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Intermediate Perl | References</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
   <header class="yk-header">
     <nav class="yk-nav yk-container">
-      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Perl</a>
+      <a class="yk-logo yk-gradient-text" href="index.html"><i class="fa-solid fa-code" aria-hidden="true"></i> Intermediate Perl</a>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="reference.html" class="active">References</a></li>
-        <li><a href="modules.html">Modules</a></li>
-        <li><a href="oop.html">OOP</a></li>
-        <li><a href="regexref.html">Regex Refs</a></li>
+        <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+        <li><a href="reference.html" class="active"><i class="fa-solid fa-link" aria-hidden="true"></i> References</a></li>
+        <li><a href="modules.html"><i class="fa-solid fa-cubes" aria-hidden="true"></i> Modules</a></li>
+        <li><a href="oop.html"><i class="fa-solid fa-shapes" aria-hidden="true"></i> OOP</a></li>
+        <li><a href="regexref.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Regex Refs</a></li>
       </ul>
     </nav>
   </header>
@@ -24,23 +25,23 @@
   <main>
     <section class="yk-hero">
       <div class="yk-container">
-        <h1>References and Data Structures</h1>
+        <h1><i class="fa-solid fa-link" aria-hidden="true"></i> References and Data Structures</h1>
         <p>
           References let you build nested structures like arrays of hashes or hashes of
           arrays. This is the foundation for complex configuration data, JSON-like
           layouts, and layered reports.
         </p>
         <p>
-          <span class="yk-badge pink">Reference scalars, arrays, hashes, and subroutines.</span>
-          <span class="yk-badge lavender">Use anonymous structures to nest data cleanly.</span>
-          <span class="yk-badge mint">De-reference with <code>-></code> and braces to traverse layers.</span>
+          <span class="yk-badge pink"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Reference scalars, arrays, hashes, and subroutines.</span>
+          <span class="yk-badge lavender"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Use anonymous structures to nest data cleanly.</span>
+          <span class="yk-badge mint"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> De-reference with <code>-></code> and braces to traverse layers.</span>
         </p>
       </div>
     </section>
 
     <div class="yk-container">
       <section>
-        <h2>Array References</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Array References</h2>
         <p>
           An array reference points to an array. This is useful for passing arrays
           into subroutines, storing arrays inside other structures, or returning
@@ -70,7 +71,7 @@ print average($scores_ref), "\n";</code></pre>
       </section>
 
       <section>
-        <h2>Hash References</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Hash References</h2>
         <p>
           A hash reference points to a hash. This is a common way to model records with
           named fields, and it makes passing structured data around simple and explicit.
@@ -99,7 +100,7 @@ for my $key (sort keys %$user_ref) {
       </section>
 
       <section>
-        <h2>Nested Data: Hashes of Arrays</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Nested Data: Hashes of Arrays</h2>
         <p>
           Combine array and hash references to build richer data structures, such as
           tags per user or multiple values per key.
@@ -123,7 +124,7 @@ for my $name (sort keys %$profiles) {
       </section>
 
       <section>
-        <h2>Sample: Array of Hashes</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Sample: Array of Hashes</h2>
         <p>This script stores project data in an array of hashes.</p>
         <pre><code class="language-perl">#!/usr/bin/perl
 use strict;

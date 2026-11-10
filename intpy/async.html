@@ -4,21 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Intermediate Python - Async</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
   <header class="yk-header">
     <nav class="yk-nav yk-container">
-      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Python</a>
+      <a class="yk-logo yk-gradient-text" href="index.html"><i class="fa-brands fa-python" aria-hidden="true"></i> Intermediate Python</a>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="oop.html">OOP</a></li>
-        <li><a href="collections.html">Collections</a></li>
-        <li><a href="advfunctions.html">Functions</a></li>
-        <li><a href="generators.html">Generators</a></li>
-        <li><a href="concurrency.html">Concurrency</a></li>
-        <li><a href="async.html" class="active">Async</a></li>
+        <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+        <li><a href="oop.html"><i class="fa-solid fa-shapes" aria-hidden="true"></i> OOP</a></li>
+        <li><a href="collections.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+        <li><a href="advfunctions.html"><i class="fa-solid fa-gears" aria-hidden="true"></i> Functions</a></li>
+        <li><a href="generators.html"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Generators</a></li>
+        <li><a href="concurrency.html"><i class="fa-solid fa-shuffle" aria-hidden="true"></i> Concurrency</a></li>
+        <li><a href="async.html" class="active"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Async</a></li>
       </ul>
     </nav>
   </header>
@@ -26,7 +27,7 @@
   <main>
     <section class="yk-hero">
       <div class="yk-container">
-        <h1>Asynchronous Python (asyncio)</h1>
+        <h1><i class="fa-solid fa-bolt" aria-hidden="true"></i> Asynchronous Python (asyncio)</h1>
         <p>
           <code>asyncio</code> enables cooperative multitasking in a single thread. Tasks
           yield control at <code>await</code> points so other tasks can run. This is perfect
@@ -38,7 +39,7 @@
 
     <div class="yk-container">
       <section>
-        <h2>Core Building Blocks</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Core Building Blocks</h2>
 
         <div class="yk-stack">
           <div class="yk-card">
@@ -101,7 +102,7 @@ asyncio.run(main())
       </section>
 
       <section>
-        <h2>Concurrency Patterns</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concurrency Patterns</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Gather vs. As-Completed</h3>
@@ -150,7 +151,7 @@ asyncio.run(main())</code></pre>
       </section>
 
       <section>
-        <h2>Async I/O in Practice</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Async I/O in Practice</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Concurrent HTTP Fetches (aiohttp)</h3>
@@ -196,7 +197,7 @@ async def main():
       </section>
 
       <section>
-        <h2>Synchronization Primitives</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Synchronization Primitives</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Lock, Semaphore, Queue</h3>
@@ -223,7 +224,7 @@ async def main():
       </section>
 
       <section>
-        <h2>When to Use Async</h2>
+        <h2><i class="fa-solid fa-table" aria-hidden="true"></i> When to Use Async</h2>
         <table class="yk-table">
           <thead>
             <tr>
@@ -253,7 +254,7 @@ async def main():
       </section>
 
       <section>
-        <h2>Sample Code: Async Worker Pool</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Sample Code: Async Worker Pool</h2>
         <pre><code class="language-python">import asyncio
 from asyncio import Queue
 
@@ -284,7 +285,7 @@ async def main():
 
   <footer class="yk-footer">
     <div class="yk-container">
-      <p>Asyncio shines when you need many concurrent I/O tasks with minimal threads.</p>
+      <p><i class="fa-brands fa-python" aria-hidden="true"></i> Asyncio shines when you need many concurrent I/O tasks with minimal threads.</p>
     </div>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

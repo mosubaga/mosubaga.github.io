@@ -4,21 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Intermediate Python - Generators</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
   <header class="yk-header">
     <nav class="yk-nav yk-container">
-      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Python</a>
+      <a class="yk-logo yk-gradient-text" href="index.html"><i class="fa-brands fa-python" aria-hidden="true"></i> Intermediate Python</a>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="oop.html">OOP</a></li>
-        <li><a href="collections.html">Collections</a></li>
-        <li><a href="advfunctions.html">Functions</a></li>
-        <li><a href="generators.html" class="active">Generators</a></li>
-        <li><a href="concurrency.html">Concurrency</a></li>
-        <li><a href="async.html">Async</a></li>
+        <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+        <li><a href="oop.html"><i class="fa-solid fa-shapes" aria-hidden="true"></i> OOP</a></li>
+        <li><a href="collections.html"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Collections</a></li>
+        <li><a href="advfunctions.html"><i class="fa-solid fa-gears" aria-hidden="true"></i> Functions</a></li>
+        <li><a href="generators.html" class="active"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Generators</a></li>
+        <li><a href="concurrency.html"><i class="fa-solid fa-shuffle" aria-hidden="true"></i> Concurrency</a></li>
+        <li><a href="async.html"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Async</a></li>
       </ul>
     </nav>
   </header>
@@ -26,7 +27,7 @@
   <main>
     <section class="yk-hero">
       <div class="yk-container">
-        <h1>Generators and Iterators</h1>
+        <h1><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Generators and Iterators</h1>
         <p>
           Generators produce values lazily using <code>yield</code>. They are ideal for large
           datasets, streaming pipelines, and infinite sequences because they compute values
@@ -37,7 +38,7 @@
 
     <div class="yk-container">
       <section>
-        <h2>Iterator Protocol</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Iterator Protocol</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Iterables vs Iterators</h3>
@@ -82,7 +83,7 @@ print(list(squares))  # [0, 1, 4, 9, 16]</code></pre>
       </section>
 
       <section>
-        <h2>Why Use Generators?</h2>
+        <h2><i class="fa-solid fa-table" aria-hidden="true"></i> Why Use Generators?</h2>
         <table class="yk-table">
           <thead>
             <tr>
@@ -112,7 +113,7 @@ print(list(squares))  # [0, 1, 4, 9, 16]</code></pre>
       </section>
 
       <section>
-        <h2>Advanced Generator Features</h2>
+        <h2><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Advanced Generator Features</h2>
         <div class="yk-stack">
           <div class="yk-card">
             <h3>Send Values Into Generators</h3>
@@ -176,7 +177,7 @@ for line in safe_reader([" a ", " b "]):
       </section>
 
       <section>
-        <h2>Mini Example</h2>
+        <h2><i class="fa-solid fa-table" aria-hidden="true"></i> Mini Example</h2>
         <table class="yk-table">
           <thead>
             <tr>
@@ -206,7 +207,7 @@ for line in safe_reader([" a ", " b "]):
       </section>
 
       <section>
-        <h2>Sample Code: Streaming Pipeline</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Sample Code: Streaming Pipeline</h2>
         <pre><code class="language-python">def read_numbers():
     for i in range(1, 6):
         yield i
@@ -228,7 +229,7 @@ print(list(pipeline))  # [4, 16]</code></pre>
 
   <footer class="yk-footer">
     <div class="yk-container">
-      <p>Generators make data pipelines memory-efficient and expressive.</p>
+      <p><i class="fa-brands fa-python" aria-hidden="true"></i> Generators make data pipelines memory-efficient and expressive.</p>
     </div>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

@@ -146,6 +146,7 @@ code {
 .yk-bg-aqua { background: var(--yk-aqua); }
 .yk-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .yk-stack { display: grid; gap: 1.5rem; }
+.yk-stack > * { min-width: 0; }
 
 /* ---------- Header / Nav ---------- */
 .yk-header {
@@ -369,6 +370,18 @@ input[type="range"] { accent-color: var(--yk-pink); }
   box-shadow: var(--yk-shadow);
 }
 
+/* ---------- Icons (Font Awesome) ---------- */
+h1 > i,
+h2 > i,
+h3 > i { color: var(--yk-aqua-700); font-size: 0.85em; }
+.yk-logo { white-space: nowrap; }
+.yk-nav ul a { padding-inline: 0.7rem; white-space: nowrap; }
+.yk-nav ul a > i { color: var(--yk-text-muted); }
+.yk-nav ul a:hover > i,
+.yk-nav ul a.active > i { color: inherit; }
+.yk-badge > i { margin-right: 0.15em; }
+.yk-footer i { color: var(--yk-aqua-700); }
+
 /* ---------- Code copy button ---------- */
 .yk-code { position: relative; }
 .yk-copy {
@@ -390,6 +403,10 @@ input[type="range"] { accent-color: var(--yk-pink); }
 .yk-copy:hover { opacity: 1; box-shadow: var(--yk-shadow); }
 .yk-copy:focus-visible { outline: 3px solid var(--yk-aqua); outline-offset: 2px; }
 .yk-copy.copied { background: var(--yk-gradient); color: #fff; opacity: 1; }
+
+@media (max-width: 640px) {
+  .yk-table { display: block; overflow-x: auto; }
+}
 
 /* ---------- Footer ---------- */
 .yk-footer {

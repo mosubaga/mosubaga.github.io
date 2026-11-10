@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Intermediate Perl | OOP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
   <header class="yk-header">
     <nav class="yk-nav yk-container">
-      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Perl</a>
+      <a class="yk-logo yk-gradient-text" href="index.html"><i class="fa-solid fa-code" aria-hidden="true"></i> Intermediate Perl</a>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="reference.html">References</a></li>
-        <li><a href="modules.html">Modules</a></li>
-        <li><a href="oop.html" class="active">OOP</a></li>
-        <li><a href="regexref.html">Regex Refs</a></li>
+        <li><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a></li>
+        <li><a href="reference.html"><i class="fa-solid fa-link" aria-hidden="true"></i> References</a></li>
+        <li><a href="modules.html"><i class="fa-solid fa-cubes" aria-hidden="true"></i> Modules</a></li>
+        <li><a href="oop.html" class="active"><i class="fa-solid fa-shapes" aria-hidden="true"></i> OOP</a></li>
+        <li><a href="regexref.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Regex Refs</a></li>
       </ul>
     </nav>
   </header>
@@ -24,23 +25,23 @@
   <main>
     <section class="yk-hero">
       <div class="yk-container">
-        <h1>Object-Oriented Perl with Packages</h1>
+        <h1><i class="fa-solid fa-shapes" aria-hidden="true"></i> Object-Oriented Perl with Packages</h1>
         <p>
           Perl objects are typically blessed references. A package defines methods,
           and your constructor returns a reference blessed into that package. This
           keeps data and behavior together while still using Perl's lightweight style.
         </p>
         <p>
-          <span class="yk-badge pink">Use a hash reference to store object state.</span>
-          <span class="yk-badge lavender">Call methods with <code>$object-&gt;method()</code>.</span>
-          <span class="yk-badge mint">Keep constructors in modules for reuse.</span>
+          <span class="yk-badge pink"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Use a hash reference to store object state.</span>
+          <span class="yk-badge lavender"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Call methods with <code>$object-&gt;method()</code>.</span>
+          <span class="yk-badge mint"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Keep constructors in modules for reuse.</span>
         </p>
       </div>
     </section>
 
     <div class="yk-container">
       <section>
-        <h2>Constructor and Methods</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Constructor and Methods</h2>
         <p>
           A common Perl object is a hash reference blessed into a package. Methods
           receive the object as the first argument (<code>$self</code>).
@@ -76,7 +77,7 @@ print $task->summary, "\n";</code></pre>
       </section>
 
       <section>
-        <h2>Accessors and Encapsulation</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Accessors and Encapsulation</h2>
         <p>
           Perl doesn't enforce private fields, but you can encapsulate data by
           providing accessors and keeping fields internal to the object hash.
@@ -113,7 +114,7 @@ print $user->name, "\n";</code></pre>
       </section>
 
       <section>
-        <h2>Inheritance</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Inheritance</h2>
         <p>
           Use <code>@ISA</code> to declare inheritance. The child class can override
           parent methods or call them explicitly.
@@ -154,7 +155,7 @@ print $admin->role, "\n";  # admin</code></pre>
       </section>
 
       <section>
-        <h2>Blessed Hashes vs. Scalar References</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Blessed Hashes vs. Scalar References</h2>
         <p>
           Most objects are hash references, but you can bless other reference types
           such as scalars or arrays when appropriate.
@@ -187,7 +188,7 @@ print $counter->inc(), "\n";  # 11</code></pre>
       </section>
 
       <section>
-        <h2>Sample: Task Object</h2>
+        <h2><i class="fa-solid fa-file-code" aria-hidden="true"></i> Sample: Task Object</h2>
         <p>A minimal object with a constructor and a method.</p>
         <pre><code class="language-perl"># File: Task.pm
 package Task;

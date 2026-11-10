@@ -23,11 +23,17 @@
     return fallbackCopy(text);
   }
 
-  function flash(button, label) {
-    button.textContent = label;
+  var LABELS = {
+    copy: '<i class="fa-regular fa-copy" aria-hidden="true"></i> Copy',
+    copied: '<i class="fa-solid fa-check" aria-hidden="true"></i> Copied!',
+    failed: '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Failed'
+  };
+
+  function flash(button, state) {
+    button.innerHTML = LABELS[state];
     clearTimeout(button._ykTimer);
     button._ykTimer = setTimeout(function () {
-      button.textContent = "Copy";
+      button.innerHTML = LABELS.copy;
       button.classList.remove("copied");
     }, 1600);
   }
@@ -40,16 +46,16 @@
       var button = document.createElement("button");
       button.type = "button";
       button.className = "yk-copy";
-      button.textContent = "Copy";
+      button.innerHTML = LABELS.copy;
       button.setAttribute("aria-label", "Copy code to clipboard");
 
       button.addEventListener("click", function () {
         copyText(code.innerText)
           .then(function () {
             button.classList.add("copied");
-            flash(button, "Copied!");
+            flash(button, "copied");
           })
-          .catch(function () { flash(button, "Failed"); });
+          .catch(function () { flash(button, "failed"); });
       });
 
       pre.classList.add("yk-code");
