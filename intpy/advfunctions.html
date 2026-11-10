@@ -8,38 +8,45 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="oop.html">OOP</a></li>
-      <li><a href="collections.html">Collections</a></li>
-      <li><a href="advfunctions.html">Functions</a></li>
-      <li><a href="generators.html">Generators</a></li>
-      <li><a href="concurrency.html">Concurrency</a></li>
-      <li><a href="async.html">Async</a></li>
-    </ul>
-  </nav>
+  <header class="yk-header">
+    <nav class="yk-nav yk-container">
+      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Python</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="oop.html">OOP</a></li>
+        <li><a href="collections.html">Collections</a></li>
+        <li><a href="advfunctions.html" class="active">Functions</a></li>
+        <li><a href="generators.html">Generators</a></li>
+        <li><a href="concurrency.html">Concurrency</a></li>
+        <li><a href="async.html">Async</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <main>
-    <section>
-      <h1>Functions and Decorators</h1>
-      <p>
-        Advanced function concepts let you build flexible APIs, reusable logic, and clean abstractions.
-        This includes *args/**kwargs, scope rules, inner functions, and decorators.
-      </p>
+    <section class="yk-hero">
+      <div class="yk-container">
+        <h1>Functions and Decorators</h1>
+        <p>
+          Advanced function concepts let you build flexible APIs, reusable logic, and clean abstractions.
+          This includes *args/**kwargs, scope rules, inner functions, and decorators.
+        </p>
+      </div>
     </section>
 
-    <section>
-      <h2>Core Ideas</h2>
-      <div class="card">
-        <h3>*args and **kwargs</h3>
-        <p>
-          Use <code>*args</code> for extra positional arguments and <code>**kwargs</code>
-          for extra keyword arguments to write flexible functions. The <code>*args</code> parameter
-          collects all extra positional arguments into a tuple, while <code>**kwargs</code> collects
-          all extra keyword arguments into a dictionary.
-        </p>
-        <pre><code class="language-python">def join(*parts, sep="-"):
+    <div class="yk-container">
+      <section>
+        <h2>Core Ideas</h2>
+        <div class="yk-stack">
+          <div class="yk-card">
+            <h3>*args and **kwargs</h3>
+            <p>
+              Use <code>*args</code> for extra positional arguments and <code>**kwargs</code>
+              for extra keyword arguments to write flexible functions. The <code>*args</code> parameter
+              collects all extra positional arguments into a tuple, while <code>**kwargs</code> collects
+              all extra keyword arguments into a dictionary.
+            </p>
+            <pre><code class="language-python">def join(*parts, sep="-"):
     """Join multiple strings with a separator."""
     return sep.join(parts)
 
@@ -56,16 +63,16 @@ process_data(1, 2, 3, name="test", debug=True)
 # Output:
 # Positional args: (1, 2, 3)
 # Keyword args: {'name': 'test', 'debug': True}</code></pre>
-      </div>
+          </div>
       
-      <div class="card">
-        <h3>Unpacking Arguments</h3>
-        <p>
-          You can use <code>*</code> and <code>**</code> operators to unpack sequences
-          and dictionaries when calling functions. This is particularly useful when you have
-          data in collections that you want to pass as individual arguments.
-        </p>
-        <pre><code class="language-python">def calculate(a, b, c):
+          <div class="yk-card">
+            <h3>Unpacking Arguments</h3>
+            <p>
+              You can use <code>*</code> and <code>**</code> operators to unpack sequences
+              and dictionaries when calling functions. This is particularly useful when you have
+              data in collections that you want to pass as individual arguments.
+            </p>
+            <pre><code class="language-python">def calculate(a, b, c):
     return a + b * c
 
 # Unpack a list/tuple
@@ -77,17 +84,17 @@ print(result)  # 14
 params = {'a': 5, 'b': 10, 'c': 2}
 result = calculate(**params)  # Same as calculate(a=5, b=10, c=2)
 print(result)  # 25</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Scope (LEGB)</h3>
-        <p>
-          Python resolves names in Local, Enclosing, Global, then Built-in scope. This matters
-          when nesting functions or reusing variables. Understanding scope helps prevent bugs
-          and write cleaner code. Use <code>nonlocal</code> to modify variables in enclosing
-          scope and <code>global</code> to modify global variables.
-        </p>
-        <pre><code class="language-python">x = "global"
+          <div class="yk-card">
+            <h3>Scope (LEGB)</h3>
+            <p>
+              Python resolves names in Local, Enclosing, Global, then Built-in scope. This matters
+              when nesting functions or reusing variables. Understanding scope helps prevent bugs
+              and write cleaner code. Use <code>nonlocal</code> to modify variables in enclosing
+              scope and <code>global</code> to modify global variables.
+            </p>
+            <pre><code class="language-python">x = "global"
 
 def outer():
     x = "enclosing"
@@ -117,16 +124,16 @@ my_counter = counter()
 print(my_counter())  # 1
 print(my_counter())  # 2
 print(my_counter())  # 3</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>First-Class Functions</h3>
-        <p>
-          In Python, functions are first-class objects, meaning they can be assigned to variables,
-          passed as arguments, returned from other functions, and stored in data structures.
-          This enables powerful functional programming patterns.
-        </p>
-        <pre><code class="language-python">def square(x):
+          <div class="yk-card">
+            <h3>First-Class Functions</h3>
+            <p>
+              In Python, functions are first-class objects, meaning they can be assigned to variables,
+              passed as arguments, returned from other functions, and stored in data structures.
+              This enables powerful functional programming patterns.
+            </p>
+            <pre><code class="language-python">def square(x):
     return x ** 2
 
 def cube(x):
@@ -149,17 +156,17 @@ def get_multiplier(n):
 
 times_five = get_multiplier(5)
 print(times_five(10))  # 50</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Decorators</h3>
-        <p>
-          Decorators wrap functions to add behavior like logging, timing, caching, or access control
-          without changing the original code. They're essentially functions that take a function
-          and return a modified version of it. The <code>@decorator</code> syntax is syntactic sugar
-          for wrapping functions.
-        </p>
-        <pre><code class="language-python">def upper(fn):
+          <div class="yk-card">
+            <h3>Decorators</h3>
+            <p>
+              Decorators wrap functions to add behavior like logging, timing, caching, or access control
+              without changing the original code. They're essentially functions that take a function
+              and return a modified version of it. The <code>@decorator</code> syntax is syntactic sugar
+              for wrapping functions.
+            </p>
+            <pre><code class="language-python">def upper(fn):
     return lambda s: fn(s).upper()
 
 @upper
@@ -167,16 +174,16 @@ def greet(name):
     return f"hello, {name}"
 
 print(greet("alice"))  # HELLO, ALICE</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Closures</h3>
-        <p>
-          A closure is a function that captures and remembers variables from its enclosing scope,
-          even after the outer function has finished executing. Closures are the foundation of
-          decorators and provide a way to create function factories and maintain state.
-        </p>
-        <pre><code class="language-python">def make_multiplier(factor):
+          <div class="yk-card">
+            <h3>Closures</h3>
+            <p>
+              A closure is a function that captures and remembers variables from its enclosing scope,
+              even after the outer function has finished executing. Closures are the foundation of
+              decorators and provide a way to create function factories and maintain state.
+            </p>
+            <pre><code class="language-python">def make_multiplier(factor):
     """Returns a function that multiplies by factor."""
     def multiplier(number):
         return number * factor
@@ -206,56 +213,58 @@ acc2 = make_accumulator(100)
 print(acc1(5))    # 5
 print(acc1(10))   # 15
 print(acc2(5))    # 105</code></pre>
-      </div>
-    </section>
+          </div>
+        </div>
+      </section>
 
-    <section>
-      <h2>Example Patterns</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Pattern</th>
-            <th>Description</th>
-            <th>Sketch</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Flexible args</td>
-            <td>Collects extra inputs</td>
-            <td><code>def f(*args, **kwargs): ...</code></td>
-          </tr>
-          <tr>
-            <td>Closure</td>
-            <td>Inner function captures variables</td>
-            <td><code>def outer(x): def inner(): return x</code></td>
-          </tr>
-          <tr>
-            <td>Decorator</td>
-            <td>Wraps behavior</td>
-            <td><code>@timer\ndef run(): ...</code></td>
-          </tr>
-          <tr>
-            <td>Function factory</td>
-            <td>Returns configured functions</td>
-            <td><code>def maker(n): return lambda x: x * n</code></td>
-          </tr>
-          <tr>
-            <td>Decorator with args</td>
-            <td>Parameterized decorator</td>
-            <td><code>@retry(times=3)\ndef fetch(): ...</code></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+      <section>
+        <h2>Example Patterns</h2>
+        <table class="yk-table">
+          <thead>
+            <tr>
+              <th>Pattern</th>
+              <th>Description</th>
+              <th>Sketch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Flexible args</td>
+              <td>Collects extra inputs</td>
+              <td><code>def f(*args, **kwargs): ...</code></td>
+            </tr>
+            <tr>
+              <td>Closure</td>
+              <td>Inner function captures variables</td>
+              <td><code>def outer(x): def inner(): return x</code></td>
+            </tr>
+            <tr>
+              <td>Decorator</td>
+              <td>Wraps behavior</td>
+              <td><code>@timer\ndef run(): ...</code></td>
+            </tr>
+            <tr>
+              <td>Function factory</td>
+              <td>Returns configured functions</td>
+              <td><code>def maker(n): return lambda x: x * n</code></td>
+            </tr>
+            <tr>
+              <td>Decorator with args</td>
+              <td>Parameterized decorator</td>
+              <td><code>@retry(times=3)\ndef fetch(): ...</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <section>
-      <h2>Practical Decorator Examples</h2>
+      <section>
+        <h2>Practical Decorator Examples</h2>
       
-      <div class="card">
-        <h3>Timing Decorator</h3>
-        <p>Measure how long a function takes to execute.</p>
-        <pre><code class="language-python">import time
+        <div class="yk-stack">
+          <div class="yk-card">
+            <h3>Timing Decorator</h3>
+            <p>Measure how long a function takes to execute.</p>
+            <pre><code class="language-python">import time
 from functools import wraps
 
 def timer(func):
@@ -275,12 +284,12 @@ def slow_function():
 
 result = slow_function()
 # Output: slow_function took 1.0001 seconds</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Memoization Decorator</h3>
-        <p>Cache results of expensive function calls.</p>
-        <pre><code class="language-python">def memoize(func):
+          <div class="yk-card">
+            <h3>Memoization Decorator</h3>
+            <p>Cache results of expensive function calls.</p>
+            <pre><code class="language-python">def memoize(func):
     cache = {}
     
     @wraps(func)
@@ -299,12 +308,12 @@ def fibonacci(n):
 
 print(fibonacci(10))   # Fast! Results are cached
 print(fibonacci(35))   # Would be slow without memoization</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Retry Decorator</h3>
-        <p>Automatically retry a function if it fails.</p>
-        <pre><code class="language-python">def retry(times=3, delay=1):
+          <div class="yk-card">
+            <h3>Retry Decorator</h3>
+            <p>Automatically retry a function if it fails.</p>
+            <pre><code class="language-python">def retry(times=3, delay=1):
     """Decorator that retries a function multiple times."""
     def decorator(func):
         @wraps(func)
@@ -326,12 +335,12 @@ def unreliable_network_call():
     if random.random() < 0.7:
         raise ConnectionError("Network error")
     return "Success!"</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Validation Decorator</h3>
-        <p>Validate function arguments before execution.</p>
-        <pre><code class="language-python">def validate_positive(func):
+          <div class="yk-card">
+            <h3>Validation Decorator</h3>
+            <p>Validate function arguments before execution.</p>
+            <pre><code class="language-python">def validate_positive(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         for arg in args:
@@ -346,12 +355,12 @@ def calculate_average(*numbers):
 
 print(calculate_average(10, 20, 30))  # 20.0
 # calculate_average(10, -5, 30)  # Raises ValueError</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Rate Limiting Decorator</h3>
-        <p>Control how often a function can be called.</p>
-        <pre><code class="language-python">def rate_limit(max_calls, time_window):
+          <div class="yk-card">
+            <h3>Rate Limiting Decorator</h3>
+            <p>Control how often a function can be called.</p>
+            <pre><code class="language-python">def rate_limit(max_calls, time_window):
     """Limit function calls to max_calls per time_window seconds."""
     calls = []
     
@@ -378,12 +387,13 @@ def api_call():
     return "Data"
 
 # Try calling more than 3 times within 10 seconds</code></pre>
-      </div>
-    </section>
+          </div>
+        </div>
+      </section>
 
-    <section>
-      <h2>Sample Code</h2>
-      <pre><code class="language-python">def logger(fn):
+      <section>
+        <h2>Sample Code</h2>
+        <pre><code class="language-python">def logger(fn):
     def wrapper(*args, **kwargs):
         print("calling", fn.__name__)
         return fn(*args, **kwargs)
@@ -397,15 +407,15 @@ print(add(2, 3, 4, scale=2))
 # Output:
 # calling add
 # 18</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Stacking Decorators</h2>
-      <p>
-        You can apply multiple decorators to a single function. They are applied from bottom to top
-        (the decorator closest to the function is applied first).
-      </p>
-      <pre><code class="language-python">def bold(func):
+      <section>
+        <h2>Stacking Decorators</h2>
+        <p>
+          You can apply multiple decorators to a single function. They are applied from bottom to top
+          (the decorator closest to the function is applied first).
+        </p>
+        <pre><code class="language-python">def bold(func):
     def wrapper(*args, **kwargs):
         return f"<b>{func(*args, **kwargs)}</b>"
     return wrapper
@@ -421,15 +431,15 @@ def greet(name):
     return f"Hello, {name}!"
 
 print(greet("World"))  # <b><i>Hello, World!</i></b></code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Class-Based Decorators</h2>
-      <p>
-        Decorators can also be implemented as classes by defining the <code>__call__</code> method.
-        This approach is useful when you need to maintain state or configure the decorator.
-      </p>
-      <pre><code class="language-python">class CountCalls:
+      <section>
+        <h2>Class-Based Decorators</h2>
+        <p>
+          Decorators can also be implemented as classes by defining the <code>__call__</code> method.
+          This approach is useful when you need to maintain state or configure the decorator.
+        </p>
+        <pre><code class="language-python">class CountCalls:
     def __init__(self, func):
         self.func = func
         self.count = 0
@@ -446,15 +456,15 @@ def say_hello():
 say_hello()  # Call 1 to say_hello
 say_hello()  # Call 2 to say_hello
 say_hello()  # Call 3 to say_hello</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Lambda Functions</h2>
-      <p>
-        Lambda functions are small anonymous functions defined with the <code>lambda</code> keyword.
-        They're useful for short, simple operations, especially as arguments to higher-order functions.
-      </p>
-      <pre><code class="language-python"># Basic lambda
+      <section>
+        <h2>Lambda Functions</h2>
+        <p>
+          Lambda functions are small anonymous functions defined with the <code>lambda</code> keyword.
+          They're useful for short, simple operations, especially as arguments to higher-order functions.
+        </p>
+        <pre><code class="language-python"># Basic lambda
 square = lambda x: x ** 2
 print(square(5))  # 25
 
@@ -478,15 +488,15 @@ people = [
 ]
 sorted_people = sorted(people, key=lambda p: p['age'])
 print([p['name'] for p in sorted_people])  # ['Bob', 'Alice', 'Charlie']</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Partial Functions</h2>
-      <p>
-        The <code>functools.partial</code> function creates new functions with some arguments
-        pre-filled. This is useful for creating specialized versions of general functions.
-      </p>
-      <pre><code class="language-python">from functools import partial
+      <section>
+        <h2>Partial Functions</h2>
+        <p>
+          The <code>functools.partial</code> function creates new functions with some arguments
+          pre-filled. This is useful for creating specialized versions of general functions.
+        </p>
+        <pre><code class="language-python">from functools import partial
 
 def power(base, exponent):
     return base ** exponent
@@ -507,13 +517,17 @@ formal_greet = partial(greet, "Good evening")
 
 print(casual_greet("Alice"))         # Hey, Alice!
 print(formal_greet("Mr. Smith"))     # Good evening, Mr. Smith!</code></pre>
-    </section>
+      </section>
+    </div>
   </main>
 
-  <footer>
-    <p>Decorators and closures are essential for clean, composable Python. Master these concepts to write more elegant and maintainable code.</p>
+  <footer class="yk-footer">
+    <div class="yk-container">
+      <p>Decorators and closures are essential for clean, composable Python. Master these concepts to write more elegant and maintainable code.</p>
+    </div>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
+  <script src="js/copy.js"></script>
 </body>
 </html>

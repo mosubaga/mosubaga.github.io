@@ -8,39 +8,45 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="reference.html">References</a></li>
-      <li><a href="modules.html">Modules</a></li>
-      <li><a href="oop.html">OOP</a></li>
-      <li><a href="regexref.html">Regex Refs</a></li>
-    </ul>
-  </nav>
+  <header class="yk-header">
+    <nav class="yk-nav yk-container">
+      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Perl</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="reference.html">References</a></li>
+        <li><a href="modules.html" class="active">Modules</a></li>
+        <li><a href="oop.html">OOP</a></li>
+        <li><a href="regexref.html">Regex Refs</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <main>
-    <section>
-      <h1>Modules and Packages</h1>
-      <p>
-        Modules package reusable logic into <code>.pm</code> files. Packages separate
-        namespaces to avoid variable collisions, while <code>Exporter</code> makes
-        it simple to share selected functions.
-      </p>
-      <ul class="list">
-        <li>Place module code in a package and end with <code>1;</code>.</li>
-        <li>Use <code>Exporter</code> to expose a clean API.</li>
-        <li>Keep namespaces distinct for safer code reuse.</li>
-      </ul>
+    <section class="yk-hero">
+      <div class="yk-container">
+        <h1>Modules and Packages</h1>
+        <p>
+          Modules package reusable logic into <code>.pm</code> files. Packages separate
+          namespaces to avoid variable collisions, while <code>Exporter</code> makes
+          it simple to share selected functions.
+        </p>
+        <p>
+          <span class="yk-badge pink">Place module code in a package and end with <code>1;</code>.</span>
+          <span class="yk-badge lavender">Use <code>Exporter</code> to expose a clean API.</span>
+          <span class="yk-badge mint">Keep namespaces distinct for safer code reuse.</span>
+        </p>
+      </div>
     </section>
 
-    <section>
-      <h2>Module Basics</h2>
-      <p>
-        A module file path matches its package name. For example, <code>My::Tools</code>
-        lives in <code>My/Tools.pm</code>. Modules are loaded with <code>use</code>, and
-        they should return a true value at the end.
-      </p>
-      <pre><code class="language-perl"># File: My/Tools.pm
+    <div class="yk-container">
+      <section>
+        <h2>Module Basics</h2>
+        <p>
+          A module file path matches its package name. For example, <code>My::Tools</code>
+          lives in <code>My/Tools.pm</code>. Modules are loaded with <code>use</code>, and
+          they should return a true value at the end.
+        </p>
+        <pre><code class="language-perl"># File: My/Tools.pm
 package My::Tools;
 use strict;
 use warnings;
@@ -58,15 +64,15 @@ use warnings;
 use My::Tools;
 
 print My::Tools::greet("Aki"), "\n";</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Exporting Functions</h2>
-      <p>
-        Use <code>Exporter</code> to expose a controlled list of functions. This keeps
-        your module API clean and prevents namespace collisions.
-      </p>
-      <pre><code class="language-perl"># File: My/Report.pm
+      <section>
+        <h2>Exporting Functions</h2>
+        <p>
+          Use <code>Exporter</code> to expose a controlled list of functions. This keeps
+          your module API clean and prevents namespace collisions.
+        </p>
+        <pre><code class="language-perl"># File: My/Report.pm
 package My::Report;
 use strict;
 use warnings;
@@ -93,15 +99,15 @@ use My::Report qw(format_line summarize);
 
 print format_line("Status", "Ready"), "\n";
 print summarize(["alpha", "beta", "gamma"]), "\n";</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Namespaces and Variables</h2>
-      <p>
-        Packages create separate namespaces. Fully qualify symbols to avoid collisions,
-        or use lexical (<code>my</code>) variables inside modules for safer encapsulation.
-      </p>
-      <pre><code class="language-perl">package My::Config;
+      <section>
+        <h2>Namespaces and Variables</h2>
+        <p>
+          Packages create separate namespaces. Fully qualify symbols to avoid collisions,
+          or use lexical (<code>my</code>) variables inside modules for safer encapsulation.
+        </p>
+        <pre><code class="language-perl">package My::Config;
 use strict;
 use warnings;
 
@@ -121,15 +127,15 @@ use My::Config;
 
 print My::Config::timeout(), "\n";
 print $My::Config::DEFAULT_TIMEOUT, "\n";</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Loading Modules from Custom Paths</h2>
-      <p>
-        If your modules are in a local directory, add it to <code>@INC</code> using
-        <code>use lib</code> so Perl can find them.
-      </p>
-      <pre><code class="language-perl"># File structure:
+      <section>
+        <h2>Loading Modules from Custom Paths</h2>
+        <p>
+          If your modules are in a local directory, add it to <code>@INC</code> using
+          <code>use lib</code> so Perl can find them.
+        </p>
+        <pre><code class="language-perl"># File structure:
 # lib/My/Calc.pm
 # app.pl
 
@@ -152,12 +158,12 @@ sub add {
 }
 
 1;</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Sample: Simple Utility Module</h2>
-      <p>Two files: a reusable module and a script that imports it.</p>
-      <pre><code class="language-perl"># File: My/Report.pm
+      <section>
+        <h2>Sample: Simple Utility Module</h2>
+        <p>Two files: a reusable module and a script that imports it.</p>
+        <pre><code class="language-perl"># File: My/Report.pm
 package My::Report;
 use strict;
 use warnings;
@@ -178,10 +184,12 @@ use warnings;
 use My::Report qw(format_line);
 
 print format_line("Status", "Ready"), "\n";</code></pre>
-    </section>
+      </section>
+    </div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
+  <script src="js/copy.js"></script>
 </body>
 </html>

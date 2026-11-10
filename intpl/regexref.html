@@ -8,38 +8,44 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="reference.html">References</a></li>
-      <li><a href="modules.html">Modules</a></li>
-      <li><a href="oop.html">OOP</a></li>
-      <li><a href="regexref.html">Regex Refs</a></li>
-    </ul>
-  </nav>
+  <header class="yk-header">
+    <nav class="yk-nav yk-container">
+      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Perl</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="reference.html">References</a></li>
+        <li><a href="modules.html">Modules</a></li>
+        <li><a href="oop.html">OOP</a></li>
+        <li><a href="regexref.html" class="active">Regex Refs</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <main>
-    <section>
-      <h1>References to Regex</h1>
-      <p>
-        Store regular expressions in variables or data structures to reuse them
-        across your program. This is especially handy for routing, validation, and
-        advanced matching workflows.
-      </p>
-      <ul class="list">
-        <li>Compile regexes once with <code>qr//</code>.</li>
-        <li>Store regex refs in hashes or arrays for flexible matching.</li>
-        <li>Pass regex refs into subroutines safely.</li>
-      </ul>
+    <section class="yk-hero">
+      <div class="yk-container">
+        <h1>References to Regex</h1>
+        <p>
+          Store regular expressions in variables or data structures to reuse them
+          across your program. This is especially handy for routing, validation, and
+          advanced matching workflows.
+        </p>
+        <p>
+          <span class="yk-badge pink">Compile regexes once with <code>qr//</code>.</span>
+          <span class="yk-badge lavender">Store regex refs in hashes or arrays for flexible matching.</span>
+          <span class="yk-badge mint">Pass regex refs into subroutines safely.</span>
+        </p>
+      </div>
     </section>
 
-    <section>
-      <h2>Pattern Library in a Hash</h2>
-      <p>
-        Hash-based pattern libraries make validation consistent across your app.
-        You can look up a pattern by name and apply it to input values.
-      </p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+    <div class="yk-container">
+      <section>
+        <h2>Pattern Library in a Hash</h2>
+        <p>
+          Hash-based pattern libraries make validation consistent across your app.
+          You can look up a pattern by name and apply it to input values.
+        </p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -54,15 +60,15 @@ for my $input ("ID-2048", "user@gmail.com", "maria@gmail.com") {
                  "unknown";
     print "$input => $status\n";
 }</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Regex Arrays for Sequential Checks</h2>
-      <p>
-        Arrays are handy when the order of checks matters. You can loop through
-        a list of regexes and stop on the first match.
-      </p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+      <section>
+        <h2>Regex Arrays for Sequential Checks</h2>
+        <p>
+          Arrays are handy when the order of checks matters. You can loop through
+          a list of regexes and stop on the first match.
+        </p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -79,15 +85,15 @@ for my $regex (@checks) {
         last;
     }
 }</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Passing Regex References to Subroutines</h2>
-      <p>
-        Subroutines can accept regex references as arguments. This keeps your
-        matching logic flexible and testable.
-      </p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+      <section>
+        <h2>Passing Regex References to Subroutines</h2>
+        <p>
+          Subroutines can accept regex references as arguments. This keeps your
+          matching logic flexible and testable.
+        </p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -99,12 +105,12 @@ sub validate {
 my $sku_pattern = qr/^SKU-\d{5}$/;
 print validate("SKU-12345", $sku_pattern), "\n"; # 1
 print validate("SKU-12", $sku_pattern), "\n";    # 0</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Sample: Pattern Library</h2>
-      <p>This script keeps regex patterns in a hash for quick lookups.</p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+      <section>
+        <h2>Sample: Pattern Library</h2>
+        <p>This script keeps regex patterns in a hash for quick lookups.</p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -119,10 +125,12 @@ for my $input ("ID-2048", "user@gmail.com", "maria@gmail.com") {
                  "unknown";
     print "$input => $status\n";
 }</code></pre>
-    </section>
+      </section>
+    </div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
+  <script src="js/copy.js"></script>
 </body>
 </html>

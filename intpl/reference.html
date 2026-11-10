@@ -8,39 +8,45 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="reference.html">References</a></li>
-      <li><a href="modules.html">Modules</a></li>
-      <li><a href="oop.html">OOP</a></li>
-      <li><a href="regexref.html">Regex Refs</a></li>
-    </ul>
-  </nav>
+  <header class="yk-header">
+    <nav class="yk-nav yk-container">
+      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Perl</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="reference.html" class="active">References</a></li>
+        <li><a href="modules.html">Modules</a></li>
+        <li><a href="oop.html">OOP</a></li>
+        <li><a href="regexref.html">Regex Refs</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <main>
-    <section>
-      <h1>References and Data Structures</h1>
-      <p>
-        References let you build nested structures like arrays of hashes or hashes of
-        arrays. This is the foundation for complex configuration data, JSON-like
-        layouts, and layered reports.
-      </p>
-      <ul class="list">
-        <li>Reference scalars, arrays, hashes, and subroutines.</li>
-        <li>Use anonymous structures to nest data cleanly.</li>
-        <li>De-reference with <code>-></code> and braces to traverse layers.</li>
-      </ul>
+    <section class="yk-hero">
+      <div class="yk-container">
+        <h1>References and Data Structures</h1>
+        <p>
+          References let you build nested structures like arrays of hashes or hashes of
+          arrays. This is the foundation for complex configuration data, JSON-like
+          layouts, and layered reports.
+        </p>
+        <p>
+          <span class="yk-badge pink">Reference scalars, arrays, hashes, and subroutines.</span>
+          <span class="yk-badge lavender">Use anonymous structures to nest data cleanly.</span>
+          <span class="yk-badge mint">De-reference with <code>-></code> and braces to traverse layers.</span>
+        </p>
+      </div>
     </section>
 
-    <section>
-      <h2>Array References</h2>
-      <p>
-        An array reference points to an array. This is useful for passing arrays
-        into subroutines, storing arrays inside other structures, or returning
-        multiple lists from a function.
-      </p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+    <div class="yk-container">
+      <section>
+        <h2>Array References</h2>
+        <p>
+          An array reference points to an array. This is useful for passing arrays
+          into subroutines, storing arrays inside other structures, or returning
+          multiple lists from a function.
+        </p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -61,15 +67,15 @@ sub average {
 }
 
 print average($scores_ref), "\n";</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Hash References</h2>
-      <p>
-        A hash reference points to a hash. This is a common way to model records with
-        named fields, and it makes passing structured data around simple and explicit.
-      </p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+      <section>
+        <h2>Hash References</h2>
+        <p>
+          A hash reference points to a hash. This is a common way to model records with
+          named fields, and it makes passing structured data around simple and explicit.
+        </p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -90,15 +96,15 @@ $user_ref->{last_login} = "2026-01-30";
 for my $key (sort keys %$user_ref) {
     print "$key => $user_ref->{$key}\n";
 }</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Nested Data: Hashes of Arrays</h2>
-      <p>
-        Combine array and hash references to build richer data structures, such as
-        tags per user or multiple values per key.
-      </p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+      <section>
+        <h2>Nested Data: Hashes of Arrays</h2>
+        <p>
+          Combine array and hash references to build richer data structures, such as
+          tags per user or multiple values per key.
+        </p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -114,12 +120,12 @@ push @{$profiles->{Jin}}, "monitoring";
 for my $name (sort keys %$profiles) {
     print "$name: ", join(", ", @{$profiles->{$name}}), "\n";
 }</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Sample: Array of Hashes</h2>
-      <p>This script stores project data in an array of hashes.</p>
-      <pre><code class="language-perl">#!/usr/bin/perl
+      <section>
+        <h2>Sample: Array of Hashes</h2>
+        <p>This script stores project data in an array of hashes.</p>
+        <pre><code class="language-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -133,9 +139,11 @@ for my $proj (@$projects) {
     printf "%s (%s) - %s\n", $proj->{name}, $proj->{status}, $proj->{owner};
 }
 </code></pre>
-    </section>
+      </section>
+    </div>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
+  <script src="js/copy.js"></script>
 </body>
 </html>

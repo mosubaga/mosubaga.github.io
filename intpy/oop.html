@@ -8,40 +8,47 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="oop.html">OOP</a></li>
-      <li><a href="collections.html">Collections</a></li>
-      <li><a href="advfunctions.html">Functions</a></li>
-      <li><a href="generators.html">Generators</a></li>
-      <li><a href="concurrency.html">Concurrency</a></li>
-      <li><a href="async.html">Async</a></li>
-    </ul>
-  </nav>
+  <header class="yk-header">
+    <nav class="yk-nav yk-container">
+      <a class="yk-logo yk-gradient-text" href="index.html">Intermediate Python</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="oop.html" class="active">OOP</a></li>
+        <li><a href="collections.html">Collections</a></li>
+        <li><a href="advfunctions.html">Functions</a></li>
+        <li><a href="generators.html">Generators</a></li>
+        <li><a href="concurrency.html">Concurrency</a></li>
+        <li><a href="async.html">Async</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <main>
-    <section>
-      <h1>Object-Oriented Programming (OOP)</h1>
-      <p>
-        OOP organizes code around classes and objects. It supports encapsulation, inheritance,
-        and polymorphism so you can model complex systems with reusable components. Python's
-        approach to OOP is flexible and pragmatic, supporting multiple paradigms while providing
-        powerful object-oriented features.
-      </p>
+    <section class="yk-hero">
+      <div class="yk-container">
+        <h1>Object-Oriented Programming (OOP)</h1>
+        <p>
+          OOP organizes code around classes and objects. It supports encapsulation, inheritance,
+          and polymorphism so you can model complex systems with reusable components. Python's
+          approach to OOP is flexible and pragmatic, supporting multiple paradigms while providing
+          powerful object-oriented features.
+        </p>
+      </div>
     </section>
 
-    <section>
-      <h2>Core Concepts</h2>
+    <div class="yk-container">
+      <section>
+        <h2>Core Concepts</h2>
       
-      <div class="card">
-        <h3>Classes and Objects</h3>
-        <p>
-          A class is a blueprint for creating objects. An object is an instance created from that blueprint.
-          Use <code>__init__</code> to define how new objects are initialized. The <code>self</code> parameter
-          represents the instance being created and gives access to instance attributes and methods.
-        </p>
-        <pre><code class="language-python">class User:
+        <div class="yk-stack">
+          <div class="yk-card">
+            <h3>Classes and Objects</h3>
+            <p>
+              A class is a blueprint for creating objects. An object is an instance created from that blueprint.
+              Use <code>__init__</code> to define how new objects are initialized. The <code>self</code> parameter
+              represents the instance being created and gives access to instance attributes and methods.
+            </p>
+            <pre><code class="language-python">class User:
     """A simple user class."""
     
     # Class attribute (shared by all instances)
@@ -71,15 +78,15 @@ print(User.user_count)  # 2
 
 user1.deactivate()
 print(user1.is_active)  # False</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Instance vs Class vs Static Methods</h3>
-        <p>
-          Python provides three types of methods: instance methods (work with instance data),
-          class methods (work with class data), and static methods (don't access instance or class data).
-        </p>
-        <pre><code class="language-python">class BankAccount:
+          <div class="yk-card">
+            <h3>Instance vs Class vs Static Methods</h3>
+            <p>
+              Python provides three types of methods: instance methods (work with instance data),
+              class methods (work with class data), and static methods (don't access instance or class data).
+            </p>
+            <pre><code class="language-python">class BankAccount:
     # Class attribute
     interest_rate = 0.02
     
@@ -129,16 +136,16 @@ print(BankAccount.interest_rate)  # 0.03
 
 print(BankAccount.validate_amount(100))  # True (static method)
 print(BankAccount.validate_amount(-50))  # False</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Inheritance</h3>
-        <p>
-          <code>self</code> refers to the current instance. <code>super()</code> lets you call
-          parent class methods to extend behavior. Inheritance allows you to create specialized
-          classes that reuse and extend the functionality of base classes.
-        </p>
-        <pre><code class="language-python">class User:
+          <div class="yk-card">
+            <h3>Inheritance</h3>
+            <p>
+              <code>self</code> refers to the current instance. <code>super()</code> lets you call
+              parent class methods to extend behavior. Inheritance allows you to create specialized
+              classes that reuse and extend the functionality of base classes.
+            </p>
+            <pre><code class="language-python">class User:
     def __init__(self, name, email):
         self.name = name
         self.email = email
@@ -179,16 +186,16 @@ print(admin.get_info())  # Maya (maya@example.com) [Admin Level 2]
 mod = Moderator("John", "john@example.com", ["comments", "posts"])
 print(mod.can_moderate("comments"))  # True
 print(mod.can_moderate("users"))  # False</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Multiple Inheritance</h3>
-        <p>
-          Python supports multiple inheritance, where a class can inherit from multiple parent classes.
-          The Method Resolution Order (MRO) determines which parent's method is called. Use
-          <code>ClassName.mro()</code> to see the order.
-        </p>
-        <pre><code class="language-python">class Loggable:
+          <div class="yk-card">
+            <h3>Multiple Inheritance</h3>
+            <p>
+              Python supports multiple inheritance, where a class can inherit from multiple parent classes.
+              The Method Resolution Order (MRO) determines which parent's method is called. Use
+              <code>ClassName.mro()</code> to see the order.
+            </p>
+            <pre><code class="language-python">class Loggable:
     """Mixin for adding logging capability."""
     def log(self, message):
         print(f"[{self.__class__.__name__}] {message}")
@@ -220,16 +227,16 @@ print(product.to_dict())
 # Check method resolution order
 print([c.__name__ for c in Product.mro()])
 # ['Product', 'Loggable', 'Serializable', 'object']</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Encapsulation and Property Decorators</h3>
-        <p>
-          Python uses naming conventions for encapsulation: single underscore (_) for internal use,
-          double underscore (__) for name mangling. The <code>@property</code> decorator creates
-          managed attributes with getter, setter, and deleter methods.
-        </p>
-        <pre><code class="language-python">class Temperature:
+          <div class="yk-card">
+            <h3>Encapsulation and Property Decorators</h3>
+            <p>
+              Python uses naming conventions for encapsulation: single underscore (_) for internal use,
+              double underscore (__) for name mangling. The <code>@property</code> decorator creates
+              managed attributes with getter, setter, and deleter methods.
+            </p>
+            <pre><code class="language-python">class Temperature:
     def __init__(self, celsius=0):
         self._celsius = celsius
     
@@ -284,16 +291,16 @@ class Person:
 person = Person("Alice", 30)
 person.age = 31  # Uses setter
 print(person.age)  # Uses getter: 31</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Dunder Methods (Magic Methods)</h3>
-        <p>
-          Methods like <code>__repr__</code>, <code>__str__</code>, <code>__len__</code>, and
-          <code>__getitem__</code> define how objects behave with built-in Python syntax.
-          These special methods enable operator overloading and integration with Python's protocols.
-        </p>
-        <pre><code class="language-python">class Vector:
+          <div class="yk-card">
+            <h3>Dunder Methods (Magic Methods)</h3>
+            <p>
+              Methods like <code>__repr__</code>, <code>__str__</code>, <code>__len__</code>, and
+              <code>__getitem__</code> define how objects behave with built-in Python syntax.
+              These special methods enable operator overloading and integration with Python's protocols.
+            </p>
+            <pre><code class="language-python">class Vector:
     """A simple 2D vector class."""
     
     def __init__(self, x, y):
@@ -348,16 +355,16 @@ print(v4)           # &lt;4, 6&gt;
 print(v1 == v2)     # False (uses __eq__)
 print(len(v1))      # 3 (uses __len__)
 print(abs(v1))      # 3.605... (uses __abs__)</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Context Managers</h3>
-        <p>
-          Context managers handle setup and teardown logic using <code>__enter__</code> and
-          <code>__exit__</code> methods. They're used with the <code>with</code> statement
-          to ensure resources are properly managed.
-        </p>
-        <pre><code class="language-python">class FileManager:
+          <div class="yk-card">
+            <h3>Context Managers</h3>
+            <p>
+              Context managers handle setup and teardown logic using <code>__enter__</code> and
+              <code>__exit__</code> methods. They're used with the <code>with</code> statement
+              to ensure resources are properly managed.
+            </p>
+            <pre><code class="language-python">class FileManager:
     """Custom context manager for file operations."""
     
     def __init__(self, filename, mode):
@@ -401,19 +408,21 @@ with Timer():
     # Code to time
     time.sleep(1)
 # Output: Elapsed time: 1.0001 seconds</code></pre>
-      </div>
-    </section>
+          </div>
+        </div>
+      </section>
 
-    <section>
-      <h2>Advanced OOP Patterns</h2>
+      <section>
+        <h2>Advanced OOP Patterns</h2>
       
-      <div class="card">
-        <h3>Abstract Base Classes (ABC)</h3>
-        <p>
-          Abstract base classes define interfaces that subclasses must implement. They ensure
-          that derived classes provide specific methods and can't be instantiated directly.
-        </p>
-        <pre><code class="language-python">from abc import ABC, abstractmethod
+        <div class="yk-stack">
+          <div class="yk-card">
+            <h3>Abstract Base Classes (ABC)</h3>
+            <p>
+              Abstract base classes define interfaces that subclasses must implement. They ensure
+              that derived classes provide specific methods and can't be instantiated directly.
+            </p>
+            <pre><code class="language-python">from abc import ABC, abstractmethod
 
 class Shape(ABC):
     """Abstract base class for shapes."""
@@ -462,16 +471,16 @@ print(rect.describe())  # Rectangle: area=15.00
 
 circle = Circle(4)
 print(circle.area())    # 50.27</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Data Classes</h3>
-        <p>
-          The <code>@dataclass</code> decorator automatically generates <code>__init__</code>,
-          <code>__repr__</code>, <code>__eq__</code>, and other methods, reducing boilerplate code
-          for classes that mainly store data.
-        </p>
-        <pre><code class="language-python">from dataclasses import dataclass, field
+          <div class="yk-card">
+            <h3>Data Classes</h3>
+            <p>
+              The <code>@dataclass</code> decorator automatically generates <code>__init__</code>,
+              <code>__repr__</code>, <code>__eq__</code>, and other methods, reducing boilerplate code
+              for classes that mainly store data.
+            </p>
+            <pre><code class="language-python">from dataclasses import dataclass, field
 from typing import List
 
 @dataclass
@@ -510,15 +519,15 @@ students = [
 sorted_students = sorted(students)
 print([s.name for s in sorted_students])
 # ['Bob', 'Alice', 'Charlie']</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Composition Over Inheritance</h3>
-        <p>
-          Composition means building complex objects by combining simpler ones, rather than
-          using inheritance. This often leads to more flexible and maintainable code.
-        </p>
-        <pre><code class="language-python">class Engine:
+          <div class="yk-card">
+            <h3>Composition Over Inheritance</h3>
+            <p>
+              Composition means building complex objects by combining simpler ones, rather than
+              using inheritance. This often leads to more flexible and maintainable code.
+            </p>
+            <pre><code class="language-python">class Engine:
     def __init__(self, horsepower):
         self.horsepower = horsepower
         self.running = False
@@ -562,15 +571,15 @@ car = Car("Toyota", 200)
 print(car.start())   # Engine started
 print(car.drive())   # Toyota driving: 4 wheels rotating
 print(car.stop())    # Engine stopped</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Singleton Pattern</h3>
-        <p>
-          The Singleton pattern ensures only one instance of a class exists. This is useful
-          for managing shared resources like configuration or database connections.
-        </p>
-        <pre><code class="language-python">class Singleton:
+          <div class="yk-card">
+            <h3>Singleton Pattern</h3>
+            <p>
+              The Singleton pattern ensures only one instance of a class exists. This is useful
+              for managing shared resources like configuration or database connections.
+            </p>
+            <pre><code class="language-python">class Singleton:
     """Singleton implementation using __new__."""
     _instance = None
     
@@ -609,16 +618,16 @@ class Database(metaclass=SingletonMeta):
 db1 = Database()
 db2 = Database()
 print(db1 is db2)  # True</code></pre>
-      </div>
+          </div>
 
-      <div class="card">
-        <h3>Descriptors</h3>
-        <p>
-          Descriptors are objects that customize attribute access. They implement
-          <code>__get__</code>, <code>__set__</code>, and/or <code>__delete__</code>
-          to control how attributes are accessed, modified, or deleted.
-        </p>
-        <pre><code class="language-python">class Validator:
+          <div class="yk-card">
+            <h3>Descriptors</h3>
+            <p>
+              Descriptors are objects that customize attribute access. They implement
+              <code>__get__</code>, <code>__set__</code>, and/or <code>__delete__</code>
+              to control how attributes are accessed, modified, or deleted.
+            </p>
+            <pre><code class="language-python">class Validator:
     """Descriptor that validates values."""
     
     def __init__(self, min_value=None, max_value=None):
@@ -655,16 +664,17 @@ print(person.age)  # 25
 person.age = 30  # OK
 # person.age = -5  # Raises ValueError
 # person.age = 200  # Raises ValueError</code></pre>
-      </div>
-    </section>
+          </div>
+        </div>
+      </section>
 
-    <section>
-      <h2>Polymorphism</h2>
-      <p>
-        Polymorphism allows objects of different classes to be treated uniformly through
-        a common interface. This is achieved through inheritance, duck typing, or abstract base classes.
-      </p>
-      <pre><code class="language-python">class Animal:
+      <section>
+        <h2>Polymorphism</h2>
+        <p>
+          Polymorphism allows objects of different classes to be treated uniformly through
+          a common interface. This is achieved through inheritance, duck typing, or abstract base classes.
+        </p>
+        <pre><code class="language-python">class Animal:
     def speak(self):
         raise NotImplementedError("Subclass must implement")
 
@@ -701,45 +711,45 @@ class Robot:
 all_speakers = [Dog(), Cat(), Robot()]
 animal_sounds(all_speakers)
 # Robot: Beep boop!</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Mini Example</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Concept</th>
-            <th>Snippet</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Initialization</td>
-            <td><code>def __init__(self, name): self.name = name</code></td>
-          </tr>
-          <tr>
-            <td>Inheritance</td>
-            <td><code>class Admin(User): super().__init__(name)</code></td>
-          </tr>
-          <tr>
-            <td>Dunder</td>
-            <td><code>def __repr__(self): return f"User({self.name})"</code></td>
-          </tr>
-          <tr>
-            <td>Property</td>
-            <td><code>@property<br>def age(self): return self._age</code></td>
-          </tr>
-          <tr>
-            <td>Class method</td>
-            <td><code>@classmethod<br>def create(cls, data): return cls(**data)</code></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+      <section>
+        <h2>Mini Example</h2>
+        <table class="yk-table">
+          <thead>
+            <tr>
+              <th>Concept</th>
+              <th>Snippet</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Initialization</td>
+              <td><code>def __init__(self, name): self.name = name</code></td>
+            </tr>
+            <tr>
+              <td>Inheritance</td>
+              <td><code>class Admin(User): super().__init__(name)</code></td>
+            </tr>
+            <tr>
+              <td>Dunder</td>
+              <td><code>def __repr__(self): return f"User({self.name})"</code></td>
+            </tr>
+            <tr>
+              <td>Property</td>
+              <td><code>@property<br>def age(self): return self._age</code></td>
+            </tr>
+            <tr>
+              <td>Class method</td>
+              <td><code>@classmethod<br>def create(cls, data): return cls(**data)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <section>
-      <h2>Sample Code</h2>
-      <pre><code class="language-python">class User:
+      <section>
+        <h2>Sample Code</h2>
+        <pre><code class="language-python">class User:
     def __init__(self, name):
         self.name = name
 
@@ -756,14 +766,14 @@ class Admin(User):
 
 print(Admin("Maya", 2))
 # Output: Admin(Maya, level=2)</code></pre>
-    </section>
+      </section>
 
-    <section>
-      <h2>Real-World Example: Library System</h2>
-      <p>
-        Here's a comprehensive example combining multiple OOP concepts to build a library management system.
-      </p>
-      <pre><code class="language-python">from datetime import datetime, timedelta
+      <section>
+        <h2>Real-World Example: Library System</h2>
+        <p>
+          Here's a comprehensive example combining multiple OOP concepts to build a library management system.
+        </p>
+        <pre><code class="language-python">from datetime import datetime, timedelta
 from abc import ABC, abstractmethod
 
 class LibraryItem(ABC):
@@ -859,13 +869,17 @@ print(member.checkout_item(dvd))
 
 print(book)  # Book('Python Programming', Checked out)
 print(member.return_item(book))  # Python Programming returned</code></pre>
-    </section>
+      </section>
+    </div>
   </main>
 
-  <footer>
-    <p>OOP helps structure medium and large Python projects. Master these concepts to write maintainable, reusable, and elegant code.</p>
+  <footer class="yk-footer">
+    <div class="yk-container">
+      <p>OOP helps structure medium and large Python projects. Master these concepts to write maintainable, reusable, and elegant code.</p>
+    </div>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
+  <script src="js/copy.js"></script>
 </body>
 </html>
