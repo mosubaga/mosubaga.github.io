@@ -1,0 +1,72 @@
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/VdGEAYIAV6gnpUpoWwNkYvrugw9RuPWG.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/VdGBAYIAV6gnpUpoWwNkYvrugw9RuM1y55sK.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/VdGBAYIAV6gnpUpoWwNkYvrugw9RuM064ZsK.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url(fonts/VdGBAYIAV6gnpUpoWwNkYvrugw9RuM0m4psK.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/XRXI3I6Li01BKofiOc5wtlZ2di8HDFwmRTM.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url(fonts/XRXI3I6Li01BKofiOc5wtlZ2di8HDDsmRTM.ttf) format('truetype');
+}
+
+@font-face { font-family: "Font Awesome"; src: url("fonts/fa-solid-900.woff2") format("woff2"); font-weight: 900; font-display: block; }
+@font-face { font-family: "Font Awesome"; src: url("fonts/fa-regular-400.woff2") format("woff2"); font-weight: 400; font-display: block; }
+.fa-solid, .fa-regular { display: inline-block; font-family: "Font Awesome"; font-style: normal; line-height: 1; }
+.fa-solid { font-weight: 900; }
+.fa-regular { font-weight: 400; }
+.fa-utensils::before { content: "\f2e7"; }
+.fa-house::before { content: "\f015"; }
+.fa-fire-burner::before { content: "\e4f1"; }
+.fa-fish::before { content: "\f578"; }
+.fa-burger::before { content: "\f805"; }
+.fa-bars::before { content: "\f0c9"; }
+.fa-arrow-right::before { content: "\f061"; }
+.fa-calendar::before { content: "\f133"; }
+.fa-palette::before { content: "\f53f"; }
+.fa-newspaper::before { content: "\f1ea"; }
