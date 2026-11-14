@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>Differential Forms for Physics</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet" />
+        <!-- Custom styles for this template -->
+        <!-- Hightlight -->
+        <link rel="stylesheet" href="../css/prism.css" />
+        <link rel="stylesheet" href="../css/style.css" />
+        <script src="../css/prism.js"></script>
+        <link href="../css/starter-template.css" rel="stylesheet" />
+        <script src="https://api.onelink-preview.com/moxie.min.js"></script>
+        <script
+            type="text/javascript"
+            async=""
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"
+        ></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet" />
+        <style>
+            body {
+                font-family: "Comic Neue", cursive;
+            }
+
+            .navbar {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            }
+
+            table {
+                border-collapse: collapse;
+                margin-bottom: 1em;
+            }
+
+            table, th, td {
+                border: 1px solid #ccc;
+            }
+
+            th, td {
+                padding: 6px 12px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="headercontainer">
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../perl.html">Perl</a></li>
+                        <li><a href="../python.html">Python</a></li>
+                        <li><a href="../go.html">Go</a></li>
+                        <li><a href="../articles.html">Articles</a></li>
+                        <li><a href="../reference.html">Reference</a></li>
+                        <li><a href="../rotk.html">ROTK</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+
+        <div class="container" style="margin-top: 80px">
+            <h1>Differential Forms for Physics</h1>
+
+            <p>
+                A worked guide from multivariable calculus to electromagnetism,
+                mechanics, thermodynamics, fluids, gauge theory, and general
+                relativity. This guide consolidates <em>Physics with Differential
+                Forms</em> and <em>Doing Physics with Differential Forms</em> and
+                develops the calculations behind their summaries.
+            </p>
+
+            <p>
+                You can start with multivariable calculus and linear algebra. If you
+                have studied Christoffel symbols in polar or spherical coordinates,
+                &sect;9 shows how to obtain the same geometric information from an
+                orthonormal coframe. If you have studied the Legendre transform in
+                mechanics, &sect;7 shows its thermodynamic counterpart.
+            </p>
+
+            <h2>Contents</h2>
+            <ol>
+                <li><a href="#sec1">Covectors, forms, and the wedge product</a></li>
+                <li><a href="#sec2">Exterior derivative and topology</a></li>
+                <li><a href="#sec3">Pullback, integration, and Stokes</a></li>
+                <li><a href="#sec4">Metrics, Hodge star, and vector calculus</a></li>
+                <li><a href="#sec5">Electromagnetism</a></li>
+                <li><a href="#sec6">Hamiltonian mechanics</a></li>
+                <li><a href="#sec7">Thermodynamics</a></li>
+                <li><a href="#sec8">Fluid mechanics and conservation</a></li>
+                <li><a href="#sec9">Cartan geometry and general relativity</a></li>
+                <li><a href="#sec10">Gauge theory</a></li>
+                <li><a href="#sec11">Practice problems with solutions</a></li>
+            </ol>
+
+            <hr />
+
+            <h2 id="sec1">1. Covectors, forms, and the wedge product</h2>
+            <p>
+                A smooth manifold is a space with local coordinate charts whose
+                overlaps have smooth coordinate changes. At a point, tangent vectors
+                describe velocities of curves. Covectors are linear maps from tangent
+                vectors to numbers. A differential \(k\)-form smoothly assigns to each
+                point an alternating multilinear function of \(k\) tangent vectors.
+                Interchanging two inputs changes the sign. Repeated inputs give zero.
+            </p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Degree</th>
+                        <th>Typical local expression</th>
+                        <th>Physical interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>\(f\)</td>
+                        <td>Temperature or potential</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>\(a\,dx+b\,dy+c\,dz\)</td>
+                        <td>Work along a displacement</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>\(a\,dy\wedge dz+b\,dz\wedge dx+c\,dx\wedge dy\)</td>
+                        <td>Flux through an oriented surface</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>\(f\,dx\wedge dy\wedge dz\)</td>
+                        <td>Amount per oriented volume</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                In coordinates \(x^i\), \(dx^i(v)=v^i\). The \(\binom nk\) wedges with
+                strictly increasing indices form a basis of \(k\)-forms in \(n\)
+                dimensions. If you sum over all ordered indices, write
+                \(\omega=\frac1{k!}\omega_{i_1\cdots i_k}dx^{i_1}\wedge\cdots\wedge
+                dx^{i_k}\), with alternating components. The wedge of a \(k\)-form and
+                an \(\ell\)-form satisfies \(\alpha\wedge\beta=(-1)^{k\ell}\beta\wedge\alpha\).
+            </p>
+
+            <h3>Worked example 1 &mdash; Directional change without a dot product</h3>
+            <p>
+                Let \(T(x,y)=x^2+3y\). At \((2,1)\), \(dT=4dx+3dy\). For the velocity
+                \(v=2\partial_x-\partial_y\), \(dT(v)=8-3=5\). If \(v=\dot\gamma(0)\),
+                the chain rule gives \(\frac{d}{dt}T(\gamma(t))|_0=5\). A metric would
+                let you represent this covector by a gradient vector, but the
+                directional derivative itself requires only the curve and the
+                function.
+            </p>
+
+            <h3>Worked example 2 &mdash; Wedges measure signed projected area</h3>
+            <p>For covectors \(\alpha,\beta\),</p>
+            <p>\[
+            (\alpha\wedge\beta)(u,v)=\alpha(u)\beta(v)-\alpha(v)\beta(u).
+            \]</p>
+            <p>
+                For \(u=(2,1)\) and \(v=(1,3)\), \((dx\wedge dy)(u,v)=6-1=5\).
+                Reversing the vectors gives \(-5\). Also
+                \((2dx+dy)\wedge(dx-3dy)=-7dx\wedge dy\). In four dimensions a 2-form
+                can have a nonzero wedge square. For example
+                \((dx\wedge dy+dz\wedge dw)^2=2dx\wedge dy\wedge dz\wedge dw\), where
+                the square denotes a wedge product.
+            </p>
+
+            <h2 id="sec2">2. Exterior derivative and topology</h2>
+            <p>
+                Compute \(d\) in a coordinate basis by differentiating coefficients
+                and wedging the resulting differential on the left.
+            </p>
+            <p>\[
+            d(f\,dx^{i_1}\wedge\cdots\wedge dx^{i_k})=df\wedge dx^{i_1}\wedge\cdots\wedge dx^{i_k}.
+            \]</p>
+            <p>
+                For arbitrary forms use
+                \(d(\alpha\wedge\beta)=d\alpha\wedge\beta+(-1)^k\alpha\wedge d\beta\)
+                when \(\alpha\) has degree \(k\). In particular, if your basis
+                consists of moving coframe forms, you must also differentiate the
+                basis.
+            </p>
+
+            <h3>Worked example 3 &mdash; Exterior derivative of a circulation form</h3>
+            <p>
+                Take \(\alpha=x^2y\,dx+xy^2\,dy\). The \(dx\wedge dx\) and
+                \(dy\wedge dy\) terms vanish. The remaining terms give
+            </p>
+            <p>\[
+            d\alpha=x^2\,dy\wedge dx+y^2\,dx\wedge dy=(y^2-x^2)\,dx\wedge dy.
+            \]</p>
+            <p>
+                For a smooth function \(f\),
+                \(d(df)=\sum_{i,j}\partial_j\partial_i f\,dx^j\wedge dx^i=0\). Mixed
+                partials are symmetric and wedge factors are antisymmetric. The same
+                cancellation on coefficients gives \(d^2=0\) on every smooth form.
+            </p>
+
+            <h3>Worked example 4 &mdash; A locally conservative field with nonzero circulation</h3>
+            <p>
+                A form is <strong>closed</strong> if \(d\omega=0\) and
+                <strong>exact</strong> if \(\omega=d\eta\). Exact forms are closed. On
+                a star-shaped open set, the Poincar&eacute; lemma gives the converse
+                for positive-degree forms. On the punctured plane consider
+            </p>
+            <p>\[
+            \eta=\frac{-y\,dx+x\,dy}{x^2+y^2}.
+            \]</p>
+            <p>
+                On a polar coordinate patch \(\eta=d\theta\), hence \(d\eta=0\). Along
+                the counterclockwise unit circle, \(\eta\) pulls back to \(dt\) for
+                \(0\le t\le2\pi\). Its integral is \(2\pi\). An exact 1-form has zero
+                integral around a closed loop by the fundamental theorem of calculus,
+                so this form has no global single-valued primitive. The circle cannot
+                be filled by a disk lying entirely within the punctured plane.
+            </p>
+
+            <h2 id="sec3">3. Pullback, integration, and Stokes</h2>
+            <p>
+                For a map \(\Phi:N\to M\), pull back a form by evaluating it on pushed
+                forward tangent vectors. In coordinates, substitute \(x^i=\Phi^i(u)\)
+                and replace \(dx^i\) by \(d\Phi^i\). Pullback respects wedges and
+                satisfies \(\Phi^*(d\omega)=d(\Phi^*\omega)\). To integrate a
+                \(k\)-form over a parametrized oriented \(k\)-dimensional region,
+                integrate the coefficient of the ordered parameter wedge after
+                pulling back.
+            </p>
+
+            <h3>Worked example 5 &mdash; Polar Jacobian from a wedge</h3>
+            <p>For \(x=r\cos\theta\), \(y=r\sin\theta\),</p>
+            <p>\[
+            dx=\cos\theta\,dr-r\sin\theta\,d\theta,\qquad
+            dy=\sin\theta\,dr+r\cos\theta\,d\theta.
+            \]</p>
+            <p>
+                Wedging gives \(dx\wedge dy=r\,dr\wedge d\theta\). The area of a disk
+                of radius \(R\) is therefore
+                \(\int_0^{2\pi}\int_0^R r\,dr\,d\theta=\pi R^2\). The polar singularity
+                at the origin can be handled by integrating over annuli and letting
+                the inner radius approach zero.
+            </p>
+
+            <h3>Worked example 6 &mdash; Work along a path</h3>
+            <p>
+                Let \(\alpha=y\,dx+x\,dy\). Along \(\gamma(t)=(t,t^2)\),
+                \(0\le t\le1\), \(\gamma^*\alpha=(t^2+2t^2)dt=3t^2dt\). The work is 1.
+                Since \(\alpha=d(xy)\), every smooth path from \((0,0)\) to \((1,1)\)
+                gives the same value.
+            </p>
+
+            <h3>Worked example 7 &mdash; Flux through a tilted surface</h3>
+            <p>
+                For the constant field \(B=(0,0,2)\) the flux form is
+                \(2dx\wedge dy\). On the upward-oriented graph \((u,v,u+2v)\) over the
+                unit square it pulls back to \(2du\wedge dv\), giving flux 2. In
+                vector language the oriented area vector is \((-1,-2,1)\,du\,dv\). Its
+                dot product with \(B\) is 2. The horizontal projection accounts for
+                the tilt automatically.
+            </p>
+
+            <h3>Worked example 8 &mdash; Stokes on a disk</h3>
+            <p>For a compact oriented \(k\)-manifold \(K\) with boundary,</p>
+            <p>\[
+            \int_K d\omega=\int_{\partial K}\omega,\qquad \deg\omega=k-1.
+            \]</p>
+            <p>
+                Use the outward-first convention for the boundary orientation. For
+                the positively oriented disk, take \(\omega=(x\,dy-y\,dx)/2\). Then
+                \(d\omega=dx\wedge dy\). On the counterclockwise boundary of radius
+                \(R\), \(\omega=R^2d\theta/2\). Both integrals are \(\pi R^2\).
+            </p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>\(K\)</th>
+                        <th>\(\omega\)</th>
+                        <th>Familiar theorem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Interval</td>
+                        <td>Function</td>
+                        <td>Fundamental theorem of calculus</td>
+                    </tr>
+                    <tr>
+                        <td>Plane region</td>
+                        <td>Circulation 1-form</td>
+                        <td>Green's circulation theorem</td>
+                    </tr>
+                    <tr>
+                        <td>Surface in space</td>
+                        <td>Circulation 1-form</td>
+                        <td>Classical Stokes theorem</td>
+                    </tr>
+                    <tr>
+                        <td>Solid region</td>
+                        <td>Flux 2-form</td>
+                        <td>Divergence theorem</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="sec4">4. Metrics, Hodge star, and vector calculus</h2>
+            <p>
+                A metric \(g\) converts a vector \(X\) into the covector
+                \(X^\flat=g(X,\cdot)\). The inverse operation is denoted \(\sharp\).
+                With an orientation, \(g\) also defines the Hodge star by
+            </p>
+            <p>\[
+            \alpha\wedge *\beta=\langle\alpha,\beta\rangle_g\,\mathrm{vol}_g
+            \]</p>
+            <p>
+                for forms of equal degree. In a positive orthonormal coframe, take the
+                complementary basis wedge with the sign that makes the ordered
+                product positive. In Lorentzian signature, also multiply by the
+                metric norm squared of the starting basis wedge. In dimension \(n\)
+                with \(s\) negative directions, \(**\alpha=(-1)^{k(n-k)+s}\alpha\) on
+                \(k\)-forms.
+            </p>
+
+            <p>Contraction inserts a vector in the first slot. In particular,</p>
+            <p>\[
+            \iota_X(\alpha\wedge\beta)=(\iota_X\alpha)\wedge\beta+(-1)^k\alpha\wedge\iota_X\beta.
+            \]</p>
+            <p>
+                In Euclidean 3-space, \(\iota_X\mathrm{vol}=*X^\flat\). The same vector
+                field can therefore be encoded as a circulation 1-form or a flux
+                2-form.
+            </p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Operation</th>
+                        <th>Forms in oriented Euclidean 3-space</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Gradient</td>
+                        <td>\((\operatorname{grad} f)^\flat=df\)</td>
+                    </tr>
+                    <tr>
+                        <td>Curl</td>
+                        <td>\((\operatorname{curl}X)^\flat=*dX^\flat\)</td>
+                    </tr>
+                    <tr>
+                        <td>Divergence</td>
+                        <td>\(d(\iota_X\mathrm{vol})=(\operatorname{div}X)\mathrm{vol}\)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Worked example 9 &mdash; Curl and divergence in Cartesian coordinates</h3>
+            <p>
+                For \(X=(-y,x,0)\), \(X^\flat=-y\,dx+x\,dy\). Then
+                \(dX^\flat=2dx\wedge dy\), so \(\operatorname{curl}X=2\partial_z\).
+                The flux form is \(-y\,dy\wedge dz+x\,dz\wedge dx\), whose derivative
+                vanishes. Applying \(d^2=0\) to \(f\) and \(X^\flat\) explains
+                \(\operatorname{curl}\operatorname{grad}f=0\) and
+                \(\operatorname{div}\operatorname{curl}X=0\).
+            </p>
+
+            <h3>Worked example 10 &mdash; Why spherical divergence has an \(r^2\)</h3>
+            <p>
+                For \(r>0\) and away from polar coordinate singularities, the
+                orthonormal coframe is \((dr,r\,d\vartheta,r\sin\vartheta\,d\varphi)\).
+                Its volume form is \(r^2\sin\vartheta\,dr\wedge d\vartheta\wedge
+                d\varphi\). For \(X=f(r)\partial_r\) the flux form is
+                \(f(r)r^2\sin\vartheta\,d\vartheta\wedge d\varphi\). Taking \(d\) and
+                dividing by the volume coefficient gives
+            </p>
+            <p>\[
+            \operatorname{div}X=\frac{1}{r^2}\frac{d}{dr}(r^2f(r)).
+            \]</p>
+            <p>
+                For \(f=C/r^2\) the divergence vanishes at every point of the
+                punctured space, yet the flux through any outward sphere is \(4\pi
+                C\). A shell has two boundary spheres with opposite induced
+                orientations, so its total boundary flux is zero. To apply the
+                divergence theorem to a full ball, one must account for the
+                singularity at the origin.
+            </p>
+
+            <h2 id="sec5">5. Electromagnetism</h2>
+            <p>
+                Use flat spacetime with coordinates \((t,x,y,z)\), metric
+                \(-dt^2+dx^2+dy^2+dz^2\), orientation \(dt\wedge dx\wedge dy\wedge
+                dz\), and units \(c=\epsilon_0=\mu_0=1\). Denote the spatial exterior
+                derivative and Hodge star by \(d_s\) and \(*_3\). Let \(e=E^\flat\),
+                \(b=*_3 B^\flat\), \(j=*_3\mathbf J^\flat\), and \(v_3=dx\wedge
+                dy\wedge dz\). Define
+            </p>
+            <p>\[
+            F=b-dt\wedge e,\qquad
+            \mathcal J=\rho v_3-dt\wedge j,\qquad
+            dF=0,\quad d(*F)=\mathcal J.
+            \]</p>
+            <p>
+                Here \(\mathcal J\) is the <strong>current 3-form</strong>, so the
+                degrees of the source equation agree. For the current vector
+                \(J=\rho\partial_t+\mathbf J\), \(\mathcal J=\iota_J\mathrm{vol}_4=*J^\flat\).
+                Applying a Hodge star to both sides gives
+                \(*d(*F)=**J^\flat=J^\flat\) with the stated signature. Writing the
+                source equation directly with the current 3-form avoids ambiguity
+                when changing conventions.
+            </p>
+
+            <h3>Worked example 11 &mdash; Recover all four Maxwell equations</h3>
+            <p>
+                The spacetime star gives \(*F=*_3e+dt\wedge B^\flat\). For instance
+                \(*(dt\wedge dx)=-dy\wedge dz\) and \(*(dy\wedge dz)=dt\wedge dx\). Now
+                compute
+            </p>
+            <p>\[
+            dF=d_sb+dt\wedge(\partial_t b+d_se),
+            \]</p>
+            <p>\[
+            d(*F)=d_s(*_3e)+dt\wedge(\partial_t(*_3e)-d_sB^\flat).
+            \]</p>
+            <p>Match spatial and time-containing terms.</p>
+            <p>\[
+            \begin{aligned}
+            \nabla\cdot B&=0,& \partial_t B+\nabla\times E&=0,\\
+            \nabla\cdot E&=\rho,& \nabla\times B-\partial_t E&=\mathbf J.
+            \end{aligned}
+            \]</p>
+            <p>
+                The first pair uses only \(d\) on \(F\). The second pair uses the
+                metric through \(*\). On curved spacetime the same form equations
+                apply using the spacetime metric and orientation to define the star.
+            </p>
+
+            <h3>Worked example 12 &mdash; Potentials and gauge freedom</h3>
+            <p>
+                Locally \(dF=0\) implies \(F=dA\). Put \(A=a-\phi\,dt\), with \(a\)
+                the spatial vector-potential 1-form. Then
+            </p>
+            <p>\[
+            dA=d_sa+dt\wedge(\partial_t a+d_s\phi).
+            \]</p>
+            <p>
+                Thus \(B^\flat=*_3d_sa\) and \(e=-\partial_t a-d_s\phi\). Under
+                \(A\mapsto A+d\chi\), \(a\mapsto a+d_s\chi\) and
+                \(\phi\mapsto\phi-\partial_t\chi\). The field stays the same because
+                \(d^2\chi=0\).
+            </p>
+            <p>
+                For a uniform magnetic field \(B_0\partial_z\), choose
+                \(a=\frac{B_0}{2}(x\,dy-y\,dx)\) and \(\phi=0\). Then
+                \(F=B_0dx\wedge dy\). Another choice is \(a'=B_0x\,dy\). Their
+                difference is \(d(B_0xy/2)\).
+            </p>
+
+            <h3>Worked example 13 &mdash; A plane wave and its dual</h3>
+            <p>Set \(u=t-z\) and \(A=a(u)\,dx\). Then</p>
+            <p>\[
+            F=a'(u)(dt-dz)\wedge dx,\qquad *F=a'(u)(dz-dt)\wedge dy.
+            \]</p>
+            <p>
+                Both exterior derivatives vanish because \(da'=a''(u)du\) and
+                \(du\wedge du=0\). The fields are \(E=-a'\partial_x\) and
+                \(B=-a'\partial_y\). Their cross product points along \(+\partial_z\),
+                the direction in which a fixed phase \(t-z\) propagates.
+            </p>
+
+            <h3>Worked example 14 &mdash; Faraday induction on a stationary circle</h3>
+            <p>
+                Take \(B=B(t)\partial_z\) and an oriented disk of radius \(R\) with
+                normal \(+\partial_z\). The equation \(\partial_t b=-d_s e\) and
+                Stokes give
+            </p>
+            <p>\[
+            \oint_{\partial D} e=-\frac{d}{dt}\int_D b=-\pi R^2\dot B.
+            \]</p>
+            <p>
+                For an azimuthally symmetric electric field,
+                \(E_\theta(R)=-R\dot B/2\). A compatible local potential is
+                \(a=B(t)(x\,dy-y\,dx)/2\) with \(\phi=0\). This illustrates the
+                homogeneous equations. Whether particular time dependence is
+                supported by sources is determined by the inhomogeneous equations.
+            </p>
+
+            <h3>Worked example 15 &mdash; Charge conservation and the Coulomb field</h3>
+            <p>
+                Apply \(d\) to \(d(*F)=\mathcal J\) to obtain \(d\mathcal J=0\). In
+                components,
+            </p>
+            <p>\[
+            d\mathcal J=dt\wedge(\partial_t\rho\,v_3+d_sj),
+            \]</p>
+            <p>
+                which is the continuity equation. Integrating over a fixed spatial
+                region gives the rate of change of its charge as minus the outward
+                current flux.
+            </p>
+            <p>
+                For a static point charge \(q\), use \(\phi=q/(4\pi r)\) away from the
+                origin. Then \(e=-d_s\phi=q\,dr/(4\pi r^2)\) and
+                \(*_3e=(q/4\pi)\sin\vartheta\,d\vartheta\wedge d\varphi\). Its outward
+                sphere integral is \(q\). The source vanishes in the punctured domain.
+                On the full domain the source is a delta distribution at the origin.
+            </p>
+
+            <h2 id="sec6">6. Hamiltonian mechanics</h2>
+            <p>
+                A system with configuration manifold \(Q\) has canonical phase space
+                \(T^*Q\). Its coordinates \((q^i,p_i)\) pair positions with covector
+                components of momentum. The canonical 1-form and symplectic 2-form
+                are
+            </p>
+            <p>\[
+            \theta=p_i\,dq^i,\qquad \omega=-d\theta=\sum_i dq^i\wedge dp_i.
+            \]</p>
+            <p>
+                A symplectic form is closed and nondegenerate. Nondegeneracy makes
+                \(X_H\) unique in \(\iota_{X_H}\omega=dH\). For
+                \(X_H=\dot q^i\partial_{q^i}+\dot p_i\partial_{p_i}\), contraction
+                yields \(\dot q^i dp_i-\dot p_i dq^i\). Comparing coefficients gives
+                Hamilton's equations.
+            </p>
+
+            <h3>Worked example 16 &mdash; Harmonic oscillator and phase-space area</h3>
+            <p>For \(H=p^2/(2m)+m\nu^2q^2/2\),</p>
+            <p>\[
+            X_H=(p/m)\partial_q-m\nu^2 q\,\partial_p.
+            \]</p>
+            <p>
+                Thus \(\ddot q=-\nu^2 q\). A solution is \(q=A\cos(\nu t+\delta)\) and
+                \(p=-m\nu A\sin(\nu t+\delta)\). Energy conservation follows
+                immediately from \(X_H(H)=\omega(X_H,X_H)=0\). Cartan's formula for
+                the Lie derivative,
+            </p>
+            <p>\[
+            \mathcal L_X\alpha=d(\iota_X\alpha)+\iota_Xd\alpha,
+            \]</p>
+            <p>
+                gives \(\mathcal L_{X_H}\omega=d^2H=0\). The flow preserves \(\omega\)
+                and hence the phase-space volume \(\omega^{\wedge n}/n!\). For one
+                oscillator the area inside the energy ellipse \(H\le E\) is
+                \(\pi\sqrt{2E/(m\nu^2)}\sqrt{2mE}=2\pi E/\nu\).
+            </p>
+
+            <h3>Worked example 17 &mdash; Polar coordinates and canonical momenta</h3>
+            <p>
+                In the plane, substitute \(x=r\cos\theta\) and \(y=r\sin\theta\) in
+                \(p_xdx+p_ydy\). Matching coefficients of \(dr\) and \(d\theta\) gives
+            </p>
+            <p>\[
+            p_r=p_x\cos\theta+p_y\sin\theta,\qquad
+            p_\theta=r(-p_x\sin\theta+p_y\cos\theta)=xp_y-yp_x.
+            \]</p>
+            <p>
+                Because the 1-form is preserved, its negative exterior derivative is
+                also preserved. For a central potential \(V(r)\),
+            </p>
+            <p>\[
+            H=\frac{p_r^2}{2m}+\frac{p_\theta^2}{2mr^2}+V(r).
+            \]</p>
+            <p>
+                Hamilton's equations give \(\dot p_\theta=0\),
+                \(\dot\theta=p_\theta/(mr^2)\), and
+                \(\dot p_r=p_\theta^2/(mr^3)-V'(r)\). The angular momentum is
+                precisely the coefficient of \(d\theta\) in the canonical 1-form.
+            </p>
+
+            <h2 id="sec7">7. Thermodynamics</h2>
+            <p>
+                For a simple compressible system at fixed particle number, take
+                equilibrium coordinates \((S,V)\) and a smooth energy \(U(S,V)\). With
+                \(T=U_S\) and \(P=-U_V\), \(dU=T\,dS-P\,dV\). Along a reversible
+                process the heat supplied is \(\delta Q_{\rm rev}=T\,dS\) and the work
+                done by the system is \(\delta W_{\rm rev}=P\,dV\). For irreversible
+                processes, \(T\,dS\) is generally different from the actual heat
+                supplied.
+            </p>
+
+            <h3>Worked example 18 &mdash; Maxwell relations by differentiating twice</h3>
+            <p>From \(d^2U=0\),</p>
+            <p>\[
+            0=dT\wedge dS-dP\wedge dV=-(T_V+P_S)dS\wedge dV.
+            \]</p>
+            <p>
+                Hence \((\partial T/\partial V)_S=-(\partial P/\partial S)_V\). With
+                \(F_{\rm th}=U-TS\), the product rule gives
+                \(dF_{\rm th}=-S\,dT-P\,dV\). In a region where \((T,V)\) are valid
+                equilibrium coordinates, \(d^2F_{\rm th}=0\) yields
+                \((\partial S/\partial V)_T=(\partial P/\partial T)_V\). For an ideal
+                gas with \(P=nRT/V\), this gives \((\partial S/\partial V)_T=nR/V\)
+                and the isothermal entropy change \(nR\log(V_2/V_1)\).
+            </p>
+
+            <h3>Worked example 19 &mdash; A loop with nonzero work</h3>
+            <p>
+                For a reversible ideal-gas cycle in \((T,V)\), expand isothermally
+                from \(V_1\) to \(V_2\) at \(T_h\), cool at fixed volume, compress at
+                \(T_c\), and heat at fixed volume. The isochoric legs give zero work.
+                The other legs give
+            </p>
+            <p>\[
+            \oint P\,dV=nR(T_h-T_c)\log(V_2/V_1).
+            \]</p>
+            <p>
+                The same result follows from
+                \(d(P\,dV)=(nR/V)dT\wedge dV\). The path has the boundary orientation
+                of the positive \(dT\wedge dV\) rectangle. The total energy change is
+                zero because \(dU\) is exact. For reversible heat,
+                \(\delta Q_{\rm rev}/T=dS\) is also exact. Temperature supplies an
+                integrating factor \(1/T\).
+            </p>
+
+            <h3>Worked example 20 &mdash; Contact form and a change of potential</h3>
+            <p>
+                On the five-dimensional space \((U,S,V,T,P)\) let
+                \(\lambda=dU-T\,dS+P\,dV\). Since
+                \(d\lambda=-dT\wedge dS+dP\wedge dV\), the 5-form
+                \(\lambda\wedge(d\lambda)^{\wedge2}\) is nowhere zero. This is the
+                contact condition. The equilibrium surface pulls \(\lambda\) back to
+                zero by the first law. For enthalpy \(H_{\rm th}=U+PV\), substitution
+                gives \(\lambda=dH_{\rm th}-T\,dS-V\,dP\). On the same equilibrium
+                surface this reads \(dH_{\rm th}=T\,dS+V\,dP\).
+            </p>
+
+            <h2 id="sec8">8. Fluid mechanics and conservation</h2>
+            <p>
+                On a fixed oriented spatial region with volume form \(v_3\), mass
+                density is a 3-form \(m=\rho v_3\). For flow velocity \(u\), the mass
+                crossing a fixed oriented surface per unit time is represented by
+                \(\iota_um\). Mass conservation reads
+            </p>
+            <p>\[
+            \partial_t m+d(\iota_um)=0.
+            \]</p>
+            <p>
+                It is equivalent to \(\partial_t m+\mathcal L_um=0\) since \(dm=0\) on
+                a three-dimensional spatial manifold.
+            </p>
+
+            <h3>Worked example 21 &mdash; Expanding flow</h3>
+            <p>
+                For \(u=a(x\partial_x+y\partial_y+z\partial_z)\) and spatially uniform
+                initial density \(\rho_0\), the continuity equation reduces to
+                \(\dot\rho+3a\rho=0\). Thus \(\rho(t)=\rho_0e^{-3at}\). A region moving
+                with this flow scales by \(e^{at}\) in each direction, so its volume
+                scales by \(e^{3at}\). Its total mass stays constant.
+            </p>
+
+            <h3>Worked example 22 &mdash; Vorticity and circulation</h3>
+            <p>
+                For rigid planar rotation \(u=\Omega(-y\partial_x+x\partial_y)\), the
+                velocity 1-form is \(u^\flat=\Omega(-y\,dx+x\,dy)\). The vorticity
+                2-form is \(du^\flat=2\Omega\,dx\wedge dy\). Stokes gives
+                \(\oint u^\flat=2\Omega\pi R^2\) around a counterclockwise circle of
+                radius \(R\). Directly, its tangential speed \(\Omega R\) multiplied
+                by the circumference gives the same result.
+            </p>
+
+            <h2 id="sec9">9. Cartan geometry and general relativity</h2>
+            <p>
+                Choose a local orthonormal coframe \(e^a\) with dual frame \(E_a\). In
+                GR use \(g=\eta_{ab}e^a\otimes e^b\) with
+                \(\eta=\operatorname{diag}(-1,1,1,1)\). The connection forms are
+                defined by \(\nabla E_b=\omega^a{}_b\otimes E_a\) in the sense that
+                \(\nabla_XE_b=\omega^a{}_b(X)E_a\). After lowering the first index,
+                metric compatibility gives \(\omega_{ab}=-\omega_{ba}\). Cartan's
+                structure equations are
+            </p>
+            <p>\[
+            T^a=de^a+\omega^a{}_b\wedge e^b,\qquad
+            R^a{}_b=d\omega^a{}_b+\omega^a{}_c\wedge\omega^c{}_b.
+            \]</p>
+            <p>
+                For the Levi-Civita connection, set \(T^a=0\) and solve for
+                \(\omega^a{}_b\). The convention is
+                \(R(X,Y)=\nabla_X\nabla_Y-\nabla_Y\nabla_X-\nabla_{[X,Y]}\). Components
+                follow from \(R^a{}_b=\frac12 R^a{}_{bcd}e^c\wedge e^d\) and
+                \(\mathrm{Ric}_{bd}=R^a{}_{bad}\). With these one can build the
+                Einstein tensor \(\mathrm{Ric}-\tfrac12 R_{\rm scal}g\).
+            </p>
+
+            <h3>Worked example 23 &mdash; Polar frame connection and Christoffel symbols</h3>
+            <p>
+                Take \(e^1=dr\), \(e^2=r\,d\theta\). Then \(de^1=0\) and
+                \(de^2=(1/r)e^1\wedge e^2\). Solving the torsion equations gives
+                \(\omega^2{}_1=d\theta\) and \(\omega^1{}_2=-d\theta\). Consequently
+                \(\nabla_{\partial_\theta}E_1=E_2\) and
+                \(\nabla_{\partial_\theta}E_2=-E_1\), matching the derivatives of the
+                polar unit vectors. Because \(\partial_\theta=rE_2\),
+            </p>
+            <p>\[
+            \nabla_{\partial_\theta}\partial_\theta=-r\partial_r,\qquad
+            \nabla_{\partial_r}\partial_\theta=\frac1r\partial_\theta.
+            \]</p>
+            <p>
+                These are \(\Gamma^r_{\theta\theta}=-r\) and
+                \(\Gamma^\theta_{r\theta}=1/r\). The curvature form is zero since
+                \(d(d\theta)=0\) on each coordinate patch. A rotating frame can have a
+                nonzero connection in flat space.
+            </p>
+
+            <h3>Worked example 24 &mdash; Curvature of a sphere</h3>
+            <p>
+                On a sphere of radius \(a\), take \(e^1=a\,d\vartheta\) and
+                \(e^2=a\sin\vartheta\,d\varphi\). Then
+                \(de^2=(\cot\vartheta/a)e^1\wedge e^2\), so
+                \(\omega^2{}_1=\cos\vartheta\,d\varphi\). The product term in
+                \(R^1{}_2\) vanishes in this two-dimensional orthonormal frame. Thus
+            </p>
+            <p>\[
+            R^1{}_2=d(-\cos\vartheta\,d\varphi)=\sin\vartheta\,d\vartheta\wedge d\varphi=\frac1{a^2}e^1\wedge e^2.
+            \]</p>
+            <p>
+                The Gaussian curvature is \(1/a^2\). Its integral is \(4\pi\). The
+                coframe is local, but the curvature times the area form extends
+                smoothly across the poles.
+            </p>
+
+            <h3>Worked example 25 &mdash; Curvature of a spatially flat expanding universe</h3>
+            <p>
+                For \(ds^2=-dt^2+a(t)^2\sum_i(dx^i)^2\), choose \(e^0=dt\) and
+                \(e^i=a(t)dx^i\). Define \(H=\dot a/a\). Then \(de^i=H e^0\wedge
+                e^i\). Solving the torsion and metric conditions gives
+                \(\omega^i{}_0=\omega^0{}_i=H e^i\) and \(\omega^i{}_j=0\) for spatial
+                indices. The equal signs in the mixed time-space connection follow
+                from the negative time component of the metric. Compute
+            </p>
+            <p>\[
+            R^i{}_0=(\dot H+H^2)e^0\wedge e^i,\qquad
+            R^i{}_j=H^2 e^i\wedge e^j.
+            \]</p>
+            <p>
+                The contraction gives \(\mathrm{Ric}_{00}=-3(\dot H+H^2)\) and
+                \(\mathrm{Ric}_{ij}=(\dot H+3H^2)\delta_{ij}\) in the orthonormal
+                frame. The scalar curvature is \(6(\dot H+2H^2)\), so
+                \(G_{00}=3H^2\). With no cosmological constant, the \(00\) Einstein
+                equation gives \(3H^2=8\pi G\rho\) in units \(c=1\).
+            </p>
+
+            <h2 id="sec10">10. Gauge theory</h2>
+            <p>
+                A gauge connection is locally a Lie-algebra-valued 1-form \(A\). For
+                matrix-valued forms the wedge combines ordinary exterior
+                multiplication with ordered matrix multiplication. Its curvature is
+            </p>
+            <p>\[
+            F_A=dA+A\wedge A.
+            \]</p>
+            <p>
+                With covariant derivative \(D=d+A\) on vector-valued fields, a gauge
+                change acting on components by \(\psi\mapsto g^{-1}\psi\) sends
+                \(A\mapsto g^{-1}Ag+g^{-1}dg\) and \(F_A\mapsto g^{-1}F_Ag\). The
+                abelian case gives \(F_A=dA\), and for noncommuting matrices the
+                quadratic term can contribute even when the coefficients are
+                constant.
+            </p>
+
+            <h3>Worked example 26 &mdash; Constant noncommuting coefficients</h3>
+            <p>
+                Let \(A=M\,dx+N\,dy\) for constant matrices with \([M,N]\ne0\). Then
+                \(dA=0\), while
+            </p>
+            <p>\[
+            F_A=(MN-NM)\,dx\wedge dy.
+            \]</p>
+            <p>
+                The covariant derivative commutator on a field is
+                \([D_x,D_y]\psi=[M,N]\psi\). Curvature therefore measures the failure
+                of covariant derivatives in different directions to commute.
+            </p>
+
+            <h3>Worked example 27 &mdash; Bianchi identity and a field action</h3>
+            <p>
+                For a matrix-valued 2-form the covariant exterior derivative is
+                \(D_AF_A=dF_A+A\wedge F_A-F_A\wedge A\). Expanding gives
+                \(dF_A=dA\wedge A-A\wedge dA\), which cancels the remaining terms,
+                including the two cubic terms. Thus \(D_AF_A=0\). The same algebra
+                gives the second Bianchi identity for the curvature of the Cartan
+                connection.
+            </p>
+            <p>
+                For the abelian electromagnetic convention in &sect;5, hold the
+                metric and closed source 3-form \(\mathcal J\) fixed. The action
+            </p>
+            <p>\[
+            S[A]=-\frac12\int F\wedge *F+\int A\wedge\mathcal J,\qquad F=dA,
+            \]</p>
+            <p>
+                has variation \(\delta S=\int \delta A\wedge(\mathcal J-d*F)\) for
+                variations supported away from the boundary. The product rule gives
+                \(d(\delta A\wedge *F)=d\delta A\wedge *F-\delta A\wedge d*F\), so the
+                boundary term drops by Stokes. Stationarity yields \(d*F=\mathcal J\).
+                In the nonabelian case the source-free Yang&ndash;Mills action uses
+                an invariant pairing, for example a trace in a matrix representation,
+                in \(\int\operatorname{tr}(F_A\wedge *F_A)\). The variation
+                \(\delta F_A=D_A\delta A\) leads to \(D_A*F_A=0\) under the same
+                boundary assumption.
+            </p>
+
+            <h2 id="sec11">11. Practice problems with solutions</h2>
+            <ol>
+                <li>
+                    <strong>Exterior derivative.</strong> Compute
+                    \(d(z\,dx\wedge dy+x\,dy\wedge dz)\).<br />
+                    <strong>Solution.</strong> Both terms give
+                    \(dx\wedge dy\wedge dz\) after cyclic reordering. The answer is
+                    twice that volume form.
+                </li>
+                <li>
+                    <strong>Pullback.</strong> On the graph \((u,v,uv)\), compute the
+                    pullback of \(dz\wedge dx\).<br />
+                    <strong>Solution.</strong> Substitute \(dz=v\,du+u\,dv\) and
+                    \(dx=du\). The result is \(-u\,du\wedge dv\).
+                </li>
+                <li>
+                    <strong>Exactness.</strong> Find a primitive for
+                    \((2xy+1)dx+x^2dy\) on the plane.<br />
+                    <strong>Solution.</strong> Integrating the \(dx\) coefficient
+                    gives \(x^2y+x+C(y)\). Matching the \(dy\) coefficient requires
+                    \(C'(y)=0\).
+                </li>
+                <li>
+                    <strong>Divergence theorem.</strong> Find the outward flux of
+                    \(X=x\partial_x+y\partial_y+z\partial_z\) through a sphere of
+                    radius \(R\).<br />
+                    <strong>Solution.</strong> \(d(\iota_Xv_3)=3v_3\). Integrating
+                    over the ball gives \(4\pi R^3\). On the sphere \(X\) has normal
+                    component \(R\), which gives the same answer.
+                </li>
+                <li>
+                    <strong>Maxwell.</strong> Let \(A=-\phi(x)dt\) with
+                    \(\phi(x)=kx^2/2\). Determine \(\rho\) and \(\mathbf J\) in the
+                    conventions of &sect;5.<br />
+                    <strong>Solution.</strong> \(e=-kx\,dx\), \(B=0\), and
+                    \(\nabla\cdot E=-k\). The field is static, so \(\rho=-k\) and
+                    \(\mathbf J=0\).
+                </li>
+                <li>
+                    <strong>Hamiltonian mechanics.</strong> For
+                    \(H=p^2/(2m)+mgq\), obtain the trajectory given \(q(0)=q_0\) and
+                    \(p(0)=p_0\).<br />
+                    <strong>Solution.</strong> Matching coefficients in
+                    \(\iota_X(dq\wedge dp)=dH\) gives \(\dot p=-mg\) and
+                    \(\dot q=p/m\). Thus \(p=p_0-mgt\) and
+                    \(q=q_0+(p_0/m)t-gt^2/2\).
+                </li>
+                <li>
+                    <strong>Thermodynamics.</strong> Use \(G=U-TS+PV\) to derive a
+                    Maxwell relation in \((T,P)\).<br />
+                    <strong>Solution.</strong> \(dG=-S\,dT+V\,dP\). Taking another
+                    derivative gives
+                    \((\partial S/\partial P)_T=-(\partial V/\partial T)_P\).
+                </li>
+                <li>
+                    <strong>Geometry.</strong> For \(ds^2=dr^2+f(r)^2d\theta^2\) with
+                    \(f>0\), compute Gaussian curvature.<br />
+                    <strong>Solution.</strong> Use \(e^1=dr\), \(e^2=f\,d\theta\). The
+                    connection is \(\omega^1{}_2=-f'\,d\theta\) and curvature is
+                    \(R^1{}_2=-f''\,dr\wedge d\theta=-(f''/f)e^1\wedge e^2\). Taking
+                    \(f=r\) gives zero. Taking \(f=a\sin(r/a)\) gives \(1/a^2\).
+                </li>
+                <li>
+                    <strong>Fluid mechanics.</strong> Find the vorticity of the shear
+                    flow \(u=\kappa y\,\partial_x\).<br />
+                    <strong>Solution.</strong> \(u^\flat=\kappa y\,dx\), so
+                    \(du^\flat=-\kappa dx\wedge dy\) and the three-dimensional curl is
+                    \(-\kappa\partial_z\). The circulation around a positively
+                    oriented unit square is \(-\kappa\).
+                </li>
+                <li>
+                    <strong>Spacetime star.</strong> Compute \(**(dt\wedge dx)\)
+                    directly.<br />
+                    <strong>Solution.</strong> The first star gives
+                    \(-dy\wedge dz\). The second gives \(-dt\wedge dx\), consistent
+                    with \((-1)^{2(4-2)+1}=-1\).
+                </li>
+            </ol>
+
+            <h3>A calculation checklist</h3>
+            <ol>
+                <li>Identify the form degree from what you integrate or measure.</li>
+                <li>
+                    State the metric, orientation, and sign conventions wherever you
+                    use a Hodge star or compare physical components.
+                </li>
+                <li>
+                    Distinguish coordinate forms \(dx^i\), whose exterior derivatives
+                    vanish, from moving coframe forms \(e^a\).
+                </li>
+                <li>
+                    Pull back to the integration parameters and check the boundary
+                    orientation before integrating.
+                </li>
+                <li>
+                    When passing from \(d\omega=0\) to a potential, check the domain
+                    and whether the claim is local or global.
+                </li>
+            </ol>
+        </div>
+    </body>
+</html>
