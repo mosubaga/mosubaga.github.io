@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Ollama usage guide: three handbooks on using a local model for coding, web search and studying." />
+  <title>Home | Ollama Usage Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama Usage Guide home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama Usage Guide</span><span class="brand-sub">Local AI Handbooks</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="ollama_coding/index.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Coding</a><a href="ollams_search/index.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Web Search</a><a href="ollama_studyaid/index.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Study Aid</a><a href="#contents"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> Contents</a><a href="#setup"><i class="fa-solid fa-download" aria-hidden="true"></i> Setup</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="#handbooks"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="ollama_coding/index.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Coding</a><a href="ollams_search/index.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Web Search</a><a href="ollama_studyaid/index.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Study Aid</a><a href="#contents"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> Contents</a><a href="#setup"><i class="fa-solid fa-download" aria-hidden="true"></i> Setup</a></nav>
+  </header>
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-grid single">
+        <div>
+          <div class="eyebrow">✦ Local AI handbooks</div>
+          <h1>Ollama Usage Guide</h1>
+          <p>Three practical handbooks for running a language model on your own computer with Ollama: write code against current documentation, search the web for up-to-date answers, and study from your own textbooks.</p>
+          <p class="hero-meta"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Updated 2026-11-15 · Runnable examples in Python and TypeScript.</p>
+          <div class="hero-buttons">
+            <wa-button variant="brand" appearance="accent" href="#handbooks" size="large">Choose a handbook <i slot="end" class="fa-solid fa-arrow-right" aria-hidden="true"></i></wa-button>
+            <wa-button appearance="outlined" href="#setup" size="large"><i slot="start" class="fa-solid fa-download" aria-hidden="true"></i>Install Ollama first</wa-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" id="handbooks">
+      <div class="container">
+        <div class="section-heading"><div class="eyebrow"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> Start here</div><h2>Three handbooks</h2><p>Each one is self-contained: five chapters and runnable starter code.</p><div class="gold-line"></div></div>
+        <div class="card-grid"><a class="card-link" href="ollama_coding/index.html"><wa-card class="story-card"><div class="card-visual pink" aria-hidden="true"><i class="fa-solid fa-terminal" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="neutral" appearance="outlined" pill>Coding</wa-badge><h3>Ollama + Context7</h3><p>Feed a local model current library documentation from Context7 and build coding, review and test agents that cite their sources.</p><div class="card-footer"><span>Open handbook <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">01 / 03</span></div></div></wa-card></a><a class="card-link" href="ollams_search/index.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-solid fa-globe" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="success" appearance="outlined" pill>Web Search</wa-badge><h3>Ollama + Web Search</h3><p>Give a local model a web search tool, through Ollama's API, MCP or your own function, and get current answers with sources you can check.</p><div class="card-footer"><span>Open handbook <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">02 / 03</span></div></div></wa-card></a><a class="card-link" href="ollama_studyaid/index.html"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="warning" appearance="outlined" pill>Study Aid</wa-badge><h3>Ollama Study Aid</h3><p>Give a local model your textbook PDFs and study with explanations, flashcards and practice questions that cite the page they came from.</p><div class="card-footer"><span>Open handbook <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">03 / 03</span></div></div></wa-card></a></div>
+      </div>
+    </section>
+
+    <section class="content-section components-panel" id="contents">
+      <div class="container" style="max-width:900px">
+        <div class="section-heading"><div class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> Contents</div><h2>What is inside</h2><p>Jump straight to a chapter.</p><div class="gold-line"></div></div>
+        <article class="prose">
+<h2 id="coding"><i class="fa-solid fa-terminal h-icon" aria-hidden="true"></i> Ollama + Context7: local AI coding</h2>
+<p>For developers who want a local coding assistant that uses current library documentation instead of what the model remembers.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Chapter</th><th>Covers</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="ollama_coding/01-ollama-basics.html">01 Ollama Essentials for Coding</a></td><td>Install Ollama, pick a coding model, and call the local API from Python and TypeScript</td></tr>
+<tr><td><a href="ollama_coding/02-context7-mcp.html">02 Connecting Context7 MCP to a Local Ollama Model</a></td><td>Current library docs through true MCP or the simpler REST API</td></tr>
+<tr><td><a href="ollama_coding/03-coding-subagents.html">03 Build Coding, Refactoring, Review, and Test Subagents</a></td><td>Planner, coder, reviewer and tester roles, plus safe, allowlisted validation</td></tr>
+<tr><td><a href="ollama_coding/04-explain-code.html">04 Explain Code with Fresh Library Documentation</a></td><td>Explain existing code with version-aware, source-backed evidence</td></tr>
+<tr><td><a href="ollama_coding/05-end-to-end-workflow.html">05 End-to-End Workflow</a></td><td>A version-aware generation workflow across eight languages</td></tr>
+<tr><td><a href="ollama_coding/index.html#examples">Examples</a></td><td>Python and TypeScript orchestrators that write safe, reviewable proposals</td></tr>
+</tbody>
+</table></div>
+<h2 id="web-search"><i class="fa-solid fa-globe h-icon" aria-hidden="true"></i> Ollama + Web Search: current information</h2>
+<p>For anyone who needs a local model to answer questions about recent events, releases or prices.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Chapter</th><th>Covers</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="ollams_search/01-how-it-works.html">01 Can a Local Model Search the Web?</a></td><td>What a local model cannot do alone, and the tool-calling loop that gives it web search</td></tr>
+<tr><td><a href="ollams_search/02-ollama-web-search.html">02 Web Search with Ollama's Built-in API</a></td><td>Ollama's hosted web search and web fetch API as tools for a local model</td></tr>
+<tr><td><a href="ollams_search/03-mcp-search.html">03 Web Search through MCP</a></td><td>An MCP host with a search server, without writing code</td></tr>
+<tr><td><a href="ollams_search/04-custom-tools.html">04 Write Your Own Search Tool</a></td><td>Tool functions for DuckDuckGo and SearXNG, plus frameworks and chat UIs</td></tr>
+<tr><td><a href="ollams_search/05-reliable-answers.html">05 Getting Reliable, Current Answers</a></td><td>Context length, prompts, limits and checks for a small model</td></tr>
+<tr><td><a href="ollams_search/index.html#examples">Examples</a></td><td>Two search agents in Python and TypeScript, with and without an API key</td></tr>
+</tbody>
+</table></div>
+<h2 id="study-aid"><i class="fa-solid fa-graduation-cap h-icon" aria-hidden="true"></i> Ollama Study Aid: learn from your own textbooks</h2>
+<p>For college and graduate students studying any subject from PDF textbooks, papers and lecture slides.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Chapter</th><th>Covers</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="ollama_studyaid/01-study-partner.html">01 A Local LLM as a Study Partner</a></td><td>What a local model can do with your textbooks, what to install, and where it falls short</td></tr>
+<tr><td><a href="ollama_studyaid/02-pdf-to-text.html">02 Getting Text out of Textbook PDFs</a></td><td>Page-by-page extraction, OCR for scanned books, formulas and tables</td></tr>
+<tr><td><a href="ollama_studyaid/03-ask-your-textbook.html">03 Ask Questions About Your Textbook</a></td><td>A search index with local embeddings and answers that cite page numbers</td></tr>
+<tr><td><a href="ollama_studyaid/04-study-techniques.html">04 Study Techniques with a Local Model</a></td><td>Summaries, Anki flashcards, practice questions and a Socratic tutor</td></tr>
+<tr><td><a href="ollama_studyaid/05-tools-and-mcp.html">05 Ready-made Apps and MCP Tools</a></td><td>Apps with document chat, and MCP servers for PDFs, Anki, Zotero and papers</td></tr>
+<tr><td><a href="ollama_studyaid/index.html#examples">Examples</a></td><td>A textbook question-answering tool and a flashcard generator in Python and TypeScript</td></tr>
+</tbody>
+</table></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section" id="setup">
+      <div class="container" style="max-width:900px">
+        <article class="prose">
+<h2 id="before-you-start"><i class="fa-solid fa-download h-icon" aria-hidden="true"></i> Before you start</h2>
+<p>All three handbooks assume Ollama is installed and running. Install it from <a href="https://ollama.com/" target="_blank" rel="noopener">ollama.com<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>, then open Terminal or PowerShell:</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ollama --version
+ollama pull qwen3:8b
+ollama run qwen3:8b "Say hello in one sentence."
+ollama list
+</code></pre></div>
+<p>Each handbook names the models it uses. Use the exact tags shown by <code>ollama list</code> on your machine.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Handbook</th><th>Models in the examples</th><th>Needs internet</th><th>API key</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="ollama_coding/index.html">Coding</a></td><td><code>qwen2.5-coder:7b</code></td><td>Yes, to fetch documentation from Context7</td><td>Optional Context7 key; without it the examples retrieve no documentation</td></tr>
+<tr><td><a href="ollams_search/index.html">Web Search</a></td><td><code>qwen3:8b</code></td><td>Yes, for the search itself</td><td>Optional; one example needs none</td></tr>
+<tr><td><a href="ollama_studyaid/index.html">Study Aid</a></td><td><code>qwen3:8b</code>, <code>embeddinggemma</code></td><td>No, once the models are downloaded</td><td>None</td></tr>
+</tbody>
+</table></div>
+<h2 id="what-the-handbooks-share"><i class="fa-solid fa-circle-info h-icon" aria-hidden="true"></i> What the handbooks share</h2>
+<ul>
+<li><strong>The model runs locally.</strong> Inference happens on your computer when Ollama runs a downloaded model. A <code>localhost</code> endpoint alone does not guarantee this, because Ollama can also route requests to cloud models; check the selected model with <code>ollama ps</code>.</li>
+<li><strong>The model gets outside information from your program, not by itself.</strong> Library documentation, web search results and textbook pages are all retrieved by a script, an MCP host or an app, and then given to the model.</li>
+<li><strong>Answers should point to a source.</strong> Every workflow asks the model to cite a documentation URL, a web page or a textbook page, so that you can check it.</li>
+<li><strong>A small model makes mistakes.</strong> Model size, context length and memory all limit quality. Review code before running it, open the cited pages, and verify numbers yourself.</li>
+</ul>
+<p>Tools in this area change quickly. Each handbook lists its primary sources; confirm install commands against them.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section" style="padding-top:0"><div class="container"><div class="about-banner"><div><div class="eyebrow" style="color:#f6d88e">Local model · real sources</div><h2>Run it locally, check the source.</h2><p>Pick the handbook that matches what you want to do today.</p></div><wa-button appearance="filled" variant="warning" href="#handbooks">Choose a handbook <i slot="end" class="fa-solid fa-arrow-right" aria-hidden="true"></i></wa-button></div></div></section>
+  </main>
+  <footer><div>© 2026 Ollama Usage Guide: Local AI Handbooks · Updated 2026-11-15</div><div class="footer-links"><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

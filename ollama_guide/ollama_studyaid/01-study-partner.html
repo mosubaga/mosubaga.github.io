@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="What a local model can do with your textbooks, what you need to install, and where it falls short." />
+  <title>01 — A Local LLM as a Study Partner | Ollama Study Aid Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama Study Aid Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama Study Aid</span><span class="brand-sub">Local AI Study Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html" aria-current="page"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-study-partner.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html" aria-current="page"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 01</div>
+          <div class="eyebrow">✦ Chapter 01 · Concept</div>
+          <h1>A Local LLM as a Study Partner</h1>
+          <p>What a local model can do with your textbooks, what you need to install, and where it falls short.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#answer-yes-and-it-can-stay-offline">Answer: yes, and it can stay offline</a></li><li><a href="#1-why-a-local-model">1. Why a local model</a></li><li><a href="#2-what-you-need">2. What you need</a></li><li><a href="#3-two-ways-to-use-a-pdf">3. Two ways to use a PDF</a></li><li><a href="#4-what-it-is-good-and-bad-at">4. What it is good and bad at</a></li><li><a href="#5-studying-with-it-not-instead-of-studying">5. Studying with it, not instead of studying</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="answer-yes-and-it-can-stay-offline">Answer: yes, and it can stay offline</h2>
+<p>A model running on Ollama can explain a concept, quiz you, and turn a chapter into flashcards. On its own it only knows its training data, so it does not know <em>your</em> textbook, your lecturer's notation, or which topics are on your exam. <strong>You close that gap by giving it the text of your PDFs</strong>, either a section at a time or through a search index over the whole book.</p>
+<p>Unlike web search, this workflow needs no internet connection once the models are downloaded. The PDF, your questions and the answers all stay on your computer.</p>
+<h2 id="1-why-a-local-model">1. Why a local model</h2>
+<ul><li><strong>Privacy.</strong> Lecture notes, draft thesis chapters and unpublished papers are not uploaded to anyone.</li><li><strong>No per-question cost.</strong> You can ask the same thing five ways, or generate hundreds of practice questions.</li><li><strong>Works offline</strong>, for example in a library with poor Wi-Fi or on a flight.</li><li><strong>The trade-off is quality.</strong> A model that fits on a laptop is weaker than a large hosted model. It makes more mistakes, especially in long calculations, so the workflow in this handbook always ties answers back to a page you can check.</li></ul>
+<h2 id="2-what-you-need">2. What you need</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Piece</th><th>Role</th><th>Used in this handbook</th></tr>
+</thead>
+<tbody>
+<tr><td>Ollama</td><td>Runs the models on your machine</td><td><a href="https://ollama.com/" target="_blank" rel="noopener">ollama.com<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td></tr>
+<tr><td>A chat model</td><td>Explains, summarizes, writes questions</td><td><code>qwen3:8b</code></td></tr>
+<tr><td>An embedding model</td><td>Finds the passages relevant to a question</td><td><code>embeddinggemma</code></td></tr>
+<tr><td>A PDF text extractor</td><td>Turns pages into text the model can read</td><td>PyMuPDF (Python), unpdf (TypeScript)</td></tr>
+<tr><td>A host program</td><td>Connects the pieces</td><td>The example scripts, or an app from chapter 05</td></tr>
+</tbody>
+</table></div><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ollama pull qwen3:8b
+ollama pull embeddinggemma
+ollama list
+</code></pre></div><p>Use the exact tags shown by <code>ollama list</code> on your machine. Larger chat models answer better but need more memory; <strong>download size is not the same as runtime memory use</strong>, and a larger context window needs more again. Browse alternatives in the <a href="https://ollama.com/search" target="_blank" rel="noopener">Ollama model registry<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> and test them on your own material.</p>
+<h2 id="3-two-ways-to-use-a-pdf">3. Two ways to use a PDF</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">A. Paste a section            PDF pages 40-52 -&gt; text -&gt; prompt -&gt; local model -&gt; answer
+
+B. Search first (RAG)         whole PDF -&gt; chunks -&gt; embeddings -&gt; index file
+                              question  -&gt; best 5 chunks -&gt; prompt -&gt; local model -&gt; answer with pages
+</code></pre></div><div class="table-wrap"><table>
+<thead>
+<tr><th></th><th>A. Paste a section</th><th>B. Search first (RAG)</th></tr>
+</thead>
+<tbody>
+<tr><td>Best for</td><td>Summaries, flashcards and quizzes on one section or chapter</td><td>Specific questions about a whole textbook</td></tr>
+<tr><td>The model sees</td><td>Everything in the pages you chose</td><td>Only the few passages the search returned</td></tr>
+<tr><td>Limit</td><td>The context window: roughly a chapter, not a book</td><td>Misses answers that are spread across many pages</td></tr>
+<tr><td>Covered in</td><td><a href="04-study-techniques.html">Chapter 04</a></td><td><a href="03-ask-your-textbook.html">Chapter 03</a></td></tr>
+</tbody>
+</table></div><p>RAG stands for retrieval-augmented generation. Both approaches start with the same step, getting clean text out of the PDF, which is <a href="02-pdf-to-text.html">chapter 02</a>.</p>
+<h2 id="4-what-it-is-good-and-bad-at">4. What it is good and bad at</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Works well</th><th>Needs care</th><th>Do not rely on it</th></tr>
+</thead>
+<tbody>
+<tr><td>Explaining a passage in simpler words</td><td>Multi-step derivations and proofs</td><td>Arithmetic and long calculations</td></tr>
+<tr><td>Writing practice questions from a text</td><td>Dates, names and exact figures</td><td>Citations it produces from memory</td></tr>
+<tr><td>Turning a section into flashcards</td><td>Formulas extracted from PDFs</td><td>Anything not in the pages you gave it</td></tr>
+<tr><td>Checking your own explanation of an idea</td><td>Summaries of very long chapters</td><td>Being the only source before an exam</td></tr>
+</tbody>
+</table></div><p class="callout"><i class="fa-solid fa-triangle-exclamation callout-icon" aria-hidden="true"></i><strong>Important:</strong> A fluent answer is not a correct answer. Treat the model as a study partner who has skimmed the book: useful for practice and explanation, but the textbook is the authority. Every example here prints page numbers so you can check.</p>
+<h2 id="5-studying-with-it-not-instead-of-studying">5. Studying with it, not instead of studying</h2>
+<p>The techniques in <a href="04-study-techniques.html">chapter 04</a> are built around retrieval practice: trying to recall and explain material yourself, then checking. A model that hands you a summary to reread helps much less than one that asks you questions. Use it to generate practice, not to replace reading.</p>
+<p>Check your course rules as well. Using a model to study is different from submitting its output as your own work, and many institutions have explicit policies on both.</p>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://docs.ollama.com/" target="_blank" rel="noopener">Ollama documentation<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.ollama.com/capabilities/embeddings" target="_blank" rel="noopener">Ollama documentation: embeddings<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://ollama.com/library/qwen3" target="_blank" rel="noopener">Qwen 3 in the Ollama model registry<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://ollama.com/library/embeddinggemma" target="_blank" rel="noopener">EmbeddingGemma in the Ollama model registry<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="index.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</span><span class="ttl">Handbook overview</span></a><a class="next" href="02-pdf-to-text.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Getting Text out of Textbook PDFs</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama Study Aid: Local AI Study Handbook · Updated 2026-11-15</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

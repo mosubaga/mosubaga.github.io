@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Summaries, flashcards for Anki, practice questions and a Socratic tutor, all grounded in your own pages." />
+  <title>04 — Study Techniques with a Local Model | Ollama Study Aid Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama Study Aid Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama Study Aid</span><span class="brand-sub">Local AI Study Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html" aria-current="page"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-study-partner.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html" aria-current="page"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-brain" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 04</div>
+          <div class="eyebrow">✦ Chapter 04 · Techniques</div>
+          <h1>Study Techniques with a Local Model</h1>
+          <p>Summaries, flashcards for Anki, practice questions and a Socratic tutor, all grounded in your own pages.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#1-give-it-the-pages-first">1. Give it the pages first</a></li><li><a href="#2-explain-and-summarize">2. Explain and summarize</a></li><li><a href="#3-flashcards-for-anki">3. Flashcards for Anki</a></li><li><a href="#4-practice-questions">4. Practice questions</a></li><li><a href="#5-a-socratic-tutor">5. A Socratic tutor</a></li><li><a href="#6-by-subject">6. By subject</a></li><li><a href="#7-what-to-avoid">7. What to avoid</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="1-give-it-the-pages-first">1. Give it the pages first</h2>
+<p>Every technique here starts the same way: extract the pages you are studying and put them in the prompt, so the model works from your book and not from memory.</p><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">import pymupdf
+from ollama import chat
+
+def read_range(pdf_path: str, first: int, last: int) -&gt; str:
+    &quot;&quot;&quot;Text of pages first..last (1-based), each labelled with its page number.&quot;&quot;&quot;
+    with pymupdf.open(pdf_path) as doc:
+        return &#x27;\n\n&#x27;.join(
+            f&#x27;[p. {n}] &#x27; + &#x27; &#x27;.join(doc[n - 1].get_text().split())
+            for n in range(first, min(last, doc.page_count) + 1)
+        )
+
+pages = read_range(&#x27;textbook.pdf&#x27;, 40, 52)
+response = chat(
+    model=&#x27;qwen3:8b&#x27;,
+    messages=[{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;:
+        &#x27;Using only these pages, list the five ideas I must understand, &#x27;
+        &#x27;each with the page it is on.\n\n&#x27; + pages}],
+    options={&#x27;num_ctx&#x27;: 16000},
+)
+print(response.message.content)
+</code></pre></div><p>Set <code>num_ctx</code> large enough for the pages plus the answer. Ten to fifteen pages of prose fit in 16,000 tokens; if answers ignore the later pages, the text was truncated and you should choose a smaller range.</p>
+<h2 id="2-explain-and-summarize">2. Explain and summarize</h2>
+<p>Ask for a specific kind of explanation. A vague request gets a vague summary.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Using only the pages below:
+1. Explain the main argument in 5 sentences for someone who has not read it.
+2. Define each technical term the first time you use it.
+3. Give one worked example from the text, with its page number.
+4. List what the pages assume I already know.
+Do not add material that is not on these pages.
+</code></pre></div><p>Useful variations: "explain it to a first-year student", "explain how this differs from [earlier concept]", "what would a wrong but tempting understanding of this be?". Reading a summary feels productive but is weak practice on its own; follow it with sections 3 to 5.</p>
+<h2 id="3-flashcards-for-anki">3. Flashcards for Anki</h2>
+<p>Spaced repetition software such as <a href="https://apps.ankiweb.net/" target="_blank" rel="noopener">Anki<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> schedules reviews for you. The example program turns a page range into a file Anki can import. It uses <strong>structured outputs</strong>: passing a JSON schema as <code>format</code> forces the reply into that shape, so the script can parse it reliably.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python flashcards.py textbook.pdf --pages 40-52 --count 10 --out cards.tsv
+npx tsx flashcards.ts textbook.pdf --pages 40-52 --count 10 --out cards.tsv
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">from pydantic import BaseModel
+
+class Card(BaseModel):
+    front: str   # the question
+    back: str    # the answer
+    page: int    # page the answer comes from
+
+class Deck(BaseModel):
+    cards: list[Card]
+
+response = chat(
+    model=&#x27;qwen3:8b&#x27;,
+    messages=[{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: prompt}],
+    format=Deck.model_json_schema(),   # the reply must match this schema
+    think=False,
+    options={&#x27;num_ctx&#x27;: 16000, &#x27;temperature&#x27;: 0},
+)
+cards = Deck.model_validate_json(response.message.content).cards
+</code></pre></div><p>Output from a run with <code>qwen3:8b</code>: one card per line, with front, back and a page tag separated by tabs.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">What is the net gain of ATP during glycolysis?	A net gain of 2 ATP and 2 NADH per glucose molecule.	p6
+What is the purpose of fermentation in the absence of oxygen?	To regenerate NAD+ so that glycolysis can continue.	p7
+</code></pre></div><p>In Anki choose <strong>File &gt; Import</strong>, select <code>cards.tsv</code>, and map the three fields to Front, Back and Tags. <strong>Read every card against its page before you study it.</strong> Memorizing a wrong card is worse than having no card. Full source: <a href="examples/flashcards.html">flashcards.py</a> and <a href="examples/flashcards_ts.html">flashcards.ts</a>.</p>
+<h2 id="4-practice-questions">4. Practice questions</h2>
+<p>Have the model ask and you answer. Keep the answers hidden until you have tried.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">You are writing a practice quiz from the textbook pages below.
+Write 6 questions: 2 that test recall, 2 that ask me to explain why, and 2 that
+ask me to apply an idea to a new case. Number them. Do not show the answers.
+After I reply, grade each answer as correct, partly correct or incorrect,
+quote the sentence from the pages that settles it, and give its page number.
+</code></pre></div><p>For exam preparation, paste a past exam question as a model and ask for new questions "in the same style and difficulty". For problem-based subjects, ask for the problem only, solve it on paper, then ask the model to check your working line by line rather than to produce its own solution.</p>
+<h2 id="5-a-socratic-tutor">5. A Socratic tutor</h2>
+<p>A <code>Modelfile</code> saves a system prompt and settings as a named model, so the tutor is one command away. Save this as <code>Modelfile</code>:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">FROM qwen3:8b
+PARAMETER num_ctx 16000
+PARAMETER temperature 0.3
+SYSTEM &quot;&quot;&quot;You are a patient tutor for a university student.
+Do not give the final answer straight away. Ask one guiding question at a time,
+wait for the student&#x27;s reply, and correct mistakes by pointing to the idea that was missed.
+When the student is right, say so briefly and move to the next step.
+If the student pastes textbook pages, base your questions on them and cite page numbers.
+If you are not sure of a fact, say so instead of guessing.&quot;&quot;&quot;
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ollama create study-tutor -f Modelfile
+ollama run study-tutor
+</code></pre></div><p>Then explain a topic in your own words and let it question you. This is the Feynman technique: you find the gaps in your understanding by trying to teach. A small model does not always follow the "do not give the answer" rule; if it starts lecturing, tell it "ask me, don't tell me". Remove the model later with <code>ollama rm study-tutor</code>.</p>
+<h2 id="6-by-subject">6. By subject</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Subject</th><th>Useful requests</th><th>Check</th></tr>
+</thead>
+<tbody>
+<tr><td>Mathematics</td><td>Explain the idea behind a proof; find the first wrong line in my working; generate similar exercises</td><td>Every calculation, by hand or with a computer algebra system. Extracted formulas against the page</td></tr>
+<tr><td>Sciences</td><td>Compare two processes in a table; explain a mechanism step by step; predict what changes if one condition changes</td><td>Units, constants and numbers against the textbook</td></tr>
+<tr><td>History and social sciences</td><td>Summarize an author's argument and evidence; contrast two interpretations; build a timeline with page references</td><td>Dates, names and quotations. The model may blend the book with what it remembers</td></tr>
+<tr><td>Computer science</td><td>Trace an algorithm on a small input; explain complexity; write test cases for my code</td><td>Run the code. Do not accept claimed output</td></tr>
+<tr><td>Graduate reading</td><td>State the paper's question, method and main result; list its stated limitations; draft questions for a seminar</td><td>Claims about what a paper found, against the paper itself</td></tr>
+</tbody>
+</table></div>
+<h2 id="7-what-to-avoid">7. What to avoid</h2>
+<ul><li><strong>Asking without the pages.</strong> The answer then comes from the model's memory, with no page to check.</li><li><strong>Accepting references it invents.</strong> A model can produce plausible titles and page numbers that do not exist. Only trust citations to pages you supplied.</li><li><strong>Replacing the reading.</strong> Use summaries to preview or review a section, not to skip it.</li><li><strong>Submitting its text as yours.</strong> Follow your institution's rules on AI use in assessed work.</li></ul>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://docs.ollama.com/capabilities/structured-outputs" target="_blank" rel="noopener">https://docs.ollama.com/capabilities/structured-outputs<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.ollama.com/modelfile" target="_blank" rel="noopener">https://docs.ollama.com/modelfile<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.ankiweb.net/importing/text-files.html" target="_blank" rel="noopener">https://docs.ankiweb.net/importing/text-files.html<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="03-ask-your-textbook.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">Ask Questions About Your Textbook</span></a><a class="next" href="05-tools-and-mcp.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Ready-made Apps and MCP Tools</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama Study Aid: Local AI Study Handbook · Updated 2026-11-15</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Connect Context7 for current library docs, via true MCP or the simpler REST API." />
+  <title>02 — Connecting Context7 MCP to a Local Ollama Model | Ollama + Context7 Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Context7 Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Context7</span><span class="brand-sub">Local AI Coding Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html" aria-current="page"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-ollama-basics.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html" aria-current="page"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 02</div>
+          <div class="eyebrow">✦ Chapter 02 · Context7</div>
+          <h1>Connecting Context7 MCP to a Local Ollama Model</h1>
+          <p>Connect Context7 for current library docs, via true MCP or the simpler REST API.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#answer-yes-with-an-mcp-client-or-orchestration-bridge">Answer: yes, with an MCP client or orchestration bridge</a></li><li><a href="#1-true-mcp-setup">1. True MCP setup</a></li><li><a href="#2-current-mcp-tool-names-important">2. Current MCP tool names (important)</a></li><li><a href="#3-simpler-alternative-context7-rest-api-from-pythontypescript">3. Simpler alternative: Context7 REST API from Python/TypeScript</a></li><li><a href="#4-auto-invoke-rule-for-your-agent">4. Auto-invoke rule for your agent</a></li><li><a href="#5-privacy-reliability-and-version-limits">5. Privacy, reliability, and version limits</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="answer-yes-with-an-mcp-client-or-orchestration-bridge">Answer: yes, with an MCP client or orchestration bridge</h2>
+<p>Context7 provides library documentation through MCP tools. <strong>Ollama is an LLM runtime, not automatically an MCP client.</strong> You need (A) a coding client/agent that connects to Context7 and uses Ollama for inference, or (B) your own Python/TypeScript orchestration service that retrieves Context7 docs and sends them to Ollama.</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Request -&gt; Agent / MCP client -&gt; Context7 (online docs)
+                 |                  |
+                 +---- docs --------+
+                 |
+                 +--&gt; Ollama localhost -&gt; code / explanation
+</code></pre></div>
+<h2 id="1-true-mcp-setup">1. True MCP setup</h2>
+<p>Requirements: Node.js &gt;= 20.18.1 for the published Context7 MCP package; a compatible MCP client; access to Context7. API keys may be optional for lower-rate-limit usage but are recommended; get a key via <a href="https://context7.com/dashboard" target="_blank" rel="noopener">Context7 dashboard<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>.</p>
+<p>Example <strong>client configuration</strong> (exact file location and schema vary by client):</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-file-code" aria-hidden="true"></i> json</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;context7&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@upstash/context7-mcp@latest&quot;],
+      &quot;env&quot;: {
+        &quot;CONTEXT7_API_KEY&quot;: &quot;YOUR_API_KEY&quot;
+      }
+    }
+  }
+}
+</code></pre></div>
+<p>Windows clients sometimes need <code>"command":"cmd"</code> and <code>"args":["/c","npx","-y","@upstash/context7-mcp@latest"]</code>. Use your actual client's configuration format. Keep credentials out of committed files.</p>
+<p>Or use remote MCP HTTP with endpoint:</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">https://mcp.context7.com/mcp
+</code></pre></div>
+<p>Clients supporting authorization headers can send <code>Authorization: Bearer ...</code> for their own credentials. <strong>Configuring Context7 alone does not select Ollama as the model.</strong> Configure Ollama separately in the same coding client if it supports local backends.</p>
+<h2 id="2-current-mcp-tool-names-important">2. Current MCP tool names (important)</h2>
+<ul>
+<li><code>resolve-library-id</code> with required <code>libraryName</code> and <code>query</code>.</li>
+<li><code>query-docs</code> with required <code>libraryId</code>, <code>query</code>, and optional <code>language</code>.</li>
+</ul>
+<p><code>get-library-docs</code> is an older name and has been replaced by <code>query-docs</code> in current Context7 docs.</p>
+<p>Illustrative agent tool sequence (not a shell command):</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-file-code" aria-hidden="true"></i> json</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-json">{&quot;tool&quot;:&quot;resolve-library-id&quot;,&quot;arguments&quot;:{&quot;libraryName&quot;:&quot;FastAPI&quot;,&quot;query&quot;:&quot;async path operation dependencies&quot;}}
+</code></pre></div>
+<p>After selecting the right library <strong>from the actual resolution result</strong>:</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-file-code" aria-hidden="true"></i> json</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-json">{&quot;tool&quot;:&quot;query-docs&quot;,&quot;arguments&quot;:{&quot;libraryId&quot;:&quot;&lt;resolved-library-id&gt;&quot;,&quot;query&quot;:&quot;implement an async GET route with dependency injection&quot;,&quot;language&quot;:&quot;Python&quot;}}
+</code></pre></div>
+<p>Do not invent library IDs or assume the highest-scoring match corresponds to your installed version. Check the official source, version, and release notes.</p>
+<h2 id="3-simpler-alternative-context7-rest-api-from-pythontypescript">3. Simpler alternative: Context7 REST API from Python/TypeScript</h2>
+<p>The bundled working examples use Context7 REST endpoints, not MCP protocol calls:</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">GET https://context7.com/api/v2/libs/search?libraryName=FastAPI&amp;query=dependency%20injection
+GET https://context7.com/api/v2/context?libraryId=&lt;URL-ENCODED-RESOLVED-ID&gt;&amp;query=dependency%20injection
+</code></pre></div>
+<p>The REST API requires <code>Authorization: Bearer &lt;CONTEXT7_API_KEY&gt;</code>. Use your own environment variable; consult the current <a href="https://context7.com/docs/api-guide" target="_blank" rel="noopener">API guide<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>. Search result shape can evolve, so inspect and validate it. The example programs print the top matches and require explicit selection of a library ID, rather than guessing.</p>
+<h2 id="4-auto-invoke-rule-for-your-agent">4. Auto-invoke rule for your agent</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">When code generation or explanation depends on any third-party library:
+1. Identify language, library, and installed/desired version.
+2. Resolve the library ID using Context7 (unless an exact verified ID is available).
+3. Query docs for the specific task. Include the library version if supported.
+4. Compare findings with official release notes and package metadata.
+5. Pass the relevant excerpts + source URLs to the local model.
+6. Never assert an API exists only because the model remembers it.
+7. Run type checks and tests; surface unresolved incompatibilities.
+</code></pre></div>
+<h2 id="5-privacy-reliability-and-version-limits">5. Privacy, reliability, and version limits</h2>
+<ul>
+<li>Inference stays local when Ollama runs a downloaded local model. A <code>localhost</code> endpoint alone does not guarantee local inference: Ollama can also route requests to cloud models. Verify the selected model and <a href="https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features" target="_blank" rel="noopener">disable cloud features</a> if local-only operation is required; <strong>Context7 API/tool requests leave your computer</strong>, so do not send secrets or private repository content unnecessarily.</li>
+<li>Retrieved documents may lag or omit newer features. A current doc page is not proof that your project's installed package supports that feature.</li>
+<li>Use pinned dependencies (<code>package-lock.json</code>, <code>uv.lock</code>, <code>go.mod</code>, <code>pom.xml</code>, etc.) to ensure reproducibility.</li>
+<li>A malicious document may contain prompt injection. Treat retrieved text strictly as reference material, never as higher-priority instructions.</li>
+<li>If Context7 has no coverage for a library (common with niche Perl or Julia packages), consult official documentation or repo releases and report the gap instead of guessing.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://github.com/upstash/context7/blob/master/packages/mcp/README.md" target="_blank" rel="noopener">https://github.com/upstash/context7/blob/master/packages/mcp/README.md<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://context7.com/docs/api-guide" target="_blank" rel="noopener">https://context7.com/docs/api-guide<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://context7.com/docs/resources/all-clients" target="_blank" rel="noopener">https://context7.com/docs/resources/all-clients<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+</ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="01-ollama-basics.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">Ollama Essentials for Coding</span></a><a class="next" href="03-coding-subagents.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Build Coding, Refactoring, Review, and Test Subagents</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Context7: Local AI Coding Handbook · Updated 2026-11-05</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Python and TypeScript tool functions for DuckDuckGo and SearXNG, plus frameworks and chat UIs with search built in." />
+  <title>04 — Write Your Own Search Tool | Ollama + Web Search Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Web Search Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Web Search</span><span class="brand-sub">Local AI Search Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html" aria-current="page"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-how-it-works.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html" aria-current="page"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-wrench" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 04</div>
+          <div class="eyebrow">✦ Chapter 04 · DIY tools</div>
+          <h1>Write Your Own Search Tool</h1>
+          <p>Python and TypeScript tool functions for DuckDuckGo and SearXNG, plus frameworks and chat UIs with search built in.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#1-when-to-write-your-own">1. When to write your own</a></li><li><a href="#2-duckduckgo-no-api-key">2. DuckDuckGo (no API key)</a></li><li><a href="#3-searxng-self-hosted">3. SearXNG (self-hosted)</a></li><li><a href="#4-hosted-search-apis">4. Hosted search APIs</a></li><li><a href="#5-chat-uis-with-built-in-search">5. Chat UIs with built-in search</a></li><li><a href="#6-agent-frameworks">6. Agent frameworks</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="1-when-to-write-your-own">1. When to write your own</h2>
+<p>A search tool is an ordinary function. Writing it yourself is worth it when you want no account and no API key, a specific search backend, or control over how results are filtered and shortened before the model sees them.</p><p>The Ollama Python library accepts a plain function in <code>tools=[...]</code> and builds the tool description from its name, type hints and docstring. <strong>The docstring is what the model reads to decide when to call the tool</strong>, so describe the purpose and every argument.</p><p>The JavaScript library takes a JSON schema instead: you write the tool's <code>name</code>, <code>description</code> and <code>parameters</code> by hand and keep them in step with the function.</p>
+<h2 id="2-duckduckgo-no-api-key">2. DuckDuckGo (no API key)</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python -m pip install ollama ddgs
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">from ddgs import DDGS
+
+def web_search(query: str, max_results: int = 5) -&gt; str:
+    &quot;&quot;&quot;Search the web with DuckDuckGo and return titles, URLs and snippets.
+
+    Args:
+      query: The search query.
+      max_results: How many results to return, from 1 to 10.
+    &quot;&quot;&quot;
+    limit = max(1, min(int(max_results), 10))
+    results = DDGS().text(query, max_results=limit)
+    if not results:
+        return &#x27;No results.&#x27;
+    return &#x27;\n\n&#x27;.join(f&quot;{r[&#x27;title&#x27;]}\n{r[&#x27;href&#x27;]}\n{r[&#x27;body&#x27;]}&quot; for r in results)
+</code></pre></div><p>Pass it to <code>chat</code> exactly like the built-in tools in <a href="02-ollama-web-search.html#5-build-a-search-agent">chapter 02</a>: <code>tools=[web_search]</code>.</p><p>In TypeScript there is no equivalent of <code>ddgs</code> to rely on, so this version reads DuckDuckGo's HTML results page with Node's built-in <code>fetch</code> and needs no extra package:</p><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-js" aria-hidden="true"></i> typescript</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-typescript">import type { Tool } from &#x27;ollama&#x27;;
+
+const userAgent = &#x27;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36&#x27;;
+
+/** Remove tags and decode the few HTML entities that appear in search results. */
+function toText(html: string): string {
+  return html
+    .replace(/&lt;[^&gt;]+&gt;/g, &#x27; &#x27;)
+    .replace(/&amp;nbsp;/g, &#x27; &#x27;).replace(/&amp;lt;/g, &#x27;&lt;&#x27;).replace(/&amp;gt;/g, &#x27;&gt;&#x27;)
+    .replace(/&amp;quot;/g, &#x27;&quot;&#x27;).replace(/&amp;#x27;|&amp;#39;/g, &quot;&#x27;&quot;).replace(/&amp;amp;/g, &#x27;&amp;&#x27;)
+    .replace(/\s+/g, &#x27; &#x27;).trim();
+}
+
+async function webSearch(args: { query: string; max_results?: number }): Promise&lt;string&gt; {
+  const limit = Math.max(1, Math.min(Number(args.max_results ?? 5) || 5, 10));
+  const url = &#x27;https://html.duckduckgo.com/html/?&#x27; + new URLSearchParams({ q: String(args.query) });
+  const resp = await fetch(url, { headers: { &#x27;User-Agent&#x27;: userAgent }, signal: AbortSignal.timeout(20000) });
+  if (!resp.ok) throw new Error(`DuckDuckGo: HTTP ${resp.status}`);
+  const page = await resp.text();
+  const links = [...page.matchAll(/&lt;a[^&gt;]*class=&quot;result__a&quot;[^&gt;]*href=&quot;([^&quot;]+)&quot;[^&gt;]*&gt;([\s\S]*?)&lt;\/a&gt;/g)];
+  const snippets = [...page.matchAll(/&lt;a[^&gt;]*class=&quot;result__snippet&quot;[^&gt;]*&gt;([\s\S]*?)&lt;\/a&gt;/g)];
+  const results = links.slice(0, limit).map((link, i) =&gt; {
+    // Result links are redirects; the real address is in the `uddg` parameter.
+    const redirect = new URL(link[1].replace(/&amp;amp;/g, &#x27;&amp;&#x27;), &#x27;https://duckduckgo.com&#x27;);
+    const target = redirect.searchParams.get(&#x27;uddg&#x27;) ?? redirect.href;
+    return `${toText(link[2])}\n${target}\n${toText(snippets[i]?.[1] ?? &#x27;&#x27;)}`;
+  });
+  return results.length ? results.join(&#x27;\n\n&#x27;) : &#x27;No results.&#x27;;
+}
+
+const webSearchTool: Tool = {
+  type: &#x27;function&#x27;,
+  function: {
+    name: &#x27;web_search&#x27;,
+    description: &#x27;Search the web with DuckDuckGo and return titles, URLs and snippets.&#x27;,
+    parameters: {
+      type: &#x27;object&#x27;,
+      properties: {
+        query: { type: &#x27;string&#x27;, description: &#x27;The search query.&#x27; },
+        max_results: { type: &#x27;number&#x27;, description: &#x27;How many results to return, from 1 to 10.&#x27; },
+      },
+      required: [&#x27;query&#x27;],
+    },
+  },
+};
+</code></pre></div><p>Pass <code>tools: [webSearchTool]</code> to <code>client.chat</code> and call <code>webSearch(call.function.arguments)</code> when the model requests it. The complete, runnable agents with a page-fetch tool are in <a href="examples/ddg_search_agent.html">examples/ddg_search_agent.py</a> and <a href="examples/ddg_search_agent_ts.html">examples/ddg_search_agent.ts</a>:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python ddg_search_agent.py &quot;What is the latest LTS version of Node.js?&quot;
+npx tsx ddg_search_agent.ts &quot;What is the latest LTS version of Node.js?&quot;
+</code></pre></div><p class="callout"><i class="fa-solid fa-triangle-exclamation callout-icon" aria-hidden="true"></i><strong>Important:</strong> Neither version uses an official API. <code>ddgs</code> is a community library, and the TypeScript function parses a public HTML page; both can be rate-limited or break when the search engine changes its markup. For dependable volume, use a hosted search API or SearXNG.</p>
+<h2 id="3-searxng-self-hosted">3. SearXNG (self-hosted)</h2>
+<p><a href="https://docs.searxng.org/" target="_blank" rel="noopener">SearXNG<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> is a metasearch engine you run yourself, usually with Docker. It has a JSON API, which must be enabled in <code>settings.yml</code>:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-file-code" aria-hidden="true"></i> yaml</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-yaml">search:
+  formats:
+    - html
+    - json
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">import json
+import os
+from urllib.parse import urlencode
+from urllib.request import urlopen
+
+SEARXNG_URL = os.getenv(&#x27;SEARXNG_URL&#x27;, &#x27;http://localhost:8080&#x27;)
+
+def web_search(query: str, max_results: int = 5) -&gt; str:
+    &quot;&quot;&quot;Search the web with a self-hosted SearXNG instance.
+
+    Args:
+      query: The search query.
+      max_results: How many results to return, from 1 to 10.
+    &quot;&quot;&quot;
+    params = urlencode({&#x27;q&#x27;: query, &#x27;format&#x27;: &#x27;json&#x27;})
+    with urlopen(f&#x27;{SEARXNG_URL}/search?{params}&#x27;, timeout=20) as response:
+        results = json.load(response)[&#x27;results&#x27;][:max(1, min(int(max_results), 10))]
+    return &#x27;\n\n&#x27;.join(f&quot;{r[&#x27;title&#x27;]}\n{r[&#x27;url&#x27;]}\n{r.get(&#x27;content&#x27;, &#x27;&#x27;)}&quot; for r in results)
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-js" aria-hidden="true"></i> typescript</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-typescript">const searxngUrl = process.env.SEARXNG_URL ?? &#x27;http://localhost:8080&#x27;;
+
+async function webSearch(args: { query: string; max_results?: number }): Promise&lt;string&gt; {
+  const limit = Math.max(1, Math.min(Number(args.max_results ?? 5) || 5, 10));
+  const url = `${searxngUrl}/search?` + new URLSearchParams({ q: String(args.query), format: &#x27;json&#x27; });
+  const resp = await fetch(url, { signal: AbortSignal.timeout(20000) });
+  if (!resp.ok) throw new Error(`SearXNG: HTTP ${resp.status}`);
+  const data = (await resp.json()) as { results: { title: string; url: string; content?: string }[] };
+  return data.results.slice(0, limit).map((r) =&gt; `${r.title}\n${r.url}\n${r.content ?? &#x27;&#x27;}`).join(&#x27;\n\n&#x27;);
+}
+</code></pre></div><p>Without <code>json</code> in <code>formats</code>, the instance answers <code>403 Forbidden</code>. Your queries go to your own instance, which then contacts the upstream search engines.</p>
+<h2 id="4-hosted-search-apis">4. Hosted search APIs</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Service</th><th>API key</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://docs.ollama.com/capabilities/web-search" target="_blank" rel="noopener">Ollama web search<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Free Ollama account</td><td>Covered in chapter 02; search and fetch functions ship in the Ollama library</td></tr>
+<tr><td><a href="https://brave.com/search/api/" target="_blank" rel="noopener">Brave Search API<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Required</td><td>Independent search index; REST API</td></tr>
+<tr><td><a href="https://www.tavily.com/" target="_blank" rel="noopener">Tavily<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Required</td><td>Returns results already condensed for LLMs</td></tr>
+</tbody>
+</table></div><p>Each one fits the same pattern: a function that takes <code>query</code>, calls the service, and returns titles, URLs and snippets as text. Read the key from an environment variable.</p>
+<h2 id="5-chat-uis-with-built-in-search">5. Chat UIs with built-in search</h2>
+<p>If you want a chat window instead of a script, <a href="https://docs.openwebui.com/" target="_blank" rel="noopener">Open WebUI<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> can use Ollama as its model backend and has a web search feature that an administrator enables and points at a search provider such as SearXNG or Brave. A toggle in the chat input then turns search on for a message. No tool code is needed. Menu names change between versions; follow the current Open WebUI documentation.</p>
+<h2 id="6-agent-frameworks">6. Agent frameworks</h2>
+<p>Ollama also serves an OpenAI-compatible API at <code>http://localhost:11434/v1</code>. Frameworks such as LangChain, LangGraph, Pydantic AI and the OpenAI Agents SDK can use a local model through it and bring their own search tools.</p><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">from openai import OpenAI
+
+# The API key is required by the client but ignored by Ollama
+client = OpenAI(base_url=&#x27;http://localhost:11434/v1&#x27;, api_key=&#x27;ollama&#x27;)
+
+response = client.chat.completions.create(
+    model=&#x27;qwen3:8b&#x27;,
+    messages=[{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: &#x27;Say hello.&#x27;}],
+)
+print(response.choices[0].message.content)
+</code></pre></div><p>A framework adds dependencies and its own abstractions. For a single search tool, the plain loop in this handbook is easier to read and debug.</p>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://docs.ollama.com/capabilities/tool-calling" target="_blank" rel="noopener">https://docs.ollama.com/capabilities/tool-calling<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://pypi.org/project/ddgs/" target="_blank" rel="noopener">https://pypi.org/project/ddgs/<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.searxng.org/dev/search_api.html" target="_blank" rel="noopener">https://docs.searxng.org/dev/search_api.html<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.ollama.com/api/openai-compatibility" target="_blank" rel="noopener">https://docs.ollama.com/api/openai-compatibility<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="03-mcp-search.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">Web Search through MCP</span></a><a class="next" href="05-reliable-answers.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Getting Reliable, Current Answers</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Web Search: Local AI Search Handbook · Updated 2026-11-14</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Optional Ollama API key, model tag and context length settings." />
+  <title>examples/.env.example | Ollama + Web Search Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html" aria-label="Ollama + Web Search Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Web Search</span><span class="brand-sub">Local AI Search Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="../01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="../02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="../03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="../04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="../05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="../index.html#examples" aria-current="page"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="../01-how-it-works.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="../01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="../02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="../03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="../04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="../05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="../index.html#examples" aria-current="page"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / <a href="../index.html#examples">Examples</a></div>
+          <div class="eyebrow">✦ Runnable example</div>
+          <h1>examples/.env.example</h1>
+          <p>Optional Ollama API key, model tag and context length settings.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout single">
+      <article class="prose">
+        <div class="file-meta">
+          <wa-badge variant="brand" appearance="outlined" pill>bash</wa-badge>
+          <wa-badge variant="neutral" appearance="outlined" pill><i class="fa-regular fa-file-lines" aria-hidden="true"></i> 12 lines</wa-badge>
+          <wa-button size="small" appearance="outlined" href="env.example.txt" download=".env.example"><i slot="start" class="fa-solid fa-download" aria-hidden="true"></i>Download raw file</wa-button>
+        </div>
+        <div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash"># Copy the values you need into your shell profile or a local .env file.
+# Never commit real keys.
+
+# Required only for search_agent.py (Ollama&#x27;s hosted web search API).
+# Create a key at https://ollama.com/settings/keys
+OLLAMA_API_KEY=your_api_key_here
+
+# Optional: model tag exactly as shown by `ollama list`.
+OLLAMA_MODEL=qwen3:8b
+
+# Optional: context window requested per chat call. Needs enough memory.
+OLLAMA_NUM_CTX=32000
+</code></pre></div>
+      </article>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Web Search: Local AI Search Handbook · Updated 2026-11-14</div><div class="footer-links"><a href="../../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

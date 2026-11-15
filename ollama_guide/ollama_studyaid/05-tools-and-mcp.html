@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Apps that chat with documents out of the box, and MCP servers for PDFs, Anki, Zotero and papers." />
+  <title>05 — Ready-made Apps and MCP Tools | Ollama Study Aid Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama Study Aid Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama Study Aid</span><span class="brand-sub">Local AI Study Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html" aria-current="page"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-study-partner.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html" aria-current="page"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-plug" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 05</div>
+          <div class="eyebrow">✦ Chapter 05 · Tools</div>
+          <h1>Ready-made Apps and MCP Tools</h1>
+          <p>Apps that chat with documents out of the box, and MCP servers for PDFs, Anki, Zotero and papers.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#1-apps-with-document-chat-built-in">1. Apps with document chat built in</a></li><li><a href="#2-how-mcp-fits-in">2. How MCP fits in</a></li><li><a href="#3-mcp-servers-for-studying">3. MCP servers for studying</a></li><li><a href="#4-recipe-ollmcp-with-a-pdf-reader-and-anki">4. Recipe: ollmcp with a PDF reader and Anki</a></li><li><a href="#5-which-one-should-i-use">5. Which one should I use</a></li><li><a href="#6-keep-it-small-and-safe">6. Keep it small and safe</a></li><li><a href="#7-verify-before-you-rely-on-it">7. Verify before you rely on it</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="1-apps-with-document-chat-built-in">1. Apps with document chat built in</h2>
+<p>If you would rather not run scripts, several applications do the extract, index and ask steps for you and can use Ollama as the model backend.</p><div class="table-wrap"><table>
+<thead>
+<tr><th>App</th><th>Type</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://docs.openwebui.com/features/workspace/knowledge/" target="_blank" rel="noopener">Open WebUI<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Browser chat UI, self-hosted</td><td>Upload files into a Knowledge collection and reference it in a chat; uses Ollama for chat and embeddings</td></tr>
+<tr><td><a href="https://docs.anythingllm.com/" target="_blank" rel="noopener">AnythingLLM<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Desktop app</td><td>Workspaces of documents with built-in RAG; Ollama can be selected as the model provider</td></tr>
+<tr><td><a href="https://github.com/n4ze3m/page-assist" target="_blank" rel="noopener">Page Assist<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Browser extension</td><td>A sidebar for local Ollama models, with chat over documents and web pages</td></tr>
+<tr><td><a href="https://lmstudio.ai/docs/app/basics/rag" target="_blank" rel="noopener">LM Studio<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Desktop app</td><td>Attach documents to a chat; uses its own model runtime instead of Ollama</td></tr>
+</tbody>
+</table></div><p>These tools hide the chunk size, the number of passages retrieved and the prompt. When an answer is wrong, the questions from <a href="03-ask-your-textbook.html#6-tuning-and-limits">chapter 03</a> still apply: did the search return the right passage, and was the text extracted correctly? Features and menus change between versions; follow each project's current documentation.</p>
+<h2 id="2-how-mcp-fits-in">2. How MCP fits in</h2>
+<p>The Model Context Protocol (MCP) is a standard way to offer tools to a model. <strong>Ollama is an LLM runtime, not an MCP client</strong>, so you need a host application that connects to MCP servers and uses Ollama for inference.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Ollama (qwen3, local) &lt;--&gt; MCP host / client &lt;--&gt; MCP servers: PDF reader, Anki, Zotero, ...
+</code></pre></div><div class="table-wrap"><table>
+<thead>
+<tr><th>Host</th><th>Type</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/jonigl/mcp-client-for-ollama" target="_blank" rel="noopener">ollmcp<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Terminal app</td><td>Built for Ollama; Python 3.11+; can ask for approval before each tool call</td></tr>
+<tr><td><a href="https://github.com/mark3labs/mcphost" target="_blank" rel="noopener">mcphost<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Command-line host</td><td>Written in Go; select the model as <code>ollama/&lt;tag&gt;</code></td></tr>
+<tr><td><a href="https://docs.openwebui.com/features/extensibility/mcp/" target="_blank" rel="noopener">Open WebUI<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Browser chat UI</td><td>Native MCP support from v0.6.31, Streamable HTTP servers only</td></tr>
+</tbody>
+</table></div><p>The model must support tool calling. Check that <code>ollama show qwen3:8b</code> lists <code>tools</code> under Capabilities.</p>
+<h2 id="3-mcp-servers-for-studying">3. MCP servers for studying</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>MCP server</th><th>What it gives the model</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp" target="_blank" rel="noopener">MarkItDown MCP<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>One tool, <code>convert_to_markdown</code>, for PDF, Word, PowerPoint and web pages</td><td>From Microsoft; <code>pip install markitdown-mcp</code>; meant for local use</td></tr>
+<tr><td><a href="https://github.com/SylphxAI/pdf-reader-mcp" target="_blank" rel="noopener">anymd (PDF reader MCP)<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Reads PDFs and other documents as Markdown</td><td>Run with <code>npx -y @sylphx/anymd</code>; can be limited to one folder</td></tr>
+<tr><td><a href="https://github.com/docling-project/docling-mcp" target="_blank" rel="noopener">Docling MCP<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Document conversion with layout, tables and formulas</td><td>Heavier; better on complex pages</td></tr>
+<tr><td><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem" target="_blank" rel="noopener">Filesystem (reference server)<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Read and list files in folders you allow</td><td>For notes in Markdown or text; start it with <code>--read-only</code></td></tr>
+<tr><td><a href="https://github.com/ankimcp/anki-mcp-server" target="_blank" rel="noopener">Anki MCP server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Create and review Anki cards from a chat</td><td>Needs Anki running with the AnkiConnect add-on</td></tr>
+<tr><td><a href="https://github.com/54yyyu/zotero-mcp" target="_blank" rel="noopener">Zotero MCP<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Search your Zotero library, read annotations and full text</td><td>Local mode reads the library on your machine; for literature reviews</td></tr>
+<tr><td><a href="https://github.com/MarkusPfundstein/mcp-obsidian" target="_blank" rel="noopener">Obsidian MCP<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Read and search notes in an Obsidian vault</td><td>Needs the Local REST API community plugin</td></tr>
+<tr><td><a href="https://github.com/blazickjp/arxiv-mcp-server" target="_blank" rel="noopener">arXiv MCP server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Search arXiv and download papers</td><td>Run with <code>uvx arxiv-mcp-server</code>; needs internet</td></tr>
+<tr><td><a href="https://github.com/Rudra-ravi/wikipedia-mcp" target="_blank" rel="noopener">Wikipedia MCP<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Look up background on a topic</td><td>Needs internet; a starting point, not a citable source</td></tr>
+<tr><td><a href="https://github.com/chroma-core/chroma-mcp" target="_blank" rel="noopener">Chroma MCP<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>, <a href="https://github.com/qdrant/mcp-server-qdrant" target="_blank" rel="noopener">Qdrant MCP<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>A vector database the model can store to and search</td><td>Only worth it for large collections of documents</td></tr>
+</tbody>
+</table></div><p>These are community and vendor projects that change quickly. Check each README for current install commands. The first six work offline; arXiv and Wikipedia servers send your queries to those services.</p>
+<h2 id="4-recipe-ollmcp-with-a-pdf-reader-and-anki">4. Recipe: ollmcp with a PDF reader and Anki</h2>
+<p>Requirements: Ollama with <code>qwen3:8b</code>, Python 3.11+, <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">uv<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>, Node.js, and Anki running with the <a href="https://ankiweb.net/shared/info/2055492159" target="_blank" rel="noopener">AnkiConnect<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> add-on.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash"># Install the MCP client
+uv tool install --upgrade ollmcp
+
+# Register a document converter and the Anki server (everything after -- is the command to run)
+ollmcp mcp add markitdown -- uvx markitdown-mcp
+ollmcp mcp add anki -- npx -y @ankimcp/anki-mcp-server --stdio
+
+# Confirm they are registered, then start chatting with the local model
+ollmcp mcp list
+ollmcp --model qwen3:8b
+</code></pre></div><p>Inside the client, use <code>/tools</code> to see what is enabled, then ask in plain language:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Convert file:///Users/me/study/week4-slides.pdf to Markdown, then make 8 flashcards
+from it and add them to my Anki deck &quot;Biology 201&quot;. Show me the cards before adding them.
+</code></pre></div><p class="callout"><i class="fa-solid fa-triangle-exclamation callout-icon" aria-hidden="true"></i><strong>Important:</strong> A converter tool returns the whole document into the conversation. That suits lecture slides, a paper or one chapter. A full textbook will overflow the context window; use the index from chapter 03 for that. Raise <code>num_ctx</code> in the client's model settings before working with documents.</p><p>This recipe is assembled from each project's documentation and was not run for this handbook.</p>
+<h2 id="5-which-one-should-i-use">5. Which one should I use</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>You want to</th><th>Use</th></tr>
+</thead>
+<tbody>
+<tr><td>Ask questions about one textbook, and understand how it works</td><td>The <a href="examples/study_rag.html">study_rag</a> example (chapter 03)</td></tr>
+<tr><td>Make Anki cards from a chapter</td><td>The <a href="examples/flashcards.html">flashcards</a> example (chapter 04)</td></tr>
+<tr><td>Chat with many documents in a graphical app</td><td>Open WebUI or AnythingLLM</td></tr>
+<tr><td>Work with slides, papers and notes from a terminal chat</td><td>ollmcp with MarkItDown or anymd</td></tr>
+<tr><td>Add cards to Anki without importing files</td><td>Anki MCP server</td></tr>
+<tr><td>Search your reference library for a literature review</td><td>Zotero MCP</td></tr>
+</tbody>
+</table></div>
+<h2 id="6-keep-it-small-and-safe">6. Keep it small and safe</h2>
+<ul><li>Every tool description consumes context, and small models choose worse as the list grows. Enable only the two or three tools you need for the session.</li><li>An MCP server is a program running on your machine with your permissions. Install servers only from sources you trust.</li><li>Give file tools access to one study folder, read-only, not your whole home directory.</li><li>Review changes before they are made. ollmcp can ask for approval before each tool call; keep that on for tools that write, such as adding Anki cards.</li><li>Text inside a document can contain instructions aimed at the model. Treat document content as reference material, and be cautious with files from unknown sources.</li></ul>
+<h2 id="7-verify-before-you-rely-on-it">7. Verify before you rely on it</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Before trusting an answer or a flashcard:
+1. Check that it cites a page, and that the page was among those retrieved.
+2. Open the page and confirm it says what the answer claims.
+3. Recompute any number, formula or derivation yourself.
+4. Compare formulas and tables with the PDF; extraction can scramble them.
+5. Treat anything without a page reference as the model&#x27;s memory, not the book.
+6. When the model and the textbook disagree, the textbook wins. Ask your instructor if unsure.
+</code></pre></div><p>A local model makes practice cheap and private. It does not make it correct by default; the checks above are part of the method.</p>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://docs.openwebui.com/features/workspace/knowledge/" target="_blank" rel="noopener">https://docs.openwebui.com/features/workspace/knowledge/<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.openwebui.com/features/extensibility/mcp/" target="_blank" rel="noopener">https://docs.openwebui.com/features/extensibility/mcp/<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/jonigl/mcp-client-for-ollama" target="_blank" rel="noopener">https://github.com/jonigl/mcp-client-for-ollama<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp" target="_blank" rel="noopener">https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/ankimcp/anki-mcp-server" target="_blank" rel="noopener">https://github.com/ankimcp/anki-mcp-server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/54yyyu/zotero-mcp" target="_blank" rel="noopener">https://github.com/54yyyu/zotero-mcp<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="04-study-techniques.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">Study Techniques with a Local Model</span></a><a class="next" href="index.html#examples"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Runnable starter examples</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama Study Aid: Local AI Study Handbook · Updated 2026-11-15</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

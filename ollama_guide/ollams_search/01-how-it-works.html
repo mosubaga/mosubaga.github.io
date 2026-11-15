@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="What a local model can and cannot do alone, and the tool-calling loop that gives it web search." />
+  <title>01 — Can a Local Model Search the Web? | Ollama + Web Search Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Web Search Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Web Search</span><span class="brand-sub">Local AI Search Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html" aria-current="page"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-how-it-works.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html" aria-current="page"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 01</div>
+          <div class="eyebrow">✦ Chapter 01 · Concept</div>
+          <h1>Can a Local Model Search the Web?</h1>
+          <p>What a local model can and cannot do alone, and the tool-calling loop that gives it web search.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#answer-yes-with-a-search-tool">Answer: yes, with a search tool</a></li><li><a href="#1-the-tool-calling-loop">1. The tool-calling loop</a></li><li><a href="#2-what-you-need">2. What you need</a></li><li><a href="#3-three-ways-to-connect-search">3. Three ways to connect search</a></li><li><a href="#4-what-stays-local">4. What stays local</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="answer-yes-with-a-search-tool">Answer: yes, with a search tool</h2>
+<p>A model running on Ollama has no internet access. It only knows what was in its training data, so it cannot tell you today's news, the latest release of a library, or a current price. <strong>It can search the web when the program that calls it supplies a search tool and runs the search on its behalf.</strong></p><p>This is called <em>tool calling</em>. The model never opens a network connection itself: it asks for a search, your program performs it, and the model reads the results.</p>
+<h2 id="1-the-tool-calling-loop">1. The tool-calling loop</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Question -&gt; Host program ------------------&gt; Ollama (qwen3, local)
+                |   question + tool list          |
+                |&lt;------ tool call: web_search ---+
+                |
+                +--&gt; Search service (internet) --&gt; results
+                |
+                +--- results ---------------------&gt; Ollama
+                |&lt;------ final answer with sources
+</code></pre></div><ol><li>The host program sends the question to the model together with a description of a <code>web_search</code> tool.</li><li>The model replies with a tool call such as <code>web_search(query="...")</code> instead of an answer.</li><li>The host program runs the search and sends the results back as a <code>tool</code> message.</li><li>The model writes the answer from those results, or asks for another search.</li></ol><p>The "host program" can be a short script of your own, an MCP client, or a chat UI. The following chapters cover each.</p>
+<h2 id="2-what-you-need">2. What you need</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Piece</th><th>Role</th><th>Examples</th></tr>
+</thead>
+<tbody>
+<tr><td>A model with tool support</td><td>Decides when to search and writes the answer</td><td><code>qwen3:8b</code>, <code>qwen3:4b</code></td></tr>
+<tr><td>A search backend</td><td>Performs the actual web search</td><td>Ollama web search API, DuckDuckGo, SearXNG, Brave, Tavily</td></tr>
+<tr><td>A host program</td><td>Runs the loop between the two</td><td>Python or TypeScript script, <code>ollmcp</code>, <code>mcphost</code>, Open WebUI</td></tr>
+</tbody>
+</table></div><p>Not every model can call tools. Check the <strong>Capabilities</strong> section of <code>ollama show</code>:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ollama pull qwen3:8b
+ollama show qwen3:8b
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">  Capabilities
+    completion
+    tools
+    thinking
+</code></pre></div><p>If <code>tools</code> is missing, the model cannot request a search and Ollama rejects a chat request that includes tools. The examples in this handbook use <code>qwen3:8b</code>; use the exact tag shown by <code>ollama list</code> on your machine.</p>
+<h2 id="3-three-ways-to-connect-search">3. Three ways to connect search</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Approach</th><th>API key</th><th>Code to write</th><th>Best for</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="02-ollama-web-search.html">Ollama web search API</a></td><td>Yes (free Ollama account)</td><td>About 30 lines of Python or TypeScript</td><td>The shortest path with the official library</td></tr>
+<tr><td><a href="03-mcp-search.html">MCP host + search server</a></td><td>Depends on the server; DuckDuckGo needs none</td><td>None</td><td>A ready-made terminal or chat client</td></tr>
+<tr><td><a href="04-custom-tools.html">Your own tool function</a></td><td>Depends on the backend; DuckDuckGo and SearXNG need none</td><td>About 50 lines of Python or TypeScript</td><td>Full control over the search backend</td></tr>
+</tbody>
+</table></div><p>All three use the same loop from section 1. They differ only in who runs the loop and where the search results come from.</p>
+<h2 id="4-what-stays-local">4. What stays local</h2>
+<ul><li><strong>Inference stays local</strong> when Ollama runs a downloaded model. Your question and the model's reasoning are processed on your machine.</li><li><strong>Search queries leave your computer.</strong> Whichever backend you choose receives the query text, and any page you fetch sees your request. The workflow is not offline.</li><li>A self-hosted SearXNG instance keeps the query away from a single search provider, but it still contacts upstream search engines.</li><li>A <code>localhost</code> endpoint alone does not guarantee local inference: Ollama can also route requests to cloud models. Verify the selected model with <code>ollama ps</code>.</li></ul>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://docs.ollama.com/capabilities/tool-calling" target="_blank" rel="noopener">Ollama documentation: tool calling<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.ollama.com/capabilities/web-search" target="_blank" rel="noopener">Ollama documentation: web search<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://ollama.com/library/qwen3" target="_blank" rel="noopener">Qwen 3 in the Ollama model registry<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="index.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</span><span class="ttl">Handbook overview</span></a><a class="next" href="02-ollama-web-search.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Web Search with Ollama's Built-in API</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Web Search: Local AI Search Handbook · Updated 2026-11-14</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

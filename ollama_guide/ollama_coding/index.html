@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Local AI coding handbook: Ollama for inference, Context7 for current library documentation." />
+  <title>Home | Ollama + Context7 Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Context7 Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Context7</span><span class="brand-sub">Local AI Coding Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-ollama-basics.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-grid single">
+        <div>
+          <div class="eyebrow">✦ A local AI coding handbook</div>
+          <h1>Ollama + Context7</h1>
+          <p>Run the model locally on Ollama, feed it current library documentation from Context7, and build coding, review and test agents that cite their sources.</p>
+          <p class="hero-meta"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Updated 2026-11-05 · Examples target Python, TypeScript/JavaScript, HTML/CSS, Java, Go, Perl, Julia, and C++.</p>
+          <div class="hero-buttons">
+            <wa-button variant="brand" appearance="accent" href="01-ollama-basics.html" size="large">Start with chapter 01 <i slot="end" class="fa-solid fa-arrow-right" aria-hidden="true"></i></wa-button>
+            <wa-button appearance="outlined" href="#chapters" size="large"><i slot="start" class="fa-solid fa-layer-group" aria-hidden="true"></i>Browse all chapters</wa-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" id="chapters">
+      <div class="container">
+        <div class="section-heading"><div class="eyebrow"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> Start here</div><h2>Five chapters</h2><p>From installing a coding model to a complete, version-aware implementation workflow.</p><div class="gold-line"></div></div>
+        <div class="card-grid"><a class="card-link" href="01-ollama-basics.html"><wa-card class="story-card"><div class="card-visual pink" aria-hidden="true"><i class="fa-solid fa-terminal" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="neutral" appearance="outlined" pill>Basics</wa-badge><h3>Ollama Essentials for Coding</h3><p>Install Ollama, pick a coding model, and call the local API from Python and TypeScript.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">01 / 05</span></div></div></wa-card></a><a class="card-link" href="02-context7-mcp.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="success" appearance="outlined" pill>Context7</wa-badge><h3>Connecting Context7 MCP to a Local Ollama Model</h3><p>Connect Context7 for current library docs, via true MCP or the simpler REST API.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">02 / 05</span></div></div></wa-card></a><a class="card-link" href="03-coding-subagents.html"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-solid fa-robot" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="warning" appearance="outlined" pill>Subagents</wa-badge><h3>Build Coding, Refactoring, Review, and Test Subagents</h3><p>Planner, coder, reviewer and tester roles, plus safe, allowlisted validation.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">03 / 05</span></div></div></wa-card></a><a class="card-link" href="04-explain-code.html"><wa-card class="story-card"><div class="card-visual pink" aria-hidden="true"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="neutral" appearance="outlined" pill>Explain</wa-badge><h3>Explain Code with Fresh Library Documentation</h3><p>Explain existing code with version-aware, source-backed evidence.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">04 / 05</span></div></div></wa-card></a><a class="card-link" href="05-end-to-end-workflow.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="success" appearance="outlined" pill>Workflow</wa-badge><h3>End-to-End Workflow: Generate Code Using Current Libraries</h3><p>An end-to-end, version-aware generation workflow across eight languages.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">05 / 05</span></div></div></wa-card></a>
+          <a class="card-link" href="#examples"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-solid fa-flask" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="warning" appearance="outlined" pill>Code</wa-badge><h3>Runnable starter examples</h3><p>Python and TypeScript orchestrators that write safe, reviewable proposals.</p><div class="card-footer"><span>See examples <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section components-panel" id="examples">
+      <div class="container">
+        <div class="section-heading"><div class="eyebrow"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i> Runnable examples</div><h2>Starter code</h2><p>Small, dependency-light programs you can read, run and adapt.</p><div class="gold-line"></div></div>
+        <div class="card-grid"><a class="card-link" href="examples/agent_python.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-brands fa-python" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>python</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/agent_python.py</h3><p>Python orchestrator, Context7 REST documentation fetch, staged agent generation, safe preview.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a><a class="card-link" href="examples/agent_typescript.html"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-brands fa-node-js" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>typescript</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/agent_typescript.ts</h3><p>TypeScript equivalent using Node 20+ native fetch.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a><a class="card-link" href="examples/env-example.html"><wa-card class="story-card"><div class="card-visual pink" aria-hidden="true"><i class="fa-solid fa-key" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>bash</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/.env.example</h3><p>Optional Context7 credential and Ollama settings.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a></div>
+      </div>
+    </section>
+
+    <section class="content-section" id="about">
+      <div class="container" style="max-width:900px">
+        <article class="prose">
+<h2 id="what-this-does-and-does-not-do"><i class="fa-solid fa-circle-info h-icon" aria-hidden="true"></i> What this does and does not do</h2>
+<p>The supplied examples default to a downloaded local Ollama model. Selecting a cloud model can send inference requests to Ollama’s cloud even through a localhost endpoint. Context7 connects over the internet (unless you provide your own local documentation source); therefore the overall workflow <strong>is not fully offline</strong>. Context7 fetches library documentation but does not guarantee that it is the newest release or that every API is correct. Check the installed dependency version, official release notes, and run tests.</p>
+<p>The examples generate <em>suggestions</em> and write Markdown proposals to <code>output/</code> by default, or to the directory selected with <code>--out</code>. They refuse to overwrite existing proposal files and do not execute model-generated commands. Choose a new <code>--out</code> directory for each run. Review changes before executing them. The examples use the Context7 <strong>REST API</strong> for straightforward code; the guide also explains true <strong>MCP integration</strong>. These are separate approaches to the same documentation source.</p>
+<h2 id="primary-sources"><i class="fa-solid fa-link h-icon" aria-hidden="true"></i> Primary sources</h2>
+<ul>
+<li><a href="https://docs.ollama.com/" target="_blank" rel="noopener">Ollama documentation<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://ollama.com/search?q=coder" target="_blank" rel="noopener">Ollama model registry<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://github.com/upstash/context7/blob/master/packages/mcp/README.md" target="_blank" rel="noopener">Context7 MCP README<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://context7.com/docs/api-guide" target="_blank" rel="noopener">Context7 API guide<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://context7.com/docs/resources/all-clients" target="_blank" rel="noopener">Context7 MCP clients<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://mosubaga.github.io/aiagentnotes/" target="_blank" rel="noopener">User-suggested reference notes<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> (optional inspiration; not used as verified authority)</li>
+</ul>
+<p>All Markdown fences carry language identifiers for syntax highlighting (GitHub, Obsidian, and most Markdown renderers).</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section" style="padding-top:0"><div class="container"><div class="about-banner"><div><div class="eyebrow" style="color:#f6d88e">Local model · fresh docs</div><h2>Verified docs, verified code.</h2><p>Retrieve current docs, generate with a local model, then verify with real tests.</p></div><wa-button appearance="filled" variant="warning" href="05-end-to-end-workflow.html">See the full workflow <i slot="end" class="fa-solid fa-arrow-right" aria-hidden="true"></i></wa-button></div></div></section>
+  </main>
+  <footer><div>© 2026 Ollama + Context7: Local AI Coding Handbook · Updated 2026-11-05</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

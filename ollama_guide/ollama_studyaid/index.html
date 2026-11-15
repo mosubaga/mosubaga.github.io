@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Local AI study handbook: Ollama for inference, your own textbook PDFs for content." />
+  <title>Home | Ollama Study Aid Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama Study Aid Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama Study Aid</span><span class="brand-sub">Local AI Study Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-study-partner.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html" aria-current="page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-grid single">
+        <div>
+          <div class="eyebrow">✦ A local AI study handbook</div>
+          <h1>Ollama Study Aid</h1>
+          <p>Run the model locally on Ollama, give it your textbook PDFs, and study with explanations, flashcards and practice questions that cite the page they came from.</p>
+          <p class="hero-meta"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Updated 2026-11-15 · For college and graduate students · Examples in Python and TypeScript with <code>qwen3:8b</code>.</p>
+          <div class="hero-buttons">
+            <wa-button variant="brand" appearance="accent" href="01-study-partner.html" size="large">Start with chapter 01 <i slot="end" class="fa-solid fa-arrow-right" aria-hidden="true"></i></wa-button>
+            <wa-button appearance="outlined" href="#chapters" size="large"><i slot="start" class="fa-solid fa-layer-group" aria-hidden="true"></i>Browse all chapters</wa-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" id="chapters">
+      <div class="container">
+        <div class="section-heading"><div class="eyebrow"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> Start here</div><h2>Five chapters</h2><p>From a PDF on your disk to answers, flashcards and quizzes you can check against the page.</p><div class="gold-line"></div></div>
+        <div class="card-grid"><a class="card-link" href="01-study-partner.html"><wa-card class="story-card"><div class="card-visual pink" aria-hidden="true"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="neutral" appearance="outlined" pill>Concept</wa-badge><h3>A Local LLM as a Study Partner</h3><p>What a local model can do with your textbooks, what you need to install, and where it falls short.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">01 / 05</span></div></div></wa-card></a><a class="card-link" href="02-pdf-to-text.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="success" appearance="outlined" pill>PDFs</wa-badge><h3>Getting Text out of Textbook PDFs</h3><p>Extract text page by page, handle scanned books with OCR, and deal with formulas and tables.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">02 / 05</span></div></div></wa-card></a><a class="card-link" href="03-ask-your-textbook.html"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="warning" appearance="outlined" pill>Ask</wa-badge><h3>Ask Questions About Your Textbook</h3><p>Build a small search index over a PDF with local embeddings and get answers that cite page numbers.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">03 / 05</span></div></div></wa-card></a><a class="card-link" href="04-study-techniques.html"><wa-card class="story-card"><div class="card-visual pink" aria-hidden="true"><i class="fa-solid fa-brain" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="neutral" appearance="outlined" pill>Techniques</wa-badge><h3>Study Techniques with a Local Model</h3><p>Summaries, flashcards for Anki, practice questions and a Socratic tutor, all grounded in your own pages.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">04 / 05</span></div></div></wa-card></a><a class="card-link" href="05-tools-and-mcp.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-solid fa-plug" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="success" appearance="outlined" pill>Tools</wa-badge><h3>Ready-made Apps and MCP Tools</h3><p>Apps that chat with documents out of the box, and MCP servers for PDFs, Anki, Zotero and papers.</p><div class="card-footer"><span>Read chapter <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="num">05 / 05</span></div></div></wa-card></a>
+          <a class="card-link" href="#examples"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-solid fa-flask" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="warning" appearance="outlined" pill>Code</wa-badge><h3>Runnable starter examples</h3><p>A textbook question-answering tool and an Anki flashcard generator, in Python and TypeScript.</p><div class="card-footer"><span>See examples <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section components-panel" id="examples">
+      <div class="container">
+        <div class="section-heading"><div class="eyebrow"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i> Runnable examples</div><h2>Starter code</h2><p>Small, dependency-light programs you can read, run and adapt.</p><div class="gold-line"></div></div>
+        <div class="card-grid"><a class="card-link" href="examples/study_rag.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-brands fa-python" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>python</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/study_rag.py</h3><p>Index a textbook PDF with local embeddings and answer questions with page citations.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a><a class="card-link" href="examples/study_rag_ts.html"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-brands fa-node-js" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>typescript</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/study_rag.ts</h3><p>TypeScript equivalent using the ollama and unpdf packages.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a><a class="card-link" href="examples/flashcards.html"><wa-card class="story-card"><div class="card-visual green" aria-hidden="true"><i class="fa-brands fa-python" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>python</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/flashcards.py</h3><p>Turn a page range into Anki flashcards using structured outputs.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a><a class="card-link" href="examples/flashcards_ts.html"><wa-card class="story-card"><div class="card-visual gold" aria-hidden="true"><i class="fa-brands fa-node-js" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>typescript</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/flashcards.ts</h3><p>TypeScript equivalent with a hand-written JSON schema.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a><a class="card-link" href="examples/env-example.html"><wa-card class="story-card"><div class="card-visual pink" aria-hidden="true"><i class="fa-solid fa-key" aria-hidden="true"></i></div><div class="card-copy"><wa-badge variant="brand" appearance="outlined" pill>bash</wa-badge><h3 style="font-family:var(--mono);font-size:1rem">examples/.env.example</h3><p>Optional model and context length settings. No API key is needed.</p><div class="card-footer"><span>View source <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></div></wa-card></a></div>
+      </div>
+    </section>
+
+    <section class="content-section" id="about">
+      <div class="container" style="max-width:900px">
+        <article class="prose">
+<h2 id="what-this-does-and-does-not-do"><i class="fa-solid fa-circle-info h-icon" aria-hidden="true"></i> What this does and does not do</h2>
+<p>This handbook shows how to study any subject, from mathematics and the sciences to history and computer science, with a model that runs on your own computer. The supplied examples use a downloaded chat model and a downloaded embedding model, so <strong>the workflow runs fully offline</strong> and your PDFs are not uploaded anywhere. That changes if you select a cloud model or one of the internet-backed MCP servers in chapter 05.</p>
+<p>A local model is a study partner, not an authority. It can misread a passage, scramble a formula that was extracted badly from the PDF, or answer from memory instead of from your book. The examples print the pages they used, ask the model to cite them, and refuse to overwrite existing flashcard files. Check answers and cards against the textbook, and follow your institution's rules on AI use in assessed work.</p>
+<p>All four example programs were run against a local <code>qwen3:8b</code> and <code>embeddinggemma</code> on a short sample PDF when this handbook was written. The app and MCP recipes in chapter 05 are assembled from each project's documentation and were not run. Tools in this area change quickly: confirm install commands against each project's page.</p>
+<h2 id="primary-sources"><i class="fa-solid fa-link h-icon" aria-hidden="true"></i> Primary sources</h2>
+<ul>
+<li><a href="https://docs.ollama.com/" target="_blank" rel="noopener">Ollama documentation<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://docs.ollama.com/capabilities/embeddings" target="_blank" rel="noopener">Ollama documentation: embeddings<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://docs.ollama.com/capabilities/structured-outputs" target="_blank" rel="noopener">Ollama documentation: structured outputs<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://pymupdf.readthedocs.io/en/latest/" target="_blank" rel="noopener">PyMuPDF documentation<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://github.com/unjs/unpdf" target="_blank" rel="noopener">unpdf<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://docs.openwebui.com/features/workspace/knowledge/" target="_blank" rel="noopener">Open WebUI: Knowledge<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+<li><a href="https://docs.ankiweb.net/importing/text-files.html" target="_blank" rel="noopener">Anki manual: importing text files<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li>
+</ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="content-section" style="padding-top:0"><div class="container"><div class="about-banner"><div><div class="eyebrow" style="color:#f6d88e">Local model · your own textbooks</div><h2>Ask, recall, then check the page.</h2><p>Practice with a local model, and let the textbook have the last word.</p></div><wa-button appearance="filled" variant="warning" href="04-study-techniques.html">See the study techniques <i slot="end" class="fa-solid fa-arrow-right" aria-hidden="true"></i></wa-button></div></div></section>
+  </main>
+  <footer><div>© 2026 Ollama Study Aid: Local AI Study Handbook · Updated 2026-11-15</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Connect a local Ollama model to a web search MCP server with an MCP host, without writing code." />
+  <title>03 — Web Search through MCP | Ollama + Web Search Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Web Search Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Web Search</span><span class="brand-sub">Local AI Search Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html" aria-current="page"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-how-it-works.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html" aria-current="page"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-plug" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 03</div>
+          <div class="eyebrow">✦ Chapter 03 · MCP</div>
+          <h1>Web Search through MCP</h1>
+          <p>Connect a local Ollama model to a web search MCP server with an MCP host, without writing code.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#answer-yes-with-an-mcp-host">Answer: yes, with an MCP host</a></li><li><a href="#1-choose-an-mcp-host">1. Choose an MCP host</a></li><li><a href="#2-choose-a-search-server">2. Choose a search server</a></li><li><a href="#3-recipe-ollmcp-duckduckgo">3. Recipe: ollmcp + DuckDuckGo (no API key)</a></li><li><a href="#4-alternative-host-mcphost">4. Alternative host: mcphost</a></li><li><a href="#5-ollamas-web-search-mcp-server">5. Ollama's web search MCP server</a></li><li><a href="#6-open-webui">6. Open WebUI</a></li><li><a href="#7-keep-the-tool-set-small">7. Keep the tool set small</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="answer-yes-with-an-mcp-host">Answer: yes, with an MCP host</h2>
+<p>The Model Context Protocol (MCP) is a standard way to offer tools to a model. Many web search tools are published as MCP servers. <strong>Ollama is an LLM runtime, not an MCP client</strong>, so you need a host application between them that connects to the MCP server and uses Ollama for inference.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Ollama (qwen3, local) &lt;--&gt; MCP host / client &lt;--&gt; MCP search server &lt;--&gt; the web
+</code></pre></div><p>The host lists the server's tools for the model, runs the tool calls the model makes, and returns the results. It is the same loop as in <a href="01-how-it-works.html#1-the-tool-calling-loop">chapter 01</a>, already written for you.</p>
+<h2 id="1-choose-an-mcp-host">1. Choose an MCP host</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>Host</th><th>Type</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/jonigl/mcp-client-for-ollama" target="_blank" rel="noopener">ollmcp<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Terminal app</td><td>Built for Ollama; Python 3.11+; can ask for approval before each tool call</td></tr>
+<tr><td><a href="https://github.com/mark3labs/mcphost" target="_blank" rel="noopener">mcphost<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Command-line host</td><td>Written in Go; select the model as <code>ollama/&lt;tag&gt;</code></td></tr>
+<tr><td><a href="https://docs.openwebui.com/" target="_blank" rel="noopener">Open WebUI<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Browser chat UI</td><td>Native MCP support from v0.6.31, Streamable HTTP servers only</td></tr>
+<tr><td><a href="https://github.com/block/goose" target="_blank" rel="noopener">Goose<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>, <a href="https://cline.bot/" target="_blank" rel="noopener">Cline<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Agent and coding tools</td><td>Accept Ollama as the model provider and MCP servers as tools</td></tr>
+</tbody>
+</table></div>
+<h2 id="2-choose-a-search-server">2. Choose a search server</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr><th>MCP server</th><th>API key</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://github.com/nickclyde/duckduckgo-mcp-server" target="_blank" rel="noopener">DuckDuckGo MCP server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>None</td><td>Community project; tools <code>search</code> and <code>fetch_content</code>; built-in rate limiting</td></tr>
+<tr><td><a href="https://github.com/ollama/ollama-python/blob/main/examples/web-search-mcp.py" target="_blank" rel="noopener">Ollama web search MCP server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td><code>OLLAMA_API_KEY</code></td><td>Example script from the Ollama Python library; wraps the API from chapter 02</td></tr>
+<tr><td><a href="https://github.com/brave/brave-search-mcp-server" target="_blank" rel="noopener">Brave Search MCP server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Brave Search API key</td><td>Hosted search API with its own index</td></tr>
+<tr><td><a href="https://github.com/tavily-ai/tavily-mcp" target="_blank" rel="noopener">Tavily MCP server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Tavily API key</td><td>Search API designed for LLM agents</td></tr>
+<tr><td><a href="https://github.com/ihor-sokoliuk/mcp-searxng" target="_blank" rel="noopener">SearXNG MCP server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>None</td><td>Points at a SearXNG instance you host yourself</td></tr>
+<tr><td><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/fetch" target="_blank" rel="noopener">Fetch (reference server)<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>None</td><td>Does not search; retrieves one page by URL. Pair it with a search server</td></tr>
+</tbody>
+</table></div><p>Hosted APIs change their free tiers and terms; check each provider before depending on one.</p>
+<h2 id="3-recipe-ollmcp-duckduckgo">3. Recipe: ollmcp + DuckDuckGo (no API key)</h2>
+<p>Requirements: Ollama with <code>qwen3:8b</code>, Python 3.11+, and <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">uv<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> for the <code>uvx</code> command.</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash"># Install the MCP client
+uv tool install --upgrade ollmcp
+
+# Register the DuckDuckGo MCP server (everything after -- is the command to run)
+ollmcp mcp add ddg-search -- uvx duckduckgo-mcp-server
+
+# Confirm it is registered
+ollmcp mcp list
+
+# Start chatting with the local model
+ollmcp --model qwen3:8b
+</code></pre></div><p>Inside the client, type <code>/help</code> for commands and <code>/tools</code> to confirm that <code>search</code> and <code>fetch_content</code> are enabled. Then ask something that needs current information:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Search the web: what is the latest stable version of Python, and when was it released? Cite your sources.
+</code></pre></div><p>ollmcp shows each tool call and, with Human-in-the-Loop enabled, asks for approval before running it. Raise the context window in the client's model configuration (<code>num_ctx</code>); see <a href="05-reliable-answers.html#1-give-the-model-enough-context">chapter 05</a>.</p>
+<h2 id="4-alternative-host-mcphost">4. Alternative host: mcphost</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">go install github.com/mark3labs/mcphost@latest
+</code></pre></div><p>Create <code>~/.mcphost.yml</code>:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-file-code" aria-hidden="true"></i> yaml</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-yaml">mcpServers:
+  ddg-search:
+    type: &quot;local&quot;
+    command: [&quot;uvx&quot;, &quot;duckduckgo-mcp-server&quot;]
+
+model: &quot;ollama/qwen3:8b&quot;
+max-steps: 10
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">mcphost
+</code></pre></div><p>You can also pass the model on the command line with <code>mcphost -m ollama/qwen3:8b</code>.</p>
+<h2 id="5-ollamas-web-search-mcp-server">5. Ollama's web search MCP server</h2>
+<p>Ollama publishes a small Python MCP server that exposes its web search and web fetch API. Download <code>web-search-mcp.py</code> from the <a href="https://github.com/ollama/ollama-python/blob/main/examples/web-search-mcp.py" target="_blank" rel="noopener">ollama-python examples<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>, then register it in your host. The generic configuration, as used by Cline and similar clients:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-file-code" aria-hidden="true"></i> json</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;web_search_and_fetch&quot;: {
+      &quot;type&quot;: &quot;stdio&quot;,
+      &quot;command&quot;: &quot;uv&quot;,
+      &quot;args&quot;: [&quot;run&quot;, &quot;path/to/web-search-mcp.py&quot;],
+      &quot;env&quot;: { &quot;OLLAMA_API_KEY&quot;: &quot;your_api_key_here&quot; }
+    }
+  }
+}
+</code></pre></div><p>With ollmcp, the equivalent is:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ollmcp mcp add --env OLLAMA_API_KEY=your_api_key_here ollama-search -- uv run path/to/web-search-mcp.py
+</code></pre></div><p>Exact file location and schema vary by client. Keep credentials out of committed files.</p>
+<h2 id="6-open-webui">6. Open WebUI</h2>
+<p>Open WebUI connects to MCP servers over <strong>Streamable HTTP</strong>, not stdio, so start the search server in that mode:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">uvx duckduckgo-mcp-server --transport streamable-http --port 7070
+</code></pre></div><p>Then, as an administrator, open <strong>Settings &gt; Integrations</strong>, and under <strong>External Tool Servers</strong> add a connection with <strong>Type</strong> set to <strong>MCP (Streamable HTTP)</strong> and the server URL. Choosing the OpenAPI type for an MCP server is a common mistake. Consult the current <a href="https://docs.openwebui.com/features/extensibility/mcp/" target="_blank" rel="noopener">Open WebUI MCP guide<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> for the endpoint path and authentication settings.</p><p>Open WebUI also has a built-in web search feature that does not use MCP; see <a href="04-custom-tools.html#5-chat-uis-with-built-in-search">chapter 04</a>.</p>
+<h2 id="7-keep-the-tool-set-small">7. Keep the tool set small</h2>
+<ul><li>Every tool description consumes context, and small models choose worse as the list grows. Enable one search tool and one fetch tool; disable the rest.</li><li>An MCP server is a program running on your machine with your permissions. Install servers only from sources you trust and read what they do.</li><li>MCP does not make the model better at using tools. If the model ignores the search tool or sends wrong arguments, the fix is a clearer prompt or a stronger model, not a different server.</li></ul>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://docs.ollama.com/capabilities/web-search" target="_blank" rel="noopener">https://docs.ollama.com/capabilities/web-search<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> (MCP Server section)</li><li><a href="https://github.com/jonigl/mcp-client-for-ollama" target="_blank" rel="noopener">https://github.com/jonigl/mcp-client-for-ollama<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/mark3labs/mcphost" target="_blank" rel="noopener">https://github.com/mark3labs/mcphost<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/nickclyde/duckduckgo-mcp-server" target="_blank" rel="noopener">https://github.com/nickclyde/duckduckgo-mcp-server<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.openwebui.com/features/extensibility/mcp/" target="_blank" rel="noopener">https://docs.openwebui.com/features/extensibility/mcp/<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="02-ollama-web-search.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">Web Search with Ollama's Built-in API</span></a><a class="next" href="04-custom-tools.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Write Your Own Search Tool</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Web Search: Local AI Search Handbook · Updated 2026-11-14</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

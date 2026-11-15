@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Planner, coder, reviewer and tester roles, plus safe, allowlisted validation." />
+  <title>03 — Build Coding, Refactoring, Review, and Test Subagents | Ollama + Context7 Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Context7 Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Context7</span><span class="brand-sub">Local AI Coding Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html" aria-current="page"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-ollama-basics.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html" aria-current="page"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 03</div>
+          <div class="eyebrow">✦ Chapter 03 · Subagents</div>
+          <h1>Build Coding, Refactoring, Review, and Test Subagents</h1>
+          <p>Planner, coder, reviewer and tester roles, plus safe, allowlisted validation.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#1-a-practical-architecture">1. A practical architecture</a></li><li><a href="#2-python-program">2. Python program</a></li><li><a href="#3-typescript-program">3. TypeScript program</a></li><li><a href="#4-sample-tool-calling-interface-conceptual">4. Sample tool-calling interface (conceptual)</a></li><li><a href="#5-validation-commands-by-language">5. Validation commands by language</a></li><li><a href="#6-agent-prompts">6. Agent prompts</a></li><li><a href="#7-scaling-up">7. Scaling up</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="1-a-practical-architecture">1. A practical architecture</h2>
+<p>A <strong>subagent</strong> is a specialized role with its own task and output contract. It does not require a separate running model: you can call the same Ollama model with different system prompts, or select different models by role.</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">User task
+   -&gt; Planner: requirements + file plan
+   -&gt; Documentation researcher: Context7 + version check
+   -&gt; Coder: implementation from vetted references
+   -&gt; Reviewer/refactorer: analyze API, error handling, style
+   -&gt; Test designer: propose unit/integration tests
+   -&gt; Validator: run an allowlisted test command in sandbox
+   -&gt; Human: approve patch before applying to repo
+</code></pre></div>
+<p>Start with a <strong>sequential workflow</strong>. Parallel agents add cost and conflict risk. Each step receives the previous results, and the final result should distinguish generated code from verified execution.</p>
+<h2 id="2-python-program">2. Python program</h2>
+<p>See <a href="examples/agent_python.html"><code>examples/agent_python.py</code></a>. It uses standard Python, <code>urllib.request</code>, and the local Ollama <code>/api/chat</code> endpoint. Its roles: <code>planner</code>, <code>coder</code>, <code>reviewer</code>, and <code>tester</code>. It retrieves Context7 context using the REST API when a key is provided and saves outputs as Markdown proposals in <code>output/</code>. Existing proposal files are not overwritten; choose a new directory with <code>--out</code> for each run.</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash"># macOS / Linux
+export CONTEXT7_API_KEY='YOUR_KEY'
+export OLLAMA_MODEL='qwen2.5-coder:7b'
+python examples/agent_python.py --library FastAPI --language Python \
+  --task 'Create a small health-check endpoint with pytest tests'
+</code></pre></div>
+<div class="code-block"><div class="code-label"><span><i class="fa-brands fa-windows" aria-hidden="true"></i> powershell</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-powershell"># PowerShell
+$env:CONTEXT7_API_KEY = 'YOUR_KEY'
+$env:OLLAMA_MODEL = 'qwen2.5-coder:7b'
+python examples/agent_python.py --library FastAPI --language Python --task 'Create a health-check API and tests'
+</code></pre></div>
+<h2 id="3-typescript-program">3. TypeScript program</h2>
+<p>See <a href="examples/agent_typescript.html"><code>examples/agent_typescript.ts</code></a>. Requires Node &gt;=20 and <code>tsx</code> (for running TypeScript source).</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">npm install -D tsx typescript @types/node
+npx tsx examples/agent_typescript.ts --library Express --language TypeScript \
+  --task 'Implement a typed GET /health endpoint with tests'
+</code></pre></div>
+<h2 id="4-sample-tool-calling-interface-conceptual">4. Sample tool-calling interface (conceptual)</h2>
+<p>For a genuinely autonomous agent, add an <strong>explicit, narrowly scoped</strong> tool registry rather than letting model output execute shell code:</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">ALLOWED_TOOLS = {
+    &quot;read_project_file&quot;: &quot;Read files within an approved project root&quot;,
+    &quot;get_library_docs&quot;: &quot;Query Context7 with a verified library ID&quot;,
+    &quot;propose_patch&quot;: &quot;Write diff proposals to a review directory&quot;,
+    &quot;run_tests&quot;: &quot;Run preconfigured test commands in a sandbox&quot;,
+}
+</code></pre></div>
+<p>Implement tool execution in host code. Validate tool arguments, enforce path restrictions, disable network access for test runs where feasible, and require approval for destructive operations. Never directly <code>eval()</code> tool arguments or execute raw shell strings returned by an LLM.</p>
+<h2 id="5-validation-commands-by-language">5. Validation commands by language</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Typical validation (configure per project)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td><code>python -m pytest</code>, <code>ruff check .</code>, <code>mypy .</code></td>
+</tr>
+<tr>
+<td>TypeScript/JavaScript</td>
+<td><code>npm test</code>, <code>npx tsc --noEmit</code>, <code>npx eslint .</code></td>
+</tr>
+<tr>
+<td>HTML/CSS</td>
+<td>HTML validator, Stylelint, Playwright browser checks</td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>mvn test</code> or <code>./gradlew test</code></td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>go test ./...</code>, <code>go vet ./...</code></td>
+</tr>
+<tr>
+<td>C++</td>
+<td><code>cmake --build build</code>, <code>ctest --test-dir build --output-on-failure</code></td>
+</tr>
+<tr>
+<td>Perl</td>
+<td><code>prove -lr t</code>, <code>perl -c script.pl</code></td>
+</tr>
+<tr>
+<td>Julia</td>
+<td><code>julia --project=. -e 'using Pkg; Pkg.test()'</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>These commands can execute project-supplied scripts or untrusted code; run inside an isolated/containerized workspace and obtain user approval first. Test output is evidence, not a correctness proof.</p>
+<h2 id="6-agent-prompts">6. Agent prompts</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Planner: Specify output files, dependencies, acceptance criteria, and test strategy.
+Coder: Use retrieved docs only where applicable; separate assumptions and code.
+Reviewer: Flag unsupported methods, security bugs, race conditions, and incompatibilities.
+Tester: Generate runnable positive/negative tests and provide exact commands.
+Validator: Report actual output, exit status, and environment; do not fabricate passes.
+</code></pre></div>
+<h2 id="7-scaling-up">7. Scaling up</h2>
+<p>When ready, add an explicit tool-call loop and structured response validation; preserve tool-call history and guard iteration counts. For larger projects, consider a repository-aware editor/agent client capable of using Ollama and Context7, but verify its current support and MCP setup rather than assuming the integration is automatic.</p>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="02-context7-mcp.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">Connecting Context7 MCP to a Local Ollama Model</span></a><a class="next" href="04-explain-code.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Explain Code with Fresh Library Documentation</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Context7: Local AI Coding Handbook · Updated 2026-11-05</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

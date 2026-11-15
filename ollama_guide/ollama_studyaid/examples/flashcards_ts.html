@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="TypeScript equivalent with a hand-written JSON schema." />
+  <title>examples/flashcards.ts | Ollama Study Aid Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html" aria-label="Ollama Study Aid Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama Study Aid</span><span class="brand-sub">Local AI Study Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="../01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="../02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="../03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="../04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="../05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="../index.html#examples" aria-current="page"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="../01-study-partner.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="../01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="../02-pdf-to-text.html"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="../03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="../04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="../05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="../index.html#examples" aria-current="page"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-brands fa-node-js" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / <a href="../index.html#examples">Examples</a></div>
+          <div class="eyebrow">✦ Runnable example</div>
+          <h1>examples/flashcards.ts</h1>
+          <p>TypeScript equivalent with a hand-written JSON schema.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout single">
+      <article class="prose">
+        <div class="file-meta">
+          <wa-badge variant="brand" appearance="outlined" pill>typescript</wa-badge>
+          <wa-badge variant="neutral" appearance="outlined" pill><i class="fa-regular fa-file-lines" aria-hidden="true"></i> 109 lines</wa-badge>
+          <wa-button size="small" appearance="outlined" href="flashcards.ts" download="flashcards.ts"><i slot="start" class="fa-solid fa-download" aria-hidden="true"></i>Download raw file</wa-button>
+        </div>
+        <div class="code-block"><div class="code-label"><span><i class="fa-brands fa-js" aria-hidden="true"></i> typescript</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-typescript">/** Turn a page range of a textbook PDF into flashcards for Anki.
+ * Node 20+, run via `npx tsx`. Requires `npm install ollama unpdf` and `ollama pull qwen3:8b`.
+ * Everything runs on your machine; the PDF never leaves it.
+ *
+ *   npx tsx flashcards.ts textbook.pdf --pages 12-18 --count 10 --out cards.tsv
+ *
+ * Import cards.tsv in Anki with File &gt; Import (fields: Front, Back, Tags).
+ */
+import { readFile, writeFile } from &#x27;node:fs/promises&#x27;;
+import { Ollama } from &#x27;ollama&#x27;;
+import { extractText, getDocumentProxy } from &#x27;unpdf&#x27;;
+
+const model = process.env.OLLAMA_MODEL ?? &#x27;qwen3:8b&#x27;;
+const numCtx = Number(process.env.OLLAMA_NUM_CTX ?? 16000);
+const maxChars = 36000;   // about 9,000 tokens of source text; narrow the page range if you hit this
+
+interface Card { front: string; back: string; page: number }
+
+// Structured output: the reply must match this JSON schema.
+const deckSchema = {
+  type: &#x27;object&#x27;,
+  properties: {
+    cards: {
+      type: &#x27;array&#x27;,
+      items: {
+        type: &#x27;object&#x27;,
+        properties: {
+          front: { type: &#x27;string&#x27; },   // the question
+          back: { type: &#x27;string&#x27; },    // the answer
+          page: { type: &#x27;integer&#x27; },   // page the answer comes from
+        },
+        required: [&#x27;front&#x27;, &#x27;back&#x27;, &#x27;page&#x27;],
+      },
+    },
+  },
+  required: [&#x27;cards&#x27;],
+};
+
+const client = new Ollama();
+
+function option(name: string): string | undefined {
+  const index = process.argv.indexOf(`--${name}`);
+  return index &gt;= 0 ? process.argv[index + 1] : undefined;
+}
+
+/** Return the text of pages first..last (1-based, inclusive), each labelled with its page number. */
+async function readRange(pdfPath: string, first: number, last: number): Promise&lt;string&gt; {
+  const pdf = await getDocumentProxy(new Uint8Array(await readFile(pdfPath)));
+  const { text } = await extractText(pdf, { mergePages: false });
+  return text
+    .map((raw, i) =&gt; ({ page: i + 1, text: raw.replace(/\s+/g, &#x27; &#x27;).trim() }))
+    .filter((p) =&gt; p.page &gt;= first &amp;&amp; p.page &lt;= last &amp;&amp; p.text.length &gt; 0)
+    .map((p) =&gt; `[p. ${p.page}] ${p.text}`)
+    .join(&#x27;\n\n&#x27;);
+}
+
+async function makeCards(text: string, count: number): Promise&lt;Card[]&gt; {
+  const prompt = `Write ${count} flashcards from the textbook pages below.
+Rules:
+- One fact or idea per card. The front is a specific question; the back is a short answer.
+- Use only what the pages say. Do not add outside knowledge.
+- Prefer definitions, causes, comparisons and steps over trivia.
+- Set &quot;page&quot; to the page number the answer comes from.
+
+Pages:
+${text}`;
+  const response = await client.chat({
+    model,
+    messages: [{ role: &#x27;user&#x27;, content: prompt }],
+    format: deckSchema,
+    think: false,
+    options: { num_ctx: numCtx, temperature: 0 },
+  });
+  const deck = JSON.parse(response.message.content) as { cards?: Card[] };
+  if (!Array.isArray(deck.cards)) throw new Error(&#x27;The model did not return a list of cards.&#x27;);
+  return deck.cards.filter((c) =&gt; typeof c.front === &#x27;string&#x27; &amp;&amp; typeof c.back === &#x27;string&#x27;);
+}
+
+/** Tabs and line breaks would split a card across fields or rows in the TSV file. */
+const clean = (value: string) =&gt; value.replace(/\s+/g, &#x27; &#x27;).trim();
+
+async function main(): Promise&lt;void&gt; {
+  const pdfPath = process.argv[2];
+  const pages = option(&#x27;pages&#x27;);
+  if (!pdfPath || pdfPath.startsWith(&#x27;--&#x27;) || !pages) {
+    console.error(&#x27;Usage: npx tsx flashcards.ts textbook.pdf --pages 12-18 [--count 10] [--out cards.tsv]&#x27;);
+    process.exit(1);
+  }
+  const [first, last] = pages.split(&#x27;-&#x27;).map(Number);
+  const count = Number(option(&#x27;count&#x27;) ?? 10);
+  const out = option(&#x27;out&#x27;) ?? &#x27;cards.tsv&#x27;;
+
+  let text = await readRange(pdfPath, first, last ?? first);
+  if (!text) throw new Error(&#x27;No text found on those pages. A scanned PDF needs OCR first (see chapter 02).&#x27;);
+  if (text.length &gt; maxChars) {
+    console.error(`Warning: using the first ${maxChars} characters; choose fewer pages for full coverage.`);
+    text = text.slice(0, maxChars);
+  }
+
+  const cards = await makeCards(text, count);
+  const rows = cards.map((c) =&gt; `${clean(c.front)}\t${clean(c.back)}\tp${c.page}\n`).join(&#x27;&#x27;);
+  await writeFile(out, rows, { flag: &#x27;wx&#x27; });   // &#x27;wx&#x27; refuses to overwrite an existing deck
+  console.log(`Wrote ${cards.length} cards to ${out}. Check each card against the page before studying it.`);
+}
+
+main().catch((error) =&gt; {
+  console.error(error);
+  process.exit(1);
+});
+</code></pre></div>
+      </article>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama Study Aid: Local AI Study Handbook · Updated 2026-11-15</div><div class="footer-links"><a href="../../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

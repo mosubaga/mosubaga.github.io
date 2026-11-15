@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Install Ollama, pick a coding model, and call the local API from Python and TypeScript." />
+  <title>01 — Ollama Essentials for Coding | Ollama + Context7 Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Context7 Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Context7</span><span class="brand-sub">Local AI Coding Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html" aria-current="page"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-ollama-basics.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-ollama-basics.html" aria-current="page"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-terminal" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 01</div>
+          <div class="eyebrow">✦ Chapter 01 · Basics</div>
+          <h1>Ollama Essentials for Coding</h1>
+          <p>Install Ollama, pick a coding model, and call the local API from Python and TypeScript.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#1-basic-commands">1. Basic commands</a></li><li><a href="#2-coding-model-candidates">2. Coding model candidates</a></li><li><a href="#3-check-local-api">3. Check local API</a></li><li><a href="#4-python-sdk">4. Python SDK</a></li><li><a href="#5-typescript-sdk">5. TypeScript SDK</a></li><li><a href="#6-prompt-structure">6. Prompt structure</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="1-basic-commands">1. Basic commands</h2>
+<p>Install Ollama from <a href="https://ollama.com/" target="_blank" rel="noopener">ollama.com<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>. Then open Terminal or PowerShell:</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ollama --version
+ollama list
+ollama pull qwen2.5-coder:7b
+ollama run qwen2.5-coder:7b
+ollama ps
+ollama show qwen2.5-coder:7b
+</code></pre></div>
+<p><code>pull</code> downloads a model; <code>run</code> launches it and may download it if missing; <code>list</code> displays local models. Model sizes and memory needs vary by quantization and context size.</p>
+<p class="callout"><i class="fa-solid fa-triangle-exclamation callout-icon" aria-hidden="true"></i><strong>Important:</strong> The model name in the supplied notes, <code>qwen36:b</code>, is ambiguous, and should be verified via <code>ollama list</code>. Do not assume it is a valid Ollama tag; use the exact installed model name in scripts (<code>OLLAMA_MODEL</code>).</p>
+<h2 id="2-coding-model-candidates">2. Coding model candidates</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Model/tag</th>
+<th>Reason to try</th>
+<th>Practical note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qwen2.5-coder:7b</code></td>
+<td>Compact coding baseline</td>
+<td>4.7 GB download in the registry; suitable first trial</td>
+</tr>
+<tr>
+<td><code>qwen2.5-coder:14b</code></td>
+<td>Larger coding reasoning</td>
+<td>9.0 GB download; higher memory demand</td>
+</tr>
+<tr>
+<td><code>qwen2.5-coder:32b</code></td>
+<td>Larger code-focused model</td>
+<td>~20 GB download; requires substantial memory</td>
+</tr>
+<tr>
+<td><code>qwen3-coder:30b</code></td>
+<td>Agent-oriented coding and tool use</td>
+<td>~19 GB download; benchmark locally for speed/memory</td>
+</tr>
+<tr>
+<td><code>qwen3-coder-next</code></td>
+<td>Newer local agentic-coding option</td>
+<td>Verify available tags and hardware fit in registry</td>
+</tr>
+<tr>
+<td><code>deepseek-coder:6.7b</code></td>
+<td>Alternative for code generation</td>
+<td>Older model; benchmark against Qwen</td>
+</tr>
+</tbody>
+</table></div>
+<p>Registry links: <a href="https://ollama.com/library/qwen2.5-coder" target="_blank" rel="noopener">Qwen 2.5 Coder<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>, <a href="https://ollama.com/library/qwen3-coder" target="_blank" rel="noopener">Qwen 3 Coder<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>, <a href="https://ollama.com/search?q=coder" target="_blank" rel="noopener">model search<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a>.</p>
+<p>For machines with 16–24 GB RAM, start with a 7B coding model; consider larger models only after evaluating memory footprint and performance. <strong>Download size is not the same as runtime RAM usage.</strong> Larger context windows require additional memory. Model support for tool calling varies: inspect the registry and test real tool-call behavior.</p>
+<h2 id="3-check-local-api">3. Check local API</h2>
+<p>Ollama typically exposes an API at <code>http://127.0.0.1:11434</code>. If needed, run <code>ollama serve</code> (on some installations the service already starts automatically).</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">curl http://127.0.0.1:11434/api/tags
+</code></pre></div>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">curl http://127.0.0.1:11434/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;model&quot;:&quot;qwen2.5-coder:7b&quot;,&quot;stream&quot;:false,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;Write a Go HTTP handler with unit tests.&quot;}]}'
+</code></pre></div>
+<p>The commands above use Bash syntax. In Windows PowerShell, use <code>Invoke-RestMethod</code>:</p>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> powershell</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-powershell">Invoke-RestMethod -Uri &#x27;http://127.0.0.1:11434/api/tags&#x27;
+$body = @{
+    model = &#x27;qwen2.5-coder:7b&#x27;
+    stream = $false
+    messages = @(@{ role = &#x27;user&#x27;; content = &#x27;Write a Go HTTP handler with unit tests.&#x27; })
+} | ConvertTo-Json -Depth 5
+Invoke-RestMethod -Uri &#x27;http://127.0.0.1:11434/api/chat&#x27; -Method Post -ContentType &#x27;application/json&#x27; -Body $body
+</code></pre></div>
+<h2 id="4-python-sdk">4. Python SDK</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python -m pip install ollama
+</code></pre></div>
+<div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">from ollama import chat
+
+response = chat(
+    model=&quot;qwen2.5-coder:7b&quot;,
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain Go interfaces with an example.&quot;}],
+)
+print(response.message.content)
+</code></pre></div>
+<h2 id="5-typescript-sdk">5. TypeScript SDK</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">npm init -y
+npm install ollama
+npm install -D typescript tsx @types/node
+</code></pre></div>
+<div class="code-block"><div class="code-label"><span><i class="fa-brands fa-js" aria-hidden="true"></i> typescript</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-typescript">import ollama from 'ollama';
+
+const response = await ollama.chat({
+  model: 'qwen2.5-coder:7b',
+  messages: [{ role: 'user', content: 'Write a Java JUnit 5 test.' }],
+});
+console.log(response.message.content);
+</code></pre></div>
+<p><strong>Optional cleanup after completing the examples:</strong> <code>ollama rm qwen2.5-coder:7b</code> deletes the downloaded model. Run <code>ollama pull qwen2.5-coder:7b</code> again before using it in later API or SDK calls.</p>
+<h2 id="6-prompt-structure">6. Prompt structure</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-align-left" aria-hidden="true"></i> text</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-plaintext">Role: You are a careful senior software engineer.
+Target: Python 3.13 with FastAPI; use only documented APIs.
+Task: Build a CRUD endpoint with tests.
+Constraints: Small dependency set, type hints, no invented methods.
+References: [insert retrieved official documentation and matching versions]
+Output: File-by-file code, commands to run tests, assumptions and risks.
+</code></pre></div>
+<p>For reproducibility, record the model tag, package versions, documentation retrieval time, and test output.</p>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="index.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Home</span><span class="ttl">Handbook overview</span></a><a class="next" href="02-context7-mcp.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Connecting Context7 MCP to a Local Ollama Model</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Context7: Local AI Coding Handbook · Updated 2026-11-05</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Optional Context7 credential and Ollama settings." />
+  <title>examples/.env.example | Ollama + Context7 Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html" aria-label="Ollama + Context7 Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Context7</span><span class="brand-sub">Local AI Coding Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="../01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="../02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="../03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="../04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="../05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="../index.html#examples" aria-current="page"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="../01-ollama-basics.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="../01-ollama-basics.html"><i class="fa-solid fa-terminal" aria-hidden="true"></i> Basics</a><a href="../02-context7-mcp.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Context7</a><a href="../03-coding-subagents.html"><i class="fa-solid fa-robot" aria-hidden="true"></i> Subagents</a><a href="../04-explain-code.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Explain</a><a href="../05-end-to-end-workflow.html"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Workflow</a><a href="../index.html#examples" aria-current="page"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="../index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / <a href="../index.html#examples">Examples</a></div>
+          <div class="eyebrow">✦ Runnable example</div>
+          <h1>examples/.env.example</h1>
+          <p>Optional Context7 credential and Ollama settings.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout single">
+      <article class="prose">
+        <div class="file-meta">
+          <wa-badge variant="brand" appearance="outlined" pill>bash</wa-badge>
+          <wa-badge variant="neutral" appearance="outlined" pill><i class="fa-regular fa-file-lines" aria-hidden="true"></i> 5 lines</wa-badge>
+          <wa-button size="small" appearance="outlined" href="env.example.txt" download=".env.example"><i slot="start" class="fa-solid fa-download" aria-hidden="true"></i>Download raw file</wa-button>
+        </div>
+        <div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash"># Copy these into your shell&#x27;s environment. Do not commit real secrets.
+CONTEXT7_API_KEY=YOUR_CONTEXT7_API_KEY
+OLLAMA_MODEL=qwen2.5-coder:7b
+OLLAMA_URL=http://127.0.0.1:11434/api/chat
+</code></pre></div>
+        <p>Proposals are written as Markdown to <code>output/</code> and never executed. See <a href="../03-coding-subagents.html">Chapter 03</a> for usage.</p>
+      </article>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Context7: Local AI Coding Handbook · Updated 2026-11-05</div><div class="footer-links"><a href="../../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

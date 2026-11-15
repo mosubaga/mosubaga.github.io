@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Extract text page by page, handle scanned books with OCR, and deal with formulas and tables." />
+  <title>02 — Getting Text out of Textbook PDFs | Ollama Study Aid Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama Study Aid Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama Study Aid</span><span class="brand-sub">Local AI Study Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html" aria-current="page"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-study-partner.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-study-partner.html"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Concept</a><a href="02-pdf-to-text.html" aria-current="page"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDFs</a><a href="03-ask-your-textbook.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Ask</a><a href="04-study-techniques.html"><i class="fa-solid fa-brain" aria-hidden="true"></i> Techniques</a><a href="05-tools-and-mcp.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> Tools</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 02</div>
+          <div class="eyebrow">✦ Chapter 02 · PDFs</div>
+          <h1>Getting Text out of Textbook PDFs</h1>
+          <p>Extract text page by page, handle scanned books with OCR, and deal with formulas and tables.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#1-check-for-a-text-layer">1. Check for a text layer</a></li><li><a href="#2-extract-text-page-by-page">2. Extract text page by page</a></li><li><a href="#3-scanned-books-need-ocr">3. Scanned books need OCR</a></li><li><a href="#4-formulas-tables-and-figures">4. Formulas, tables and figures</a></li><li><a href="#5-lecture-slides-and-notes">5. Lecture slides and notes</a></li><li><a href="#6-handle-the-files-responsibly">6. Handle the files responsibly</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="1-check-for-a-text-layer">1. Check for a text layer</h2>
+<p>A PDF either contains real text (you can select and copy it) or only page images (a scan). The model can only read text, so check first:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python -m pip install pymupdf
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">import pymupdf
+
+with pymupdf.open(&#x27;textbook.pdf&#x27;) as doc:
+    with_text = sum(1 for page in doc if page.get_text().strip())
+    print(f&#x27;{with_text} of {doc.page_count} pages contain text&#x27;)
+</code></pre></div><p>If most pages contain text, continue with section 2. If few or none do, the book is scanned and needs OCR (section 3).</p>
+<h2 id="2-extract-text-page-by-page">2. Extract text page by page</h2>
+<p><strong>Keep the page number with the text.</strong> It is what lets the model cite a page and lets you verify the answer.</p><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">import pymupdf
+
+def read_pages(pdf_path: str) -&gt; list[tuple[int, str]]:
+    &quot;&quot;&quot;Return (page number, text) for every page that has text.&quot;&quot;&quot;
+    pages = []
+    with pymupdf.open(pdf_path) as doc:
+        for number, page in enumerate(doc, start=1):
+            text = &#x27; &#x27;.join(page.get_text().split())
+            if text:
+                pages.append((number, text))
+    return pages
+
+for number, text in read_pages(&#x27;textbook.pdf&#x27;)[:3]:
+    print(number, text[:80])
+</code></pre></div><p>In TypeScript, <code>unpdf</code> wraps Mozilla's PDF.js and returns one string per page:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">npm init -y
+npm install unpdf
+npm install -D typescript tsx @types/node
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-js" aria-hidden="true"></i> typescript</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-typescript">import { readFile } from &#x27;node:fs/promises&#x27;;
+import { extractText, getDocumentProxy } from &#x27;unpdf&#x27;;
+
+async function readPages(pdfPath: string): Promise&lt;{ page: number; text: string }[]&gt; {
+  const pdf = await getDocumentProxy(new Uint8Array(await readFile(pdfPath)));
+  const { text } = await extractText(pdf, { mergePages: false });
+  return text
+    .map((raw, i) =&gt; ({ page: i + 1, text: raw.replace(/\s+/g, &#x27; &#x27;).trim() }))
+    .filter((p) =&gt; p.text.length &gt; 0);
+}
+
+async function main(): Promise&lt;void&gt; {
+  for (const p of (await readPages(&#x27;textbook.pdf&#x27;)).slice(0, 3)) {
+    console.log(p.page, p.text.slice(0, 80));
+  }
+}
+
+main().catch(console.error);
+</code></pre></div><p>The number is the position in the PDF file, which usually differs from the number printed on the page because of the cover, preface and contents. Note the offset once (for example, PDF page 25 is printed page 1) so you can find a cited page in a paper copy.</p>
+<h2 id="3-scanned-books-need-ocr">3. Scanned books need OCR</h2>
+<p><a href="https://github.com/ocrmypdf/OCRmyPDF" target="_blank" rel="noopener">OCRmyPDF<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> adds a text layer to a scanned PDF, using the Tesseract OCR engine, and leaves the page images unchanged:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ocrmypdf scanned.pdf searchable.pdf
+</code></pre></div><p>Then use <code>searchable.pdf</code> everywhere else in this handbook. For a language other than English, pass the Tesseract language code, for example <code>-l deu</code>. OCR makes mistakes on small print, handwriting and formulas; spot-check a few pages before indexing a whole book.</p>
+<h2 id="4-formulas-tables-and-figures">4. Formulas, tables and figures</h2>
+<p>Plain text extraction works well for prose. It works poorly for three things that matter in technical subjects:</p><ul><li><strong>Formulas</strong> often come out scrambled: fractions lose their structure, and superscripts and Greek letters may be dropped or reordered.</li><li><strong>Tables</strong> lose their columns and become a run of numbers.</li><li><strong>Figures</strong> are not text at all; only the caption survives.</li></ul><p>Tools that convert a PDF to Markdown keep more structure, including headings and tables, and some reconstruct equations as LaTeX:</p><div class="table-wrap"><table>
+<thead>
+<tr><th>Tool</th><th>What it does</th><th>Note</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://pymupdf.readthedocs.io/en/latest/pymupdf4llm/" target="_blank" rel="noopener">PyMuPDF4LLM<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Fast PDF to Markdown with headings and tables</td><td>Lightweight; a good first step up from plain text</td></tr>
+<tr><td><a href="https://github.com/docling-project/docling" target="_blank" rel="noopener">Docling<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Layout analysis, tables, formulas, OCR</td><td>Runs local models; slower, better on complex layouts</td></tr>
+<tr><td><a href="https://github.com/datalab-to/marker" target="_blank" rel="noopener">Marker<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>PDF to Markdown with equations as LaTeX</td><td>Aimed at books and scientific papers; check its license terms</td></tr>
+<tr><td><a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener">MarkItDown<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></td><td>Converts PDF, Word, PowerPoint and more to Markdown</td><td>Also handles lecture slides; available as an MCP server (chapter 05)</td></tr>
+</tbody>
+</table></div><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python -m pip install pymupdf4llm
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">import pymupdf4llm
+
+# One Markdown string for selected pages (0-based page numbers)
+markdown = pymupdf4llm.to_markdown(&#x27;textbook.pdf&#x27;, pages=[39, 40, 41])
+print(markdown[:500])
+
+# Or one entry per page, each with its own text and metadata
+pages = pymupdf4llm.to_markdown(&#x27;textbook.pdf&#x27;, page_chunks=True)
+print(len(pages), pages[0][&#x27;text&#x27;][:200])
+</code></pre></div><p class="callout"><i class="fa-solid fa-triangle-exclamation callout-icon" aria-hidden="true"></i><strong>Important:</strong> For mathematics, physics and chemistry, always compare an extracted formula with the page before you trust an answer built on it. If the extracted text is wrong, the model's answer will be wrong in a way that looks convincing.</p>
+<h2 id="5-lecture-slides-and-notes">5. Lecture slides and notes</h2>
+<p>The same approach works for other course material. Export slides to PDF, or convert Word and PowerPoint files to Markdown with MarkItDown. Typed notes in Markdown or plain text need no conversion at all. Handwritten notes need OCR and usually give poor results; typing a summary is more reliable.</p>
+<h2 id="6-handle-the-files-responsibly">6. Handle the files responsibly</h2>
+<ul><li>Use PDFs you have the right to use: books you bought, open textbooks, library copies within their terms, and your own notes.</li><li>Extracted text and index files contain the book's content. Keep them on your machine and do not share or publish them.</li><li>Because everything runs locally, nothing in this workflow uploads the book. That changes if you switch to a cloud model or a hosted tool; check before you do.</li></ul>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://pymupdf.readthedocs.io/en/latest/" target="_blank" rel="noopener">https://pymupdf.readthedocs.io/en/latest/<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://pymupdf.readthedocs.io/en/latest/pymupdf4llm/" target="_blank" rel="noopener">https://pymupdf.readthedocs.io/en/latest/pymupdf4llm/<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/unjs/unpdf" target="_blank" rel="noopener">https://github.com/unjs/unpdf<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/ocrmypdf/OCRmyPDF" target="_blank" rel="noopener">https://github.com/ocrmypdf/OCRmyPDF<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="01-study-partner.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">A Local LLM as a Study Partner</span></a><a class="next" href="03-ask-your-textbook.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Ask Questions About Your Textbook</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama Study Aid: Local AI Study Handbook · Updated 2026-11-15</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

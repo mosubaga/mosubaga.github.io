@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Use Ollama&#x27;s hosted web search and web fetch API as tools for a local model." />
+  <title>02 — Web Search with Ollama&#x27;s Built-in API | Ollama + Web Search Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://ka-f.webawesome.com/webawesome@3.14.0/styles/themes/default.css" />
+  <script type="module" src="https://ka-f.webawesome.com/webawesome@3.14.0/webawesome.loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Ollama + Web Search Handbook home"><span class="brand-symbol" aria-hidden="true">✿</span><span><span class="brand-main">Ollama + Web Search</span><span class="brand-sub">Local AI Search Handbook</span></span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html" aria-current="page"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+      <div class="nav-actions">
+        <wa-button class="start-btn" variant="brand" appearance="outlined" size="small" href="01-how-it-works.html"><i slot="start" class="fa-solid fa-book-open" aria-hidden="true"></i>Start</wa-button>
+        <wa-button class="mobile-menu-button" appearance="plain" size="small" id="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></wa-button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a href="../index.html" title="All guides" aria-label="All guides"><i class="fa-solid fa-book" aria-hidden="true"></i> Guides</a><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="01-how-it-works.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Concept</a><a href="02-ollama-web-search.html" aria-current="page"><i class="fa-solid fa-globe" aria-hidden="true"></i> Ollama API</a><a href="03-mcp-search.html"><i class="fa-solid fa-plug" aria-hidden="true"></i> MCP</a><a href="04-custom-tools.html"><i class="fa-solid fa-wrench" aria-hidden="true"></i> DIY tools</a><a href="05-reliable-answers.html"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reliability</a><a href="index.html#examples"><i class="fa-solid fa-code" aria-hidden="true"></i> Examples</a></nav>
+  </header>
+  <main id="top">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <div class="page-hero-emoji" aria-hidden="true"><i class="fa-solid fa-globe" aria-hidden="true"></i></div>
+        <div>
+          <div class="breadcrumb"><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a> / Chapter 02</div>
+          <div class="eyebrow">✦ Chapter 02 · Ollama API</div>
+          <h1>Web Search with Ollama's Built-in API</h1>
+          <p>Use Ollama's hosted web search and web fetch API as tools for a local model.</p>
+        </div>
+      </div>
+    </section>
+    <div class="container doc-layout">
+      <aside class="toc" aria-label="On this page"><span class="eyebrow"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> On this page</span><ol><li><a href="#1-what-the-api-provides">1. What the API provides</a></li><li><a href="#2-create-an-api-key">2. Create an API key</a></li><li><a href="#3-test-with-curl">3. Test with curl</a></li><li><a href="#4-python-and-javascript-libraries">4. Python and JavaScript libraries</a></li><li><a href="#5-build-a-search-agent">5. Build a search agent</a></li><li><a href="#6-raise-the-context-length">6. Raise the context length</a></li><li><a href="#7-limits">7. Limits</a></li><li><a href="#sources">Sources</a></li></ol></aside>
+      <div>
+        <article class="prose">
+<h2 id="1-what-the-api-provides">1. What the API provides</h2>
+<p>Ollama offers a hosted web search service with two REST endpoints, plus matching functions in the Python and JavaScript libraries:</p><ul><li><code>POST https://ollama.com/api/web_search</code> takes a <code>query</code> and optional <code>max_results</code> (default 5, maximum 10) and returns <code>title</code>, <code>url</code> and <code>content</code> for each result.</li><li><code>POST https://ollama.com/api/web_fetch</code> takes a <code>url</code> and returns the page <code>title</code>, <code>content</code> and <code>links</code>.</li></ul><p><strong>The search runs on ollama.com, not on your machine.</strong> The model that reads the results can still be a local one.</p>
+<h2 id="2-create-an-api-key">2. Create an API key</h2>
+<p>The API requires a free Ollama account. Create a key at <a href="https://ollama.com/settings/keys" target="_blank" rel="noopener">ollama.com/settings/keys<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a> and export it:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">export OLLAMA_API_KEY=&quot;your_api_key_here&quot;
+</code></pre></div><p>In Windows PowerShell:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> powershell</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-powershell">$env:OLLAMA_API_KEY = &#x27;your_api_key_here&#x27;
+</code></pre></div><p>Keep the key out of committed files and out of screenshots.</p>
+<h2 id="3-test-with-curl">3. Test with curl</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">curl https://ollama.com/api/web_search \
+  --header &quot;Authorization: Bearer $OLLAMA_API_KEY&quot; \
+  -d &#x27;{&quot;query&quot;: &quot;what is ollama?&quot;, &quot;max_results&quot;: 3}&#x27;
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-file-code" aria-hidden="true"></i> json</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-json">{
+  &quot;results&quot;: [
+    {
+      &quot;title&quot;: &quot;Ollama&quot;,
+      &quot;url&quot;: &quot;https://ollama.com/&quot;,
+      &quot;content&quot;: &quot;Cloud models are now available...&quot;
+    }
+  ]
+}
+</code></pre></div><p>If this call fails, fix the key before involving a model.</p>
+<h2 id="4-python-and-javascript-libraries">4. Python and JavaScript libraries</h2>
+<div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python -m pip install ollama
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">import ollama
+
+results = ollama.web_search(&#x27;What is Ollama?&#x27;)
+print(results)
+
+page = ollama.web_fetch(&#x27;https://ollama.com&#x27;)
+print(page.title)
+</code></pre></div><p>The JavaScript library exposes the same calls as <code>webSearch</code> and <code>webFetch</code>. Each takes a request object:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">npm init -y
+npm install ollama
+npm install -D typescript tsx @types/node
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-js" aria-hidden="true"></i> typescript</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-typescript">import { Ollama } from &#x27;ollama&#x27;;
+
+const client = new Ollama();
+
+async function main(): Promise&lt;void&gt; {
+  const results = await client.webSearch({ query: &#x27;What is Ollama?&#x27; });
+  console.log(JSON.stringify(results, null, 2));
+
+  const page = await client.webFetch({ url: &#x27;https://ollama.com&#x27; });
+  console.log(page.title);
+}
+
+main().catch(console.error);
+</code></pre></div><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">npx tsx search.ts
+</code></pre></div><p>Both libraries read <code>OLLAMA_API_KEY</code> from the environment. The TypeScript examples wrap their code in <code>main()</code> because a project created by <code>npm init -y</code> is CommonJS, where top-level <code>await</code> is not available.</p>
+<h2 id="5-build-a-search-agent">5. Build a search agent</h2>
+<p>Pass <code>web_search</code> and <code>web_fetch</code> as tools to a local model and run the loop from <a href="01-how-it-works.html#1-the-tool-calling-loop">chapter 01</a>:</p><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-python" aria-hidden="true"></i> python</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-python">from ollama import chat, web_fetch, web_search
+
+available_tools = {&#x27;web_search&#x27;: web_search, &#x27;web_fetch&#x27;: web_fetch}
+messages = [{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: &#x27;What is the latest stable version of Python?&#x27;}]
+
+while True:
+    response = chat(
+        model=&#x27;qwen3:8b&#x27;,
+        messages=messages,
+        tools=[web_search, web_fetch],
+        think=True,
+        options={&#x27;num_ctx&#x27;: 32000},
+    )
+    messages.append(response.message)
+    if not response.message.tool_calls:
+        print(response.message.content)
+        break
+    for call in response.message.tool_calls:
+        tool = available_tools.get(call.function.name)
+        result = str(tool(**call.function.arguments)) if tool else &#x27;Tool not found&#x27;
+        # Truncate the result so it fits in the context window
+        messages.append({&#x27;role&#x27;: &#x27;tool&#x27;, &#x27;tool_name&#x27;: call.function.name, &#x27;content&#x27;: result[:8000]})
+</code></pre></div><p>The Python library builds the tool descriptions from the functions themselves. <code>think=True</code> lets Qwen 3 reason about whether to search before it answers.</p><p>The same loop in TypeScript. <strong>The JavaScript library does not derive a tool description from a function</strong>, so you write the JSON schema by hand:</p><div class="code-block"><div class="code-label"><span><i class="fa-brands fa-js" aria-hidden="true"></i> typescript</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-typescript">import { Ollama, type Message, type Tool } from &#x27;ollama&#x27;;
+
+const client = new Ollama();
+
+const tools: Tool[] = [{
+  type: &#x27;function&#x27;,
+  function: {
+    name: &#x27;web_search&#x27;,
+    description: &#x27;Search the web and return titles, URLs and content snippets.&#x27;,
+    parameters: {
+      type: &#x27;object&#x27;,
+      properties: { query: { type: &#x27;string&#x27;, description: &#x27;The search query.&#x27; } },
+      required: [&#x27;query&#x27;],
+    },
+  },
+}];
+
+async function main(): Promise&lt;void&gt; {
+  const messages: Message[] = [{ role: &#x27;user&#x27;, content: &#x27;What is the latest stable version of Python?&#x27; }];
+  while (true) {
+    const response = await client.chat({
+      model: &#x27;qwen3:8b&#x27;, messages, tools, think: true, options: { num_ctx: 32000 },
+    });
+    messages.push(response.message);
+    const calls = response.message.tool_calls ?? [];
+    if (calls.length === 0) {
+      console.log(response.message.content);
+      break;
+    }
+    for (const call of calls) {
+      const result = await client.webSearch({ query: String(call.function.arguments.query) });
+      // Truncate the result so it fits in the context window
+      messages.push({ role: &#x27;tool&#x27;, tool_name: call.function.name, content: JSON.stringify(result).slice(0, 8000) });
+    }
+  }
+}
+
+main().catch(console.error);
+</code></pre></div><p>Fuller versions with a system prompt, a step limit, error handling and both tools are in <a href="examples/search_agent.html">examples/search_agent.py</a> and <a href="examples/search_agent_ts.html">examples/search_agent.ts</a>:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">python search_agent.py &quot;What is the latest stable version of Python?&quot;
+npx tsx search_agent.ts &quot;What is the latest stable version of Python?&quot;
+</code></pre></div>
+<h2 id="6-raise-the-context-length">6. Raise the context length</h2>
+<p>Search results can add thousands of tokens. Ollama defaults to a 4k context on machines with less than 24 GiB of VRAM, which truncates results before the model reads them. Ollama's web search page recommends at least about 32,000 tokens, and its context length page recommends 64,000 for web search and agents.</p><p>Set it per request with <code>options={'num_ctx': 32000}</code> in Python or <code>options: { num_ctx: 32000 }</code> in TypeScript as above, or for the whole server:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">OLLAMA_CONTEXT_LENGTH=32000 ollama serve
+</code></pre></div><p>In the Ollama desktop app, use the context length slider under Settings. Then confirm what was allocated:</p><div class="code-block"><div class="code-label"><span><i class="fa-solid fa-terminal" aria-hidden="true"></i> bash</span><button class="copy-btn" type="button" aria-label="Copy code"><i class="fa-regular fa-copy" aria-hidden="true"></i> <span>Copy</span></button></div><pre><code class="language-bash">ollama ps
+</code></pre></div><p class="callout"><i class="fa-solid fa-triangle-exclamation callout-icon" aria-hidden="true"></i><strong>Important:</strong> A larger context uses more memory. If <code>ollama ps</code> shows part of the model on CPU, responses become much slower; lower the context length or use a smaller model such as <code>qwen3:4b</code>.</p>
+<h2 id="7-limits">7. Limits</h2>
+<ul><li>The API needs an internet connection and an Ollama account; check your account for current usage limits.</li><li>The query text and fetched URLs are sent to ollama.com.</li><li>Search snippets are short. Use <code>web_fetch</code> on the most relevant result when the snippet is not enough.</li><li>The model can still misread or over-summarize results. See <a href="05-reliable-answers.html">chapter 05</a>.</li></ul>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://docs.ollama.com/capabilities/web-search" target="_blank" rel="noopener">https://docs.ollama.com/capabilities/web-search<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://docs.ollama.com/context-length" target="_blank" rel="noopener">https://docs.ollama.com/context-length<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li><li><a href="https://github.com/ollama/ollama-python/blob/main/examples/web-search.py" target="_blank" rel="noopener">https://github.com/ollama/ollama-python/blob/main/examples/web-search.py<i class="fa-solid fa-arrow-up-right-from-square ext-icon" aria-hidden="true"></i></a></li></ul>
+        </article>
+        <nav class="pager" aria-label="Chapter navigation"><a class="prev" href="01-how-it-works.html"><span class="dir"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Previous</span><span class="ttl">Can a Local Model Search the Web?</span></a><a class="next" href="03-mcp-search.html"><span class="dir">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span><span class="ttl">Web Search through MCP</span></a></nav>
+      </div>
+    </div>
+  </main>
+  <footer><div>© 2026 Ollama + Web Search: Local AI Search Handbook · Updated 2026-11-14</div><div class="footer-links"><a href="../index.html" style="margin-right:18px"><i class="fa-solid fa-book" aria-hidden="true"></i> All guides</a><a href="#" class="back-to-top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Back to top</a></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
