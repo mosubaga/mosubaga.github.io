@@ -3,169 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Machine Learning with Python</title>
+    <title>Machine Learning with Python | ML Notes</title>
+    <meta name="description" content="A practical guide to choosing machine learning algorithms and the Python libraries that implement them.">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="index.html" data-page="intro" class="nav-link active">Introduction</a></li>
-            <li><a href="numpy.html" data-page="numpy" class="nav-link">NumPy</a></li>
-            <li><a href="scipy.html" data-page="scipy" class="nav-link">SciPy</a></li>
-            <li><a href="pandas.html" data-page="pandas" class="nav-link">Pandas</a></li>
-            <li><a href="scikit.html" data-page="sklearn" class="nav-link">Scikit-Learn</a></li>
-        </ul>
-    </nav>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <div class="container">
-        <!-- Introduction Page -->
-        <div id="intro">
-            <h1>Machine Learning with Python: Algorithm Selection Guide</h1>
-
-            <p>Machine Learning is a powerful subset of artificial intelligence that enables computers to learn from data and make predictions or decisions without being explicitly programmed. Choosing the right algorithm for your specific problem is crucial for achieving optimal results. This guide will help you understand which algorithms to use for different scenarios.</p>
-
-            <h2>Understanding Problem Types</h2>
-            <p>Machine learning problems fall into three main categories. The right choice depends on whether you have labeled data, what kind of output you need, and how the learning signal is provided.</p>
-
-            <div class="highlight-box">
-                <h3>Supervised Learning</h3>
-                <p>The model learns from a labeled dataset — every training example comes with the correct answer. The goal is to learn a mapping from inputs to outputs so the model can generalize to new, unseen data.</p>
-                <p><strong>Use cases:</strong> Email spam detection, house price prediction, medical diagnosis, image classification, sentiment analysis.</p>
-            </div>
-
-            <div class="highlight-box">
-                <h3>Unsupervised Learning</h3>
-                <p>The model is given data without labels and must find hidden structure on its own. There is no "right answer" to optimize for — instead the algorithm discovers patterns, groupings, or compact representations.</p>
-                <p><strong>Use cases:</strong> Customer segmentation, anomaly detection, topic modeling, data compression, recommendation systems (collaborative filtering).</p>
-            </div>
-
-            <div class="highlight-box">
-                <h3>Reinforcement Learning</h3>
-                <p>An agent interacts with an environment, takes actions, and receives rewards or penalties. It learns a policy — a strategy for choosing actions — to maximize cumulative reward over time. Unlike the other two paradigms there is no static dataset; experience is collected as the agent explores.</p>
-                <p><strong>Use cases:</strong> Game-playing AI (Chess, Go, video games), robotics control, autonomous vehicles, personalized content recommendations, algorithmic trading.</p>
-            </div>
-
-            <h2>Algorithm Selection Guide</h2>
-
-            <div class="algorithm-grid stacked-grid">
-                <div class="algorithm-card">
-                    <h3>Linear Regression</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Regression</p>
-                    <p><strong>Use When:</strong> You need to predict continuous numerical values and there's a linear relationship between features and target.</p>
-                    <p><strong>Examples:</strong> Predicting house prices, stock prices, temperature forecasting, sales prediction.</p>
-                    <p><strong>Pros:</strong> Simple, fast, interpretable, works well with linearly separable data.</p>
-                    <p><strong>Cons:</strong> Assumes linear relationships, sensitive to outliers.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Logistic Regression</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Classification</p>
-                    <p><strong>Use When:</strong> You need binary classification or multi-class classification with linear decision boundaries.</p>
-                    <p><strong>Examples:</strong> Email spam detection, disease diagnosis (yes/no), customer churn prediction.</p>
-                    <p><strong>Pros:</strong> Probabilistic interpretation, efficient, works well for linearly separable classes.</p>
-                    <p><strong>Cons:</strong> Limited to linear decision boundaries, may underperform with complex patterns.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Decision Trees</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
-                    <p><strong>Use When:</strong> You need interpretable models and can handle non-linear relationships.</p>
-                    <p><strong>Examples:</strong> Credit approval systems, medical diagnosis, customer segmentation.</p>
-                    <p><strong>Pros:</strong> Easy to understand, handles non-linear data, requires little data preprocessing.</p>
-                    <p><strong>Cons:</strong> Prone to overfitting, unstable with small data changes.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Random Forest</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
-                    <p><strong>Use When:</strong> You need high accuracy and can sacrifice some interpretability, especially with complex datasets.</p>
-                    <p><strong>Examples:</strong> Fraud detection, recommendation systems, feature importance analysis.</p>
-                    <p><strong>Pros:</strong> High accuracy, handles missing values, reduces overfitting, provides feature importance.</p>
-                    <p><strong>Cons:</strong> Less interpretable, computationally expensive, slower predictions.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Support Vector Machines (SVM)</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
-                    <p><strong>Use When:</strong> You have high-dimensional data or need clear margin of separation between classes.</p>
-                    <p><strong>Examples:</strong> Image classification, text categorization, handwriting recognition.</p>
-                    <p><strong>Pros:</strong> Effective in high dimensions, memory efficient, versatile with different kernel functions.</p>
-                    <p><strong>Cons:</strong> Slow with large datasets, requires feature scaling, difficult to interpret.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>K-Nearest Neighbors (KNN)</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
-                    <p><strong>Use When:</strong> You have small to medium datasets and need a simple, interpretable algorithm.</p>
-                    <p><strong>Examples:</strong> Recommendation systems, pattern recognition, anomaly detection.</p>
-                    <p><strong>Pros:</strong> Simple to implement, no training phase, naturally handles multi-class problems.</p>
-                    <p><strong>Cons:</strong> Slow prediction time, sensitive to irrelevant features, requires feature scaling.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>K-Means Clustering</h3>
-                    <p><strong>Problem Type:</strong> Unsupervised Learning - Clustering</p>
-                    <p><strong>Use When:</strong> You need to group similar data points without predefined labels.</p>
-                    <p><strong>Examples:</strong> Customer segmentation, image compression, document clustering, anomaly detection.</p>
-                    <p><strong>Pros:</strong> Simple and fast, scales well to large datasets, easy to implement.</p>
-                    <p><strong>Cons:</strong> Requires specifying number of clusters, sensitive to initialization, assumes spherical clusters.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Neural Networks (Deep Learning)</h3>
-                    <p><strong>Problem Type:</strong> Supervised/Unsupervised Learning - Various Tasks</p>
-                    <p><strong>Use When:</strong> You have large amounts of data and complex, non-linear patterns to learn.</p>
-                    <p><strong>Examples:</strong> Image recognition, natural language processing, speech recognition, autonomous vehicles.</p>
-                    <p><strong>Pros:</strong> Handles complex patterns, works with unstructured data, state-of-the-art performance.</p>
-                    <p><strong>Cons:</strong> Requires large datasets, computationally expensive, black box nature.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Naive Bayes</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Classification</p>
-                    <p><strong>Use When:</strong> You're working with text classification or need fast, probabilistic predictions.</p>
-                    <p><strong>Examples:</strong> Spam filtering, sentiment analysis, document categorization.</p>
-                    <p><strong>Pros:</strong> Fast training and prediction, works well with high-dimensional data, handles missing values.</p>
-                    <p><strong>Cons:</strong> Assumes feature independence, can be outperformed by more complex models.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Gradient Boosting (XGBoost, LightGBM)</h3>
-                    <p><strong>Problem Type:</strong> Supervised Learning - Classification & Regression</p>
-                    <p><strong>Use When:</strong> You need maximum predictive performance and have structured/tabular data.</p>
-                    <p><strong>Examples:</strong> Kaggle competitions, financial modeling, ranking problems.</p>
-                    <p><strong>Pros:</strong> Excellent performance, handles missing values, provides feature importance, regularization.</p>
-                    <p><strong>Cons:</strong> Can overfit, requires careful tuning, longer training time.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>Principal Component Analysis (PCA)</h3>
-                    <p><strong>Problem Type:</strong> Unsupervised Learning - Dimensionality Reduction</p>
-                    <p><strong>Use When:</strong> You need to reduce the number of features while preserving variance.</p>
-                    <p><strong>Examples:</strong> Data visualization, noise reduction, feature extraction, compression.</p>
-                    <p><strong>Pros:</strong> Reduces computational complexity, removes correlated features, improves visualization.</p>
-                    <p><strong>Cons:</strong> Loss of interpretability, assumes linear relationships, sensitive to scaling.</p>
-                </div>
-
-                <div class="algorithm-card">
-                    <h3>DBSCAN</h3>
-                    <p><strong>Problem Type:</strong> Unsupervised Learning - Clustering</p>
-                    <p><strong>Use When:</strong> You need to find clusters of arbitrary shape and detect outliers.</p>
-                    <p><strong>Examples:</strong> Anomaly detection, spatial data analysis, identifying noise in data.</p>
-                    <p><strong>Pros:</strong> No need to specify number of clusters, finds arbitrary-shaped clusters, identifies outliers.</p>
-                    <p><strong>Cons:</strong> Struggles with varying density clusters, sensitive to parameters, not efficient with high dimensions.</p>
-                </div>
-            </div>
-
-            <div class="highlight-box">
-                <h2>Decision Framework</h2>
-                <p><strong>Step 1: Define Your Problem</strong> - Is it classification, regression, clustering, or dimensionality reduction?</p>
-                <p><strong>Step 2: Understand Your Data</strong> - How much data do you have? Is it labeled? What's the dimensionality?</p>
-                <p><strong>Step 3: Consider Constraints</strong> - Do you need interpretability? What's your computational budget? How fast do predictions need to be?</p>
-                <p><strong>Step 4: Start Simple</strong> - Begin with simpler algorithms (linear regression, logistic regression) before trying complex ones.</p>
-                <p><strong>Step 5: Iterate and Evaluate</strong> - Try multiple algorithms, compare performance, and refine based on results.</p>
-            </div>
+    <header class="site-header">
+        <div class="container">
+            <a class="logo" href="index.html">ML NOTES</a>
+            <nav aria-label="Main">
+                <ul class="nav">
+                    <li><a href="index.html" class="active" aria-current="page">Introduction</a></li>
+                    <li><a href="numpy.html">NumPy</a></li>
+                    <li><a href="scipy.html">SciPy</a></li>
+                    <li><a href="pandas.html">Pandas</a></li>
+                    <li><a href="polars.html">Polars</a></li>
+                    <li><a href="scikit.html">Scikit-Learn</a></li>
+                    <li><a href="tf.html">TensorFlow</a></li>
+                    <li><a href="nltk.html">NLTK</a></li>
+                </ul>
+            </nav>
         </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <p class="eyebrow">ML Notes · Python</p>
+            <h1>Machine Learning</h1>
+            <p class="lead">A practical guide to choosing the right algorithm, and to the Python libraries you will use at every step, with runnable code.</p>
+        </div>
+    </section>
+
+    <main id="main" class="section">
+        <div class="container page">
+<p>Machine learning is a branch of artificial intelligence that lets computers learn patterns from data and make predictions or decisions without being explicitly programmed for each case. Choosing the right algorithm for your problem matters as much as the data itself. This guide explains which algorithms suit which scenarios, and the companion pages show how to use the core Python libraries in practice.</p>
+
+<h2>The Python ML Toolkit</h2>
+<p>Each page covers one library, with copy-ready code you can run as-is.</p>
+<div class="grid">
+    <a class="card lavender" href="numpy.html"><h3>NumPy</h3><p>Fast n-dimensional arrays, vectorised maths and linear algebra.</p></a>
+    <a class="card pink" href="scipy.html"><h3>SciPy</h3><p>Optimisation, statistics, sparse matrices and signal processing.</p></a>
+    <a class="card ice" href="pandas.html"><h3>Pandas</h3><p>Loading, cleaning and reshaping tabular data.</p></a>
+    <a class="card lavender" href="polars.html"><h3>Polars</h3><p>Multi-threaded DataFrames with lazy, optimised queries.</p></a>
+    <a class="card pink" href="scikit.html"><h3>Scikit-Learn</h3><p>Classical ML: pipelines, models, evaluation and tuning.</p></a>
+    <a class="card ice" href="tf.html"><h3>TensorFlow</h3><p>Keras models, <code>tf.data</code> pipelines and deployment.</p></a>
+    <a class="card lavender" href="nltk.html"><h3>NLTK</h3><p>Natural language processing combined with machine learning.</p></a>
+    <a class="card pink" href="./projects/"><h3>ML Projects</h3><p>End-to-end case studies: fraud, churn, real estate and more.</p></a>
+</div>
+
+<h2>Understanding Problem Types</h2>
+<p>Machine learning problems fall into three main categories. The right choice depends on whether you have labeled data, what kind of output you need, and how the learning signal is provided.</p>
+
+<div class="stack">
+    <div class="alert alert-lavender">
+        <h3>Supervised Learning</h3>
+        <p>The model learns from a labeled dataset, where every training example comes with the correct answer. The goal is to learn a mapping from inputs to outputs so the model can generalise to new, unseen data.</p>
+        <p><strong>Use cases:</strong> Email spam detection, house price prediction, medical diagnosis, image classification, sentiment analysis.</p>
     </div>
+
+    <div class="alert alert-pink">
+        <h3>Unsupervised Learning</h3>
+        <p>The model is given data without labels and must find hidden structure on its own. There is no "right answer" to optimise for. Instead the algorithm discovers patterns, groupings, or compact representations.</p>
+        <p><strong>Use cases:</strong> Customer segmentation, anomaly detection, topic modeling, data compression, recommendation systems (collaborative filtering).</p>
+    </div>
+
+    <div class="alert alert-ice">
+        <h3>Reinforcement Learning</h3>
+        <p>An agent interacts with an environment, takes actions, and receives rewards or penalties. It learns a policy (a strategy for choosing actions) that maximises cumulative reward over time. Unlike the other two paradigms there is no static dataset; experience is collected as the agent explores.</p>
+        <p><strong>Use cases:</strong> Game-playing AI (Chess, Go, video games), robotics control, autonomous vehicles, personalised recommendations, and fine-tuning large language models from human feedback (RLHF).</p>
+    </div>
+</div>
+
+<h2>Algorithm Selection Guide</h2>
+
+<div class="grid wide">
+    <div class="card lavender">
+        <h3>Linear Regression</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Regression</p>
+        <p><strong>Use When:</strong> You need to predict continuous numerical values and the relationship between features and target is roughly linear.</p>
+        <p><strong>Examples:</strong> House prices, demand forecasting, sales prediction, temperature trends.</p>
+        <p><strong>Pros:</strong> Simple, fast, highly interpretable coefficients. Regularised variants (Ridge, Lasso) handle many correlated features.</p>
+        <p><strong>Cons:</strong> Assumes linear relationships, sensitive to outliers.</p>
+    </div>
+
+    <div class="card pink">
+        <h3>Logistic Regression</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Classification</p>
+        <p><strong>Use When:</strong> You need binary or multi-class classification with linear decision boundaries, or well-calibrated probabilities.</p>
+        <p><strong>Examples:</strong> Email spam detection, disease diagnosis (yes/no), customer churn prediction, credit scoring.</p>
+        <p><strong>Pros:</strong> Probabilistic output, efficient, interpretable, a strong baseline (especially for text).</p>
+        <p><strong>Cons:</strong> Limited to linear decision boundaries unless you engineer features.</p>
+    </div>
+
+    <div class="card ice">
+        <h3>Decision Trees</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Classification &amp; Regression</p>
+        <p><strong>Use When:</strong> You need an interpretable model that captures non-linear relationships and feature interactions.</p>
+        <p><strong>Examples:</strong> Credit approval rules, medical triage, customer segmentation.</p>
+        <p><strong>Pros:</strong> Easy to explain, handles non-linear data, needs little preprocessing (no scaling).</p>
+        <p><strong>Cons:</strong> Prone to overfitting, unstable with small data changes.</p>
+    </div>
+
+    <div class="card lavender">
+        <h3>Random Forest</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Classification &amp; Regression</p>
+        <p><strong>Use When:</strong> You want strong accuracy on tabular data with little tuning and can sacrifice some interpretability.</p>
+        <p><strong>Examples:</strong> Fraud detection, churn prediction, feature importance analysis.</p>
+        <p><strong>Pros:</strong> Robust, reduces overfitting compared to single trees, provides feature importance, few hyperparameters.</p>
+        <p><strong>Cons:</strong> Less interpretable, larger models, slower predictions than linear models.</p>
+    </div>
+
+    <div class="card pink">
+        <h3>Support Vector Machines (SVM)</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Classification &amp; Regression</p>
+        <p><strong>Use When:</strong> You have small to medium datasets with many features and need a clear margin between classes.</p>
+        <p><strong>Examples:</strong> Text categorisation, bioinformatics, handwriting recognition.</p>
+        <p><strong>Pros:</strong> Effective in high dimensions, flexible through kernel functions.</p>
+        <p><strong>Cons:</strong> Kernel SVMs scale poorly beyond ~100k samples, require feature scaling, hard to interpret.</p>
+    </div>
+
+    <div class="card ice">
+        <h3>K-Nearest Neighbors (KNN)</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Classification &amp; Regression</p>
+        <p><strong>Use When:</strong> You have small to medium datasets and want a simple, instance-based method.</p>
+        <p><strong>Examples:</strong> Recommendation ("similar items"), pattern recognition, anomaly detection.</p>
+        <p><strong>Pros:</strong> Simple to understand, no real training phase, naturally multi-class.</p>
+        <p><strong>Cons:</strong> Slow predictions on large data, sensitive to irrelevant features, requires feature scaling.</p>
+    </div>
+
+    <div class="card lavender">
+        <h3>K-Means Clustering</h3>
+        <p><strong>Problem Type:</strong> Unsupervised Learning - Clustering</p>
+        <p><strong>Use When:</strong> You need to group similar data points without predefined labels.</p>
+        <p><strong>Examples:</strong> Customer segmentation, image colour quantisation, document clustering.</p>
+        <p><strong>Pros:</strong> Simple and fast, scales well to large datasets.</p>
+        <p><strong>Cons:</strong> You must choose the number of clusters, sensitive to initialisation and scaling, assumes roughly spherical clusters.</p>
+    </div>
+
+    <div class="card pink">
+        <h3>Neural Networks (Deep Learning)</h3>
+        <p><strong>Problem Type:</strong> Supervised, Unsupervised &amp; Self-supervised Learning</p>
+        <p><strong>Use When:</strong> You have large amounts of data or unstructured inputs (images, audio, text) with complex patterns.</p>
+        <p><strong>Examples:</strong> Image recognition, speech recognition, machine translation, large language models.</p>
+        <p><strong>Pros:</strong> State-of-the-art on unstructured data; pre-trained models allow fine-tuning with modest data.</p>
+        <p><strong>Cons:</strong> Computationally expensive, harder to interpret, often outperformed by gradient boosting on small tabular datasets.</p>
+    </div>
+
+    <div class="card ice">
+        <h3>Naive Bayes</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Classification</p>
+        <p><strong>Use When:</strong> You need a fast, probabilistic baseline, especially for text classification.</p>
+        <p><strong>Examples:</strong> Spam filtering, sentiment analysis, document categorisation (see the <a href="nltk.html">NLTK page</a>).</p>
+        <p><strong>Pros:</strong> Very fast training and prediction, works well with high-dimensional sparse data.</p>
+        <p><strong>Cons:</strong> Assumes feature independence, probabilities are often poorly calibrated.</p>
+    </div>
+
+    <div class="card lavender">
+        <h3>Gradient Boosting</h3>
+        <p><strong>Problem Type:</strong> Supervised Learning - Classification &amp; Regression</p>
+        <p><strong>Use When:</strong> You want top predictive performance on structured/tabular data.</p>
+        <p><strong>Libraries:</strong> scikit-learn's <code>HistGradientBoosting*</code>, XGBoost, LightGBM, CatBoost.</p>
+        <p><strong>Pros:</strong> Excellent accuracy, handles missing values natively, provides feature importance.</p>
+        <p><strong>Cons:</strong> Can overfit, needs careful tuning (learning rate, depth, number of trees).</p>
+    </div>
+
+    <div class="card pink">
+        <h3>Principal Component Analysis (PCA)</h3>
+        <p><strong>Problem Type:</strong> Unsupervised Learning - Dimensionality Reduction</p>
+        <p><strong>Use When:</strong> You need fewer features while preserving as much variance as possible.</p>
+        <p><strong>Examples:</strong> Visualisation, noise reduction, feature compression before another model.</p>
+        <p><strong>Pros:</strong> Removes correlated features, speeds up downstream models.</p>
+        <p><strong>Cons:</strong> Components are hard to interpret, captures only linear structure, sensitive to scaling.</p>
+    </div>
+
+    <div class="card ice">
+        <h3>DBSCAN / HDBSCAN</h3>
+        <p><strong>Problem Type:</strong> Unsupervised Learning - Clustering</p>
+        <p><strong>Use When:</strong> You need clusters of arbitrary shape and want outliers flagged automatically.</p>
+        <p><strong>Examples:</strong> Anomaly detection, geospatial hotspots, separating noise from signal.</p>
+        <p><strong>Pros:</strong> No need to specify the number of clusters, finds arbitrary shapes, labels outliers. HDBSCAN copes with varying densities.</p>
+        <p><strong>Cons:</strong> Sensitive to parameters (<code>eps</code>, <code>min_samples</code>), struggles in very high dimensions.</p>
+    </div>
+</div>
+
+<h2>Try It: Compare Algorithms Fairly</h2>
+<p>Theory helps narrow the options; experiments decide. The script below evaluates seven of the algorithms above on the same dataset with the same 5-fold cross-validation. Notice that the simplest model, scaled logistic regression, comes out on top here. Always include a simple baseline.</p>
+<div class="code-block" data-lang="shell"><pre><code class="language-bash">pip install scikit-learn</code></pre></div>
+<div class="code-block" data-lang="python"><pre><code class="language-python">from sklearn.datasets import load_breast_cancer
+from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_score
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+
+X, y = load_breast_cancer(return_X_y=True)
+
+candidates = {
+    "Logistic Regression": make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)),
+    "Decision Tree":       DecisionTreeClassifier(max_depth=4, random_state=0),
+    "Random Forest":       RandomForestClassifier(n_estimators=300, random_state=0),
+    "SVM (RBF kernel)":    make_pipeline(StandardScaler(), SVC()),
+    "K-Nearest Neighbors": make_pipeline(StandardScaler(), KNeighborsClassifier()),
+    "Naive Bayes":         GaussianNB(),
+    "Gradient Boosting":   HistGradientBoostingClassifier(random_state=0),
+}
+
+# Same data, same 5-fold cross-validation, same metric: a fair comparison
+for name, model in candidates.items():
+    scores = cross_val_score(model, X, y, cv=5, scoring="f1")
+    print(f"{name:20s} F1 = {scores.mean():.3f} +/- {scores.std():.3f}")</code></pre></div>
+<p class="muted-note">Models that rely on distances or margins (logistic regression, SVM, KNN) are wrapped in a pipeline with <code>StandardScaler</code>; tree-based models do not need scaling.</p>
+
+<div class="alert alert-lavender">
+    <h3>Decision Framework</h3>
+    <p><strong>Step 1: Define your problem.</strong> Is it classification, regression, clustering, or dimensionality reduction?</p>
+    <p><strong>Step 2: Understand your data.</strong> How much data do you have? Is it labeled? Is it tabular, text, images or time series?</p>
+    <p><strong>Step 3: Consider constraints.</strong> Do you need interpretability? What is your compute budget? How fast must predictions be?</p>
+    <p><strong>Step 4: Start simple.</strong> Begin with linear or logistic regression as a baseline before trying complex models.</p>
+    <p><strong>Step 5: Iterate and evaluate.</strong> Compare models with cross-validation on the same metric, then refine the best candidates.</p>
+</div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="numpy.html">NumPy</a></li>
+                <li><a href="scipy.html">SciPy</a></li>
+                <li><a href="pandas.html">Pandas</a></li>
+                <li><a href="polars.html">Polars</a></li>
+                <li><a href="scikit.html">Scikit-Learn</a></li>
+                <li><a href="tf.html">TensorFlow</a></li>
+                <li><a href="nltk.html">NLTK</a></li>
+                <li><a href="./projects/">ML Projects</a></li>
+            </ul>
+            <p><small>Examples tested with Python 3.12, NumPy 2.5, SciPy 1.18, pandas 3.1, Polars 2.1, scikit-learn 1.9, TensorFlow 2.21 and NLTK 3.10 · Reviewed November 2026</small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="./copy.js"></script>
 </body>
 </html>

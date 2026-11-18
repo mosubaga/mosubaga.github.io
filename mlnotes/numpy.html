@@ -3,155 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Machine Learning with Python</title>
+    <title>NumPy for Machine Learning | ML Notes</title>
+    <meta name="description" content="NumPy arrays, vectorisation, broadcasting and linear algebra for machine learning, with runnable examples.">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="index.html" data-page="intro" class="nav-link">Introduction</a></li>
-            <li><a href="numpy.html" data-page="numpy" class="nav-link active">NumPy</a></li>
-            <li><a href="scipy.html" data-page="scipy" class="nav-link">SciPy</a></li>
-            <li><a href="pandas.html" data-page="pandas" class="nav-link">Pandas</a></li>
-            <li><a href="scikit.html" data-page="sklearn" class="nav-link">Scikit-Learn</a></li>
-        </ul>
-    </nav>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <div class="container">
-        <div id="numpy">
-            <h1>NumPy: The Foundation of Machine Learning in Python</h1>
-
-            <p>NumPy (Numerical Python) is the fundamental package for scientific computing in Python. It provides support for large, multi-dimensional arrays and matrices, along with a collection of mathematical functions to operate on these arrays efficiently. NumPy is the backbone of nearly all machine learning libraries in Python.</p>
-
-            <h2>Why NumPy is Essential for Machine Learning</h2>
-
-            <div class="highlight-box">
-                <p>NumPy serves as the foundation for machine learning in Python because it provides:</p>
-                <ul>
-                    <li><strong>Efficient Array Operations:</strong> NumPy arrays are stored in contiguous memory blocks, making operations significantly faster than Python lists.</li>
-                    <li><strong>Vectorization:</strong> Perform operations on entire arrays without explicit loops, leading to cleaner and faster code.</li>
-                    <li><strong>Mathematical Functions:</strong> Built-in functions for linear algebra, statistics, and mathematical operations.</li>
-                    <li><strong>Broadcasting:</strong> Automatic expansion of arrays to compatible shapes for arithmetic operations.</li>
-                    <li><strong>Memory Efficiency:</strong> NumPy arrays consume less memory than Python lists for numerical data.</li>
+    <header class="site-header">
+        <div class="container">
+            <a class="logo" href="index.html">ML NOTES</a>
+            <nav aria-label="Main">
+                <ul class="nav">
+                    <li><a href="index.html">Introduction</a></li>
+                    <li><a href="numpy.html" class="active" aria-current="page">NumPy</a></li>
+                    <li><a href="scipy.html">SciPy</a></li>
+                    <li><a href="pandas.html">Pandas</a></li>
+                    <li><a href="polars.html">Polars</a></li>
+                    <li><a href="scikit.html">Scikit-Learn</a></li>
+                    <li><a href="tf.html">TensorFlow</a></li>
+                    <li><a href="nltk.html">NLTK</a></li>
                 </ul>
-            </div>
-            <h2>Core Concepts in NumPy</h2>
-
-            <h3>1. NumPy Arrays (ndarray)</h3>
-            <p>The <code>ndarray</code> is the core data structure in NumPy. It's a grid of values, all of the same type, indexed by a tuple of non-negative integers. Arrays can be created from Python lists or using built-in functions.</p>
-
-            <div class="usage-list">
-                <strong>Creating Arrays:</strong>
-                <ul>
-                    <li><code>np.array([1, 2, 3])</code> - Create array from list</li>
-                    <li><code>np.zeros((3, 4))</code> - Create array filled with zeros</li>
-                    <li><code>np.ones((2, 3))</code> - Create array filled with ones</li>
-                    <li><code>np.arange(0, 10, 2)</code> - Create array with evenly spaced values</li>
-                    <li><code>np.linspace(0, 1, 5)</code> - Create array with specified number of samples</li>
-                    <li><code>np.random.rand(3, 3)</code> - Create array with random values</li>
-                </ul>
-            </div>
-
-            <h3>2. Array Operations and Vectorization</h3>
-            <p>Vectorization allows you to perform operations on entire arrays without writing explicit loops. This is crucial for machine learning where you often need to apply operations to large datasets efficiently.</p>
-
-            <div class="usage-list">
-                <strong>Key Operations:</strong>
-                <ul>
-                    <li><strong>Element-wise operations:</strong> Addition, subtraction, multiplication, division on arrays</li>
-                    <li><strong>Aggregation functions:</strong> <code>np.sum()</code>, <code>np.mean()</code>, <code>np.std()</code>, <code>np.max()</code>, <code>np.min()</code></li>
-                    <li><strong>Mathematical functions:</strong> <code>np.sqrt()</code>, <code>np.exp()</code>, <code>np.log()</code>, <code>np.sin()</code></li>
-                    <li><strong>Matrix operations:</strong> <code>np.dot()</code> for matrix multiplication, <code>np.transpose()</code></li>
-                </ul>
-            </div>
-
-            <h3>3. Array Indexing and Slicing</h3>
-            <p>NumPy provides powerful indexing capabilities that are essential for data manipulation in machine learning workflows.</p>
-
-            <div class="usage-list">
-                <strong>Indexing Techniques:</strong>
-                <ul>
-                    <li><strong>Basic indexing:</strong> Access elements using indices like <code>arr[0]</code> or <code>arr[1, 2]</code></li>
-                    <li><strong>Slicing:</strong> Extract subarrays using <code>arr[start:stop:step]</code></li>
-                    <li><strong>Boolean indexing:</strong> Filter arrays using conditions like <code>arr[arr > 5]</code></li>
-                    <li><strong>Fancy indexing:</strong> Select elements using arrays of indices</li>
-                </ul>
-            </div>
-
-            <h2>NumPy in Machine Learning Workflows</h2>
-
-            <div class="feature-list">
-                <div class="feature-item">
-                    <strong>Data Representation</strong>
-                    <p>Machine learning datasets are stored as NumPy arrays. Features are typically represented as 2D arrays (samples × features), and labels as 1D arrays.</p>
-                </div>
-
-                <div class="feature-item">
-                    <strong>Feature Normalization</strong>
-                    <p>NumPy makes it easy to normalize features using operations like <code>(X - X.mean()) / X.std()</code> for standardization, which is crucial for many ML algorithms.</p>
-                </div>
-
-                <div class="feature-item">
-                    <strong>Matrix Operations</strong>
-                    <p>Linear algebra operations like matrix multiplication are fundamental to algorithms like linear regression, neural networks, and PCA. NumPy's <code>np.dot()</code> and <code>@</code> operator make these efficient.</p>
-                </div>
-
-                <div class="feature-item">
-                    <strong>Random Number Generation</strong>
-                    <p>NumPy's random module is used for initializing weights in neural networks, creating train-test splits, and implementing stochastic algorithms.</p>
-                </div>
-
-                <div class="feature-item">
-                    <strong>Statistical Operations</strong>
-                    <p>Computing means, standard deviations, covariances, and correlations are essential for exploratory data analysis and feature engineering.</p>
-                </div>
-
-                <div class="feature-item">
-                    <strong>Efficient Computation</strong>
-                    <p>NumPy's C-based implementation allows for fast computation on large datasets, making it possible to train models on millions of data points.</p>
-                </div>
-            </div>
-
-            <h2>Advanced NumPy for Machine Learning</h2>
-
-            <h3>Broadcasting</h3>
-            <p>Broadcasting allows NumPy to perform operations on arrays of different shapes. This is particularly useful when applying operations between a dataset and a single vector, such as subtracting the mean from each feature.</p>
-
-            <h3>Linear Algebra Module (numpy.linalg)</h3>
-            <p>The <code>numpy.linalg</code> module provides functions for solving linear systems, computing eigenvalues and eigenvectors, matrix decompositions (SVD, QR), and computing matrix norms. These operations are fundamental to many machine learning algorithms.</p>
-
-            <div class="usage-list">
-                <strong>Key Linear Algebra Functions:</strong>
-                <ul>
-                    <li><code>np.linalg.inv()</code> - Matrix inverse (used in linear regression)</li>
-                    <li><code>np.linalg.eig()</code> - Eigenvalues and eigenvectors (used in PCA)</li>
-                    <li><code>np.linalg.svd()</code> - Singular Value Decomposition</li>
-                    <li><code>np.linalg.solve()</code> - Solve linear systems</li>
-                    <li><code>np.linalg.norm()</code> - Compute vector or matrix norms</li>
-                </ul>
-            </div>
-
-            <h3>Performance Optimization</h3>
-            <p>NumPy operations are optimized for performance, but understanding these principles can further improve your code:</p>
-
-            <div class="usage-list">
-                <ul>
-                    <li><strong>Avoid loops:</strong> Use vectorized operations instead of Python loops</li>
-                    <li><strong>Use in-place operations:</strong> Operations like <code>+=</code> modify arrays in place, saving memory</li>
-                    <li><strong>Choose appropriate data types:</strong> Use <code>float32</code> instead of <code>float64</code> when precision allows</li>
-                    <li><strong>Leverage views:</strong> Use array views instead of copies when possible to save memory</li>
-                </ul>
-            </div>
-
-            <div class="highlight-box">
-                <h3>NumPy Best Practices for ML</h3>
-                <p><strong>1. Always vectorize:</strong> Replace Python loops with NumPy operations whenever possible.</p>
-                <p><strong>2. Understand shapes:</strong> Keep track of array dimensions to avoid shape mismatch errors.</p>
-                <p><strong>3. Use appropriate data types:</strong> Choose between <code>int32</code>, <code>float32</code>, <code>float64</code> based on your needs.</p>
-                <p><strong>4. Profile your code:</strong> Use timing functions to identify bottlenecks in your computations.</p>
-                <p><strong>5. Leverage broadcasting:</strong> Understand broadcasting rules to write more efficient code.</p>
-            </div>
+            </nav>
         </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <p class="eyebrow">Library guide · Foundations</p>
+            <h1>NumPy</h1>
+            <p class="lead">Fast arrays, vectorised maths and linear algebra: the foundation that every other ML library is built on.</p>
+        </div>
+    </section>
+
+    <main id="main" class="section">
+        <div class="container page">
+<p>NumPy (Numerical Python) is the fundamental package for scientific computing in Python. It provides large, multi-dimensional arrays and matrices, along with a collection of mathematical functions that operate on them efficiently. NumPy is the backbone of nearly all machine learning libraries in Python: pandas, SciPy, scikit-learn and TensorFlow all speak NumPy arrays.</p>
+
+<div class="code-block" data-lang="shell"><pre><code class="language-bash">pip install numpy</code></pre></div>
+
+<h2>Why NumPy is Essential for Machine Learning</h2>
+
+<div class="alert alert-lavender">
+    <p>NumPy serves as the foundation for machine learning in Python because it provides:</p>
+    <ul>
+        <li><strong>Efficient array operations:</strong> Arrays are stored in contiguous memory blocks, making operations far faster than Python lists.</li>
+        <li><strong>Vectorisation:</strong> Operate on entire arrays without explicit loops, giving cleaner and faster code.</li>
+        <li><strong>Mathematical functions:</strong> Built-in linear algebra, statistics and element-wise maths.</li>
+        <li><strong>Broadcasting:</strong> Automatic expansion of arrays to compatible shapes for arithmetic.</li>
+        <li><strong>Memory efficiency:</strong> Typed arrays consume far less memory than Python lists of numbers.</li>
+    </ul>
+</div>
+
+<div class="alert alert-ice">
+    <h3>What's changed in modern NumPy (2.x)</h3>
+    <ul>
+        <li>Use the <strong>Generator API</strong>: <code>rng = np.random.default_rng(seed)</code> and <code>rng.normal(...)</code>, <code>rng.integers(...)</code>. The legacy <code>np.random.rand</code> / <code>np.random.seed</code> functions still work but are no longer recommended for new code.</li>
+        <li>Removed aliases: use <code>np.float64</code>, <code>np.nan</code> and <code>np.inf</code> instead of <code>np.float_</code>, <code>np.NaN</code> and <code>np.Inf</code>.</li>
+        <li>Prefer <code>np.linalg.lstsq</code> or <code>np.linalg.solve</code> to explicitly computing <code>np.linalg.inv</code>: they are faster and numerically more stable.</li>
+    </ul>
+</div>
+
+<h2>Core Concepts in NumPy</h2>
+
+<h3>1. NumPy Arrays (ndarray)</h3>
+<p>The <code>ndarray</code> is the core data structure in NumPy: a grid of values, all of the same type, indexed by a tuple of non-negative integers. Arrays can be created from Python lists or with built-in constructors.</p>
+
+<div class="card">
+    <strong>Creating arrays:</strong>
+    <ul>
+        <li><code>np.array([1, 2, 3])</code> - from a list</li>
+        <li><code>np.zeros((3, 4))</code> / <code>np.ones((2, 3))</code> - filled with zeros or ones</li>
+        <li><code>np.arange(0, 10, 2)</code> - evenly spaced values by step</li>
+        <li><code>np.linspace(0, 1, 5)</code> - a fixed number of evenly spaced samples</li>
+        <li><code>rng.random((3, 3))</code>, <code>rng.normal(size=(100, 3))</code> - random values from a Generator</li>
+    </ul>
+</div>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(seed=42)   # modern, reproducible random API
+
+a = np.array([1, 2, 3])
+zeros = np.zeros((3, 4))
+steps = np.arange(0, 10, 2)
+grid = np.linspace(0, 1, 5)
+X = rng.normal(loc=0.0, scale=1.0, size=(100, 3))   # 100 samples x 3 features
+
+print(a.dtype, zeros.shape, steps, grid)
+print(X.shape, X.mean(axis=0).round(3))</code></pre></div>
+
+<h3>2. Array Operations and Vectorisation</h3>
+<p>Vectorisation lets you perform operations on entire arrays without writing explicit loops. This is crucial in machine learning, where the same operation is applied to millions of values.</p>
+
+<div class="card">
+    <strong>Key operations:</strong>
+    <ul>
+        <li><strong>Element-wise operations:</strong> <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>**</code> on whole arrays</li>
+        <li><strong>Aggregations:</strong> <code>np.sum()</code>, <code>np.mean()</code>, <code>np.std()</code>, <code>np.max()</code>, <code>np.min()</code>, with an <code>axis</code> argument</li>
+        <li><strong>Universal functions:</strong> <code>np.sqrt()</code>, <code>np.exp()</code>, <code>np.log()</code>, <code>np.sin()</code></li>
+        <li><strong>Matrix operations:</strong> the <code>@</code> operator (or <code>np.matmul</code>) and <code>.T</code> for transpose</li>
+    </ul>
+</div>
+<p>The example below doubles a million numbers with a Python loop and with a vectorised expression. The vectorised version is typically dozens of times faster (the exact ratio depends on your machine).</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import time
+import numpy as np
+
+rng = np.random.default_rng(0)
+values = rng.random(1_000_000)
+
+start = time.perf_counter()
+loop_total = sum(v * 2.0 for v in values)
+loop_time = time.perf_counter() - start
+
+start = time.perf_counter()
+vec_total = (values * 2.0).sum()
+vec_time = time.perf_counter() - start
+
+print(f"loop: {loop_time:.4f}s  vectorized: {vec_time:.4f}s")
+print("same result:", np.isclose(loop_total, vec_total))</code></pre></div>
+
+<h3>3. Array Indexing and Slicing</h3>
+<p>NumPy's indexing tools are essential for selecting samples, features and subsets of data in ML workflows.</p>
+
+<div class="card">
+    <strong>Indexing techniques:</strong>
+    <ul>
+        <li><strong>Basic indexing:</strong> <code>arr[0]</code> or <code>arr[1, 2]</code></li>
+        <li><strong>Slicing:</strong> <code>arr[start:stop:step]</code>, <code>arr[:, 1]</code> for a whole column</li>
+        <li><strong>Boolean indexing:</strong> filter with conditions like <code>arr[arr &gt; 5]</code></li>
+        <li><strong>Fancy indexing:</strong> select rows with an array of indices, <code>arr[[2, 0]]</code></li>
+    </ul>
+</div>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import numpy as np
+
+# rows = students, columns = exams
+scores = np.array([[88, 92, 79],
+                   [65, 70, 58],
+                   [95, 98, 91],
+                   [72, 60, 85]])
+
+print(scores[0])            # first student
+print(scores[:, 1])         # second exam for everyone
+print(scores[scores &gt; 90])  # every score above 90
+
+passed_all = (scores &gt;= 60).all(axis=1)
+print("students who passed every exam:", np.flatnonzero(passed_all))
+
+print(scores[[2, 0]])       # fancy indexing: rows 2 and 0</code></pre></div>
+
+<h2>NumPy in Machine Learning Workflows</h2>
+
+<div class="grid">
+    <div class="card lavender">
+        <h3>Data Representation</h3>
+        <p>Datasets are stored as 2-D arrays of shape <em>(samples, features)</em>, with labels as 1-D arrays.</p>
     </div>
+    <div class="card pink">
+        <h3>Feature Normalisation</h3>
+        <p><code>(X - X.mean(axis=0)) / X.std(axis=0)</code> standardises every column in one line, thanks to broadcasting.</p>
+    </div>
+    <div class="card ice">
+        <h3>Matrix Operations</h3>
+        <p>Linear regression, neural networks and PCA are built from matrix products like <code>X @ w</code>.</p>
+    </div>
+    <div class="card lavender">
+        <h3>Random Numbers</h3>
+        <p>Weight initialisation, shuffling, train/test splits and bootstrapping all rely on <code>np.random.default_rng</code>.</p>
+    </div>
+    <div class="card pink">
+        <h3>Statistics</h3>
+        <p>Means, variances, percentiles, covariances and correlations (<code>np.corrcoef</code>) power exploratory analysis.</p>
+    </div>
+    <div class="card ice">
+        <h3>Efficient Computation</h3>
+        <p>C-based loops and SIMD instructions make it practical to process millions of data points.</p>
+    </div>
+</div>
+
+<h2>Advanced NumPy for Machine Learning</h2>
+
+<h3>Broadcasting</h3>
+<p>Broadcasting lets NumPy combine arrays of different shapes. Subtracting a per-feature mean of shape <code>(3,)</code> from a dataset of shape <code>(200, 3)</code> applies it to every row automatically. The example standardises features and then performs a reproducible train/test split.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(7)
+X = rng.normal(loc=[50, 0.5, 1000], scale=[10, 0.1, 250], size=(200, 3))
+y = (X[:, 0] + 100 * X[:, 1] &gt; 100).astype(int)
+
+# Broadcasting: (200, 3) minus (3,) is applied column by column
+X_std = (X - X.mean(axis=0)) / X.std(axis=0)
+print(X_std.mean(axis=0).round(6), X_std.std(axis=0).round(6))
+
+# Shuffle and split without any ML library
+idx = rng.permutation(len(X))
+split = int(0.8 * len(X))
+train_idx, test_idx = idx[:split], idx[split:]
+X_train, X_test = X_std[train_idx], X_std[test_idx]
+y_train, y_test = y[train_idx], y[test_idx]
+print(X_train.shape, X_test.shape, y_train.mean().round(2))</code></pre></div>
+
+<h3>Linear Algebra Module (numpy.linalg)</h3>
+<p>The <code>numpy.linalg</code> module solves linear systems, computes eigenvalues and eigenvectors, performs decompositions (SVD, QR, Cholesky) and computes norms. These are the building blocks of many ML algorithms.</p>
+
+<div class="card">
+    <strong>Key linear algebra functions:</strong>
+    <ul>
+        <li><code>np.linalg.lstsq()</code> - least-squares solution (linear regression)</li>
+        <li><code>np.linalg.solve()</code> - solve <code>Ax = b</code> without forming an inverse</li>
+        <li><code>np.linalg.eigh()</code> - eigen-decomposition of symmetric matrices (covariance, PCA)</li>
+        <li><code>np.linalg.svd()</code> - Singular Value Decomposition</li>
+        <li><code>np.linalg.norm()</code> - vector or matrix norms (distances, regularisation)</li>
+    </ul>
+</div>
+
+<h4>Example: linear regression from scratch</h4>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(1)
+n = 500
+sqft = rng.uniform(500, 3500, n)
+bedrooms = rng.integers(1, 6, n)
+price = 50_000 + 120 * sqft + 15_000 * bedrooms + rng.normal(0, 20_000, n)
+
+# Design matrix with a bias (intercept) column
+X = np.column_stack([np.ones(n), sqft, bedrooms])
+
+# lstsq is numerically safer than np.linalg.inv(X.T @ X) @ X.T @ y
+coef, *_ = np.linalg.lstsq(X, price, rcond=None)
+print("intercept, per-sqft, per-bedroom:", coef.round(1))
+
+pred = X @ coef
+rmse = np.sqrt(np.mean((price - pred) ** 2))
+print(f"RMSE: {rmse:,.0f}")</code></pre></div>
+
+<h4>Example: PCA with the SVD</h4>
+<p>Five measured features that really only vary along two hidden directions: the explained-variance ratio reveals it.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(3)
+latent = rng.normal(size=(300, 2))
+mixing = rng.normal(size=(2, 5))
+X = latent @ mixing + 0.05 * rng.normal(size=(300, 5))  # 5 features, ~2 real dimensions
+
+X_centered = X - X.mean(axis=0)
+U, S, Vt = np.linalg.svd(X_centered, full_matrices=False)
+
+explained = S**2 / np.sum(S**2)
+print("explained variance ratio:", explained.round(3))
+
+X_2d = X_centered @ Vt[:2].T    # project onto the top-2 components
+print(X_2d.shape)</code></pre></div>
+
+<h3>Performance and Memory</h3>
+<div class="card">
+    <ul>
+        <li><strong>Avoid loops:</strong> use vectorised operations instead of Python <code>for</code> loops.</li>
+        <li><strong>Use in-place operations:</strong> <code>X -= X.mean(axis=0)</code> avoids allocating a new array.</li>
+        <li><strong>Choose data types:</strong> <code>float32</code> halves memory compared to <code>float64</code> and is the default in deep learning.</li>
+        <li><strong>Leverage views:</strong> slicing returns a view, not a copy. Call <code>.copy()</code> only when you need one.</li>
+        <li><strong>Save arrays efficiently:</strong> <code>np.save</code> / <code>np.savez_compressed</code> are faster and smaller than CSV.</li>
+    </ul>
+</div>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(0)
+X = rng.random((1000, 20), dtype=np.float32)   # float32 halves memory vs float64
+y = rng.integers(0, 2, size=1000)
+
+np.savez_compressed("dataset.npz", X=X, y=y)
+
+data = np.load("dataset.npz")
+print(data["X"].shape, data["X"].dtype, data["y"][:10])
+print(f"{X.nbytes / 1024:.0f} KiB in memory")</code></pre></div>
+
+<div class="alert alert-pink">
+    <h3>NumPy Best Practices for ML</h3>
+    <p><strong>1. Always vectorise:</strong> replace Python loops with NumPy operations whenever possible.</p>
+    <p><strong>2. Understand shapes:</strong> print <code>.shape</code> often to avoid broadcasting surprises.</p>
+    <p><strong>3. Seed a Generator:</strong> pass <code>default_rng(seed)</code> around for reproducible experiments.</p>
+    <p><strong>4. Pick appropriate dtypes:</strong> choose <code>int32</code>, <code>float32</code> or <code>float64</code> deliberately.</p>
+    <p><strong>5. Profile your code:</strong> use <code>time.perf_counter()</code> or <code>%timeit</code> to find bottlenecks.</p>
+</div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="numpy.html">NumPy</a></li>
+                <li><a href="scipy.html">SciPy</a></li>
+                <li><a href="pandas.html">Pandas</a></li>
+                <li><a href="polars.html">Polars</a></li>
+                <li><a href="scikit.html">Scikit-Learn</a></li>
+                <li><a href="tf.html">TensorFlow</a></li>
+                <li><a href="nltk.html">NLTK</a></li>
+                <li><a href="./projects/">ML Projects</a></li>
+            </ul>
+            <p><small>Examples tested with Python 3.12, NumPy 2.5, SciPy 1.18, pandas 3.1, Polars 2.1, scikit-learn 1.9, TensorFlow 2.21 and NLTK 3.10 · Reviewed November 2026</small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="./copy.js"></script>
 </body>
 </html>

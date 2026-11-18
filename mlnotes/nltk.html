@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLTK and Machine Learning | ML Notes</title>
+    <meta name="description" content="Natural language processing with NLTK and how to combine it with machine learning for real-world text applications.">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+        <div class="container">
+            <a class="logo" href="index.html">ML NOTES</a>
+            <nav aria-label="Main">
+                <ul class="nav">
+                    <li><a href="index.html">Introduction</a></li>
+                    <li><a href="numpy.html">NumPy</a></li>
+                    <li><a href="scipy.html">SciPy</a></li>
+                    <li><a href="pandas.html">Pandas</a></li>
+                    <li><a href="polars.html">Polars</a></li>
+                    <li><a href="scikit.html">Scikit-Learn</a></li>
+                    <li><a href="tf.html">TensorFlow</a></li>
+                    <li><a href="nltk.html" class="active" aria-current="page">NLTK</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <p class="eyebrow">Library guide · Natural language</p>
+            <h1>NLTK</h1>
+            <p class="lead">The Natural Language Toolkit: tokenise, normalise and analyse text, then combine it with machine learning for real-world applications.</p>
+        </div>
+    </section>
+
+    <main id="main" class="section">
+        <div class="container page">
+<p>NLTK (the Natural Language Toolkit) is one of the oldest and most complete Python libraries for working with human language. It provides tokenisers, stemmers, lemmatisers, part-of-speech taggers, a rule-based sentiment analyser, classic classifiers, and more than 50 corpora and lexical resources such as WordNet. It is an excellent way to learn NLP and a practical tool for preparing text for machine learning.</p>
+
+<div class="code-block" data-lang="shell"><pre><code class="language-bash">pip install nltk scikit-learn</code></pre></div>
+
+<h3>One-time setup: download the data</h3>
+<p>NLTK keeps its models and corpora separate from the code. Run this once to download everything used on this page (about 100 MB on disk).</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import nltk
+
+# One-time download of the data used on this page (saved to ~/nltk_data)
+resources = ["punkt_tab", "stopwords", "wordnet", "omw-1.4",
+             "averaged_perceptron_tagger_eng", "maxent_ne_chunker_tab",
+             "words", "vader_lexicon", "movie_reviews"]
+
+failed = [r for r in resources if not nltk.download(r, quiet=True)]
+print("NLTK", nltk.__version__, "- missing:" if failed else "- all resources ready", *failed)</code></pre></div>
+<p class="muted-note">On macOS, if downloads fail with <code>CERTIFICATE_VERIFY_FAILED</code>, run the <em>Install Certificates.command</em> script in your Python application folder, or <code>pip install certifi</code> and set the <code>SSL_CERT_FILE</code> environment variable to the path printed by <code>python -m certifi</code>.</p>
+
+<h2>Where NLTK Fits in an ML Project</h2>
+<p>Machine learning models cannot read text; they need numbers. A typical text-ML system has three stages, and NLTK is strongest in the first.</p>
+<div class="grid">
+    <div class="card lavender">
+        <h3>1. Linguistic preprocessing</h3>
+        <p><strong>NLTK:</strong> split sentences and words, remove stopwords, stem or lemmatise, tag parts of speech, find entities.</p>
+    </div>
+    <div class="card pink">
+        <h3>2. Vectorisation</h3>
+        <p><strong>NLTK or scikit-learn:</strong> turn tokens into features, such as word presence, counts, TF-IDF, n-grams and sentiment scores.</p>
+    </div>
+    <div class="card ice">
+        <h3>3. Learning &amp; prediction</h3>
+        <p><strong>NLTK or scikit-learn:</strong> train a classifier (Naive Bayes, logistic regression, SVM), evaluate it, then deploy it.</p>
+    </div>
+</div>
+
+<h2>Core NLTK Techniques</h2>
+
+<h3>1. Tokenisation</h3>
+<p>Tokenisation splits raw text into sentences and words. NLTK's Punkt sentence tokeniser knows that "Dr." and "Nov." usually do not end a sentence, and the word tokeniser separates punctuation and contractions.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">from nltk.tokenize import sent_tokenize, word_tokenize
+
+text = ("Dr. Tanaka ordered 3 laptops on Nov. 3rd. They arrived late, "
+        "and the screen on one wasn't working! Can I get a refund?")
+
+sentences = sent_tokenize(text)
+print(len(sentences), "sentences:", sentences)
+
+tokens = word_tokenize(text)
+print(tokens)
+# Note how "Dr." and "Nov." are not mistaken for sentence ends,
+# and "wasn't" becomes ["was", "n't"].</code></pre></div>
+
+<h3>2. Stopwords, stemming and lemmatisation</h3>
+<p>Normalising words reduces the vocabulary so that "batteries" and "battery" count as the same feature.</p>
+<div class="grid wide">
+    <div class="card">
+        <strong>Stemming</strong> (<code>PorterStemmer</code>, <code>SnowballStemmer</code>)
+        <p>Chops suffixes with rules. Fast, but produces non-words like <code>batteri</code> and <code>quickli</code>.</p>
+    </div>
+    <div class="card">
+        <strong>Lemmatisation</strong> (<code>WordNetLemmatizer</code>)
+        <p>Looks words up in WordNet to return real dictionary forms. Pass <code>pos="v"</code> for verbs.</p>
+    </div>
+</div>
+<div class="code-block" data-lang="python"><pre><code class="language-python">from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+
+text = "The batteries were dying quickly and the studies showed better running times"
+
+stop_words = set(stopwords.words("english"))
+tokens = [t.lower() for t in word_tokenize(text) if t.isalpha()]
+content = [t for t in tokens if t not in stop_words]
+print("without stopwords:", content)
+
+stemmer = PorterStemmer()
+print("stems:  ", [stemmer.stem(t) for t in content])
+
+lemmatizer = WordNetLemmatizer()
+print("lemmas: ", [lemmatizer.lemmatize(t) for t in content])
+print("verbs:  ", [lemmatizer.lemmatize(t, pos="v") for t in ["dying", "running", "showed"]])</code></pre></div>
+
+<h3>3. Part-of-speech tagging and named entities</h3>
+<p>POS tags (<code>NN</code> noun, <code>VBD</code> past-tense verb, <code>JJ</code> adjective ...) let you keep only certain word types, for example nouns for topic extraction. <code>ne_chunk</code> groups tokens into named entities such as people, organisations and places (<code>GPE</code>).</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import nltk
+from nltk.tokenize import word_tokenize
+
+sentence = "Apple opened a new office in Tokyo, and Tim Cook visited Japan in March."
+
+tagged = nltk.pos_tag(word_tokenize(sentence))
+print(tagged[:6])                      # e.g. ('Apple', 'NNP'), ('opened', 'VBD'), ...
+
+nouns = [word for word, tag in tagged if tag.startswith("NN")]
+print("nouns:", nouns)
+
+tree = nltk.ne_chunk(tagged)           # named-entity recognition
+for subtree in tree:
+    if hasattr(subtree, "label"):
+        entity = " ".join(word for word, tag in subtree.leaves())
+        print(f"{subtree.label():12s} {entity}")</code></pre></div>
+<p class="muted-note">Notice that the classic NLTK chunker labels "Apple" as a PERSON. Rule- and feature-based NER makes mistakes like this; for production entity extraction, consider spaCy or a transformer model.</p>
+
+<h3>4. Word frequencies, n-grams and collocations</h3>
+<p>Frequency analysis quickly shows what customers talk about. Collocations find word pairs that occur together more often than chance, such as "customer service" and "battery life".</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">from nltk import FreqDist, bigrams
+from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+reviews = """Battery life is great. Battery life could be better on the older model.
+The customer service team was helpful. Customer service replied within an hour.
+Great screen, great battery life, poor speakers. The speakers are too quiet."""
+
+stop_words = set(stopwords.words("english"))
+words = [w.lower() for w in word_tokenize(reviews) if w.isalpha()]
+words = [w for w in words if w not in stop_words]
+
+print(FreqDist(words).most_common(5))
+print(FreqDist(bigrams(words)).most_common(3))
+
+finder = BigramCollocationFinder.from_words(words)
+finder.apply_freq_filter(2)                          # seen at least twice
+print(finder.nbest(BigramAssocMeasures.pmi, 3))      # phrases that belong together</code></pre></div>
+
+<h3>5. Sentiment analysis with VADER</h3>
+<p>VADER is a lexicon- and rule-based sentiment analyser tuned for short, informal text. It understands capitalisation ("NEVER"), punctuation ("!!!"), emoticons and negation ("not bad"), and it needs no training data. The <code>compound</code> score ranges from -1 (very negative) to +1 (very positive).</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">from nltk.sentiment import SentimentIntensityAnalyzer
+
+sia = SentimentIntensityAnalyzer()
+
+reviews = [
+    "Absolutely love it! Fast shipping and great quality :)",
+    "It's okay. Does the job, nothing special.",
+    "Terrible. Broke after two days and support NEVER replied.",
+    "Not bad at all, but the price is a bit high.",
+]
+for review in reviews:
+    scores = sia.polarity_scores(review)     # neg / neu / pos / compound (-1..1)
+    label = ("positive" if scores["compound"] &gt;= 0.05
+             else "negative" if scores["compound"] &lt;= -0.05 else "neutral")
+    print(f"{scores['compound']:+.3f}  {label:8s}  {review}")</code></pre></div>
+<p class="muted-note">"It's okay ... nothing special" scores slightly negative. Lexicon methods are fast and transparent but miss nuance, which is where a trained ML model helps.</p>
+
+<h2>Integrating NLTK with Machine Learning</h2>
+
+<h3>Approach A: NLTK's own classifier</h3>
+<p>NLTK includes classic learners such as <code>NaiveBayesClassifier</code> and <code>DecisionTreeClassifier</code>. They take feature <em>dictionaries</em>, which makes the features easy to read. This example trains a sentiment model on 2,000 labelled movie reviews and shows which words are most informative.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import random
+import nltk
+from nltk.corpus import movie_reviews, stopwords
+
+# 2,000 labelled movie reviews ("pos" / "neg") that ship with NLTK
+documents = [(list(movie_reviews.words(fid)), category)
+             for category in movie_reviews.categories()
+             for fid in movie_reviews.fileids(category)]
+random.Random(42).shuffle(documents)
+
+stop_words = set(stopwords.words("english"))
+all_words = nltk.FreqDist(w.lower() for w in movie_reviews.words()
+                          if w.isalpha() and w.lower() not in stop_words)
+vocabulary = [w for w, _ in all_words.most_common(3000)]
+
+def document_features(words):
+    present = set(w.lower() for w in words)
+    return {f"has({w})": (w in present) for w in vocabulary}
+
+featuresets = [(document_features(d), c) for d, c in documents]
+train_set, test_set = featuresets[:1600], featuresets[1600:]
+
+classifier = nltk.NaiveBayesClassifier.train(train_set)
+print(f"accuracy: {nltk.classify.accuracy(classifier, test_set):.3f}")
+classifier.show_most_informative_features(8)</code></pre></div>
+
+<h3>Approach B: NLTK preprocessing + scikit-learn models (recommended)</h3>
+<p>For production-quality models, combine NLTK's linguistic tools with scikit-learn's fast vectorisers and classifiers. Pass an NLTK-based function as the <code>tokenizer</code> of <code>TfidfVectorizer</code>, and the whole thing becomes one <code>Pipeline</code> that you can cross-validate, tune and save. On the same movie reviews, this typically improves accuracy from about 80% to the high 80s.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import re
+from nltk.corpus import movie_reviews, stopwords
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.pipeline import Pipeline
+
+texts = [movie_reviews.raw(fid) for fid in movie_reviews.fileids()]
+labels = [movie_reviews.categories(fid)[0] for fid in movie_reviews.fileids()]
+
+lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words("english")) - {"not", "no", "nor"}   # keep negations
+
+def nltk_tokenizer(text):
+    """NLTK does the linguistics: tokenise, filter, lemmatise."""
+    tokens = word_tokenize(text.lower())
+    return [lemmatizer.lemmatize(t) for t in tokens
+            if re.fullmatch(r"[a-z']+", t) and t not in stop_words]
+
+pipeline = Pipeline([
+    # scikit-learn does the maths: TF-IDF features + a linear classifier
+    ("tfidf", TfidfVectorizer(tokenizer=nltk_tokenizer, token_pattern=None,
+                              ngram_range=(1, 2), min_df=3, sublinear_tf=True)),
+    ("clf", LogisticRegression(C=5.0, max_iter=2000)),
+])
+
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, labels, test_size=0.2, stratify=labels, random_state=0)
+
+print("5-fold CV accuracy:", cross_val_score(pipeline, X_train, y_train, cv=5).mean().round(3))
+pipeline.fit(X_train, y_train)
+print(classification_report(y_test, pipeline.predict(X_test)))
+print(pipeline.predict(["A moving story with brilliant acting.",
+                        "Dull, predictable and far too long."]))</code></pre></div>
+<div class="card">
+    <strong>Why this combination works well:</strong>
+    <ul>
+        <li><strong>Lemmatisation</strong> merges word forms, so the model needs less data to learn each concept.</li>
+        <li><strong>Keeping negations</strong> ("not", "no") and using <strong>bigrams</strong> lets the model learn that "not good" is negative.</li>
+        <li><strong>TF-IDF</strong> down-weights words that appear everywhere, and <strong>logistic regression</strong> handles hundreds of thousands of sparse features efficiently.</li>
+        <li>Everything lives in one <code>Pipeline</code>, so there is no leakage between training and test data.</li>
+    </ul>
+</div>
+<p class="muted-note">Tip: when saving a pipeline that uses a custom tokenizer with <code>joblib</code>, define the tokenizer in an importable module (not inside a notebook cell), so it can be found when the model is loaded.</p>
+
+<h3>Approach C: Combine rules and learning</h3>
+<p>Real systems often blend a trained model with lexicon-based signals. The help-desk example below uses a scikit-learn classifier with an NLTK stemmer to <strong>route tickets</strong> to the right team, and VADER sentiment to <strong>flag angry customers</strong> as urgent.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">from nltk.corpus import stopwords
+from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.stem import SnowballStemmer
+from nltk.tokenize import word_tokenize
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import make_pipeline
+from sklearn.svm import LinearSVC
+
+# In real life these come from your help-desk export (thousands of rows)
+tickets = [
+    ("I was charged twice for my subscription this month", "billing"),
+    ("Please refund the duplicate payment on my card", "billing"),
+    ("My invoice shows the wrong amount", "billing"),
+    ("How do I update my credit card details?", "billing"),
+    ("The app crashes every time I open the camera", "technical"),
+    ("I can't log in, the password reset email never arrives", "technical"),
+    ("Error 500 when uploading a file", "technical"),
+    ("The page keeps loading forever on my phone", "technical"),
+    ("Where is my parcel? It has not been delivered yet", "shipping"),
+    ("The tracking number does not work", "shipping"),
+    ("My order arrived damaged and the box was open", "shipping"),
+    ("Can I change the delivery address for my order?", "shipping"),
+]
+texts, queues = zip(*tickets)
+
+stemmer = SnowballStemmer("english")
+stop_words = set(stopwords.words("english")) - {"not", "no", "never"}
+
+def tokenize(text):
+    return [stemmer.stem(t) for t in word_tokenize(text.lower())
+            if t.isalpha() and t not in stop_words]
+
+router = make_pipeline(TfidfVectorizer(tokenizer=tokenize, token_pattern=None), LinearSVC())
+router.fit(texts, queues)
+sia = SentimentIntensityAnalyzer()
+
+incoming = [
+    "I was billed two times, please refund me!!! This is unacceptable.",
+    "The parcel never arrived and tracking says delivered.",
+    "Login fails with an error after the latest update.",
+]
+for ticket in incoming:
+    queue = router.predict([ticket])[0]
+    mood = sia.polarity_scores(ticket)["compound"]
+    priority = "URGENT" if mood &lt; -0.3 else "normal"
+    print(f"{queue:10s} {priority:7s} ({mood:+.2f})  {ticket}")</code></pre></div>
+
+<h2>Real-Life Applications</h2>
+<div class="grid wide">
+    <div class="card lavender">
+        <h3>Customer support triage</h3>
+        <p>Classify incoming emails and chats into billing, technical or shipping queues; prioritise by sentiment; suggest answers from similar past tickets.</p>
+        <p><strong>NLTK role:</strong> tokenising, stemming, VADER urgency score.</p>
+    </div>
+    <div class="card pink">
+        <h3>Product review monitoring</h3>
+        <p>Track sentiment over time per product, and surface frequent complaint phrases ("battery life", "too quiet") for product teams.</p>
+        <p><strong>NLTK role:</strong> collocations, frequency distributions, sentiment.</p>
+    </div>
+    <div class="card ice">
+        <h3>Spam and phishing filtering</h3>
+        <p>Naive Bayes and logistic regression on word and n-gram features remain fast, strong baselines for spam detection.</p>
+        <p><strong>NLTK role:</strong> normalisation, feature extraction, Naive Bayes.</p>
+    </div>
+    <div class="card lavender">
+        <h3>Social media and brand listening</h3>
+        <p>Measure public reaction to campaigns or incidents, and detect sudden spikes in negative mentions.</p>
+        <p><strong>NLTK role:</strong> <code>TweetTokenizer</code> for hashtags and emoji, VADER for informal text.</p>
+    </div>
+    <div class="card pink">
+        <h3>Document search and organisation</h3>
+        <p>Cluster or tag contracts, reports and articles by topic; extract keywords for search indexes.</p>
+        <p><strong>NLTK role:</strong> POS filtering for keywords, lemmatisation, WordNet synonyms for query expansion.</p>
+    </div>
+    <div class="card ice">
+        <h3>HR and recruiting</h3>
+        <p>Match CVs to job descriptions by comparing TF-IDF vectors and extracting skills. Audit such models carefully for bias.</p>
+        <p><strong>NLTK role:</strong> tokenising, stopwords, n-grams for multi-word skills.</p>
+    </div>
+</div>
+
+<h2>NLTK in the Modern NLP Landscape</h2>
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>Need</th><th>Good choice</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Learning NLP, teaching, quick text analysis</td><td>NLTK</td><td>Transparent algorithms, rich corpora and documentation</td></tr>
+            <tr><td>Fast, explainable text classification</td><td>NLTK + scikit-learn</td><td>Trains in seconds on a CPU, easy to deploy and debug</td></tr>
+            <tr><td>Production pipelines (NER, parsing) at scale</td><td>spaCy</td><td>Fast, accurate pre-trained pipelines</td></tr>
+            <tr><td>Highest accuracy, nuanced meaning, many languages</td><td>Transformer models (e.g. Hugging Face)</td><td>Pre-trained language understanding; needs more compute</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="alert alert-pink">
+    <h3>NLTK Best Practices</h3>
+    <p><strong>1. Download resources explicitly:</strong> list the exact NLTK packages your project needs in a setup script.</p>
+    <p><strong>2. Keep meaningful stopwords:</strong> "not", "no" and "never" matter for sentiment and intent.</p>
+    <p><strong>3. Prefer lemmatisation for readability, stemming for speed.</strong></p>
+    <p><strong>4. Start with a simple baseline:</strong> TF-IDF + logistic regression is hard to beat for its cost.</p>
+    <p><strong>5. Evaluate on realistic data:</strong> models trained on movie reviews will not automatically understand support tickets.</p>
+    <p><strong>6. Combine signals:</strong> rules (VADER, keyword lists) and learned models complement each other.</p>
+</div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="numpy.html">NumPy</a></li>
+                <li><a href="scipy.html">SciPy</a></li>
+                <li><a href="pandas.html">Pandas</a></li>
+                <li><a href="polars.html">Polars</a></li>
+                <li><a href="scikit.html">Scikit-Learn</a></li>
+                <li><a href="tf.html">TensorFlow</a></li>
+                <li><a href="nltk.html">NLTK</a></li>
+                <li><a href="./projects/">ML Projects</a></li>
+            </ul>
+            <p><small>Examples tested with Python 3.12, NumPy 2.5, SciPy 1.18, pandas 3.1, Polars 2.1, scikit-learn 1.9, TensorFlow 2.21 and NLTK 3.10 · Reviewed November 2026</small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="./copy.js"></script>
+</body>
+</html>

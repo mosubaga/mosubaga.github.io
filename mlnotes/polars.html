@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polars for Data Analysis | ML Notes</title>
+    <meta name="description" content="How to read data and analyse it with Polars: eager and lazy APIs, expressions, group-bys, windows and ML features.">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+        <div class="container">
+            <a class="logo" href="index.html">ML NOTES</a>
+            <nav aria-label="Main">
+                <ul class="nav">
+                    <li><a href="index.html">Introduction</a></li>
+                    <li><a href="numpy.html">NumPy</a></li>
+                    <li><a href="scipy.html">SciPy</a></li>
+                    <li><a href="pandas.html">Pandas</a></li>
+                    <li><a href="polars.html" class="active" aria-current="page">Polars</a></li>
+                    <li><a href="scikit.html">Scikit-Learn</a></li>
+                    <li><a href="tf.html">TensorFlow</a></li>
+                    <li><a href="nltk.html">NLTK</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <p class="eyebrow">Library guide · Fast DataFrames</p>
+            <h1>Polars</h1>
+            <p class="lead">A fast, multi-threaded DataFrame library built around expressions and lazy queries. This page covers reading data and analysing it.</p>
+        </div>
+    </section>
+
+    <main id="main" class="section">
+        <div class="container page">
+<p>Polars is a DataFrame library written in Rust with a Python API. It uses every CPU core by default, stores data in the Apache Arrow columnar format, and has a <strong>lazy</strong> query engine that optimises your whole pipeline before running it. For data preparation and analysis on anything from a few thousand rows to datasets larger than memory, it is often many times faster than pandas while staying very readable.</p>
+
+<div class="code-block" data-lang="shell"><pre><code class="language-bash">pip install polars pyarrow</code></pre></div>
+<p class="muted-note"><code>pyarrow</code> is optional; it is only needed for conversions such as <code>df.to_pandas()</code>. The examples on this page also use NumPy and scikit-learn (<code>pip install numpy scikit-learn</code>).</p>
+
+<h2>Why Polars?</h2>
+<div class="grid">
+    <div class="card lavender">
+        <h3>Fast by default</h3>
+        <p>Multi-threaded, vectorised execution on Arrow memory, with no extra configuration.</p>
+    </div>
+    <div class="card pink">
+        <h3>Lazy queries</h3>
+        <p><code>scan_*</code> functions build a plan; the optimiser pushes filters and column selection down to the file reader.</p>
+    </div>
+    <div class="card ice">
+        <h3>Expressions</h3>
+        <p>Composable <code>pl.col(...)</code> expressions describe <em>what</em> to compute, and Polars runs them in parallel.</p>
+    </div>
+    <div class="card lavender">
+        <h3>Larger than memory</h3>
+        <p>The streaming engine processes data in batches, so files bigger than your RAM still work.</p>
+    </div>
+</div>
+
+<h3>Polars vs pandas at a glance</h3>
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>Task</th><th>pandas</th><th>Polars</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Read CSV</td><td><code>pd.read_csv("f.csv")</code></td><td><code>pl.read_csv("f.csv")</code> / <code>pl.scan_csv("f.csv")</code></td></tr>
+            <tr><td>Select columns</td><td><code>df[["a", "b"]]</code></td><td><code>df.select("a", "b")</code></td></tr>
+            <tr><td>Filter rows</td><td><code>df[df["a"] &gt; 1]</code></td><td><code>df.filter(pl.col("a") &gt; 1)</code></td></tr>
+            <tr><td>New column</td><td><code>df["c"] = df["a"] * 2</code></td><td><code>df.with_columns(c=pl.col("a") * 2)</code></td></tr>
+            <tr><td>Group &amp; aggregate</td><td><code>df.groupby("g")["a"].sum()</code></td><td><code>df.group_by("g").agg(pl.col("a").sum())</code></td></tr>
+            <tr><td>Per-group value on each row</td><td><code>groupby("g")["a"].transform("sum")</code></td><td><code>pl.col("a").sum().over("g")</code></td></tr>
+            <tr><td>Row index</td><td>Index labels (<code>.loc</code>)</td><td>No index; use columns and <code>filter</code></td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="alert alert-ice">
+    <h3>Before you run the examples</h3>
+    <p>Run this script once. It creates <code>sales.csv</code> and <code>sales.parquet</code> (5,000 orders from 2025) in your working folder, so every other example on this page can be copied and run as-is.</p>
+</div>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import numpy as np
+import polars as pl
+
+# Create a realistic sample file so every example below can be run as-is
+rng = np.random.default_rng(0)
+n = 5_000
+activity = rng.gamma(0.6, 1.0, 400)            # some customers buy far more often
+activity /= activity.sum()
+sales = pl.DataFrame({
+    "order_id": np.arange(1, n + 1),
+    "order_date": pl.date_range(pl.date(2025, 1, 1), pl.date(2025, 12, 31), "1d", eager=True)
+                    .sample(n, with_replacement=True, seed=0).sort(),
+    "customer_id": rng.choice(np.arange(1, 401), size=n, p=activity),
+    "region": rng.choice(["East", "West", "North", "South"], n),
+    "category": rng.choice(["Electronics", "Home", "Books", "Toys"], n),
+    "quantity": rng.integers(1, 6, n),
+    "unit_price": rng.gamma(2.0, 30.0, n).round(2),
+})
+# sprinkle in some missing prices, like real data
+sales = sales.with_columns(
+    pl.when(pl.Series(rng.random(n) &lt; 0.02)).then(None).otherwise(pl.col("unit_price")).alias("unit_price")
+)
+sales.write_csv("sales.csv")
+sales.write_parquet("sales.parquet")
+print(sales.head())</code></pre></div>
+
+<h2>Part 1: Reading Data</h2>
+
+<h3>Eager reading with read_*</h3>
+<p><code>pl.read_csv</code>, <code>pl.read_parquet</code>, <code>pl.read_json</code>, <code>pl.read_excel</code> and <code>pl.read_database</code> load data into a <code>DataFrame</code> immediately. You can limit columns and rows and override types during the read.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import polars as pl
+
+# Eager: read the whole file into memory now
+df = pl.read_csv("sales.csv", try_parse_dates=True)
+print(df.shape)
+print(df.schema)
+
+# Parquet keeps column types and is much faster to load
+df = pl.read_parquet("sales.parquet")
+
+# Only read what you need
+small = pl.read_csv("sales.csv", columns=["order_id", "region", "unit_price"], n_rows=1_000)
+print(small.head(3))
+
+# Explicit types (useful for IDs, codes and memory savings)
+typed = pl.read_csv(
+    "sales.csv",
+    schema_overrides={"region": pl.Categorical, "customer_id": pl.Int32},
+    try_parse_dates=True,
+)
+print(typed.schema)</code></pre></div>
+
+<div class="grid wide">
+    <div class="card">
+        <strong>Supported sources:</strong>
+        <ul>
+            <li>CSV / TSV, Parquet, JSON and NDJSON, Arrow IPC (Feather), Excel, Avro</li>
+            <li>Databases via <code>pl.read_database</code> (SQLAlchemy / ADBC connections) or <code>pl.read_database_uri</code></li>
+            <li>Cloud storage: pass <code>s3://</code>, <code>gs://</code> or <code>az://</code> paths directly</li>
+            <li>Many files at once with glob patterns: <code>pl.scan_parquet("data/*.parquet")</code></li>
+        </ul>
+    </div>
+    <div class="card">
+        <strong>Useful read options:</strong>
+        <ul>
+            <li><code>columns=[...]</code> - read only some columns</li>
+            <li><code>n_rows=</code> - preview a large file quickly</li>
+            <li><code>schema_overrides={...}</code> - force dtypes</li>
+            <li><code>try_parse_dates=True</code> - detect date columns</li>
+            <li><code>null_values=["NA", ""]</code> - custom missing markers</li>
+        </ul>
+    </div>
+</div>
+
+<h3>Lazy reading with scan_*</h3>
+<p><code>pl.scan_csv</code> and <code>pl.scan_parquet</code> return a <code>LazyFrame</code>. Nothing is read until you call <code>.collect()</code>, so Polars can read only the needed columns (projection pushdown) and skip rows early (predicate pushdown). <strong>Prefer the lazy API for anything beyond quick exploration.</strong></p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import polars as pl
+
+# Lazy: build a query plan; nothing is read until .collect()
+query = (
+    pl.scan_parquet("sales.parquet")            # also: pl.scan_csv("sales.csv")
+      .filter(pl.col("region") == "East")
+      .select("order_date", "category", "quantity", "unit_price")
+)
+print(query.explain())          # shows predicate &amp; projection pushdown
+
+east = query.collect()
+print(east.head())
+
+# For files larger than memory, run the query on the streaming engine
+big_result = query.collect(engine="streaming")
+print(big_result.height)</code></pre></div>
+
+<h2>Part 2: Analysing Data</h2>
+
+<h3>First look at a dataset</h3>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import polars as pl
+
+df = pl.read_parquet("sales.parquet")
+
+print(df.head())
+print(df.describe())                 # count, nulls, mean, std, min, quartiles, max
+print(df.null_count())
+print(df["region"].value_counts(sort=True))
+print(df.select(pl.col("unit_price").quantile(0.95).alias("p95_price")))</code></pre></div>
+
+<h3>Expressions: select, filter and with_columns</h3>
+<p>Almost everything in Polars is an <em>expression</em> such as <code>pl.col("unit_price").fill_null(...)</code>. Expressions are used inside contexts:</p>
+<div class="card">
+    <ul>
+        <li><code>select(...)</code> - choose or compute columns (the result has only those columns)</li>
+        <li><code>with_columns(...)</code> - add or replace columns, keeping the rest</li>
+        <li><code>filter(...)</code> - keep rows where a boolean expression is true</li>
+        <li><code>group_by(...).agg(...)</code> - aggregate expressions per group</li>
+    </ul>
+</div>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import polars as pl
+
+df = pl.read_parquet("sales.parquet")
+
+clean = (
+    df
+    # fill missing prices with the median price of the same category
+    .with_columns(
+        pl.col("unit_price").fill_null(pl.col("unit_price").median().over("category"))
+    )
+    # derived columns are computed in parallel
+    .with_columns(
+        revenue=pl.col("quantity") * pl.col("unit_price"),
+        month=pl.col("order_date").dt.month(),
+        weekday=pl.col("order_date").dt.weekday(),         # Monday = 1 ... Sunday = 7
+    )
+    .with_columns(is_weekend=pl.col("weekday") &gt;= 6)
+    .filter(pl.col("revenue") &gt; 0)
+)
+
+print(clean.select("order_id", "category", "revenue", "month", "is_weekend").head())
+
+# Conditional logic with when / then / otherwise
+tiers = clean.with_columns(
+    tier=pl.when(pl.col("revenue") &gt;= 300).then(pl.lit("high"))
+           .when(pl.col("revenue") &gt;= 100).then(pl.lit("mid"))
+           .otherwise(pl.lit("low"))
+)
+print(tiers["tier"].value_counts(sort=True))</code></pre></div>
+
+<h3>Group-by, pivot and time-based aggregation</h3>
+<p>Aggregations take any number of expressions. <code>pl.len()</code> counts rows; <code>group_by_dynamic</code> groups by calendar windows such as weeks or months.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import polars as pl
+
+df = (
+    pl.read_parquet("sales.parquet")
+      .drop_nulls("unit_price")
+      .with_columns(revenue=pl.col("quantity") * pl.col("unit_price"))
+)
+
+by_region = (
+    df.group_by("region")
+      .agg(
+          orders=pl.len(),
+          revenue=pl.col("revenue").sum(),
+          avg_order=pl.col("revenue").mean(),
+          top_category=pl.col("category").mode().first(),
+      )
+      .sort("revenue", descending=True)
+)
+print(by_region)
+
+# Pivot: regions as rows, categories as columns
+pivot = df.pivot(on="category", index="region", values="revenue", aggregate_function="sum").sort("region")
+print(pivot)
+
+# Monthly time series (data must be sorted by the date column)
+monthly = (
+    df.sort("order_date")
+      .group_by_dynamic("order_date", every="1mo")
+      .agg(revenue=pl.col("revenue").sum(), orders=pl.len())
+)
+print(monthly.head())</code></pre></div>
+
+<h3>Window functions and joins</h3>
+<p><code>.over("column")</code> computes an aggregate per group but returns a value for every row, ideal for features like "customer's total spend" or "rank within region". Joins work like SQL: <code>how="inner" | "left" | "full" | "semi" | "anti" | "cross"</code>.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import polars as pl
+
+df = (
+    pl.read_parquet("sales.parquet")
+      .drop_nulls("unit_price")
+      .with_columns(revenue=pl.col("quantity") * pl.col("unit_price"))
+)
+
+customer_features = df.with_columns(
+    # window functions: aggregate per group but keep every row
+    customer_total=pl.col("revenue").sum().over("customer_id"),
+    customer_orders=pl.len().over("customer_id"),
+    share_of_region=pl.col("revenue") / pl.col("revenue").sum().over("region"),
+    rank_in_region=pl.col("revenue").rank("dense", descending=True).over("region"),
+)
+print(customer_features.select("customer_id", "region", "revenue",
+                               "customer_total", "rank_in_region").head())
+
+# Joins: enrich orders with a lookup table
+targets = pl.DataFrame({"region": ["East", "West", "North", "South"],
+                        "monthly_target": [9_000, 8_500, 7_000, 7_500]})
+joined = df.join(targets, on="region", how="left")
+print(joined.select("order_id", "region", "monthly_target").head(3))</code></pre></div>
+
+<h2>Part 3: From Polars to Machine Learning</h2>
+<p>A common real-world task: turn an order log into one row per customer, then predict who will buy again. The whole feature pipeline below is lazy, so Polars optimises it as a single query. The final DataFrame converts to NumPy with <code>.to_numpy()</code> for scikit-learn.</p>
+<div class="code-block" data-lang="python"><pre><code class="language-python">import polars as pl
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score
+
+orders = (
+    pl.scan_parquet("sales.parquet")
+      .drop_nulls("unit_price")
+      .with_columns(revenue=pl.col("quantity") * pl.col("unit_price"))
+)
+
+# One row per customer: features from the first 9 months, label = bought in Q4?
+cutoff = pl.date(2025, 10, 1)
+features = (
+    orders.filter(pl.col("order_date") &lt; cutoff)
+          .group_by("customer_id")
+          .agg(
+              n_orders=pl.len(),
+              total_spend=pl.col("revenue").sum(),
+              avg_spend=pl.col("revenue").mean(),
+              n_categories=pl.col("category").n_unique(),
+              days_since_last=(cutoff - pl.col("order_date").max()).dt.total_days(),
+          )
+)
+labels = (
+    orders.filter(pl.col("order_date") &gt;= cutoff)
+          .select("customer_id").unique()
+          .with_columns(bought_q4=pl.lit(1))
+)
+data = (
+    features.join(labels, on="customer_id", how="left")
+            .with_columns(pl.col("bought_q4").fill_null(0))
+            .collect()
+)
+
+X = data.drop("customer_id", "bought_q4").to_numpy()
+y = data["bought_q4"].to_numpy()
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+
+model = HistGradientBoostingClassifier(random_state=0).fit(X_train, y_train)
+print(f"customers: {data.height}, ROC AUC: {roc_auc_score(y_test, model.predict_proba(X_test)[:, 1]):.3f}")
+
+# Need pandas for a plotting library?  data.to_pandas()  (requires pyarrow)</code></pre></div>
+<p class="muted-note">Features are computed only from orders <em>before</em> the cutoff date and the label only from orders <em>after</em> it. Respecting time in this way prevents data leakage.</p>
+
+<h2>Tips and Common Pitfalls</h2>
+<div class="grid wide">
+    <div class="card lavender">
+        <h3>Think in columns</h3>
+        <p>Avoid <code>map_elements</code> (Python functions per row) where a built-in expression exists. Native expressions are often 10-100&times; faster.</p>
+    </div>
+    <div class="card pink">
+        <h3>Strings in expressions</h3>
+        <p><code>pl.col("x")</code> is a column, <code>pl.lit("x")</code> is a literal value. In <code>when/then</code> use <code>pl.lit</code> for constant strings.</p>
+    </div>
+    <div class="card ice">
+        <h3>Sort for time windows</h3>
+        <p><code>group_by_dynamic</code> and <code>rolling</code> require the time column to be sorted first.</p>
+    </div>
+    <div class="card lavender">
+        <h3>Inspect the plan</h3>
+        <p><code>lf.explain()</code> shows the optimised query; <code>lf.collect(engine="streaming")</code> processes out-of-core data.</p>
+    </div>
+    <div class="card pink">
+        <h3>Write efficiently</h3>
+        <p><code>df.write_parquet()</code> or <code>lf.sink_parquet()</code> (streaming) keep types and compress well.</p>
+    </div>
+    <div class="card ice">
+        <h3>Interoperability</h3>
+        <p><code>pl.from_pandas(pdf)</code>, <code>df.to_pandas()</code>, <code>df.to_numpy()</code> and <code>pl.from_numpy(arr)</code> convert between libraries.</p>
+    </div>
+</div>
+
+<div class="alert alert-pink">
+    <h3>Polars Best Practices</h3>
+    <p><strong>1. Start lazy:</strong> use <code>scan_*</code> + <code>collect()</code> so the optimiser can do its work.</p>
+    <p><strong>2. Keep everything in expressions:</strong> chain <code>with_columns</code>, <code>filter</code> and <code>agg</code> rather than looping in Python.</p>
+    <p><strong>3. Use Parquet:</strong> it is typed, compressed and enables pushdown on read.</p>
+    <p><strong>4. Set dtypes deliberately:</strong> <code>Categorical</code>, <code>Int32</code> and <code>Float32</code> can cut memory dramatically.</p>
+    <p><strong>5. Convert at the boundary:</strong> do the heavy lifting in Polars, then call <code>to_numpy()</code> or <code>to_pandas()</code> just before modelling or plotting.</p>
+</div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="index.html">Introduction</a></li>
+                <li><a href="numpy.html">NumPy</a></li>
+                <li><a href="scipy.html">SciPy</a></li>
+                <li><a href="pandas.html">Pandas</a></li>
+                <li><a href="polars.html">Polars</a></li>
+                <li><a href="scikit.html">Scikit-Learn</a></li>
+                <li><a href="tf.html">TensorFlow</a></li>
+                <li><a href="nltk.html">NLTK</a></li>
+                <li><a href="./projects/">ML Projects</a></li>
+            </ul>
+            <p><small>Examples tested with Python 3.12, NumPy 2.5, SciPy 1.18, pandas 3.1, Polars 2.1, scikit-learn 1.9, TensorFlow 2.21 and NLTK 3.10 · Reviewed November 2026</small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="./copy.js"></script>
+</body>
+</html>
